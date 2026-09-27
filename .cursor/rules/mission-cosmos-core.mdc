@@ -1,0 +1,43 @@
+---
+description: Règles générales Mission Cosmos — méthode, architecture, qualité
+alwaysApply: true
+---
+
+# Mission Cosmos — Règles générales
+
+Application éducative d'astronomie (FR, 6–12 ans). Source de pilotage : `TODO_MISSION_COSMOS.md`.
+
+## Méthode
+
+1. Identifier la phase/sous-phase active dans la TODO.
+2. Traiter un ensemble limité de tâches cohérentes.
+3. Expliquer avant toute modification structurante.
+4. Implémenter, tester (lint/typecheck/tests/build), corriger.
+5. Mettre à jour la TODO (cocher uniquement le réellement terminé).
+6. Demander validation avant de changer de phase majeure.
+
+Ne jamais exécuter toute la roadmap en une fois.
+
+## Architecture
+
+Priorités : simplicité, lisibilité, modularité, performances mobiles.
+
+Séparer : UI React / contenu pédagogique / progression / scènes Babylon / stockage / assets.
+
+- Pas de backend, compte distant ou cloud sans besoin validé.
+- Ne pas coupler texte pédagogique et implémentation Babylon.
+- Stack : Next.js + React + TypeScript + Babylon.js + PWA.
+
+## Assets
+
+Si un asset manque : placeholder temporaire OK (nommé clairement) ; brief précis au propriétaire ; maj registre TODO + `docs/ASSETS.md`. Pas d'asset définitif improvisé ni licence inconnue.
+
+## Pédagogie
+
+Pattern : **Question → manipulation → découverte → défi → explication → récompense.**
+
+Erreurs = explication/indice, pas punition. Signaler les représentations non à l'échelle.
+
+## Sécurité enfants
+
+Minimiser données perso. Aucun tracking pub, dark pattern, récompense compulsive, ni lien externe facilement déclenchable.

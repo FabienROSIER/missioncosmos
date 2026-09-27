@@ -1,0 +1,23 @@
+import { REWARD_EARTH_EXPLORER } from '@/content/missions/mission-01';
+import { REWARD_DAY_NIGHT } from '@/content/missions/mission-02';
+import { REWARD_MOON_PHASES } from '@/content/missions/mission-03';
+import { REWARD_ECLIPSES } from '@/content/missions/mission-04';
+import { REWARD_SOLAR_SYSTEM } from '@/content/missions/mission-05';
+import type { Reward } from '@/types/progress';
+
+/** Registre des récompenses (badges de connaissance). */
+export const REWARD_CATALOG: Reward[] = [
+  REWARD_EARTH_EXPLORER,
+  REWARD_DAY_NIGHT,
+  REWARD_MOON_PHASES,
+  REWARD_ECLIPSES,
+  REWARD_SOLAR_SYSTEM,
+];
+
+export function getRewardById(id: string): Reward | undefined {
+  return REWARD_CATALOG.find((r) => r.id === id);
+}
+
+export function getRewardsByIds(ids: string[]): Reward[] {
+  return ids.map((id) => getRewardById(id)).filter((r): r is Reward => Boolean(r));
+}

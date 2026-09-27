@@ -1,0 +1,18 @@
+---
+description: UI/UX enfants mobile — tactile, lisibilité, accessibilité
+globs: "**/components/**/*.{ts,tsx},**/app/**/*.{ts,tsx},**/styles/**/*"
+alwaysApply: false
+---
+
+# UI / UX enfants & mobile
+
+Priorités : lisibilité, grandes zones tactiles, hiérarchie claire, faible charge cognitive, feedback immédiat.
+
+- Mobile/tactile d'abord ; portrait + safe areas.
+- Une action principale identifiable par écran.
+- Ne pas cacher une action essentielle derrière un geste non expliqué.
+- Limiter le texte superposé à la 3D.
+- Toujours prévoir loading / error / disabled / success.
+- Ne pas dépendre uniquement de la couleur.
+- Respecter réduction des animations.
+- Validation : que comprendre ? que toucher ? si erreur ? retour arrière ? lisible sur petit smartphone ?

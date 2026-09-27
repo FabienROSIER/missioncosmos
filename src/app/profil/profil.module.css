@@ -1,0 +1,137 @@
+.screen {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: 28rem;
+  width: 100%;
+  margin-inline: auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.intro,
+.meta {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+.current {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.avatar {
+  margin: 0;
+  font-size: 2.25rem;
+  line-height: 1;
+}
+
+.name {
+  margin: 0 0 0.15rem;
+  font-family: var(--font-brand);
+  font-size: var(--text-md);
+}
+
+.card {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: rgba(21, 34, 56, 0.55);
+  overflow: hidden;
+}
+
+.heading {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-brand);
+  font-size: var(--text-sm);
+}
+
+.label {
+  margin: 0 0 var(--space-1);
+  font-weight: 800;
+  font-size: var(--text-xs);
+}
+
+.switcher {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 2.5rem;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-border);
+  background: transparent;
+  color: var(--color-star);
+  font-weight: 700;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.chipActive {
+  border-color: var(--color-solar);
+  background: rgba(244, 201, 95, 0.12);
+}
+
+.footer {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.secondary {
+  min-height: 2.5rem;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(126, 214, 223, 0.45);
+  background: transparent;
+  color: var(--color-nebula-soft);
+  font-weight: 800;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.danger {
+  min-height: 2.5rem;
+  padding: 0 var(--space-3);
+  border: 1px solid rgba(232, 93, 93, 0.5);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-danger);
+  font-weight: 800;
+  font-size: var(--text-sm);
+  cursor: pointer;
+  margin-left: auto;
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .avatar {
+    font-size: 1.75rem;
+  }
+
+  .card {
+    padding: var(--space-2);
+  }
+}

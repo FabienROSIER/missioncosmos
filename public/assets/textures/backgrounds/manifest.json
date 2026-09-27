@@ -1,0 +1,94 @@
+{
+  "version": 1,
+  "source": "Generated with built-in ImageGen for Mission Cosmos",
+  "projection": "2:1 panorama designed for equirectangular mapping",
+  "recommendedDisplay": "Camera background layer (cover); spherical mapping optional, inspect seam in scene",
+  "scientificStarMap": false,
+  "hdr": false,
+  "seamlessPixelVerified": false,
+  "default": "starfield",
+  "backgrounds": {
+    "starfield": {
+      "id": "AST-021",
+      "label": "Ciel étoilé discret",
+      "sourceDimensions": [
+        1774,
+        887
+      ],
+      "variants": {
+        "native": {
+          "url": "/assets/textures/backgrounds/ast-021-space-starfield.webp",
+          "width": 1774,
+          "height": 887,
+          "bytes": 254290,
+          "sha256": "7b8d98d9dbd550812d489323071d663213fd78f6c341099fd2366fef37e2aa44"
+        },
+        "mobile": {
+          "url": "/assets/textures/backgrounds/ast-021-space-starfield-mobile.webp",
+          "width": 1024,
+          "height": 512,
+          "bytes": 88974,
+          "sha256": "cf3ac39e1eac15553b49254a8c6a15905294fed0386013cff7984668e38a173c"
+        },
+        "mission-v2": {
+          "url": "/assets/textures/backgrounds/ast-021-space-starfield-fine-v2.webp",
+          "width": 1672,
+          "height": 941,
+          "bytes": 1246730,
+          "sha256": "55a2502298efc6431de5115f750f3c1048fd06416b7f72c016fc1d1f35cbd356",
+          "encoding": "lossless WebP",
+          "display": "camera-centered sphere, world-aligned; UV tiling 4x2; emissive texture level 0.8, no additive color",
+          "source": "ImageGen, fine stars with subtle blue haze; native resolution, not 4K"
+        }
+      }
+    },
+    "nebula": {
+      "id": "AST-022",
+      "label": "Nébuleuse turquoise",
+      "sourceDimensions": [
+        1774,
+        887
+      ],
+      "variants": {
+        "native": {
+          "url": "/assets/textures/backgrounds/ast-022-space-nebula.webp",
+          "width": 1774,
+          "height": 887,
+          "bytes": 224716,
+          "sha256": "64f6757e206772fe0046f465b549b9efad32b3dcf1f8dd9ff0cea819e55deabc"
+        },
+        "mobile": {
+          "url": "/assets/textures/backgrounds/ast-022-space-nebula-mobile.webp",
+          "width": 1024,
+          "height": 512,
+          "bytes": 84204,
+          "sha256": "fcd4a76d06de97c46b7252a6e3e51f4466f7e8c0c59be34ac1b6184574b8b230"
+        }
+      }
+    },
+    "milky-way": {
+      "id": "AST-020",
+      "label": "Voie lactée artistique",
+      "sourceDimensions": [
+        1774,
+        887
+      ],
+      "variants": {
+        "native": {
+          "url": "/assets/textures/backgrounds/ast-020-space-milky-way.webp",
+          "width": 1774,
+          "height": 887,
+          "bytes": 336058,
+          "sha256": "9dbbc9dfbc46a49cd80f0297a9b33cb0caef05df846d6eedfeb5df4808e4b7f9"
+        },
+        "mobile": {
+          "url": "/assets/textures/backgrounds/ast-020-space-milky-way-mobile.webp",
+          "width": 1024,
+          "height": 512,
+          "bytes": 127516,
+          "sha256": "97e4642887daa260752db69ea7229f664390a1eda2e72ee9cf152fcb84dbfc83"
+        }
+      }
+    }
+  }
+}

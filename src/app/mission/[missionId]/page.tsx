@@ -1,0 +1,44 @@
+import { AppShell } from '@/components/layout/AppShell';
+import { MissionImmersive } from '@/components/layout/MissionImmersive';
+import { SafeBackButton } from '@/components/layout/SafeBackButton';
+import { DialogueBubble } from '@/components/ui/DialogueBubble';
+import { getMissionById } from '@/content/missions';
+import styles from './mission.module.css';
+
+type MissionPageProps = {
+  params: Promise<{ missionId: string }>;
+};
+
+const PLAYABLE_SCENES = new Set([
+  'earth-preview',
+  'day-night',
+  'moon-phases',
+  'eclipses',
+  'solar-system',
+]);
+
+export default async function MissionPage({ params }: MissionPageProps) {
+  const { missionId } = await params;
+  const mission = getMissionById(missionId);
+
+  if (mission && PLAYABLE_SCENES.has(mission.sceneId)) {
+    return (
+      <AppShell immersive showNav={false}>
+        <MissionImmersive mission={mission} />
+      </AppShell>
+    );
+  }
+
+  return (
+    <AppShell title="Mission" showNav={false}>
+      <div className={styles.root}>
+        <SafeBackButton fallbackHref="/missions" label="Quitter la mission" />
+        <h1 className={styles.title}>Mission en préparation</h1>
+        <p className={styles.id}>Identifiant : {missionId}</p>
+        <DialogueBubble>
+          Cette mission n&apos;est pas encore jouable. Reviens à la carte.
+        </DialogueBubble>
+      </div>
+    </AppShell>
+  );
+}

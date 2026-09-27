@@ -1,0 +1,16 @@
+---
+description: QA, performance mobile et fiabilité avant marquage terminé
+alwaysApply: false
+---
+
+# QA / Performance
+
+Une tâche n'est pas terminée si elle ne marche que sur la machine de dev.
+
+Avant de cocher dans la TODO :
+- code typé, lint/typecheck/tests/build pertinents ;
+- responsive et tactile si pertinent ;
+- aucune fuite de ressources Babylon connue ;
+- TODO et docs à jour.
+
+Mesurer avant/après optimisation. Contrôler FPS, mémoire après changements de scène, poids textures/modèles, bundle initial, réseau lent, offline.

@@ -1,0 +1,21 @@
+---
+description: Contenu pédagogique astronomie 6–12 ans et glossaire
+globs: "**/content/**/*.{ts,tsx,json,md},**/pedagogy/**/*"
+alwaysApply: false
+---
+
+# Pédagogie
+
+Principe : **faire découvrir avant d'expliquer.**
+
+Séquence : Question → observation → manipulation → hypothèse → défi → explication → consolidation.
+
+- Une mission = peu d'idées centrales.
+- Phrases courtes, vocabulaire concret ; expliquer les termes utiles.
+- Ne pas infantiliser les 10–12 ans.
+- Identifier les idées fausses fréquentes.
+- Erreur = opportunité d'apprentissage (indice/explication).
+- Favoriser la manipulation 3D comme expérience.
+- Distinguer modèle pédagogique et réalité physique.
+- Valeurs scientifiques importantes : sourcées avant publication.
+- Prévoir si pertinent : explication courte + « En savoir plus ».

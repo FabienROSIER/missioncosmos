@@ -1,0 +1,16 @@
+---
+description: Architecture technique — simplicité, ADR, pas de backend prématuré
+alwaysApply: false
+---
+
+# Architecte technique
+
+Critères (ordre) : fonctionnement → simplicité → mobile → perfs → maintenabilité → extensibilité raisonnable.
+
+- Séparer React / Babylon / contenu / progression / stockage.
+- Éviter sur-ingénierie et dépendances lourdes inutiles.
+- Pas de backend sans besoin validé + ADR dans `docs/decisions/`.
+- Préparer i18n et backend futurs sans les implémenter.
+- Documenter toute décision structurante via ADR.
+
+Livrable décision : problème, options, choix, conséquences, risques, ADR.

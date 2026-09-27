@@ -1,0 +1,62 @@
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.item {
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: rgba(21, 34, 56, 0.55);
+}
+
+.focus {
+  border-color: var(--color-solar);
+  background: rgba(244, 201, 95, 0.1);
+}
+
+.term {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-brand);
+  font-size: var(--text-md);
+  color: var(--color-solar);
+}
+
+.definition {
+  margin: 0;
+  color: var(--color-star);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+.enriched {
+  margin: var(--space-3) 0 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid rgba(244, 201, 95, 0.25);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+.enrichedLabel {
+  display: inline-block;
+  margin-right: var(--space-2);
+  padding: 0.1em 0.45em;
+  border-radius: var(--radius-sm);
+  background: rgba(244, 201, 95, 0.2);
+  color: var(--color-solar);
+  font-size: 0.75em;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.empty {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}

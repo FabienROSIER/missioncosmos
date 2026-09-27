@@ -1,0 +1,41 @@
+{
+  "environment": "Chrome headless / SwiftShader / WebGL2; desktop emulation, not a physical mobile benchmark",
+  "errors": [],
+  "results": [
+    {
+      "body": "mercury",
+      "babylonVersion": "9.28.0",
+      "webGLVersion": 2,
+      "meshes": [
+        {
+          "name": "mercury",
+          "vertices": 2336,
+          "triangles": 3968
+        }
+      ],
+      "textures": [
+        {
+          "name": "data:EnvironmentBRDFTexture0",
+          "ready": true,
+          "width": 256,
+          "height": 256
+        },
+        {
+          "name": "mercury_surface (Base Color)",
+          "ready": true,
+          "width": 1774,
+          "height": 887
+        }
+      ],
+      "materials": [
+        {
+          "name": "mercury_surface",
+          "backFaceCulling": true,
+          "alphaMode": 2,
+          "transparencyMode": 0,
+          "unlit": false
+        }
+      ]
+    }
+  ]
+}

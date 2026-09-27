@@ -1,0 +1,36 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  padding: var(--space-6);
+  text-align: center;
+  overflow: hidden;
+}
+
+.eyebrow {
+  font-size: var(--text-sm);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-nebula-soft);
+  font-weight: 700;
+}
+
+.title {
+  font-family: var(--font-brand);
+  font-size: var(--text-xl);
+  line-height: var(--leading-tight);
+  max-width: 18ch;
+  color: var(--color-star);
+}
+
+.message {
+  font-size: var(--text-md);
+  line-height: var(--leading-normal);
+  max-width: 32ch;
+  color: var(--color-text-muted);
+}

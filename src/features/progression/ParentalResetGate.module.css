@@ -1,0 +1,45 @@
+.copy {
+  margin: 0 0 var(--space-4);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.label {
+  font-weight: 800;
+  color: var(--color-star);
+  font-size: var(--text-sm);
+}
+
+.input {
+  min-height: var(--touch-min);
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--color-border);
+  background: rgba(11, 18, 32, 0.65);
+  color: var(--color-star);
+  font-size: var(--text-lg);
+  font-weight: 800;
+}
+
+.error {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.submit {
+  min-height: var(--touch-min);
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--color-solar);
+  color: var(--color-space-950);
+  font-weight: 800;
+  cursor: pointer;
+}

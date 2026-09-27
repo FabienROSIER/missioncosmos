@@ -1,0 +1,56 @@
+.screen {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.intro {
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.profileRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.avatar {
+  font-size: 2rem;
+}
+
+.profileName {
+  margin: 0;
+  font-weight: 800;
+  color: var(--color-star);
+}
+
+.progress {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--color-nebula-soft);
+  font-weight: 700;
+}
+
+.cta {
+  min-height: var(--touch-min);
+  padding: 0 var(--space-5);
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--color-solar);
+  color: var(--color-space-950);
+  font-weight: 800;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .profileRow {
+    gap: var(--space-2);
+  }
+}

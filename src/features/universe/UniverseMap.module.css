@@ -1,0 +1,200 @@
+.root {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.help {
+  margin: 0;
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+.grid {
+  display: grid;
+  flex-shrink: 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  min-height: var(--touch-min);
+  padding: var(--space-2) var(--space-1);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: rgba(11, 18, 32, 0.55);
+  color: var(--color-star);
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+
+.node:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.nodeSelected {
+  border-color: rgba(244, 201, 95, 0.55);
+  background: rgba(21, 34, 56, 0.95);
+}
+
+.nodeDot {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 50%;
+  border: 2px solid rgba(245, 247, 251, 0.35);
+  background: var(--color-space-800);
+}
+
+.status_available .nodeDot {
+  background: var(--color-nebula);
+  border-color: var(--color-nebula-soft);
+}
+
+.status_completed .nodeDot {
+  background: var(--color-success);
+  border-color: #9be0b4;
+}
+
+.status_coming-soon .nodeDot {
+  background: var(--color-solar);
+  border-color: rgba(244, 201, 95, 0.8);
+}
+
+.status_locked .nodeDot {
+  background: var(--color-space-700);
+}
+
+.nodeTitle {
+  font-family: var(--font-brand);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.15;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nodePulse .nodeDot {
+  animation: unlockPulse 1.2s ease-out 2;
+}
+
+@keyframes unlockPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+    box-shadow: 0 0 0 6px rgba(244, 201, 95, 0.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nodePulse .nodeDot {
+    animation: none;
+  }
+}
+
+.preview {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: rgba(21, 34, 56, 0.45);
+  overflow: hidden;
+}
+
+.previewHeader {
+  flex-shrink: 0;
+}
+
+.previewTitle {
+  margin: 0 0 0.15rem;
+  font-family: var(--font-brand);
+  font-size: var(--text-md);
+  color: var(--color-star);
+}
+
+.previewBlurb {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+.previewEmpty {
+  margin: 0;
+  color: var(--color-nebula-soft);
+  font-size: var(--text-sm);
+}
+
+.missionList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-2);
+  min-height: 0;
+  overflow: hidden;
+  align-content: start;
+}
+
+.missionItem {
+  min-height: 0;
+}
+
+@media (min-width: 700px) {
+  .grid {
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+  }
+
+  .nodeTitle {
+    font-size: 0.68rem;
+  }
+
+  .missionList {
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .help {
+    display: none;
+  }
+
+  .grid {
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+    gap: var(--space-1);
+  }
+
+  .node {
+    min-height: 2.75rem;
+    padding: 0.25rem;
+  }
+
+  .nodeTitle {
+    font-size: 0.62rem;
+  }
+
+  .preview {
+    padding: var(--space-2);
+  }
+}

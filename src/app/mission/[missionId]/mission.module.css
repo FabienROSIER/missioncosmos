@@ -1,0 +1,18 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+  max-width: 40rem;
+  margin-inline: auto;
+  flex: 1;
+}
+
+.title {
+  font-size: var(--text-xl);
+}
+
+.id {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}

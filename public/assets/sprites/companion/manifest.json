@@ -1,0 +1,247 @@
+{
+  "id": "AST-003",
+  "name": "Mission Cosmos companion",
+  "characterName": null,
+  "version": 1,
+  "type": "static-2d-sprites",
+  "source": "Original character generated with built-in ImageGen for Mission Cosmos",
+  "palette": {
+    "pearl": "#F5F7FB",
+    "navy": "#152238",
+    "turquoise": "#3DB8C5",
+    "gold": "#F4C95F"
+  },
+  "coordinateNotes": "Full square canvas preserved without individual trimming. Approximate hover-base anchor (0.5, 0.893). Minor generated pose alignment variations remain; static states, not animation frames.",
+  "anchor": [
+    0.5,
+    0.893
+  ],
+  "defaultPose": "neutral",
+  "poses": {
+    "neutral": {
+      "label": "Neutre",
+      "use": "Présence discrète, attente de réponse",
+      "alt": "Petit robot compagnon : neutre",
+      "sources": {
+        "512": {
+          "url": "/assets/sprites/companion/ast-003-companion-neutral.webp",
+          "width": 512,
+          "height": 512,
+          "bytes": 29136,
+          "sha256": "af744abcffdc6221fb3f644bf45afcd4bb8a8104699d3f3bd832f9573b6e24fe"
+        },
+        "256": {
+          "url": "/assets/sprites/companion/ast-003-companion-neutral-256.webp",
+          "width": 256,
+          "height": 256,
+          "bytes": 13104,
+          "sha256": "2688f816cf7199f7d1a3f97b709675baaaf15678e5a669a6fbf3b8dfbf32d1f2"
+        }
+      },
+      "originalSize": [
+        1254,
+        1254
+      ]
+    },
+    "welcome": {
+      "label": "Accueil",
+      "use": "Début de session ou introduction de mission",
+      "alt": "Petit robot compagnon : accueil",
+      "sources": {
+        "512": {
+          "url": "/assets/sprites/companion/ast-003-companion-welcome.webp",
+          "width": 512,
+          "height": 512,
+          "bytes": 31270,
+          "sha256": "0fca6803bd88948ab7476683d9ebf13745bc4c6e7ca924a67139da30ce21bc1b"
+        },
+        "256": {
+          "url": "/assets/sprites/companion/ast-003-companion-welcome-256.webp",
+          "width": 256,
+          "height": 256,
+          "bytes": 13734,
+          "sha256": "a957dbaa0fdbaa56de5d201e2dae1ab08c780edd031bbe52804e5b6f803e328e"
+        }
+      },
+      "originalSize": [
+        1254,
+        1254
+      ]
+    },
+    "happy": {
+      "label": "Réussite",
+      "use": "Félicitation après un objectif accompli",
+      "alt": "Petit robot compagnon : réussite",
+      "sources": {
+        "512": {
+          "url": "/assets/sprites/companion/ast-003-companion-happy.webp",
+          "width": 512,
+          "height": 512,
+          "bytes": 32952,
+          "sha256": "fb6a82b3d8e786990e4ec7e0e9df7ba6e18a6559af225ba28df349f46b8e9eb7"
+        },
+        "256": {
+          "url": "/assets/sprites/companion/ast-003-companion-happy-256.webp",
+          "width": 256,
+          "height": 256,
+          "bytes": 14648,
+          "sha256": "bf4cbf0f3fe41d6fa6b5a9b281d6f97254f35b3f860788bbd2f22fe50ce75ad0"
+        }
+      },
+      "originalSize": [
+        1254,
+        1254
+      ]
+    },
+    "surprised": {
+      "label": "Surprise",
+      "use": "Découverte et curiosité scientifique",
+      "alt": "Petit robot compagnon : surprise",
+      "sources": {
+        "512": {
+          "url": "/assets/sprites/companion/ast-003-companion-surprised.webp",
+          "width": 512,
+          "height": 512,
+          "bytes": 30956,
+          "sha256": "40b3a3c671023191c6504c6dba9666a82ab7489460338dcb1418851f28fe6d2b"
+        },
+        "256": {
+          "url": "/assets/sprites/companion/ast-003-companion-surprised-256.webp",
+          "width": 256,
+          "height": 256,
+          "bytes": 13520,
+          "sha256": "b967799d364d4a72a38ae55348ff1b126f3091c6e84f4a7a17d54024e45d1081"
+        }
+      },
+      "originalSize": [
+        1254,
+        1254
+      ]
+    },
+    "thinking": {
+      "label": "Réflexion",
+      "use": "Question, temps de réflexion",
+      "alt": "Petit robot compagnon : réflexion",
+      "sources": {
+        "512": {
+          "url": "/assets/sprites/companion/ast-003-companion-thinking.webp",
+          "width": 512,
+          "height": 512,
+          "bytes": 23160,
+          "sha256": "0ab04f98ebf630a1c710ed46d729a04e7a028ac16702381389a7f1d10fabce39"
+        },
+        "256": {
+          "url": "/assets/sprites/companion/ast-003-companion-thinking-256.webp",
+          "width": 256,
+          "height": 256,
+          "bytes": 10418,
+          "sha256": "0b2822d2a053cc8e6d9312cd7c2cdb56987fa74fe8c31ec97971a4f77fa24062"
+        }
+      },
+      "originalSize": [
+        1254,
+        1254
+      ]
+    },
+    "encouraging": {
+      "label": "Encouragement",
+      "use": "Inviter à poursuivre ou réessayer",
+      "alt": "Petit robot compagnon : encouragement",
+      "sources": {
+        "512": {
+          "url": "/assets/sprites/companion/ast-003-companion-encouraging.webp",
+          "width": 512,
+          "height": 512,
+          "bytes": 30064,
+          "sha256": "a15446bcc0123c89b933cd81c949400647d435f4d45eebeff5356e373ea6eaf8"
+        },
+        "256": {
+          "url": "/assets/sprites/companion/ast-003-companion-encouraging-256.webp",
+          "width": 256,
+          "height": 256,
+          "bytes": 13256,
+          "sha256": "c609d455efd2078b558e097db4ddaffac52cbcd49c6d4409bd74a13f61a1d6f7"
+        }
+      },
+      "originalSize": [
+        1254,
+        1254
+      ]
+    },
+    "hint": {
+      "label": "Indice",
+      "use": "Expliquer une erreur avec bienveillance",
+      "alt": "Petit robot compagnon : indice",
+      "sources": {
+        "512": {
+          "url": "/assets/sprites/companion/ast-003-companion-hint.webp",
+          "width": 512,
+          "height": 512,
+          "bytes": 31800,
+          "sha256": "f94d0e61386b1dbf3418ed1a0ddd5d4b97a99c38143b825b38ff5b5322e83305"
+        },
+        "256": {
+          "url": "/assets/sprites/companion/ast-003-companion-hint-256.webp",
+          "width": 256,
+          "height": 256,
+          "bytes": 13988,
+          "sha256": "cad33e40928ef1edb810e8e3b5ceb65e293763969e8cc48e0a1431c01418a682"
+        }
+      },
+      "originalSize": [
+        1254,
+        1254
+      ]
+    },
+    "point-left": {
+      "label": "Vers la gauche",
+      "use": "Désigner une cible à gauche de l’image",
+      "alt": "Petit robot compagnon : vers la gauche",
+      "sources": {
+        "512": {
+          "url": "/assets/sprites/companion/ast-003-companion-point-left.webp",
+          "width": 512,
+          "height": 512,
+          "bytes": 29020,
+          "sha256": "aa7d82ac0ba1a7b2cc1c7f7f3fa7ba9d5c540fc72201704ff0b47aef8b81cbac"
+        },
+        "256": {
+          "url": "/assets/sprites/companion/ast-003-companion-point-left-256.webp",
+          "width": 256,
+          "height": 256,
+          "bytes": 12750,
+          "sha256": "22ec313b85382c9a20775a2b569ca03ae41fbcd3acb0a0748acfd006259124fc"
+        }
+      },
+      "originalSize": [
+        1254,
+        1254
+      ]
+    },
+    "point-right": {
+      "label": "Vers la droite",
+      "use": "Désigner une cible à droite de l’image",
+      "alt": "Petit robot compagnon : vers la droite",
+      "sources": {
+        "512": {
+          "url": "/assets/sprites/companion/ast-003-companion-point-right.webp",
+          "width": 512,
+          "height": 512,
+          "bytes": 30238,
+          "sha256": "606ab35bad3b3a3faec2adf6ceee0b6e22e5333102da79f265313ab2324d58c0"
+        },
+        "256": {
+          "url": "/assets/sprites/companion/ast-003-companion-point-right-256.webp",
+          "width": 256,
+          "height": 256,
+          "bytes": 13388,
+          "sha256": "19d9a5a5e88c118c5149c94a0c647e09af171c4b071bef28cb02613e1769145b"
+        }
+      },
+      "originalSize": [
+        1254,
+        1254
+      ]
+    }
+  }
+}

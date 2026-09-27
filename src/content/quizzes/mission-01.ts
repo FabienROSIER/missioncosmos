@@ -1,0 +1,46 @@
+import type { Quiz } from '@/types/quiz';
+
+/** Quiz Mission 01 — forme, équateur, pôles. */
+export const QUIZ_MISSION_01: Quiz = {
+  id: 'quiz-mission-01',
+  title: 'Un peu de mémoire',
+  questions: [
+    {
+      id: 'q1-shape',
+      prompt: 'La Terre, c’est plutôt…',
+      choices: [
+        { id: 'flat', label: 'Une assiette plate' },
+        { id: 'ball', label: 'Une boule (sphère)' },
+        { id: 'cube', label: 'Un cube' },
+      ],
+      correctChoiceId: 'ball',
+      explainCorrect: 'Oui : la Terre est ronde comme une boule.',
+      explainWrong: 'Regarde encore le globe : on peut tourner tout autour. Ce n’est pas plat.',
+    },
+    {
+      id: 'q2-equator',
+      prompt: 'L’équateur, c’est…',
+      choices: [
+        { id: 'top', label: 'Le point tout en haut' },
+        { id: 'middle', label: 'Le grand cercle au milieu' },
+        { id: 'bottom', label: 'Le point tout en bas' },
+      ],
+      correctChoiceId: 'middle',
+      explainCorrect: 'Exact : l’équateur est le grand cercle au milieu de la Terre.',
+      explainWrong: 'L’équateur n’est pas un pôle : cherche le cercle jaune au milieu du globe.',
+    },
+    {
+      id: 'q3-poles',
+      prompt: 'Les pôles Nord et Sud, c’est…',
+      choices: [
+        { id: 'middle-band', label: 'La bande autour du milieu' },
+        { id: 'axis-ends', label: 'Les bouts de l’axe de rotation' },
+        { id: 'oceans', label: 'Seulement des océans' },
+      ],
+      correctChoiceId: 'axis-ends',
+      explainCorrect: 'Oui : les pôles sont les extrémités de l’axe autour duquel la Terre tourne.',
+      explainWrong: 'Les pôles sont les points orange en haut et en bas — pas le cercle du milieu.',
+    },
+  ],
+};
+

@@ -1,0 +1,21 @@
+---
+description: Gestion des assets — briefs, licences, placeholders
+globs: "**/public/assets/**/*,**/docs/ASSETS.md,**/docs/assets/**/*"
+alwaysApply: false
+---
+
+# Assets
+
+Demande obligatoire au propriétaire (jamais d'asset définitif improvisé) :
+
+```text
+ID : AST-xxx
+Nom / Utilisation / Type (2D|texture|3D|audio)
+Format / Dimensions / Transparence / Style
+Variantes / Animations / Contraintes / Chemin cible / Licence
+```
+
+- Placeholder : nom contenant `placeholder` + documenté dans la TODO.
+- Licence inconnue = interdit.
+- Pas de texture 8K si 2K suffit sur mobile.
+- Maintenir registre TODO + `docs/ASSETS.md` (source, auteur, licence, crédits).

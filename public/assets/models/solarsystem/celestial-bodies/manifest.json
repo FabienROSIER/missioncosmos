@@ -1,0 +1,736 @@
+{
+  "schemaVersion": 1,
+  "project": "Mission Cosmos",
+  "format": "glTF 2.0 binary",
+  "generator": "Blender 4.5.3 LTS + Pillow WebP repack",
+  "coordinateSystem": "glTF right-handed, Y up; globe polar axis +Y; origin centered; no astronomical scales, tilts or orbital positions baked in",
+  "texturePolicy": "WebP, width <=2048, preserve aspect ratio; no upscale; embedded in each GLB, external WebP copies optional",
+  "provenance": {
+    "sourceDirectory": "D:\\PROG\\Mission Cosmos\\src\\3d\\assets\\solorsystem",
+    "reportedPack": "CGTrader Solar System Free Download",
+    "reportedUrl": "https://www.cgtrader.com/free-3d-models/space/planet/solar-system-free-download",
+    "verification": "Pack origin reported in prior conversation; no license or author metadata included in supplied folder. No independent license verification.",
+    "generatedAssets": [
+      "saturn ring geometry and RGBA texture",
+      "asteroid matte material"
+    ]
+  },
+  "bodies": {
+    "sun": {
+      "sourceFile": "Sun.fbx",
+      "sourceSha256": "ed8690fda3c559efc46b3b2781a0c1206bbbe53b18661c8f8edbc98a88f607dd",
+      "normalization": "centered; maximum globe radius 1",
+      "meshes": [
+        {
+          "name": "sun",
+          "vertices": 1986,
+          "triangles": 3968,
+          "uvLayers": 1,
+          "degenerateUvTriangles": 0,
+          "zeroAreaTriangles": 0,
+          "finitePositions": true,
+          "bounds": [
+            [
+              -0.989629328250885,
+              -0.9896293878555298,
+              -0.9999999403953552
+            ],
+            [
+              0.989629328250885,
+              0.9896293878555298,
+              0.9999999403953552
+            ]
+          ]
+        }
+      ],
+      "notes": [],
+      "url": "/assets/celestial-bodies/sun/sun.glb",
+      "bytes": 418196,
+      "sha256": "4aea4621a78aba403e62f665264e83821211f16f9a58dbeceaad920da4a3faae",
+      "texture": {
+        "sourceFile": "8k_sun.jpg",
+        "sourceResolution": [
+          4096,
+          2048
+        ],
+        "mobileResolution": [
+          2048,
+          1024
+        ],
+        "sourceSha256": "f22b1cfb306ddce72a7e3b628668a0175b745038ce6268557cb2f7f1bdf98b9d",
+        "lowResolution": false
+      },
+      "extensionsRequired": [
+        "EXT_texture_webp"
+      ],
+      "files": [
+        {
+          "path": "public/assets/celestial-bodies/sun/sun.glb",
+          "bytes": 418196,
+          "sha256": "4aea4621a78aba403e62f665264e83821211f16f9a58dbeceaad920da4a3faae"
+        },
+        {
+          "path": "public/assets/celestial-bodies/sun/sun.webp",
+          "bytes": 318118,
+          "sha256": "6446116105991f7e9f78ffbfc23a3d16e6381e6188c460eff52c12572690ef4d"
+        }
+      ]
+    },
+    "mercury": {
+      "sourceFile": "Merkur.fbx",
+      "sourceSha256": "db8d92ffa057be56172ee47de6f6559fb7f7a4e7f03c7510dbdd16b7439376d9",
+      "normalization": "centered; maximum globe radius 1",
+      "meshes": [
+        {
+          "name": "mercury",
+          "vertices": 1986,
+          "triangles": 3968,
+          "uvLayers": 1,
+          "degenerateUvTriangles": 0,
+          "zeroAreaTriangles": 0,
+          "finitePositions": true,
+          "bounds": [
+            [
+              -0.989629328250885,
+              -0.9896293878555298,
+              -0.9999999403953552
+            ],
+            [
+              0.989629328250885,
+              0.9896293878555298,
+              0.9999999403953552
+            ]
+          ]
+        }
+      ],
+      "notes": [
+        "Mercury and Moon source JPEGs are byte-identical; supplied assignments retained, authenticity not established.",
+        "Only a 318 x 159 source texture was supplied. No upscaling; unsuitable for detailed close-ups."
+      ],
+      "url": "/assets/celestial-bodies/mercury/mercury.glb",
+      "bytes": 111300,
+      "sha256": "a163cb1a87d2686835cba449c86898c9dada0f5a0f3231a340722b43382fdca5",
+      "texture": {
+        "sourceFile": "merkur.jpg",
+        "sourceResolution": [
+          318,
+          159
+        ],
+        "mobileResolution": [
+          318,
+          159
+        ],
+        "sourceSha256": "2583dfbf7ea0d5889d764eb51ea8c5163c861a393fa0c27008274fe178c4eb41",
+        "lowResolution": true
+      },
+      "extensionsRequired": [
+        "EXT_texture_webp"
+      ],
+      "files": [
+        {
+          "path": "public/assets/celestial-bodies/mercury/mercury.glb",
+          "bytes": 111300,
+          "sha256": "a163cb1a87d2686835cba449c86898c9dada0f5a0f3231a340722b43382fdca5"
+        },
+        {
+          "path": "public/assets/celestial-bodies/mercury/mercury.webp",
+          "bytes": 11238,
+          "sha256": "40a0dac619f99f8a42c8455298ae651cd0925c296bb707399fb3a6b5140ee585"
+        }
+      ]
+    },
+    "venus": {
+      "sourceFile": "Venus.fbx",
+      "sourceSha256": "24d31202e8fb71e4f6bbd043afec8abee45f4a679da149e53e2f203a3e5e13f7",
+      "normalization": "centered; maximum globe radius 1",
+      "meshes": [
+        {
+          "name": "venus",
+          "vertices": 1986,
+          "triangles": 3968,
+          "uvLayers": 1,
+          "degenerateUvTriangles": 0,
+          "zeroAreaTriangles": 0,
+          "finitePositions": true,
+          "bounds": [
+            [
+              -0.989629328250885,
+              -0.9896293878555298,
+              -0.9999999403953552
+            ],
+            [
+              0.989629328250885,
+              0.9896293878555298,
+              0.9999999403953552
+            ]
+          ]
+        }
+      ],
+      "notes": [
+        "Only a 318 x 159 source texture was supplied. No upscaling; unsuitable for detailed close-ups."
+      ],
+      "url": "/assets/celestial-bodies/venus/venus.glb",
+      "bytes": 114792,
+      "sha256": "456901898088fd41c8f19f77887f15e8ba5b1da86cc39e6356baee45cfbccb0a",
+      "texture": {
+        "sourceFile": "venus.jpg",
+        "sourceResolution": [
+          318,
+          159
+        ],
+        "mobileResolution": [
+          318,
+          159
+        ],
+        "sourceSha256": "115bd626173b179427b890ee8586f46924ac1d25e01e4c40d5a0392f372262a0",
+        "lowResolution": true
+      },
+      "extensionsRequired": [
+        "EXT_texture_webp"
+      ],
+      "files": [
+        {
+          "path": "public/assets/celestial-bodies/venus/venus.glb",
+          "bytes": 114792,
+          "sha256": "456901898088fd41c8f19f77887f15e8ba5b1da86cc39e6356baee45cfbccb0a"
+        },
+        {
+          "path": "public/assets/celestial-bodies/venus/venus.webp",
+          "bytes": 14738,
+          "sha256": "5a20375d1d3ef1fbf342163c5ae6f1d71eea9834d8be534ca174e5b1e6ff998b"
+        }
+      ]
+    },
+    "earth": {
+      "sourceFile": "Earth.fbx",
+      "sourceSha256": "251077a354ca0306bc02705ba4f3a9c12c5cdb08abcd395b9061051632b0d7ad",
+      "normalization": "centered; maximum globe radius 1",
+      "meshes": [
+        {
+          "name": "earth",
+          "vertices": 1986,
+          "triangles": 3968,
+          "uvLayers": 1,
+          "degenerateUvTriangles": 0,
+          "zeroAreaTriangles": 0,
+          "finitePositions": true,
+          "bounds": [
+            [
+              -0.989629328250885,
+              -0.9896293878555298,
+              -0.9999999403953552
+            ],
+            [
+              0.989629328250885,
+              0.9896293878555298,
+              0.9999999403953552
+            ]
+          ]
+        }
+      ],
+      "notes": [
+        "Only a 318 x 159 source texture was supplied. No upscaling; unsuitable for detailed close-ups."
+      ],
+      "url": "/assets/celestial-bodies/earth/earth.glb",
+      "bytes": 110084,
+      "sha256": "3977155ffe3a92b600c651fd37256c0d651c01f50651733c3671f15422a3fcca",
+      "texture": {
+        "sourceFile": "earth.jpg",
+        "sourceResolution": [
+          318,
+          159
+        ],
+        "mobileResolution": [
+          318,
+          159
+        ],
+        "sourceSha256": "140a6d9b61d9bb9ff8ef1c53504b481595a2e17a02bbc2d48f4c51fda77976f5",
+        "lowResolution": true
+      },
+      "extensionsRequired": [
+        "EXT_texture_webp"
+      ],
+      "files": [
+        {
+          "path": "public/assets/celestial-bodies/earth/earth.glb",
+          "bytes": 110084,
+          "sha256": "3977155ffe3a92b600c651fd37256c0d651c01f50651733c3671f15422a3fcca"
+        },
+        {
+          "path": "public/assets/celestial-bodies/earth/earth.webp",
+          "bytes": 10030,
+          "sha256": "41f875ace543b36a6ebf4e94e47332bc56e27d3d619170f6f40bcd4c1f016092"
+        }
+      ]
+    },
+    "moon": {
+      "sourceFile": "Moon.fbx",
+      "sourceSha256": "250f6cc7d1398e95f8bb7facbaadce7eefdddd89d07544807492adb5aedfb41a",
+      "normalization": "centered; maximum globe radius 1",
+      "meshes": [
+        {
+          "name": "moon",
+          "vertices": 1986,
+          "triangles": 3968,
+          "uvLayers": 1,
+          "degenerateUvTriangles": 0,
+          "zeroAreaTriangles": 0,
+          "finitePositions": true,
+          "bounds": [
+            [
+              -0.989629328250885,
+              -0.9896293878555298,
+              -0.9999999403953552
+            ],
+            [
+              0.989629328250885,
+              0.9896293878555298,
+              0.9999999403953552
+            ]
+          ]
+        }
+      ],
+      "notes": [
+        "Mercury and Moon source JPEGs are byte-identical; supplied assignments retained, authenticity not established.",
+        "Only a 318 x 159 source texture was supplied. No upscaling; unsuitable for detailed close-ups."
+      ],
+      "url": "/assets/celestial-bodies/moon/moon.glb",
+      "bytes": 111288,
+      "sha256": "c67379d432b48130ed8e1561d50663f151c8dadca92f23885319c9c75421b55e",
+      "texture": {
+        "sourceFile": "Moon.jpg",
+        "sourceResolution": [
+          318,
+          159
+        ],
+        "mobileResolution": [
+          318,
+          159
+        ],
+        "sourceSha256": "2583dfbf7ea0d5889d764eb51ea8c5163c861a393fa0c27008274fe178c4eb41",
+        "lowResolution": true
+      },
+      "extensionsRequired": [
+        "EXT_texture_webp"
+      ],
+      "files": [
+        {
+          "path": "public/assets/celestial-bodies/moon/moon.glb",
+          "bytes": 111288,
+          "sha256": "c67379d432b48130ed8e1561d50663f151c8dadca92f23885319c9c75421b55e"
+        },
+        {
+          "path": "public/assets/celestial-bodies/moon/moon.webp",
+          "bytes": 11238,
+          "sha256": "40a0dac619f99f8a42c8455298ae651cd0925c296bb707399fb3a6b5140ee585"
+        }
+      ]
+    },
+    "mars": {
+      "sourceFile": "Mars.fbx",
+      "sourceSha256": "6a3ee3122d8e0df01f239001b692d3689f7b497f69d430480eb00b1672ca56de",
+      "normalization": "centered; maximum globe radius 1",
+      "meshes": [
+        {
+          "name": "mars",
+          "vertices": 1986,
+          "triangles": 3968,
+          "uvLayers": 1,
+          "degenerateUvTriangles": 0,
+          "zeroAreaTriangles": 0,
+          "finitePositions": true,
+          "bounds": [
+            [
+              -0.989629328250885,
+              -0.9896293878555298,
+              -0.9999999403953552
+            ],
+            [
+              0.989629328250885,
+              0.9896293878555298,
+              0.9999999403953552
+            ]
+          ]
+        }
+      ],
+      "notes": [
+        "Only a 318 x 159 source texture was supplied. No upscaling; unsuitable for detailed close-ups."
+      ],
+      "url": "/assets/celestial-bodies/mars/mars.glb",
+      "bytes": 110268,
+      "sha256": "af62eda7bc2c145a49fce77a0ab6913f5798420e87cae26d9cb135b6c3cc5aff",
+      "texture": {
+        "sourceFile": "Mars.jpg",
+        "sourceResolution": [
+          318,
+          159
+        ],
+        "mobileResolution": [
+          318,
+          159
+        ],
+        "sourceSha256": "79db24daab0d0e5f657fcbeb3a7d63eff1bc386feedd510c2fead3f4ba07ee08",
+        "lowResolution": true
+      },
+      "extensionsRequired": [
+        "EXT_texture_webp"
+      ],
+      "files": [
+        {
+          "path": "public/assets/celestial-bodies/mars/mars.glb",
+          "bytes": 110268,
+          "sha256": "af62eda7bc2c145a49fce77a0ab6913f5798420e87cae26d9cb135b6c3cc5aff"
+        },
+        {
+          "path": "public/assets/celestial-bodies/mars/mars.webp",
+          "bytes": 10220,
+          "sha256": "b9935558cf7aa4fa487c6516a42c89255f6999ce017edfada9a054687b023ef5"
+        }
+      ]
+    },
+    "jupiter": {
+      "sourceFile": "Jupiter.fbx",
+      "sourceSha256": "13dc85bd243b3e3ef766c238cf52c3cb0630a3ae5b247bb827d73bd94fee4d6d",
+      "normalization": "centered; maximum globe radius 1",
+      "meshes": [
+        {
+          "name": "jupiter",
+          "vertices": 1986,
+          "triangles": 3968,
+          "uvLayers": 1,
+          "degenerateUvTriangles": 0,
+          "zeroAreaTriangles": 0,
+          "finitePositions": true,
+          "bounds": [
+            [
+              -0.989629328250885,
+              -0.9896293878555298,
+              -0.9999999403953552
+            ],
+            [
+              0.989629328250885,
+              0.9896293878555298,
+              0.9999999403953552
+            ]
+          ]
+        }
+      ],
+      "notes": [],
+      "url": "/assets/celestial-bodies/jupiter/jupiter.glb",
+      "bytes": 278968,
+      "sha256": "f6e27a2ea0d9c813134c9998eaadf7f8f662f31c20b71ff3316e0c0ba8a23bd0",
+      "texture": {
+        "sourceFile": "8k_jupiter.jpg",
+        "sourceResolution": [
+          4096,
+          2048
+        ],
+        "mobileResolution": [
+          2048,
+          1024
+        ],
+        "sourceSha256": "0bd844bf20822c4e3e80882b077859833c0dac44c7e4e1e0cd63d1b1b6d43085",
+        "lowResolution": false
+      },
+      "extensionsRequired": [
+        "EXT_texture_webp"
+      ],
+      "files": [
+        {
+          "path": "public/assets/celestial-bodies/jupiter/jupiter.glb",
+          "bytes": 278968,
+          "sha256": "f6e27a2ea0d9c813134c9998eaadf7f8f662f31c20b71ff3316e0c0ba8a23bd0"
+        },
+        {
+          "path": "public/assets/celestial-bodies/jupiter/jupiter.webp",
+          "bytes": 178908,
+          "sha256": "849f799380d0b4b73a953fd6545160e5478d90daa4417cb3425b23e1f80d7ee4"
+        }
+      ]
+    },
+    "saturn": {
+      "sourceFile": "Saturn.fbx",
+      "sourceSha256": "0e85825cbcf1b9a6596b0cd8825ee0e796e69e575e58bbea8c1cca57d75c1f3a",
+      "normalization": "centered; maximum globe radius 1",
+      "meshes": [
+        {
+          "name": "saturn",
+          "vertices": 1986,
+          "triangles": 3968,
+          "uvLayers": 1,
+          "degenerateUvTriangles": 0,
+          "zeroAreaTriangles": 0,
+          "finitePositions": true,
+          "bounds": [
+            [
+              -0.9894266724586487,
+              -0.9894264340400696,
+              -1.0
+            ],
+            [
+              0.9894264340400696,
+              0.9894262552261353,
+              0.9999997615814209
+            ]
+          ]
+        },
+        {
+          "name": "saturn_rings",
+          "vertices": 512,
+          "triangles": 512,
+          "uvLayers": 1,
+          "degenerateUvTriangles": 0,
+          "zeroAreaTriangles": 0,
+          "finitePositions": true,
+          "bounds": [
+            [
+              -2.2699999809265137,
+              -2.2699999809265137,
+              0.0
+            ],
+            [
+              2.2699999809265137,
+              2.2699999809265137,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "notes": [
+        "Source thick ring replaced by a generated planar annulus with radial alpha texture; illustrative, not a measured ring map. Source object tilt cleared; set axial tilt in the app.",
+        "Source globe UV north axis realigned to +Y in glTF, perpendicular to generated rings; source globe and ring axes were misaligned."
+      ],
+      "url": "/assets/celestial-bodies/saturn/saturn.glb",
+      "bytes": 168228,
+      "sha256": "30e108f3c154c0ed0d4b5ad06d938a99bb9115994c5a4854c546d3d72ec1c8fb",
+      "texture": {
+        "sourceFile": "8k_saturn.jpg",
+        "sourceResolution": [
+          4096,
+          2048
+        ],
+        "mobileResolution": [
+          2048,
+          1024
+        ],
+        "sourceSha256": "0d39a4a490c87c3edabe00a3881a29bb3418364178c79c534fe0986e97e09853",
+        "lowResolution": false
+      },
+      "extensionsRequired": [
+        "EXT_texture_webp"
+      ],
+      "files": [
+        {
+          "path": "public/assets/celestial-bodies/saturn/saturn-rings.webp",
+          "bytes": 2214,
+          "sha256": "5d2956c3604ab4f8b677c7331eeca8b6a2bdaabe58727b958d3d15466a5f45a2"
+        },
+        {
+          "path": "public/assets/celestial-bodies/saturn/saturn.glb",
+          "bytes": 168228,
+          "sha256": "30e108f3c154c0ed0d4b5ad06d938a99bb9115994c5a4854c546d3d72ec1c8fb"
+        },
+        {
+          "path": "public/assets/celestial-bodies/saturn/saturn.webp",
+          "bytes": 45282,
+          "sha256": "22b19962714ebcb0842a029e42f7f7365c0f6cbd3b064ad1e1cfc2a09885eeb2"
+        }
+      ]
+    },
+    "uranus": {
+      "sourceFile": "Uranus.fbx",
+      "sourceSha256": "3ac971bce3464f046c7a6ca8a404898ebb542e95b26be18ef4220de7476ceafd",
+      "normalization": "centered; maximum globe radius 1",
+      "meshes": [
+        {
+          "name": "uranus",
+          "vertices": 1986,
+          "triangles": 3968,
+          "uvLayers": 1,
+          "degenerateUvTriangles": 0,
+          "zeroAreaTriangles": 0,
+          "finitePositions": true,
+          "bounds": [
+            [
+              -0.989629328250885,
+              -0.9896293878555298,
+              -0.9999999403953552
+            ],
+            [
+              0.989629328250885,
+              0.9896293878555298,
+              0.9999999403953552
+            ]
+          ]
+        }
+      ],
+      "notes": [],
+      "url": "/assets/celestial-bodies/uranus/uranus.glb",
+      "bytes": 108400,
+      "sha256": "4f3f612b8f7571d6aacd44dcb61c37b5ba9ffd7d1d034f7b0a4aa244549523de",
+      "texture": {
+        "sourceFile": "uranus.jpg",
+        "sourceResolution": [
+          1024,
+          512
+        ],
+        "mobileResolution": [
+          1024,
+          512
+        ],
+        "sourceSha256": "211e2df9efc2fd30feeca2474241b1d38e4fd334061476548df51d81ddbb0b7f",
+        "lowResolution": false
+      },
+      "extensionsRequired": [
+        "EXT_texture_webp"
+      ],
+      "files": [
+        {
+          "path": "public/assets/celestial-bodies/uranus/uranus.glb",
+          "bytes": 108400,
+          "sha256": "4f3f612b8f7571d6aacd44dcb61c37b5ba9ffd7d1d034f7b0a4aa244549523de"
+        },
+        {
+          "path": "public/assets/celestial-bodies/uranus/uranus.webp",
+          "bytes": 8342,
+          "sha256": "4f4a343bdf0d61289ca774f6f1174c5a65189312eab2911cfbf40891a72b9ae0"
+        }
+      ]
+    },
+    "neptune": {
+      "sourceFile": "Neptune.fbx",
+      "sourceSha256": "e58f1ec9423d0b8df678f3773a3d7005fb8afe75e28e30431b9a629f131dee30",
+      "normalization": "centered; maximum globe radius 1",
+      "meshes": [
+        {
+          "name": "neptune",
+          "vertices": 1986,
+          "triangles": 3968,
+          "uvLayers": 1,
+          "degenerateUvTriangles": 0,
+          "zeroAreaTriangles": 0,
+          "finitePositions": true,
+          "bounds": [
+            [
+              -0.989629328250885,
+              -0.9896293878555298,
+              -0.9999999403953552
+            ],
+            [
+              0.989629328250885,
+              0.9896293878555298,
+              0.9999999403953552
+            ]
+          ]
+        }
+      ],
+      "notes": [
+        "Broken legacy Neptun.jpg link replaced with supplied Neptune.jpg."
+      ],
+      "url": "/assets/celestial-bodies/neptune/neptune.glb",
+      "bytes": 119760,
+      "sha256": "95f607ecbc04a62779c53f598c3f3d20d81b3a5c188a2fc4c0669902d3671e2b",
+      "texture": {
+        "sourceFile": "Neptune.jpg",
+        "sourceResolution": [
+          1024,
+          512
+        ],
+        "mobileResolution": [
+          1024,
+          512
+        ],
+        "sourceSha256": "60a6dc4516122cc4380dea5d1e5d0938dd2436d3a32a0f25cb500e1397ada0a0",
+        "lowResolution": false
+      },
+      "extensionsRequired": [
+        "EXT_texture_webp"
+      ],
+      "files": [
+        {
+          "path": "public/assets/celestial-bodies/neptune/neptune.glb",
+          "bytes": 119760,
+          "sha256": "95f607ecbc04a62779c53f598c3f3d20d81b3a5c188a2fc4c0669902d3671e2b"
+        },
+        {
+          "path": "public/assets/celestial-bodies/neptune/neptune.webp",
+          "bytes": 19700,
+          "sha256": "0df0041d160a97df1e100f163171324621a85729db27d67175e56d1a1b3d730b"
+        }
+      ]
+    },
+    "asteroids": {
+      "sourceFile": "Astroids.fbx",
+      "sourceSha256": "a86eb773c34f3c5cbb53636e14c8bbaf9a8e5c96ecc5fe57ef563030694048b5",
+      "normalization": "centered; maximum belt radius 1",
+      "meshes": [
+        {
+          "name": "asteroids_belt_1",
+          "vertices": 12554,
+          "triangles": 19596,
+          "uvLayers": 0,
+          "degenerateUvTriangles": 0,
+          "zeroAreaTriangles": 0,
+          "finitePositions": true,
+          "bounds": [
+            [
+              -0.9983162879943848,
+              -0.9982295036315918,
+              -0.08752856403589249
+            ],
+            [
+              0.9983164072036743,
+              0.9982295036315918,
+              0.08761376887559891
+            ]
+          ]
+        },
+        {
+          "name": "asteroids_belt_2",
+          "vertices": 22562,
+          "triangles": 35208,
+          "uvLayers": 0,
+          "degenerateUvTriangles": 0,
+          "zeroAreaTriangles": 0,
+          "finitePositions": true,
+          "bounds": [
+            [
+              -0.9553359746932983,
+              -0.9555447697639465,
+              -0.07859653979539871
+            ],
+            [
+              0.9532867074012756,
+              0.9523728489875793,
+              0.011339872144162655
+            ]
+          ]
+        }
+      ],
+      "notes": [
+        "Two original belt layers retained in one independent asteroid asset. Decimated to 12% target; untextured matte rock material. Not individual instanced asteroids.",
+        "Source UVs were degenerate and unused; removed from the untextured mobile mesh."
+      ],
+      "url": "/assets/celestial-bodies/asteroids/asteroids.glb",
+      "bytes": 4487772,
+      "sha256": "169ddc3be80bdfb25fab76cebd8cd66ab18ff343072035aa39c04e0ff3c5f2b0",
+      "texture": null,
+      "extensionsRequired": [],
+      "files": [
+        {
+          "path": "public/assets/celestial-bodies/asteroids/asteroids.glb",
+          "bytes": 4487772,
+          "sha256": "169ddc3be80bdfb25fab76cebd8cd66ab18ff343072035aa39c04e0ff3c5f2b0"
+        }
+      ]
+    }
+  },
+  "validation": {
+    "gltfErrors": 0,
+    "gltfWarnings": 0,
+    "babylonVersion": "9.28.0",
+    "all11BodiesLoaded": true,
+    "allTexturesReady": true,
+    "physicalMobileTested": false
+  }
+}

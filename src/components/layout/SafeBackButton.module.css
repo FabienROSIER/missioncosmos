@@ -1,0 +1,22 @@
+.compact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-min);
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(126, 214, 223, 0.45);
+  background: rgba(11, 18, 32, 0.72);
+  color: var(--color-star);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 800;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  white-space: nowrap;
+}
+
+.compact:hover {
+  border-color: var(--color-nebula-soft);
+  background: rgba(21, 34, 56, 0.9);
+}

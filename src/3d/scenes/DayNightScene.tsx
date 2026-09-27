@@ -1,0 +1,369 @@
+'use client';
+
+import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  ArcRotateCamera,
+  Color3,
+  Vector3,
+  type Camera,
+  type Observer,
+  type Scene,
+} from '@babylonjs/core';
+import type { BabylonSceneContext } from '@/3d/core/BabylonCanvas';
+import { BabylonCanvas } from '@/3d/core/BabylonCanvas';
+import type { MissionCameraApi } from '@/3d/controls/missionCamera';
+import {
+  captureCameraHome,
+  configureMissionCamera,
+  createMissionCameraApi,
+} from '@/3d/controls/missionCamera';
+import { CelestialBodyEntity } from '@/3d/entities/CelestialBodyEntity';
+import { CelestialLabel } from '@/3d/entities/CelestialLabel';
+import {
+  applyDayNightEarthMaterials,
+  applyEmissiveSunMaterial,
+  createSimpleAtmosphere,
+  resolveGraphicsQuality,
+  setupSceneLighting,
+} from '@/3d/materials';
+import { MISSION_SUN_DIRECTION } from '@/3d/materials/sceneLighting';
+import {
+  applyScenePerformancePriority,
+  optimizeCelestialMeshes,
+  startPerfMonitor,
+} from '@/3d/performance';
+import {
+  attachEarthDragRotation,
+  createHouseMarker,
+  type HouseMarkerHandle,
+  type PipSkyPhase,
+  type SurfaceLighting,
+} from '@/3d/scenes/dayNightMarkers';
+import { attachHouseViewPip } from '@/3d/scenes/houseViewPip';
+import {
+  frameDayNightOverview,
+} from '@/3d/utils/cameraFraming';
+import { createSpaceBackground } from '@/3d/utils/imageSpaceBackground';
+import { EARTH_BODY, SUN_BODY } from '@/content/bodies/catalog';
+import { MISSION_STARFIELD_SRC } from '@/lib/assets/paths';
+import { prefersReducedMotion } from '@/lib/motion';
+import { logger } from '@/lib/logger';
+import styles from './DayNightScene.module.css';
+
+export type DayNightSceneApi = {
+  camera: MissionCameraApi;
+  setHouseVisible: (visible: boolean) => void;
+  /** null = pas de défi ; sinon détecte quand le repère est du bon côté. */
+  setLightingChallenge: (target: SurfaceLighting | null) => void;
+  setEarthDragEnabled: (enabled: boolean) => void;
+  /**
+   * Mode ciné (quiz+) : Terre tourne seule, les gestes pilotent la caméra.
+   */
+  setCinematicMode: (enabled: boolean) => void;
+};
+
+type DayNightSceneProps = {
+  className?: string;
+  fill?: boolean;
+  onSceneApi?: (api: DayNightSceneApi) => void;
+  onLightingSuccess?: (target: SurfaceLighting) => void;
+  houseVisible?: boolean;
+};
+
+type LabelState = {
+  scene: Scene;
+  camera: Camera;
+  position: Vector3;
+  text: string;
+  visible: boolean;
+};
+
+const HOLD_MS = 700;
+/** Distance Soleil↔Terre (maquette) — assez loin pour ne pas coller, assez près pour rester en bord de cadre. */
+const SUN_DISTANCE = 7.2;
+
+/** Scène Mission 02 — Soleil + Terre + repère maison, jour/nuit. */
+export function DayNightScene({
+  className,
+  fill = false,
+  onSceneApi,
+  onLightingSuccess,
+  houseVisible = false,
+}: DayNightSceneProps) {
+  const [label, setLabel] = useState<LabelState | null>(null);
+  const [pipLighting, setPipLighting] = useState<PipSkyPhase>('day');
+  const houseRef = useRef<HouseMarkerHandle | null>(null);
+  const pipFrameRef = useRef<HTMLDivElement | null>(null);
+  const onLightingSuccessRef = useRef(onLightingSuccess);
+  const onSceneApiRef = useRef(onSceneApi);
+  const houseVisibleRef = useRef(houseVisible);
+
+  useEffect(() => {
+    onLightingSuccessRef.current = onLightingSuccess;
+  }, [onLightingSuccess]);
+
+  useEffect(() => {
+    onSceneApiRef.current = onSceneApi;
+  }, [onSceneApi]);
+
+  useEffect(() => {
+    houseVisibleRef.current = houseVisible;
+    houseRef.current?.setVisible(houseVisible);
+  }, [houseVisible]);
+
+  const onSceneReady = useCallback(async ({ engine, scene }: BabylonSceneContext) => {
+    const quality = resolveGraphicsQuality();
+    const dprCap = quality === 'low' ? 1.5 : 2;
+    const dpr = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, dprCap) : 1;
+    engine.setHardwareScalingLevel(1 / dpr);
+    applyScenePerformancePriority(scene, quality);
+
+    // Fill quasi nul + neutre : face nuit noire, pas bleutée
+    const lighting = setupSceneLighting(scene, quality, {
+      hemiIntensity: 0.1,
+      sunIntensity: 1.7,
+      contrast: 1.15,
+      hemiDiffuse: new Color3(0.35, 0.38, 0.45),
+      hemiGround: new Color3(0.05, 0.055, 0.07),
+    });
+
+    const background = createSpaceBackground(scene, MISSION_STARFIELD_SRC, {
+      level: quality === 'low' ? 0.7 : 0.8,
+      segments: quality === 'low' ? 24 : 48,
+    });
+
+    // Soleil = source des rayons (opposé à DirectionalLight.direction)
+    const sunPos = MISSION_SUN_DIRECTION.scale(-SUN_DISTANCE);
+    const sun = await CelestialBodyEntity.create(scene, {
+      definition: SUN_BODY,
+      position: sunPos,
+      spin: true,
+    });
+    applyEmissiveSunMaterial(scene, sun.meshes);
+    optimizeCelestialMeshes(sun.meshes, quality, 'sun');
+    // Aligne explicitement la lumière sur Soleil → Terre
+    lighting.sunLight.direction = sunPos.negate().normalize();
+
+    const earth = await CelestialBodyEntity.create(scene, {
+      definition: EARTH_BODY,
+      spin: false,
+    });
+    applyDayNightEarthMaterials(scene, earth.meshes);
+    optimizeCelestialMeshes(earth.meshes, quality, 'planet');
+
+    // Atmosphère éclairée : halo bleu seulement côté jour
+    const atmosphere = createSimpleAtmosphere(scene, earth.pivot, {
+      quality,
+      scale: 1.045,
+      alpha: 0.32,
+      litBySun: true,
+      color: new Color3(0.45, 0.65, 0.98),
+    });
+
+    const house = createHouseMarker(scene, earth.pivot, EARTH_BODY.visual.visualRadius);
+    house.setVisible(houseVisibleRef.current);
+    houseRef.current = house;
+
+    await Promise.all([sun.playAppear(), earth.playAppear()]);
+
+    const camera = scene.activeCamera;
+    let drag: ReturnType<typeof attachEarthDragRotation> | null = null;
+    let challengeTarget: SurfaceLighting | null = null;
+    let holdAccum = 0;
+    let successSent = false;
+    let housePip: ReturnType<typeof attachHouseViewPip> | null = null;
+
+    if (camera instanceof ArcRotateCamera) {
+      // Vue du dessus / côté : Soleil + Terre + jour/nuit visibles ensemble
+      frameDayNightOverview(
+        camera,
+        earth.pivot.getAbsolutePosition(),
+        sun.pivot.getAbsolutePosition(),
+        lighting.sunLight.direction,
+      );
+
+      const lockedAlpha = camera.alpha;
+      const lockedBeta = camera.beta;
+
+      // Point de vue fixe au départ : on tourne la Terre, pas la caméra (zoom OK)
+      configureMissionCamera(camera, {
+        allowPan: false,
+        lowerBetaLimit: lockedBeta,
+        upperBetaLimit: lockedBeta,
+        lowerAlphaLimit: lockedAlpha,
+        upperAlphaLimit: lockedAlpha,
+      });
+
+      const home = captureCameraHome(camera);
+      const cameraApi = createMissionCameraApi(camera, home, earth.pivot, earth.meshes);
+
+      drag = attachEarthDragRotation(scene, earth.pivot, camera);
+
+      const canvasEl = engine.getRenderingCanvas();
+      const frameEl = pipFrameRef.current;
+      if (canvasEl && frameEl) {
+        housePip = attachHouseViewPip({
+          scene,
+          mainCamera: camera,
+          house,
+          earthPivot: earth.pivot,
+          earthRadius: EARTH_BODY.visual.visualRadius,
+          earthMeshes: earth.meshes,
+          frameEl,
+          canvasEl,
+          onLightingChange: (phase) => setPipLighting(phase),
+        });
+      }
+
+      let cinematicSpinObs: Observer<Scene> | null = null;
+      let cinematicMode = false;
+
+      const setCinematicMode = (enabled: boolean) => {
+        if (cinematicMode === enabled) return;
+        cinematicMode = enabled;
+
+        if (cinematicSpinObs) {
+          scene.onBeforeRenderObservable.remove(cinematicSpinObs);
+          cinematicSpinObs = null;
+        }
+        earth.setSpinning(false);
+        drag?.setEnabled(!enabled);
+
+        if (enabled) {
+          // Gestes → caméra libre (bornes douces)
+          camera.lowerAlphaLimit = null;
+          camera.upperAlphaLimit = null;
+          camera.lowerBetaLimit = 0.22;
+          camera.upperBetaLimit = Math.PI - 0.22;
+          camera.angularSensibilityX = 1200;
+          camera.angularSensibilityY = 1200;
+
+          if (!prefersReducedMotion()) {
+            // Rotation lente type « cinéma »
+            cinematicSpinObs = scene.onBeforeRenderObservable.add(() => {
+              const dt = scene.getEngine().getDeltaTime() / 1000;
+              earth.pivot.rotate(Vector3.Up(), 0.22 * dt);
+            });
+          }
+        } else {
+          // Retour défis : caméra figée, glisser = Terre
+          camera.alpha = lockedAlpha;
+          camera.beta = lockedBeta;
+          camera.lowerAlphaLimit = lockedAlpha;
+          camera.upperAlphaLimit = lockedAlpha;
+          camera.lowerBetaLimit = lockedBeta;
+          camera.upperBetaLimit = lockedBeta;
+        }
+      };
+
+      const checkObs = scene.onBeforeRenderObservable.add(() => {
+        if (!challengeTarget || successSent) return;
+        const lit = house.getLighting();
+        const dt = scene.getEngine().getDeltaTime();
+        if (lit === challengeTarget) {
+          holdAccum += dt;
+          if (holdAccum >= HOLD_MS) {
+            successSent = true;
+            onLightingSuccessRef.current?.(challengeTarget);
+          }
+        } else {
+          holdAccum = 0;
+        }
+      });
+
+      onSceneApiRef.current?.({
+        camera: cameraApi,
+        setHouseVisible: (visible) => house.setVisible(visible),
+        setLightingChallenge: (target) => {
+          challengeTarget = target;
+          holdAccum = 0;
+          successSent = false;
+        },
+        setEarthDragEnabled: (enabled) => {
+          if (!cinematicMode) drag?.setEnabled(enabled);
+        },
+        setCinematicMode,
+      });
+
+      setLabel({
+        scene,
+        camera,
+        position: earth.pivot.getAbsolutePosition().add(new Vector3(0, 1.15, 0)),
+        text: 'Terre',
+        visible: true,
+      });
+
+      const perf = startPerfMonitor(scene, { label: 'mission-02-day-night' });
+      logger.info('Mission 02 rendu prêt', {
+        quality,
+        sunDistance: SUN_DISTANCE,
+        sunRadius: SUN_BODY.visual.visualRadius,
+        perf: perf.getSnapshot(),
+      });
+
+      return () => {
+        setLabel(null);
+        housePip?.dispose();
+        if (cinematicSpinObs) {
+          scene.onBeforeRenderObservable.remove(cinematicSpinObs);
+        }
+        scene.onBeforeRenderObservable.remove(checkObs);
+        drag?.dispose();
+        house.dispose();
+        houseRef.current = null;
+        perf.dispose();
+        atmosphere?.dispose();
+        earth.dispose();
+        sun.dispose();
+        background.dispose();
+        lighting.dispose();
+      };
+    }
+
+    return () => {
+      house.dispose();
+      houseRef.current = null;
+      atmosphere?.dispose();
+      earth.dispose();
+      sun.dispose();
+      background.dispose();
+      lighting.dispose();
+    };
+  }, []);
+
+  return (
+    <div className={`${styles.wrap} ${className ?? ''}`}>
+      <BabylonCanvas
+        className={styles.canvas}
+        fill={fill}
+        onSceneReady={onSceneReady}
+        loadingMessage="Approche Soleil et Terre…"
+      />
+      <div ref={pipFrameRef} className={styles.housePip} aria-hidden="true">
+        <div className={styles.housePipChrome}>
+          <p className={styles.housePipLabel}>Depuis la maison</p>
+          <p
+            className={`${styles.housePipBadge} ${
+              pipLighting === 'day'
+                ? styles.housePipBadgeDay
+                : pipLighting === 'twilight'
+                  ? styles.housePipBadgeTwilight
+                  : styles.housePipBadgeNight
+            }`}
+          >
+            {pipLighting === 'day' ? 'Jour' : pipLighting === 'twilight' ? 'Crépuscule' : 'Nuit'}
+          </p>
+        </div>
+      </div>
+      {label ? (
+        <CelestialLabel
+          scene={label.scene}
+          camera={label.camera}
+          worldPosition={label.position}
+          text={label.text}
+          visible={label.visible}
+        />
+      ) : null}
+    </div>
+  );
+}

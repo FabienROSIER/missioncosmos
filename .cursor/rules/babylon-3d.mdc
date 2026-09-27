@@ -1,0 +1,17 @@
+---
+description: Règles Babylon.js 3D — cycle de vie, perf mobile, échelles
+globs: "**/3d/**/*.{ts,tsx},**/babylon/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# 3D / Babylon.js
+
+- Penser smartphone avant desktop.
+- Nettoyer toutes les ressources Babylon lors d'un changement de scène (meshes, textures, materials, observers, engine).
+- Lazy-loader scènes et assets lourds ; ne pas tout charger au démarrage.
+- Distinguer données scientifiques et dimensions visuelles.
+- Toute représentation non à l'échelle doit pouvoir être signalée à l'utilisateur.
+- Ne pas présenter une animation simplifiée comme simulation scientifique exacte.
+- Limiter draw calls, transparences et post-process coûteux.
+- Prévoir un niveau graphique réduit pour appareils faibles.
+- Respecter `prefers-reduced-motion` pour les animations non essentielles.

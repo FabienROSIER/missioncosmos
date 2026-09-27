@@ -1,0 +1,30 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.75rem;
+  padding: 0.15rem 0.65rem;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.neutral {
+  background: rgba(245, 247, 251, 0.1);
+  color: var(--color-star-muted);
+}
+
+.nebula {
+  background: rgba(61, 184, 197, 0.2);
+  color: var(--color-nebula-soft);
+}
+
+.solar {
+  background: rgba(244, 201, 95, 0.22);
+  color: var(--color-solar);
+}
+
+.success {
+  background: rgba(95, 207, 138, 0.2);
+  color: var(--color-success);
+}

@@ -1,0 +1,24 @@
+import { QUIZ_MISSION_01 } from '@/content/quizzes/mission-01';
+import { QUIZ_MISSION_02 } from '@/content/quizzes/mission-02';
+import { QUIZ_MISSION_03 } from '@/content/quizzes/mission-03';
+import { QUIZ_MISSION_04 } from '@/content/quizzes/mission-04';
+import { QUIZ_MISSION_05 } from '@/content/quizzes/mission-05';
+import type { Quiz } from '@/types/quiz';
+
+export { QUIZ_MISSION_01 } from '@/content/quizzes/mission-01';
+export { QUIZ_MISSION_02 } from '@/content/quizzes/mission-02';
+export { QUIZ_MISSION_03 } from '@/content/quizzes/mission-03';
+export { QUIZ_MISSION_04 } from '@/content/quizzes/mission-04';
+export { QUIZ_MISSION_05 } from '@/content/quizzes/mission-05';
+
+const BY_ID: Record<string, Quiz> = {
+  [QUIZ_MISSION_01.id]: QUIZ_MISSION_01,
+  [QUIZ_MISSION_02.id]: QUIZ_MISSION_02,
+  [QUIZ_MISSION_03.id]: QUIZ_MISSION_03,
+  [QUIZ_MISSION_04.id]: QUIZ_MISSION_04,
+  [QUIZ_MISSION_05.id]: QUIZ_MISSION_05,
+};
+
+export function getQuizById(id: string): Quiz | undefined {
+  return BY_ID[id];
+}

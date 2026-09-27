@@ -1,0 +1,17 @@
+.label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 4;
+  pointer-events: none;
+  padding: 0.25rem 0.55rem;
+  border-radius: var(--radius-pill);
+  background: rgba(11, 18, 32, 0.78);
+  border: 1px solid rgba(126, 214, 223, 0.35);
+  color: var(--color-star);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 800;
+  white-space: nowrap;
+  transition: opacity var(--motion-fast) var(--ease-out);
+}
