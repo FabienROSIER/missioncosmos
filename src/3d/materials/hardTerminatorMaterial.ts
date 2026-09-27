@@ -12,8 +12,8 @@ import {
   type Scene,
 } from '@babylonjs/core';
 
-const SHADER_NAME = 'hardTerminatorV3';
-const SHADER_VERSION = 3;
+const SHADER_NAME = 'hardTerminatorV4';
+const SHADER_VERSION = 4;
 let registeredVersion = 0;
 
 function ensureHardTerminatorShaders(): void {
@@ -82,7 +82,8 @@ void main(void) {
   float behind = smoothstep(-earthRadius * 0.15, earthRadius * 0.35, along);
   float inUmbra = behind * (1.0 - smoothstep(rInner, rOuter, distAxis));
 
-  vec3 eclipsed = albedo * bloodTint * (0.2 + 0.18 * day);
+  // Un peu plus lumineuse en ombre (PiP) tout en gardant la teinte rougeâtre
+  vec3 eclipsed = albedo * bloodTint * (0.3 + 0.24 * day);
   vec3 color = mix(lit, eclipsed, clamp(inUmbra, 0.0, 1.0));
   gl_FragColor = vec4(color, 1.0);
 }
@@ -130,7 +131,7 @@ export function applyHardTerminatorMaterials(
     const albedo = extractAlbedo(mesh.material);
 
     const mat = new ShaderMaterial(
-      `${mesh.name}-hard-term-v3`,
+      `${mesh.name}-hard-term-v4`,
       scene,
       { vertex: SHADER_NAME, fragment: SHADER_NAME },
       {

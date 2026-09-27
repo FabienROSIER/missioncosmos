@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Nunito, Space_Grotesk } from 'next/font/google';
+import { AppProviders } from '@/components/layout/AppProviders';
 import './globals.css';
 
 const spaceGrotesk = Space_Grotesk({
@@ -41,7 +42,9 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="fr" className={`${spaceGrotesk.variable} ${nunito.variable}`}>
       <body>
-        <div className="app-root">{children}</div>
+        <div className="app-root">
+          <AppProviders>{children}</AppProviders>
+        </div>
       </body>
     </html>
   );

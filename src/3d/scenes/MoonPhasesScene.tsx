@@ -30,6 +30,8 @@ import {
   startPerfMonitor,
 } from '@/3d/performance';
 import { attachMoonEarthPip } from '@/3d/scenes/moonEarthPip';
+import { createCompanionSurfaceMarker } from '@/3d/scenes/companionSurfaceMarker';
+import { HOUSE_MESH_LAYER, MAIN_CAMERA_LAYER } from '@/3d/scenes/houseViewPip';
 import { attachMoonOrbitDrag, createOrbitGuide } from '@/3d/scenes/moonOrbitDrag';
 import { frameMoonPhasesOverview } from '@/3d/utils/cameraFraming';
 import { createSpaceBackground } from '@/3d/utils/imageSpaceBackground';
@@ -41,6 +43,7 @@ import {
   phaseFromElongation,
 } from '@/3d/utils/moonPhase';
 import { EARTH_BODY, MOON_BODY, SUN_BODY } from '@/content/bodies/catalog';
+import { COMPANION_TEMP_NAME } from '@/content/companion';
 import { MISSION_STARFIELD_SRC } from '@/lib/assets/paths';
 import { prefersReducedMotion } from '@/lib/motion';
 import { logger } from '@/lib/logger';
@@ -172,8 +175,16 @@ export function MoonPhasesScene({
       // +Z local vers la Terre ; Math.PI si le GLB montrait la face opposée
       facingOffsetRad: Math.PI,
     });
-    const orbitGuide = createOrbitGuide(scene, MOON_ORBIT_RADIUS);
+    const orbitGuide = createOrbitGuide(scene, MOON_ORBIT_RADIUS, { mainCameraOnly: true });
     orbitGuide.syncCenter(earth.pivot.getAbsolutePosition());
+
+    const companion = await createCompanionSurfaceMarker(scene, earth.pivot, 0.85, {
+      dynamic: true,
+      // Repère pédagogique lisible depuis la vue d’ensemble (pas une taille « réelle »)
+      height: 0.32,
+    });
+    companion.setLayerMask(HOUSE_MESH_LAYER);
+    companion.syncLookAt(moon.pivot.getAbsolutePosition());
 
     await Promise.all([sun.playAppear(), earth.playAppear(), moon.playAppear()]);
 
@@ -195,6 +206,9 @@ export function MoonPhasesScene({
     };
 
     if (camera instanceof ArcRotateCamera) {
+      // Visible même si le PiP n’est pas encore branché (calque compagnon)
+      camera.layerMask = MAIN_CAMERA_LAYER;
+
       frameMoonPhasesOverview(
         camera,
         earth.pivot.getAbsolutePosition(),
@@ -267,6 +281,8 @@ export function MoonPhasesScene({
       };
 
       const checkObs = scene.onBeforeRenderObservable.add(() => {
+        companion.syncLookAt(moon.pivot.getAbsolutePosition());
+        companion.updateOcclusion(camera.position);
         if (!challengeTarget || successSent) return;
         const elong = readElongation();
         const dt = scene.getEngine().getDeltaTime();
@@ -308,6 +324,7 @@ export function MoonPhasesScene({
         drag?.dispose();
         orbit.dispose();
         orbitGuide.dispose();
+        companion.dispose();
         moonTerminator.dispose();
         perf.dispose();
         atmosphere?.dispose();
@@ -322,6 +339,7 @@ export function MoonPhasesScene({
     return () => {
       orbit.dispose();
       orbitGuide.dispose();
+      companion.dispose();
       moonTerminator.dispose();
       atmosphere?.dispose();
       moon.dispose();
@@ -342,7 +360,7 @@ export function MoonPhasesScene({
       />
       <div ref={pipFrameRef} className={styles.earthPip} aria-hidden="true">
         <div className={styles.earthPipChrome}>
-          <p className={styles.earthPipLabel}>Depuis la Terre</p>
+          <p className={styles.earthPipLabel}>Avec {COMPANION_TEMP_NAME}</p>
           <p className={styles.earthPipBadge}>{MOON_PHASE_LABELS[pipPhase]}</p>
         </div>
       </div>

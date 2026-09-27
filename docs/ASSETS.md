@@ -91,6 +91,7 @@ Détail : `docs/PERFORMANCE.md` · `src/3d/performance/textureLimits.ts`.
 | AST-001 | `public/assets/icons/ast-001-mission-cosmos-logo.png` | Logo PNG transparent | ImageGen | ImageGen | Reçu | Intégré accueil |
 | AST-002 | — | Icône app / favicon | — | — | À définir | Brief dans `docs/DESIGN.md` |
 | AST-003 | `public/assets/sprites/companion/` | Sprites 2D WebP (9 poses × 512/256) | ImageGen | ImageGen | Reçu | Voir `manifest.json` ; UI Companion |
+| AST-003b | `public/assets/models/compagon/compagon.glb` | GLB skinned + anims (~6,5 Mo) | À confirmer | — | Reçu | Scènes M02–M04 ; Idle/Cheer/Confused… ; compression Draco à prévoir |
 | AST-010 | `…/earth/earth.glb` | modèle + texture | CGTrader (à vérifier) | — | Reçu | Missions 1+ |
 | AST-011 | `…/moon/moon.glb` | modèle + texture | CGTrader (à vérifier) | — | Reçu | Missions 3+ |
 | AST-012 | pack planètes AST-030→038 | modèles | CGTrader (à vérifier) | — | Reçu | Mission 5+ |
@@ -101,9 +102,17 @@ Détail : `docs/PERFORMANCE.md` · `src/3d/performance/textureLimits.ts`.
 
 ## Compagnon (AST-003)
 
-Poses : `neutral`, `welcome`, `happy`, `surprised`, `thinking`, `encouraging`, `hint`, `point-left`, `point-right`.
+Poses 2D : `neutral`, `welcome`, `happy`, `surprised`, `thinking`, `encouraging`, `hint`, `point-left`, `point-right`.
 
-Composant : `src/components/game/Companion.tsx` · chemins : `src/lib/assets/paths.ts`.
+Composant UI : `src/components/game/Companion.tsx` · chemins : `src/lib/assets/paths.ts`.
+
+### Compagnon 3D (AST-003b)
+
+- Fichier : `public/assets/models/compagon/compagon.glb` (~6,5 Mo).
+- Anims : `Idle_11`, `Agree_Gesture`, `Cheer_with_Both_Hands_Up`, `Confused_Scratch`, `Walking`, `Running`, `restpose`.
+- Chargeur : `src/3d/entities/loadCompanion.ts` · marqueur surface : `src/3d/scenes/companionSurfaceMarker.ts`.
+- Usages : Mission 02 (remplace la maison + origine PiP) ; Missions 03/04 (point de vue PiP sur Terre, masqué dans le PiP).
+- Perf : poids élevé pour mobile — brief compression Draco/meshopt ultérieur.
 
 ## Fonds spatiaux UI (AST-020 → 022)
 
@@ -118,6 +127,28 @@ Dossier : `public/assets/textures/backgrounds/` (+ `manifest.json`)
 Variantes `native` + `mobile` ; `StarfieldBackground` (CSS) pour les **menus**.
 
 En **mission 3D**, préférence produit : **fond image** via `createSpaceBackground` + `MISSION_STARFIELD_SRC` (`ast-021-space-starfield-fine-v2.webp`) — ADR-002. Le procédural reste en secours technique uniquement.
+
+
+## Musique (AST-040 / AST-041)
+
+**Emplacement :** `public/assets/audio/music/`
+
+| Rôle | Fichier | Notes |
+|---|---|---|
+| Menu | `23 Space Ambience 1.mp3` | Boucle sur écrans hors mission |
+| Jeu (shuffle) | `17 Arcadia.mp3`, `18 Dreamy Flashback.mp3`, `19 Bathed in the Light.mp3`, `22 Frozen Star.mp3`, `28 Impact Lento.mp3` | Random au début de mission + enchaînement mélangé |
+
+Catalogue code : `src/content/audio/musicCatalog.ts`. Lecteur : `src/features/audio/musicPlayer.ts`.
+
+### Provenance / licence
+
+- **Source :** musiques extraites / provenant de **Kerbal Space Program 1 (KSP1)** (jeu Squad / Take-Two Interactive — Private Division).
+- **Droits :** contenu propriétaire du jeu ; **pas** une licence libre (pas CC, pas usage commercial implicite).
+- **Usage actuel : personnel / privé** (développement Mission Cosmos) — **non validé** pour distribution publique, PWA publiée, store ou usage commercial.
+- Avant toute publication : remplacer par des pistes sous licence compatible **ou** obtenir une autorisation explicite ; retirer ces fichiers du dépôt public le cas échéant.
+- Crédit provisoire (écran crédits à prévoir) : *Musique : Kerbal Space Program (Squad / Take-Two)*.
+
+État registre : **Temporaire** (bloquant pour release publique).
 
 
 ## Règles

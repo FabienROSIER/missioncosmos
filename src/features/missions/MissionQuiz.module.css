@@ -5,6 +5,37 @@
   margin-top: var(--space-3);
 }
 
+/* Version bulle compagnon : densifié, sans scroll. */
+.compact {
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+}
+
+.compact .prompt {
+  font-size: 0.78rem;
+  line-height: 1.25;
+}
+
+.compact .progress {
+  font-size: 0.65rem;
+}
+
+.compact .ok,
+.compact .hint {
+  font-size: 0.72rem;
+  line-height: 1.25;
+}
+
+.compact .next {
+  min-height: 2.35rem;
+  font-size: 0.75rem;
+  margin-top: 0;
+}
+
+.compact .choices {
+  gap: 0.3rem;
+}
+
 .prompt {
   margin: 0;
   color: var(--color-star);

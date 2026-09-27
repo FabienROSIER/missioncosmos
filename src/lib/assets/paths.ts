@@ -2,6 +2,9 @@
 
 export const COMPANION_BASE = '/assets/sprites/companion' as const;
 
+/** Compagnon 3D (scènes Mission 02–04) — dossier orthographe asset telle quelle. */
+export const COMPANION_3D_URL = '/assets/models/compagon/compagon.glb' as const;
+
 export const COMPANION_POSES = [
   'neutral',
   'welcome',

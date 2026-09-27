@@ -19,7 +19,7 @@ export const MISSION_05: Mission = assertValidMission({
   prerequisites: ['mission-04'],
   learningObjectives: [
     'Connaître les 8 planètes dans l’ordre depuis le Soleil.',
-    'Comparer maquette lisible et vue à l’échelle (tailles + distances ≈ réelles).',
+    'Distinguer une maquette, des diamètres proportionnels et des distances à échelle linéaire.',
     'Ne pas compter Pluton comme 9e planète (planète naine).',
   ],
   introQuestion: 'Combien y a-t-il de planètes autour du Soleil, et dans quel ordre ?',
@@ -56,13 +56,6 @@ export const MISSION_05: Mission = assertValidMission({
       ctaLabel: 'J’ai exploré',
     },
     {
-      id: 'm05-scale',
-      kind: 'manipulate',
-      title: 'À l’échelle',
-      body: 'Touche « À l’échelle » : tailles et distances se rapprochent du réel (Jupiter énorme, Neptune très loin). Recule la vue — il y a surtout du vide. Retouche le bouton pour revenir à la maquette lisible.',
-      ctaLabel: 'J’ai comparé',
-    },
-    {
       id: 'm05-challenge-order',
       kind: 'challenge',
       title: 'Défi : l’ordre',
@@ -71,6 +64,24 @@ export const MISSION_05: Mission = assertValidMission({
       challengePlanetOrder: true,
       successFeedback: 'Bravo ! Les 8 planètes dans le bon ordre.',
       hint: 'La plus proche du Soleil d’abord : Mercure, puis Vénus, Terre, Mars…',
+    },
+    {
+      id: 'm05-scale',
+      kind: 'manipulate',
+      title: 'Comparer les tailles',
+      body: 'Les diamètres gardent leurs vraies proportions — les astres sont juste rapprochés. Réponds aux 4 questions : tailles, puis rocheuses et gazeuses.',
+      requiresSuccess: true,
+      successFeedback: 'Bravo ! Tu as comparé les tailles.',
+      ctaLabel: 'Continuer',
+    },
+    {
+      id: 'm05-distances',
+      kind: 'manipulate',
+      title: 'Mesurer le vide',
+      body: 'Aide la sonde : lis l’indice, touche un repère-planète. Tu peux réessayer.',
+      requiresSuccess: true,
+      successFeedback: 'Bravo ! Tu as compris les distances.',
+      ctaLabel: 'Continuer',
     },
     {
       id: 'm05-explain',
@@ -109,10 +120,10 @@ export const MISSION_05: Mission = assertValidMission({
     hint: 'Commence par Mercure.',
   },
   finalExplanation:
-    'Huit planètes orbitent autour du Soleil, de Mercure à Neptune. Les tailles et surtout les distances sont compressées pour rester visibles. Pluton est une planète naine, pas une 9e planète.',
+    'Huit planètes orbitent autour du Soleil. La maquette aide à les repérer. On compare séparément leurs diamètres et leurs distances ; à une échelle commune, elles deviennent minuscules. Pluton est une planète naine.',
   rewardIds: [REWARD_SOLAR_SYSTEM.id],
   funFacts: [
-    'Si la Terre–Soleil faisait la longueur d’un terrain de foot, Neptune serait à plusieurs kilomètres — et le Soleil resterait une boule énorme.',
+    'Si la distance Terre–Soleil mesurait 100 mètres, Neptune serait à environ 3 kilomètres et le Soleil mesurerait environ 93 centimètres de diamètre.',
   ],
   glossaryIds: ['systeme-solaire', 'planete', 'planete-naine', 'soleil'],
   quizId: 'quiz-mission-05',
@@ -124,6 +135,5 @@ export const MISSION_05: Mission = assertValidMission({
       credit: 'Pack système solaire (usage perso)',
     },
   ],
-  notToScaleNotice:
-    'Maquette par défaut. Bouton « À l’échelle » = tailles et distances ≈ réelles (Soleil un peu grossi pour rester visible).',
+  notToScaleNotice: 'Chaque vue précise son échelle : maquette, diamètres ou distances.',
 });

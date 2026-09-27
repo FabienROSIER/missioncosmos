@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { AppShell } from '@/components/layout/AppShell';
 import { GraphicsQualitySetting } from '@/features/settings/GraphicsQualitySetting';
+import { MusicSetting } from '@/features/settings/MusicSetting';
 import {
   ParentalResetGate,
   createParentMathChallenge,
@@ -21,6 +22,7 @@ export default function SettingsPage() {
     <AppShell title="Paramètres" sky="starfield">
       <div className={styles.screen}>
         <div className={styles.fill}>
+          <MusicSetting />
           <GraphicsQualitySetting />
 
           <div className={styles.block}>
@@ -44,8 +46,6 @@ export default function SettingsPage() {
               Protection parent : une petite question avant d&apos;effacer.
             </p>
           </div>
-
-          <p className={styles.copy}>Volume et accessibilité arriveront bientôt.</p>
         </div>
       </div>
 

@@ -56,7 +56,7 @@ export const MISSION_03: Mission = assertValidMission({
       id: 'm03-manipulate',
       kind: 'manipulate',
       title: 'Bouge la Lune',
-      body: 'Fais glisser pour déplacer la Lune autour de la Terre. Regarde la petite vue « Depuis la Terre » : la forme change.',
+      body: 'Fais glisser pour déplacer la Lune autour de la Terre. Regarde la petite vue « Avec le Guide » : la forme change.',
       ctaLabel: 'J’ai bougé la Lune',
     },
     {

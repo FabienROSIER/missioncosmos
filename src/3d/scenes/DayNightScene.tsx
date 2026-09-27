@@ -34,17 +34,20 @@ import {
 } from '@/3d/performance';
 import {
   attachEarthDragRotation,
-  createHouseMarker,
-  type HouseMarkerHandle,
   type PipSkyPhase,
   type SurfaceLighting,
 } from '@/3d/scenes/dayNightMarkers';
+import {
+  createCompanionSurfaceMarker,
+  type CompanionSurfaceMarkerHandle,
+} from '@/3d/scenes/companionSurfaceMarker';
 import { attachHouseViewPip } from '@/3d/scenes/houseViewPip';
 import {
   frameDayNightOverview,
 } from '@/3d/utils/cameraFraming';
 import { createSpaceBackground } from '@/3d/utils/imageSpaceBackground';
 import { EARTH_BODY, SUN_BODY } from '@/content/bodies/catalog';
+import { COMPANION_TEMP_NAME } from '@/content/companion';
 import { MISSION_STARFIELD_SRC } from '@/lib/assets/paths';
 import { prefersReducedMotion } from '@/lib/motion';
 import { logger } from '@/lib/logger';
@@ -82,7 +85,7 @@ const HOLD_MS = 700;
 /** Distance Soleil↔Terre (maquette) — assez loin pour ne pas coller, assez près pour rester en bord de cadre. */
 const SUN_DISTANCE = 7.2;
 
-/** Scène Mission 02 — Soleil + Terre + repère maison, jour/nuit. */
+/** Scène Mission 02 — Soleil + Terre + compagnon, jour/nuit. */
 export function DayNightScene({
   className,
   fill = false,
@@ -92,7 +95,7 @@ export function DayNightScene({
 }: DayNightSceneProps) {
   const [label, setLabel] = useState<LabelState | null>(null);
   const [pipLighting, setPipLighting] = useState<PipSkyPhase>('day');
-  const houseRef = useRef<HouseMarkerHandle | null>(null);
+  const companionRef = useRef<CompanionSurfaceMarkerHandle | null>(null);
   const pipFrameRef = useRef<HTMLDivElement | null>(null);
   const onLightingSuccessRef = useRef(onLightingSuccess);
   const onSceneApiRef = useRef(onSceneApi);
@@ -108,7 +111,7 @@ export function DayNightScene({
 
   useEffect(() => {
     houseVisibleRef.current = houseVisible;
-    houseRef.current?.setVisible(houseVisible);
+    companionRef.current?.setVisible(houseVisible);
   }, [houseVisible]);
 
   const onSceneReady = useCallback(async ({ engine, scene }: BabylonSceneContext) => {
@@ -160,9 +163,13 @@ export function DayNightScene({
       color: new Color3(0.45, 0.65, 0.98),
     });
 
-    const house = createHouseMarker(scene, earth.pivot, EARTH_BODY.visual.visualRadius);
-    house.setVisible(houseVisibleRef.current);
-    houseRef.current = house;
+    const companion = await createCompanionSurfaceMarker(
+      scene,
+      earth.pivot,
+      EARTH_BODY.visual.visualRadius,
+    );
+    companion.setVisible(houseVisibleRef.current);
+    companionRef.current = companion;
 
     await Promise.all([sun.playAppear(), earth.playAppear()]);
 
@@ -205,7 +212,7 @@ export function DayNightScene({
         housePip = attachHouseViewPip({
           scene,
           mainCamera: camera,
-          house,
+          house: companion,
           earthPivot: earth.pivot,
           earthRadius: EARTH_BODY.visual.visualRadius,
           earthMeshes: earth.meshes,
@@ -257,13 +264,15 @@ export function DayNightScene({
       };
 
       const checkObs = scene.onBeforeRenderObservable.add(() => {
+        companion.updateOcclusion(camera.position);
         if (!challengeTarget || successSent) return;
-        const lit = house.getLighting();
+        const lit = companion.getLighting();
         const dt = scene.getEngine().getDeltaTime();
         if (lit === challengeTarget) {
           holdAccum += dt;
           if (holdAccum >= HOLD_MS) {
             successSent = true;
+            companion.play('cheer');
             onLightingSuccessRef.current?.(challengeTarget);
           }
         } else {
@@ -273,7 +282,7 @@ export function DayNightScene({
 
       onSceneApiRef.current?.({
         camera: cameraApi,
-        setHouseVisible: (visible) => house.setVisible(visible),
+        setHouseVisible: (visible) => companion.setVisible(visible),
         setLightingChallenge: (target) => {
           challengeTarget = target;
           holdAccum = 0;
@@ -309,8 +318,8 @@ export function DayNightScene({
         }
         scene.onBeforeRenderObservable.remove(checkObs);
         drag?.dispose();
-        house.dispose();
-        houseRef.current = null;
+        companion.dispose();
+        companionRef.current = null;
         perf.dispose();
         atmosphere?.dispose();
         earth.dispose();
@@ -321,8 +330,8 @@ export function DayNightScene({
     }
 
     return () => {
-      house.dispose();
-      houseRef.current = null;
+      companion.dispose();
+      companionRef.current = null;
       atmosphere?.dispose();
       earth.dispose();
       sun.dispose();
@@ -341,7 +350,7 @@ export function DayNightScene({
       />
       <div ref={pipFrameRef} className={styles.housePip} aria-hidden="true">
         <div className={styles.housePipChrome}>
-          <p className={styles.housePipLabel}>Depuis la maison</p>
+          <p className={styles.housePipLabel}>Avec {COMPANION_TEMP_NAME}</p>
           <p
             className={`${styles.housePipBadge} ${
               pipLighting === 'day'

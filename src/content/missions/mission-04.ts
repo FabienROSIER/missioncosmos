@@ -57,7 +57,7 @@ export const MISSION_04: Mission = assertValidMission({
       id: 'm04-manipulate',
       kind: 'manipulate',
       title: 'Bouge la Lune',
-      body: 'Fais glisser pour déplacer la Lune. La petite fenêtre montre la vue depuis la Terre. Attention : ne regarde jamais le vrai Soleil sans filtre spécial !',
+      body: 'Fais glisser pour déplacer la Lune. La petite fenêtre montre la vue avec le Guide. Attention : ne regarde jamais le vrai Soleil sans filtre spécial !',
       ctaLabel: 'J’ai essayé',
     },
     {

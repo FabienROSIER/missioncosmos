@@ -18,11 +18,11 @@ import {
 } from '@babylonjs/core';
 import type { HouseMarkerHandle, PipSkyPhase } from '@/3d/scenes/dayNightMarkers';
 
-/** Calque réservé à la vue principale (mesh maison invisible dans le PiP). */
+/** Calque réservé à la vue principale (compagnon / repère invisible dans le PiP). */
 export const HOUSE_MESH_LAYER = 0x20000000;
 /** Terre GLB : vue principale seulement (évite l’horizon facetté dans le PiP). */
 export const EARTH_MAIN_LAYER = 0x10000000;
-/** Ciel + sol / coque lisse visibles uniquement dans la vue « depuis la maison ». */
+/** Ciel + sol / coque lisse visibles uniquement dans la vue PiP. */
 export const PIP_LOCAL_LAYER = 0x40000000;
 export const MAIN_CAMERA_LAYER = 0x0fffffff | HOUSE_MESH_LAYER | EARTH_MAIN_LAYER;
 export const PIP_CAMERA_LAYER = 0x0fffffff | PIP_LOCAL_LAYER;
@@ -54,7 +54,7 @@ function findEarthAlbedo(meshes: AbstractMesh[]): BaseTexture | null {
 }
 
 /** Ciel PiP selon score d’éclairement (fluide : jour → orangé → nuit). */
-function samplePipSky(score: number): { color: Color3; alpha: number; clear: Color4 } {
+export function samplePipSky(score: number): { color: Color3; alpha: number; clear: Color4 } {
   const day = new Color3(0.4, 0.7, 0.98);
   const daySoft = new Color3(0.55, 0.74, 0.95);
   const golden = new Color3(1.0, 0.52, 0.22);
@@ -105,7 +105,7 @@ function groundBrightness(score: number): number {
 }
 
 /**
- * Deuxième caméra : point de vue depuis la maison, rendu dans un coin du canvas.
+ * Deuxième caméra : point de vue du Guide sur Terre, rendu dans un coin du canvas.
  */
 export function attachHouseViewPip({
   scene,

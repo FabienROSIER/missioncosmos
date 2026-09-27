@@ -31,6 +31,8 @@ import {
   eclipseAmount,
 } from '@/3d/scenes/eclipseSurfaceEffects';
 import { attachEclipseEarthPip } from '@/3d/scenes/eclipseEarthPip';
+import { createCompanionSurfaceMarker } from '@/3d/scenes/companionSurfaceMarker';
+import { HOUSE_MESH_LAYER, MAIN_CAMERA_LAYER } from '@/3d/scenes/houseViewPip';
 import { attachMoonOrbitDrag, createOrbitGuide } from '@/3d/scenes/moonOrbitDrag';
 import { frameMoonPhasesOverview } from '@/3d/utils/cameraFraming';
 import {
@@ -41,6 +43,7 @@ import {
 } from '@/3d/utils/eclipseAlignment';
 import { createSpaceBackground } from '@/3d/utils/imageSpaceBackground';
 import { EARTH_BODY, MOON_BODY, SUN_BODY } from '@/content/bodies/catalog';
+import { COMPANION_TEMP_NAME } from '@/content/companion';
 import { MISSION_STARFIELD_SRC } from '@/lib/assets/paths';
 import { prefersReducedMotion } from '@/lib/motion';
 import { logger } from '@/lib/logger';
@@ -181,6 +184,13 @@ export function EclipsesScene({
     shadows.setHighlight('both');
     const surfaceFx = createEclipseSurfaceEffects(scene);
 
+    const companion = await createCompanionSurfaceMarker(scene, earth.pivot, 0.85, {
+      dynamic: true,
+      height: 0.32,
+    });
+    companion.setLayerMask(HOUSE_MESH_LAYER);
+    companion.syncLookAt(moon.pivot.getAbsolutePosition());
+
     await Promise.all([sun.playAppear(), earth.playAppear(), moon.playAppear()]);
 
     const camera = scene.activeCamera;
@@ -197,6 +207,8 @@ export function EclipsesScene({
     });
 
     if (camera instanceof ArcRotateCamera) {
+      camera.layerMask = MAIN_CAMERA_LAYER;
+
       frameMoonPhasesOverview(
         camera,
         earth.pivot.getAbsolutePosition(),
@@ -268,6 +280,8 @@ export function EclipsesScene({
       };
 
       const syncObs = scene.onBeforeRenderObservable.add(() => {
+        companion.syncLookAt(moon.pivot.getAbsolutePosition());
+        companion.updateOcclusion(camera.position);
         shadows.sync(sun.pivot, earth.pivot, moon.pivot);
         const b = readBodies();
         const kind = classifyEclipse(b.earth, b.sun, b.moon);
@@ -337,6 +351,7 @@ export function EclipsesScene({
         drag?.dispose();
         orbit.dispose();
         orbitGuide.dispose();
+        companion.dispose();
         shadows.dispose();
         surfaceFx.dispose();
         moonTerminator.dispose();
@@ -353,6 +368,7 @@ export function EclipsesScene({
     return () => {
       orbit.dispose();
       orbitGuide.dispose();
+      companion.dispose();
       shadows.dispose();
       surfaceFx.dispose();
       moonTerminator.dispose();
@@ -375,7 +391,7 @@ export function EclipsesScene({
       />
       <div ref={pipFrameRef} className={styles.earthPip} aria-hidden="true">
         <div className={styles.earthPipChrome}>
-          <p className={styles.earthPipLabel}>Depuis la Terre</p>
+          <p className={styles.earthPipLabel}>Avec {COMPANION_TEMP_NAME}</p>
           <p className={styles.earthPipBadge}>{ECLIPSE_LABELS[pipKind]}</p>
           <p className={styles.safety}>Ne regarde jamais le vrai Soleil sans filtre !</p>
         </div>

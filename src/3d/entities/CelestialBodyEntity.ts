@@ -5,6 +5,7 @@ import {
   Mesh,
   Observable,
   PointerEventTypes,
+  Quaternion,
   Vector3,
   type AbstractMesh,
   type Observer,
@@ -71,16 +72,21 @@ export class CelestialBodyEntity {
     this.loaded = await loadCelestialBody(this.scene, visual.bodyId, visual.visualRadius);
 
     const tilt = ((scientific.axialTiltDeg ?? 0) * Math.PI) / 180;
-    this.loaded.pivot.rotation.z = tilt;
+    // Obliquité : axe de spin (local +Y) penché dans le plan orbital (XZ)
+    this.loaded.pivot.rotationQuaternion = Quaternion.RotationAxis(Vector3.Forward(), tilt);
+    this.loaded.pivot.rotation.setAll(0);
 
     if (options.position) {
       this.loaded.pivot.position.copyFrom(options.position);
     }
 
+    // Contour externe seulement — jamais de glow intérieur (masque la texture)
     this.highlight = new HighlightLayer(`hl-${this.definition.id}`, this.scene, {
-      blurHorizontalSize: 0.8,
-      blurVerticalSize: 0.8,
+      blurHorizontalSize: 0.35,
+      blurVerticalSize: 0.35,
     });
+    this.highlight.innerGlow = false;
+    this.highlight.outerGlow = true;
 
     this.pickObserver = this.scene.onPointerObservable.add((pointerInfo) => {
       if (pointerInfo.type !== PointerEventTypes.POINTERPICK) return;
@@ -132,11 +138,9 @@ export class CelestialBodyEntity {
     for (const mesh of this.loaded.meshes) {
       if (!(mesh instanceof Mesh)) continue;
       this.highlight.removeMesh(mesh);
-      if (this.selected || this.highlighted) {
-        const color = this.selected
-          ? new Color3(0.95, 0.78, 0.25)
-          : new Color3(0.45, 0.85, 0.95);
-        this.highlight.addMesh(mesh, color);
+      // Sélection : pas de surbrillance (caméra déjà cadrée). Flash discret = feedback temporaire.
+      if (this.highlighted) {
+        this.highlight.addMesh(mesh, new Color3(0.4, 0.55, 0.7));
       }
     }
   }

@@ -15,6 +15,8 @@ import type { EclipseTarget, EclipsesSceneApi } from '@/3d/scenes/EclipsesScene'
 import { EclipsesScene } from '@/3d/scenes/EclipsesScene';
 import type { SolarSystemSceneApi } from '@/3d/scenes/SolarSystemScene';
 import { SolarSystemScene } from '@/3d/scenes/SolarSystemScene';
+import { SolarDistancePanel } from '@/3d/scenes/SolarDistancePanel';
+import { SolarSizeChallenge } from '@/3d/scenes/SolarSizeChallenge';
 import type { SurfaceLighting } from '@/3d/scenes/dayNightMarkers';
 import type { MoonPhaseId } from '@/3d/utils/moonPhase';
 import type { PlanetId } from '@/content/bodies/solarSystem';
@@ -25,10 +27,7 @@ import { getCatalogEntry } from '@/content/missions/catalog';
 import { getRewardById } from '@/content/rewards/catalog';
 import { GlossaryPanel } from '@/features/glossary/GlossaryPanel';
 import { RichMissionText } from '@/features/glossary/RichMissionText';
-import {
-  resolveCompanionCue,
-  type CompanionFeedbackMood,
-} from '@/features/companion';
+import { resolveCompanionCue, type CompanionFeedbackMood } from '@/features/companion';
 import { MissionQuiz } from '@/features/missions/MissionQuiz';
 import { useMissionSequence } from '@/features/missions/useMissionSequence';
 import { completeMission } from '@/features/progression/saveStore';
@@ -92,6 +91,10 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const [glossaryOpen, setGlossaryOpen] = useState(false);
   const [glossaryFocusId, setGlossaryFocusId] = useState<string | null>(null);
   const [quizMood, setQuizMood] = useState<CompanionFeedbackMood>('none');
+  const stageRef = useRef<HTMLDivElement>(null);
+  const topBarRef = useRef<HTMLElement>(null);
+  const bottomBarRef = useRef<HTMLDivElement>(null);
+  const tipCardRef = useRef<HTMLDivElement>(null);
   const completionSavedRef = useRef(false);
 
   const {
@@ -105,6 +108,33 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     dismissResumeBanner,
     isComplete,
   } = useMissionSequence(mission);
+
+  useEffect(() => {
+    if (step.id === 'm05-scale' || step.id === 'm05-distances' || step.kind === 'quiz') {
+      setTipOpen(true);
+    }
+  }, [step.id, step.kind]);
+
+  useEffect(() => {
+    if (!isSolarSystem) return;
+    const measure = () => {
+      const tipH = tipCardRef.current?.getBoundingClientRect().height;
+      const barH = bottomBarRef.current?.getBoundingClientRect().height;
+      // Hauteur utile du tip (pas la barre étirée), plafonnée pour le dock M05.
+      const bottomClearance = Math.min(tipH ?? barH ?? 200, Math.round(window.innerHeight * 0.42));
+      stageRef.current?.style.setProperty(
+        '--mission-top-clearance',
+        `${topBarRef.current?.getBoundingClientRect().height ?? 64}px`,
+      );
+      stageRef.current?.style.setProperty('--mission-bottom-clearance', `${bottomClearance}px`);
+    };
+    const observer = new ResizeObserver(measure);
+    if (topBarRef.current) observer.observe(topBarRef.current);
+    if (tipCardRef.current) observer.observe(tipCardRef.current);
+    else if (bottomBarRef.current) observer.observe(bottomBarRef.current);
+    measure();
+    return () => observer.disconnect();
+  }, [isSolarSystem, step.id, tipOpen]);
 
   const { earnedRewardIds, companionVariant } = useLocalSave();
 
@@ -212,8 +242,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
 
   useEffect(() => {
     if (!dayNightApi || !isDayNight) return;
-    const cinematic =
-      step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
+    const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
 
     dayNightApi.setHouseVisible(showMarkers);
     dayNightApi.setCinematicMode(cinematic);
@@ -221,39 +250,22 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     dayNightApi.setLightingChallenge(
       !cinematic && challengeActive && targetLighting ? targetLighting : null,
     );
-  }, [
-    dayNightApi,
-    isDayNight,
-    showMarkers,
-    challengeActive,
-    targetLighting,
-    step.kind,
-    step.id,
-  ]);
+  }, [dayNightApi, isDayNight, showMarkers, challengeActive, targetLighting, step.kind, step.id]);
 
   useEffect(() => {
     if (!moonPhasesApi || !isMoonPhases) return;
-    const cinematic =
-      step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
+    const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
 
     moonPhasesApi.setCinematicMode(cinematic);
     moonPhasesApi.setMoonDragEnabled(!cinematic && step.kind !== 'intro');
     moonPhasesApi.setPhaseChallenge(
       !cinematic && challengeActive && targetPhase ? targetPhase : null,
     );
-  }, [
-    moonPhasesApi,
-    isMoonPhases,
-    challengeActive,
-    targetPhase,
-    step.kind,
-    step.id,
-  ]);
+  }, [moonPhasesApi, isMoonPhases, challengeActive, targetPhase, step.kind, step.id]);
 
   useEffect(() => {
     if (!eclipsesApi || !isEclipses) return;
-    const cinematic =
-      step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
+    const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
 
     eclipsesApi.setCinematicMode(cinematic);
     eclipsesApi.setMoonDragEnabled(!cinematic && step.kind !== 'intro');
@@ -262,37 +274,24 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     );
     // Orbite penchée à l’explication « pas chaque mois »
     eclipsesApi.setOrbitTilted(step.kind === 'explain' || step.id.includes('explain'));
-  }, [
-    eclipsesApi,
-    isEclipses,
-    challengeActive,
-    targetEclipse,
-    step.kind,
-    step.id,
-  ]);
+  }, [eclipsesApi, isEclipses, challengeActive, targetEclipse, step.kind, step.id]);
 
   useEffect(() => {
     if (!solarApi || !isSolarSystem) return;
-    const cinematic =
-      step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
+    const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
 
     solarApi.setCinematicMode(cinematic);
     solarApi.setPickEnabled(!cinematic && step.kind !== 'intro');
     solarApi.setOrderChallenge(!cinematic && challengeActive && challengePlanetOrder);
     if (step.id === 'm05-scale') {
-      solarApi.setScaleMode('toScale');
+      solarApi.setScaleMode('sizes');
       solarApi.focusBody(null);
-    } else if (step.id === 'm05-observe' || step.id === 'm05-manipulate') {
+    } else if (step.id === 'm05-distances') {
+      solarApi.setScaleMode('distances');
+    } else {
       solarApi.setScaleMode('readable');
     }
-  }, [
-    solarApi,
-    isSolarSystem,
-    challengeActive,
-    challengePlanetOrder,
-    step.kind,
-    step.id,
-  ]);
+  }, [solarApi, isSolarSystem, challengeActive, challengePlanetOrder, step.kind, step.id]);
 
   const onEarthApi = useCallback((api: EarthSceneApi) => {
     setEarthApi(api);
@@ -377,18 +376,29 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     solarApi?.setOrderChallenge(false);
   }, [markChallengeSolved, solarApi]);
 
-  const onOrderMiss = useCallback(
-    (expected: PlanetId) => {
-      const ctx = pickCtxRef.current;
-      if (ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
-      setFeedback({
-        stepId: ctx.stepId,
-        text: `Pas encore — touche ${SOLAR_SYSTEM_PLANETS[expected].nameFr}.`,
-        wrong: true,
-      });
-    },
-    [],
-  );
+  const onSizeChallengeSuccess = useCallback(() => {
+    const ctx = pickCtxRef.current;
+    if (ctx.stepId !== 'm05-scale' || ctx.challengeSolved) return;
+    setFeedback({ stepId: ctx.stepId, text: ctx.successFeedback, wrong: false });
+    markChallengeSolved();
+  }, [markChallengeSolved]);
+
+  const onDistanceChallengeSuccess = useCallback(() => {
+    const ctx = pickCtxRef.current;
+    if (ctx.stepId !== 'm05-distances' || ctx.challengeSolved) return;
+    setFeedback({ stepId: ctx.stepId, text: ctx.successFeedback, wrong: false });
+    markChallengeSolved();
+  }, [markChallengeSolved]);
+
+  const onOrderMiss = useCallback((expected: PlanetId) => {
+    const ctx = pickCtxRef.current;
+    if (ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
+    setFeedback({
+      stepId: ctx.stepId,
+      text: `Pas encore — touche ${SOLAR_SYSTEM_PLANETS[expected].nameFr}.`,
+      wrong: true,
+    });
+  }, []);
 
   const onRecenter = async () => {
     if (!cameraApi || recentering) return;
@@ -426,8 +436,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     challengeSolved,
     feedback: companionFeedback,
     isComplete,
-    funFact:
-      step.kind === 'explain' && mission.funFacts?.[0] ? mission.funFacts[0] : undefined,
+    funFact: step.kind === 'explain' && mission.funFacts?.[0] ? mission.funFacts[0] : undefined,
   });
 
   const challengeHint = challengePlanetOrder
@@ -448,8 +457,8 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                 : 'Glisse jusqu’à une Lune gibbeuse (presque pleine).'
         : targetLighting
           ? targetLighting === 'day'
-            ? 'Glisse pour tourner la Terre jusqu’à ce que la maison soit dans la lumière.'
-            : 'Glisse pour mettre la maison dans l’ombre (côté sombre).'
+            ? 'Glisse pour tourner la Terre jusqu’à ce que le Guide soit dans la lumière.'
+            : 'Glisse pour mettre le Guide dans l’ombre (côté sombre).'
           : targetMarkerId === 'equator'
             ? 'Clique sur la bande jaune au milieu du globe.'
             : targetMarkerId === 'north-pole'
@@ -459,7 +468,10 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                 : 'Touche la bonne zone sur le globe.';
 
   return (
-    <div className={styles.stage}>
+    <div
+      ref={stageRef}
+      className={[styles.stage, isSolarSystem ? styles.solarStage : ''].join(' ')}
+    >
       {isSolarSystem ? (
         <SolarSystemScene
           className={styles.viewport}
@@ -500,7 +512,14 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
         />
       )}
 
-      <header className={styles.topBar}>
+      {/* Schéma 2D hors bulle (ex. défi distances) */}
+      <div
+        id="mission-schema-root"
+        className={styles.schemaRoot}
+        onPointerDown={(event) => event.stopPropagation()}
+      />
+
+      <header ref={topBarRef} className={styles.topBar}>
         <SafeBackButton fallbackHref="/missions" label="Quitter" compact />
         <h1 className={styles.title}>{mission.title}</h1>
         <button type="button" className={styles.ghostBtn} onClick={() => openGlossary()}>
@@ -519,7 +538,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
         </button>
       </header>
 
-      <div className={styles.bottomBar}>
+      <div ref={bottomBarRef} className={styles.bottomBar}>
         {mission.notToScaleNotice ? (
           <p className={styles.notice} role="note">
             {mission.notToScaleNotice}
@@ -536,7 +555,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
         ) : null}
 
         {step.kind === 'reward' && reward ? (
-          <div className={styles.tipCard}>
+          <div ref={tipCardRef} className={styles.tipCard}>
             <RewardPanel title={reward.title} description={reward.description} celebrate />
             <button type="button" className={styles.cta} onClick={onContinue}>
               {step.ctaLabel ?? 'Continuer'}
@@ -544,17 +563,13 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
           </div>
         ) : (
           <div
+            ref={tipCardRef}
             className={styles.tipCard}
             onPointerDown={(event) => event.stopPropagation()}
             onTouchStart={(event) => event.stopPropagation()}
           >
             <div className={styles.tipHeader}>
-              <Companion
-                pose={companionCue.pose}
-                size="sm"
-                priority
-                variant={companionVariant}
-              />
+              <Companion pose={companionCue.pose} size="sm" priority variant={companionVariant} />
               <button
                 type="button"
                 className={styles.tipToggle}
@@ -569,35 +584,59 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
             ) : null}
             {tipOpen ? (
               <>
-                <p className={styles.tipBody}>
-                  <RichMissionText
-                    text={step.body}
-                    entries={glossaryEntries}
-                    onOpenTerm={(id) => openGlossary(id)}
-                  />
-                </p>
+                {step.id !== 'm05-scale' && step.id !== 'm05-distances' ? (
+                  <p className={styles.tipBody}>
+                    <RichMissionText
+                      text={step.body}
+                      entries={glossaryEntries}
+                      onOpenTerm={(id) => openGlossary(id)}
+                    />
+                  </p>
+                ) : null}
                 {challengeActive ? <p className={styles.hint}>{challengeHint}</p> : null}
                 {step.kind === 'quiz' && quiz ? (
                   <MissionQuiz
                     quiz={quiz}
                     onSolved={markChallengeSolved}
                     onMoodChange={setQuizMood}
+                    compact={isSolarSystem}
+                  />
+                ) : null}
+                {step.id === 'm05-scale' ? (
+                  <SolarSizeChallenge
+                    onChange={(group, hidden) => {
+                      if (group) solarApi?.setComparisonGroup(group);
+                      solarApi?.setHideComparison(hidden);
+                    }}
+                    onComplete={onSizeChallengeSuccess}
+                  />
+                ) : null}
+                {step.id === 'm05-distances' ? (
+                  <SolarDistancePanel
+                    onComplete={onDistanceChallengeSuccess}
+                    schemaPortalId="mission-schema-root"
                   />
                 ) : null}
                 {visibleFeedback ? (
-                  <p
-                    className={visibleFeedback.wrong ? styles.hint : styles.success}
-                    role="status"
-                  >
+                  <p className={visibleFeedback.wrong ? styles.hint : styles.success} role="status">
                     {visibleFeedback.text}
                   </p>
                 ) : null}
-                {canAdvance && !isComplete && step.kind !== 'quiz' ? (
+                {canAdvance &&
+                !isComplete &&
+                step.kind !== 'quiz' &&
+                step.id !== 'm05-scale' &&
+                step.id !== 'm05-distances' ? (
                   <button type="button" className={styles.cta} onClick={onContinue}>
                     {step.ctaLabel ?? 'Continuer'}
                   </button>
                 ) : null}
-                {canAdvance && !isComplete && step.kind === 'quiz' && challengeSolved ? (
+                {canAdvance &&
+                !isComplete &&
+                (step.kind === 'quiz' ||
+                  step.id === 'm05-scale' ||
+                  step.id === 'm05-distances') &&
+                challengeSolved ? (
                   <button type="button" className={styles.cta} onClick={onContinue}>
                     Continuer
                   </button>

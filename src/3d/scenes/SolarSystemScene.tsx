@@ -1,10 +1,14 @@
 'use client';
 
+import '@babylonjs/core/Culling/ray';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ArcRotateCamera,
+  Camera,
   Color3,
+  Color4,
   MeshBuilder,
+  Quaternion,
   StandardMaterial,
   Vector3,
   type Mesh,
@@ -32,17 +36,19 @@ import {
   startPerfMonitor,
 } from '@/3d/performance';
 import { createSpaceBackground } from '@/3d/utils/imageSpaceBackground';
-import {
-  frameSolarSystemBody,
-  frameSolarSystemOverview,
-} from '@/3d/utils/solarSystemFraming';
+import { frameSolarSystemBody, frameSolarSystemOverview } from '@/3d/utils/solarSystemFraming';
 import {
   PLANET_ORDER,
+  sizeComparisonLayout,
+  type ComparisonGroup,
   SOLAR_SYSTEM_PLANETS,
   SOLAR_SYSTEM_SUN,
+  SUN_SIDEREAL_ROTATION_DAYS,
+  orbitalAngularSpeed,
   planetDefinition,
   resolveOrbit,
   resolveSunRadius,
+  spinAngularSpeed,
   type PlanetId,
   type SolarSystemScaleMode,
 } from '@/content/bodies/solarSystem';
@@ -56,9 +62,11 @@ export type SolarSystemFocusId = PlanetId | 'sun' | null;
 
 export type SolarSystemSceneApi = {
   camera: MissionCameraApi;
-  /** Lisible (maquette) ou à l’échelle (tailles + distances ≈ réelles). */
+  /** Maquette, diamètres proportionnels ou règle des distances. */
   setScaleMode: (mode: SolarSystemScaleMode) => void;
   getScaleMode: () => SolarSystemScaleMode;
+  setComparisonGroup: (group: ComparisonGroup) => void;
+  setHideComparison: (hidden: boolean) => void;
   focusBody: (id: SolarSystemFocusId) => void;
   focusNext: () => void;
   focusPrev: () => void;
@@ -116,9 +124,8 @@ function createOrbitRing(scene: Scene, radius: number, quality: 'low' | 'high'):
   };
 }
 
-function radiusFor(id: PlanetId, mode: SolarSystemScaleMode): number {
-  const p = SOLAR_SYSTEM_PLANETS[id];
-  return mode === 'readable' ? p.readableRadius : p.toScaleRadius;
+function radiusFor(id: PlanetId): number {
+  return SOLAR_SYSTEM_PLANETS[id].readableRadius;
 }
 
 /** Scène Mission 05 — Soleil + 8 planètes, fiches, modes de taille, défi d’ordre. */
@@ -130,9 +137,14 @@ export function SolarSystemScene({
   onOrderSuccess,
   onOrderMiss,
 }: SolarSystemSceneProps) {
+  const [hideComparison, setHideComparison] = useState(false);
   const [fact, setFact] = useState<FactCard | null>(null);
   const [scaleModeLabel, setScaleModeLabel] = useState<SolarSystemScaleMode>('readable');
+  const [sizeLabels, setSizeLabels] = useState<Array<{ name: string; left: number; top: number }>>(
+    [],
+  );
   const [orderProgress, setOrderProgress] = useState<string | null>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
   const apiRef = useRef<SolarSystemSceneApi | null>(null);
   const onSceneApiRef = useRef(onSceneApi);
   const onPlanetSelectRef = useRef(onPlanetSelect);
@@ -173,6 +185,7 @@ export function SolarSystemScene({
     });
 
     let scaleMode: SolarSystemScaleMode = 'readable';
+    let group: ComparisonGroup = 'jupiter';
     let focusIndex = -1; // -1 = overview ; 0 = sun ; 1..8 = planets
     let pickEnabled = true;
     let orderChallenge = false;
@@ -183,35 +196,43 @@ export function SolarSystemScene({
     const sun = await CelestialBodyEntity.create(scene, {
       definition: {
         ...SOLAR_SYSTEM_SUN,
-        visual: { ...SOLAR_SYSTEM_SUN.visual, visualRadius: resolveSunRadius(scaleMode) },
+        visual: { ...SOLAR_SYSTEM_SUN.visual, visualRadius: resolveSunRadius() },
       },
       position: Vector3.Zero(),
       spin: true,
     });
     applyEmissiveSunMaterial(scene, sun.meshes);
     optimizeCelestialMeshes(sun.meshes, quality, 'sun');
+    sun.meshes.forEach((mesh) => {
+      mesh.isPickable = mesh.getTotalVertices() > 0;
+    });
     // Direction fixe (perf mobile) — le Soleil reste le point lumineux émissif au centre.
     lighting.sunLight.direction = new Vector3(-0.35, -0.55, -0.65);
 
     const planetEntities = new Map<PlanetId, CelestialBodyEntity>();
     const orbitRings: OrbitRing[] = [];
 
-    // Angles étalés pour éviter l’alignement radial
+    // Angles étalés pour éviter l’alignement radial (évoluent en mode ciné)
     const startAngles = PLANET_ORDER.map((_, i) => (i / PLANET_ORDER.length) * Math.PI * 2 + 0.35);
+    const orbitAngles = [...startAngles];
 
     await Promise.all(
       PLANET_ORDER.map(async (id, i) => {
         const angle = startAngles[i]!;
-        const orbit = resolveOrbit(id, scaleMode);
+        const orbit = resolveOrbit(id);
         const entity = await CelestialBodyEntity.create(scene, {
-          definition: planetDefinition(id, scaleMode),
+          definition: planetDefinition(id),
           position: new Vector3(Math.cos(angle) * orbit, 0, Math.sin(angle) * orbit),
           spin: true,
         });
         applyPlanetaryMaterials(scene, entity.meshes, quality);
         optimizeCelestialMeshes(entity.meshes, quality, 'planet');
+        // Les GLB importés peuvent désactiver le picking ; ces astres sont interactifs.
+        entity.meshes.forEach((mesh) => {
+          mesh.isPickable = mesh.getTotalVertices() > 0;
+        });
         planetEntities.set(id, entity);
-        orbitRings.push(createOrbitRing(scene, orbit, quality === 'low' ? 'low' : 'high'));
+        orbitRings[i] = createOrbitRing(scene, orbit, quality === 'low' ? 'low' : 'high');
       }),
     );
 
@@ -220,21 +241,103 @@ export function SolarSystemScene({
       ...PLANET_ORDER.map((id) => planetEntities.get(id)!.playAppear()),
     ]);
 
+    const saturnPivot = planetEntities.get('saturn')!.pivot;
+    const saturnOrientation =
+      saturnPivot.rotationQuaternion?.clone() ?? Quaternion.FromEulerVector(saturnPivot.rotation);
     const camera = scene.activeCamera;
     if (!(camera instanceof ArcRotateCamera)) {
       logger.warn('SolarSystemScene: caméra ArcRotate attendue');
     }
 
-    const maxOrbit = () =>
-      Math.max(...PLANET_ORDER.map((id) => resolveOrbit(id, scaleMode)));
+    const maxOrbit = () => Math.max(...PLANET_ORDER.map((id) => resolveOrbit(id)));
+
+    const frameSizes = () => {
+      if (!(camera instanceof ArcRotateCamera)) return;
+      const layout = sizeComparisonLayout(group);
+      const aspect = engine.getRenderWidth() / Math.max(engine.getRenderHeight(), 1);
+      const margin = 0.4;
+      const contentHalfW = layout.width / 2 + margin;
+      const contentHalfH =
+        Math.max(...layout.bodies.map((b) => (b.id === 'saturn' ? b.extent : b.radius))) + margin;
+      // Remplir l’écran (fit largeur ou hauteur) — évite le forçage `3*aspect` qui miniaturisait en PC.
+      let halfW: number;
+      let halfH: number;
+      if (contentHalfW / contentHalfH > aspect) {
+        halfW = contentHalfW;
+        halfH = contentHalfW / aspect;
+      } else {
+        halfH = contentHalfH;
+        halfW = contentHalfH * aspect;
+      }
+      // Décale vers le haut pour laisser l’overlay bas sans masquer les astres.
+      const upward = halfH * 0.08;
+      camera.mode = Camera.ORTHOGRAPHIC_CAMERA;
+      camera.orthoLeft = -halfW;
+      camera.orthoRight = halfW;
+      camera.orthoTop = halfH - upward;
+      camera.orthoBottom = -halfH - upward;
+      camera.setTarget(Vector3.Zero());
+      camera.alpha = Math.PI / 2;
+      camera.lowerBetaLimit = camera.upperBetaLimit = Math.PI / 2;
+      camera.beta = Math.PI / 2;
+      camera.radius = 40;
+      camera.minZ = 0.01;
+      camera.maxZ = 10000;
+      const viewH = halfH * 2;
+      setSizeLabels(
+        layout.bodies.map((body) => ({
+          name: body.id === 'sun' ? 'Soleil' : SOLAR_SYSTEM_PLANETS[body.id].nameFr,
+          left: (body.x / halfW + 1) * 50,
+          top: ((halfH - upward + body.radius) / viewH) * 100,
+        })),
+      );
+    };
 
     const applyLayout = () => {
-      sun.pivot.scaling.setAll(resolveSunRadius(scaleMode));
+      saturnPivot.rotationQuaternion = saturnOrientation.clone();
+      if (scaleMode === 'sizes') saturnPivot.rotate(Vector3.Right(), 0.45);
+      lighting.hemiLight.intensity = scaleMode === 'sizes' ? 0.6 : 0.12;
+      scene.clearColor =
+        scaleMode === 'sizes'
+          ? new Color4(0.001, 0.002, 0.004, 1)
+          : new Color4(0.03, 0.05, 0.09, 1);
+      background.dome.setEnabled(scaleMode !== 'sizes');
+      sun.pivot.setEnabled(scaleMode !== 'distances');
+      sun.pivot.position.setAll(0);
+      planetEntities.forEach((entity) => entity.pivot.setEnabled(scaleMode !== 'distances'));
+      orbitRings.forEach((ring) => ring.mesh.setEnabled(scaleMode === 'readable'));
+      if (camera instanceof ArcRotateCamera) {
+        scene.stopAnimation(camera);
+        scene.stopAnimation(camera.target);
+        camera.inertialAlphaOffset = camera.inertialBetaOffset = camera.inertialRadiusOffset = 0;
+        camera.mode = Camera.PERSPECTIVE_CAMERA;
+        if (scaleMode === 'readable') {
+          configureMissionCamera(camera, {
+            allowPan: false,
+            lowerBetaLimit: 0.25,
+            upperBetaLimit: Math.PI / 2.05,
+          });
+          camera.attachControl(engine.getRenderingCanvas(), true);
+        } else camera.detachControl();
+      }
+      if (scaleMode === 'sizes') {
+        sun.pivot.setEnabled(false);
+        planetEntities.forEach((entity) => entity.pivot.setEnabled(false));
+        for (const body of sizeComparisonLayout(group).bodies) {
+          const entity = body.id === 'sun' ? sun : planetEntities.get(body.id)!;
+          entity.pivot.setEnabled(true);
+          entity.pivot.position.set(body.x, 0, 0);
+          entity.pivot.scaling.setAll(body.radius);
+        }
+        frameSizes();
+        return;
+      }
+      sun.pivot.scaling.setAll(resolveSunRadius());
       PLANET_ORDER.forEach((id, i) => {
         const entity = planetEntities.get(id)!;
-        const angle = startAngles[i]!;
-        const orbit = resolveOrbit(id, scaleMode);
-        const r = radiusFor(id, scaleMode);
+        const angle = orbitAngles[i]!;
+        const orbit = resolveOrbit(id);
+        const r = radiusFor(id);
         entity.pivot.scaling.setAll(r);
         entity.pivot.position.set(Math.cos(angle) * orbit, 0, Math.sin(angle) * orbit);
         const ring = orbitRings[i];
@@ -247,6 +350,7 @@ export function SolarSystemScene({
     };
 
     const reframeAfterLayout = () => {
+      if (scaleMode !== 'readable') return;
       if (focusIndex === -1 && camera instanceof ArcRotateCamera) {
         frameSolarSystemOverview(camera, maxOrbit());
       } else if (focusIndex === 0) {
@@ -266,9 +370,10 @@ export function SolarSystemScene({
         setFact({
           name: 'Soleil',
           fact: 'Notre étoile. Les planètes tournent autour de lui.',
-          orderHint: orderChallenge && !orderDone
-            ? `Prochaine : ${SOLAR_SYSTEM_PLANETS[PLANET_ORDER[orderIndex]!].nameFr}`
-            : undefined,
+          orderHint:
+            orderChallenge && !orderDone
+              ? `Prochaine : ${SOLAR_SYSTEM_PLANETS[PLANET_ORDER[orderIndex]!].nameFr}`
+              : undefined,
         });
         return;
       }
@@ -276,9 +381,10 @@ export function SolarSystemScene({
       setFact({
         name: p.nameFr,
         fact: p.fact,
-        orderHint: orderChallenge && !orderDone
-          ? `Prochaine : ${SOLAR_SYSTEM_PLANETS[PLANET_ORDER[orderIndex]!].nameFr}`
-          : undefined,
+        orderHint:
+          orderChallenge && !orderDone
+            ? `Prochaine : ${SOLAR_SYSTEM_PLANETS[PLANET_ORDER[orderIndex]!].nameFr}`
+            : undefined,
       });
     };
 
@@ -291,7 +397,13 @@ export function SolarSystemScene({
     };
 
     const focusBody = (id: SolarSystemFocusId) => {
+      if (scaleMode !== 'readable') {
+        if (id) showFactFor(id);
+        return;
+      }
       if (!(camera instanceof ArcRotateCamera)) return;
+      scene.stopAnimation(camera);
+      scene.stopAnimation(camera.target);
       const from = captureCameraHome(camera);
       if (id === null) {
         focusIndex = -1;
@@ -301,17 +413,18 @@ export function SolarSystemScene({
       } else if (id === 'sun') {
         focusIndex = 0;
         selectBody('sun');
-        frameSolarSystemBody(camera, sun.pivot.position, resolveSunRadius(scaleMode));
+        frameSolarSystemBody(camera, sun.pivot.position, resolveSunRadius());
       } else {
         const idx = PLANET_ORDER.indexOf(id);
         focusIndex = idx + 1;
         const entity = planetEntities.get(id);
         if (!entity) return;
         selectBody(id);
-        frameSolarSystemBody(camera, entity.pivot.position, radiusFor(id, scaleMode));
+        frameSolarSystemBody(camera, entity.pivot.position, radiusFor(id));
       }
+      // Mode ciné : cadrage immédiat, le suivi suit la planète en orbite chaque frame
+      if (cinematic || prefersReducedMotion()) return;
       const to = captureCameraHome(camera);
-      if (prefersReducedMotion()) return;
       camera.alpha = from.alpha;
       camera.beta = from.beta;
       camera.radius = from.radius;
@@ -396,12 +509,15 @@ export function SolarSystemScene({
       });
     }
 
-    const home = camera instanceof ArcRotateCamera ? captureCameraHome(camera) : {
-      alpha: 0,
-      beta: Math.PI / 3,
-      radius: 20,
-      target: Vector3.Zero(),
-    };
+    const home =
+      camera instanceof ArcRotateCamera
+        ? captureCameraHome(camera)
+        : {
+            alpha: 0,
+            beta: Math.PI / 3,
+            radius: 20,
+            target: Vector3.Zero(),
+          };
     const cameraApi =
       camera instanceof ArcRotateCamera
         ? createMissionCameraApi(camera, home, sun.pivot, sun.meshes)
@@ -412,22 +528,41 @@ export function SolarSystemScene({
           };
 
     const setScaleMode = (mode: SolarSystemScaleMode) => {
+      if (orderChallenge) mode = 'readable';
       scaleMode = mode;
+      focusIndex = -1;
+      setFact(null);
       setScaleModeLabel(mode);
+      setHideComparison(false);
       applyLayout();
       reframeAfterLayout();
     };
 
     const api: SolarSystemSceneApi = {
-      camera: cameraApi,
+      camera: {
+        ...cameraApi,
+        recenter: async () => {
+          if (scaleMode === 'sizes') frameSizes();
+          else focusBody(null);
+        },
+      },
       setScaleMode,
       getScaleMode: () => scaleMode,
+      setComparisonGroup: (next) => {
+        group = next;
+        setFact(null);
+        if (scaleMode === 'sizes') applyLayout();
+      },
+      setHideComparison: (hidden) => {
+        setHideComparison(hidden);
+      },
       focusBody,
       focusNext,
       focusPrev,
       setOrderChallenge: (enabled) => {
         orderChallenge = enabled;
         if (enabled) {
+          setScaleMode('readable');
           orderIndex = 0;
           orderDone = false;
           setOrderProgress(`0 / 8 — prochaine : ${SOLAR_SYSTEM_PLANETS.mercury.nameFr}`);
@@ -444,6 +579,12 @@ export function SolarSystemScene({
         cinematic = enabled;
         if (enabled && camera instanceof ArcRotateCamera) {
           focusBody(null);
+          // Spins gérés par l’horloge physique du mode ciné
+          sun.setSpinning(false);
+          for (const e of planetEntities.values()) e.setSpinning(false);
+        } else if (!prefersReducedMotion()) {
+          sun.setSpinning(true);
+          for (const e of planetEntities.values()) e.setSpinning(true);
         }
       },
       setPickEnabled: (enabled) => {
@@ -452,17 +593,51 @@ export function SolarSystemScene({
     };
     apiRef.current = api;
     onSceneApiRef.current?.(api);
+    const resize = new ResizeObserver(() => {
+      engine.resize();
+      if (scaleMode === 'sizes') frameSizes();
+    });
+    const canvas = engine.getRenderingCanvas();
+    if (canvas) resize.observe(canvas);
 
     const perf = startPerfMonitor(scene, { label: 'mission-05-solar-system' });
 
-    // Lente dérive caméra en mode ciné
-    let cineObserver = scene.onBeforeRenderObservable.add(() => {
-      if (!cinematic || !(camera instanceof ArcRotateCamera) || prefersReducedMotion()) return;
-      camera.alpha += 0.00035 * scene.getEngine().getDeltaTime();
+    // Mode ciné (quiz+) : planètes en orbite + spin ; caméra suit le corps focalisé
+    const cineObserver = scene.onBeforeRenderObservable.add(() => {
+      if (
+        scaleMode !== 'readable' ||
+        !cinematic ||
+        prefersReducedMotion()
+      ) {
+        return;
+      }
+      const dt = scene.getEngine().getDeltaTime() / 1000;
+      sun.pivot.rotate(Vector3.Up(), spinAngularSpeed(SUN_SIDEREAL_ROTATION_DAYS) * dt);
+
+      PLANET_ORDER.forEach((id, i) => {
+        const p = SOLAR_SYSTEM_PLANETS[id];
+        // Antihoraire vu du nord (+Y) : (cos θ, sin θ) avec θ qui diminue
+        orbitAngles[i] = (orbitAngles[i] ?? 0) - orbitalAngularSpeed(p.orbitalPeriodDays) * dt;
+        const orbit = resolveOrbit(id);
+        const angle = orbitAngles[i]!;
+        const entity = planetEntities.get(id)!;
+        entity.pivot.position.set(Math.cos(angle) * orbit, 0, Math.sin(angle) * orbit);
+        entity.pivot.rotate(Vector3.Up(), spinAngularSpeed(p.siderealRotationDays) * dt);
+      });
+
+      if (!(camera instanceof ArcRotateCamera)) return;
+      if (focusIndex > 0) {
+        const id = PLANET_ORDER[focusIndex - 1]!;
+        const entity = planetEntities.get(id);
+        if (entity) camera.setTarget(entity.pivot.position);
+      } else if (focusIndex === 0) {
+        camera.setTarget(sun.pivot.position);
+      }
     });
 
     return () => {
       scene.onBeforeRenderObservable.remove(cineObserver);
+      resize.disconnect();
       apiRef.current = null;
       perf.dispose();
       for (const ring of orbitRings) ring.dispose();
@@ -476,52 +651,70 @@ export function SolarSystemScene({
   const onPrev = () => apiRef.current?.focusPrev();
   const onNext = () => apiRef.current?.focusNext();
   const onOverview = () => apiRef.current?.focusBody(null);
-  const onToggleScale = () => {
-    const api = apiRef.current;
-    if (!api) return;
-    const next = api.getScaleMode() === 'toScale' ? 'readable' : 'toScale';
-    api.setScaleMode(next);
-    if (next === 'toScale') api.focusBody(null);
-  };
 
   return (
-    <div className={[styles.wrap, className].filter(Boolean).join(' ')}>
-      <BabylonCanvas className={styles.canvas} fill={fill} onSceneReady={onSceneReady} />
+    <div
+      ref={wrapRef}
+      className={[
+        styles.wrap,
+        scaleModeLabel === 'sizes' ? styles.sizesView : '',
+        scaleModeLabel === 'distances' ? styles.distancesView : '',
+        className,
+      ]
+        .filter(Boolean)
+        .join(' ')}
+    >
+      <div
+        className={[
+          styles.sceneViewport,
+          hideComparison && scaleModeLabel === 'sizes' ? styles.mysteryViewport : '',
+        ].join(' ')}
+      >
+        <BabylonCanvas className={styles.canvas} fill={fill} onSceneReady={onSceneReady} />
+        {scaleModeLabel === 'sizes' &&
+          !hideComparison &&
+          sizeLabels.map((label) => (
+            <span
+              key={label.name}
+              className={styles.sizeLabel}
+              style={{ left: `${label.left}%`, top: `${label.top}%` }}
+            >
+              {label.name}
+            </span>
+          ))}
+        {hideComparison && scaleModeLabel === 'sizes' && (
+          <div className={styles.mystery}>
+            <span aria-hidden="true">?</span>
+            <p>Choisis une réponse pour voir les astres.</p>
+          </div>
+        )}
+      </div>
 
       <div className={styles.hud} onPointerDown={(e) => e.stopPropagation()}>
-        <div className={styles.navRow} role="group" aria-label="Navigation planètes">
-          <button type="button" className={styles.hudBtn} onClick={onPrev}>
-            Préc.
-          </button>
-          <button type="button" className={styles.hudBtn} onClick={onOverview}>
-            Vue d’ensemble
-          </button>
-          <button type="button" className={styles.hudBtn} onClick={onNext}>
-            Suiv.
-          </button>
-        </div>
-        <div className={styles.modeRow} role="group" aria-label="Échelle">
-          <button
-            type="button"
-            className={scaleModeLabel === 'toScale' ? styles.hudBtnActive : styles.hudBtn}
-            onClick={onToggleScale}
-            aria-pressed={scaleModeLabel === 'toScale'}
-            title="Tailles et distances ≈ réelles (bascule)"
-          >
-            À l’échelle
-          </button>
-        </div>
-        {scaleModeLabel === 'toScale' ? (
-          <p className={styles.progress} role="note">
-            Tailles ≈ réelles et distances ≈ UA (Neptune ≈ 30× plus loin). Zoome : surtout du vide. Le Soleil est un peu grossi pour le voir.
-          </p>
-        ) : null}
+        {scaleModeLabel === 'readable' && (
+          <>
+            <div className={styles.navRow} role="group" aria-label="Navigation planètes">
+              <button type="button" className={styles.hudBtn} onClick={onPrev}>
+                Préc.
+              </button>
+              <button type="button" className={styles.hudBtn} onClick={onOverview}>
+                Vue d’ensemble
+              </button>
+              <button type="button" className={styles.hudBtn} onClick={onNext}>
+                Suiv.
+              </button>
+            </div>
+            <p className={styles.progress}>
+              Maquette : tailles et distances adaptées. Positions illustratives.
+            </p>
+          </>
+        )}
         {orderProgress ? (
           <p className={styles.progress} role="status">
             {orderProgress}
           </p>
         ) : null}
-        {fact ? (
+        {fact && scaleModeLabel === 'readable' ? (
           <article className={styles.factCard}>
             <h2 className={styles.factTitle}>{fact.name}</h2>
             <p className={styles.factBody}>{fact.fact}</p>

@@ -19,6 +19,7 @@ import {
   MAIN_CAMERA_LAYER,
   PIP_CAMERA_LAYER,
   PIP_LOCAL_LAYER,
+  samplePipSky,
 } from '@/3d/scenes/houseViewPip';
 import { classifyEclipse, type EclipseKind } from '@/3d/utils/eclipseAlignment';
 
@@ -46,8 +47,8 @@ type AttachEclipseEarthPipOptions = {
 /**
  * PiP Mission 04 : ciel depuis la Terre.
  * - Regard vers la Lune (ou vers le Soleil si quasi-alignés).
- * - Soleil PiP : même distance œil→disque et même rayon que la Lune
- *   → même diamètre apparent ; Lune devant pour masquer le Soleil.
+ * - Fond jour→nuit comme Mission 02 (éclairement au point de vue).
+ * - Soleil PiP : même distance œil→disque et même rayon que la Lune.
  */
 export function attachEclipseEarthPip({
   scene,
@@ -99,7 +100,11 @@ export function attachEclipseEarthPip({
   skyMat.disableLighting = true;
   skyMat.diffuseColor = Color3.Black();
   skyMat.specularColor = Color3.Black();
-  skyMat.emissiveColor = new Color3(0.02, 0.03, 0.06);
+  skyMat.emissiveColor = new Color3(0.4, 0.7, 0.98);
+  skyMat.alpha = 1;
+  skyMat.transparencyMode = StandardMaterial.MATERIAL_ALPHABLEND;
+  skyMat.disableDepthWrite = true;
+  skyMat.backFaceCulling = false;
   sky.material = skyMat;
 
   const pipSun = MeshBuilder.CreateSphere(
@@ -121,7 +126,7 @@ export function attachEclipseEarthPip({
   scene.activeCameras = [mainCamera, pipCam];
   scene.cameraToUseForPointers = mainCamera;
 
-  const pipClear = new Color4(0.02, 0.03, 0.06, 1);
+  const pipClear = new Color4(0.4, 0.7, 0.98, 1);
   let lastKind: EclipseKind | null = null;
 
   const beforeCamObs = scene.onBeforeCameraRenderObservable.add((cam) => {
@@ -165,7 +170,6 @@ export function attachEclipseEarthPip({
     pipCam.upVector.copyFrom(Vector3.Up());
 
     if (nearSolar) {
-      // Cible sur l’axe Soleil, à la distance de la Lune
       pipCam.setTarget(earth.add(toSun.scale(distMoon)));
     } else {
       pipCam.setTarget(moon);
@@ -178,14 +182,12 @@ export function attachEclipseEarthPip({
 
     pipSun.setEnabled(sunInView);
     if (sunInView) {
-      // Même distance / même rayon que la Lune vue depuis l’œil
       pipSun.position.copyFrom(eye.add(toSun.scale(focusDist * 1.04)));
       pipSun.scaling.setAll(1);
     }
 
     const moonHalfAngle = Math.atan(moonRadius / focusDist);
     if (nearSolar) {
-      // Zoom serré : Lune ≈ Soleil au centre
       pipCam.fov = Math.min(0.55, Math.max(0.28, moonHalfAngle * 4.2));
     } else if (sunInView) {
       const need = Math.max(moonHalfAngle * 5.2, elong + moonHalfAngle * 2.4);
@@ -193,6 +195,25 @@ export function attachEclipseEarthPip({
     } else {
       pipCam.fov = Math.min(0.85, Math.max(0.28, moonHalfAngle * 5.5));
     }
+
+    // Jour / crépuscule / nuit au point de vue (même courbe que Mission 02)
+    const lightingScore = Vector3.Dot(lookDir, toSun);
+    const skySample = samplePipSky(lightingScore);
+    // Éclipse solaire : le ciel s’assombrit comme en vrai (Lune devant le Soleil)
+    const solarCover = Math.min(1, Math.max(0, (0.28 - elong) / 0.28));
+    const nightSky = new Color3(0.02, 0.03, 0.06);
+    const skyColor = Color3.Lerp(skySample.color, nightSky, solarCover);
+    skyMat.emissiveColor.copyFrom(skyColor);
+    skyMat.alpha = Math.max(0.1, skySample.alpha * (1 - 0.9 * solarCover));
+    pipClear.r = skyColor.r;
+    pipClear.g = skyColor.g;
+    pipClear.b = skyColor.b;
+    // Soleil PiP un peu moins éclatant sous la couverture
+    pipSunMat.emissiveColor.set(
+      1 * (1 - 0.35 * solarCover),
+      0.78 * (1 - 0.45 * solarCover),
+      0.28 * (1 - 0.5 * solarCover),
+    );
 
     const kind = classifyEclipse(earth, sun, moon);
     if (kind !== lastKind) {

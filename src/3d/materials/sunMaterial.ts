@@ -9,7 +9,7 @@ import {
 /**
  * Soleil émissif — n'éclaire pas les autres corps (ajouter une DirectionalLight séparée).
  * La texture est branchée sur l’émissif pour que la rotation reste lisible
- * (vue principale et fenêtre « depuis la maison »).
+ * (vue principale et fenêtre PiP « Avec le Guide »).
  */
 export function applyEmissiveSunMaterial(scene: Scene, meshes: AbstractMesh[]): void {
   for (const mesh of meshes) {

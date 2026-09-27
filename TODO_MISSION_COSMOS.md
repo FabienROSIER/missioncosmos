@@ -416,9 +416,9 @@ Si sprite 2D :
 
 Si 3D :
 
-- [ ] demander GLB/GLTF optimisé ;
-- [ ] définir animations nécessaires ;
-- [ ] vérifier licence et poids.
+- [x] demander GLB/GLTF optimisé ; *(`public/assets/models/compagon/compagon.glb` — ~6,5 Mo, compression à prévoir)*
+- [x] définir animations nécessaires ; *(Idle, Cheer, Confused, Agree, restpose — branchées M02–M04 via `loadCompanion` / `companionSurfaceMarker`)*
+- [ ] vérifier licence et poids. *(GLB ~6,5 Mo — compression Draco/meshopt à prévoir ; licence à confirmer)*
 
 ---
 
@@ -431,7 +431,7 @@ La carte doit matérialiser l'élargissement progressif du champ de connaissance
 - [x] Terre comme point de départ. *(`UNIVERSE_ZONES` + missions 01–02)*
 - [x] Lune. *(mission 03)*
 - [x] voisinage terrestre. *(nœud « bientôt »)*
-- [x] Système solaire. *(nœud placeholder)*
+- [x] Système solaire. *(mission 05 — nœud jouable)*
 - [x] Soleil/étoiles. *(nœud placeholder)*
 - [x] Voie lactée. *(nœud placeholder)*
 - [x] galaxies. *(nœud placeholder)*
@@ -476,7 +476,7 @@ Objectifs : forme, rotation, pôles, équateur, repères fondamentaux.
 
 - [x] Soleil + Terre.
 - [x] Source lumineuse cohérente.
-- [x] Repère/maison/personnage sur Terre.
+- [x] Repère/personnage sur Terre. *(compagnon 3D AST-003b — remplace l’ancienne maison)*
 - [x] Rotation manuelle de la Terre.
 - [x] Visualiser face éclairée / face nocturne.
 - [x] Défi : placer le repère dans la nuit/le jour.
@@ -512,11 +512,17 @@ Objectifs : forme, rotation, pôles, équateur, repères fondamentaux.
 - [x] Comparaison de tailles.
 - [x] Mode « tailles relatives ».
 - [x] Mode représentation lisible non à l'échelle.
-- [x] Bouton unique « À l’échelle » (tailles + distances ≈ réelles).
+- [x] Trois modes d’échelle (maquette / diamètres proportionnels / distances linéaires + révélation à échelle commune).
+- [x] Modes tailles & distances déclenchés et gérés par le compagnon (steps `m05-scale` / `m05-distances`) — pas de boutons de lancement indépendants.
+- [x] Mini-jeux tailles/distances intégrés dans la bulle compagnon (comme le quiz) — scène 3D dégagée, pas de bandeau overlay, **sans scroll** (viewport + bulle).
+- [x] Quiz tailles : 4 questions (dont 8 planètes / rocheuses vs gazeuses) ; avance bloquée jusqu’à réussite (`requiresSuccess`).
+- [x] Défi distances : repères avec portraits planètes (WebP pack) ; avance bloquée jusqu’à réussite.
+- [x] Défi ordre des planètes placé avant tailles/distances (après exploration libre).
+- [x] Inclinaisons axiales pédagogiques (ex. Uranus ~98°) + orbites/spins réalistes en mode ciné (quiz).
 - [x] Ordre des planètes.
 - [x] Défi de placement.
 - [x] Mentionner planète naine séparément sans présenter Pluton comme 9e planète.
-- [x] Aborder les distances entre planètes (dans le même bouton d’échelle) — orbites/périodes → Mission 06 ; distances cosmiques → Mission 11.
+- [x] Aborder les distances moyennes au Soleil (étape « Mesurer le vide », zoom Soleil–Mars) — orbites/périodes → Mission 06 ; distances cosmiques → Mission 11.
 
 ### ASSET GATE — planètes
 - [x] inventorier textures nécessaires.
@@ -617,17 +623,19 @@ Objectifs : forme, rotation, pôles, équateur, repères fondamentaux.
 
 # PHASE 10 — Quiz et défis
 
-- [ ] Questions à choix.
+> Socle partiel déjà en place pour M01–M05 (`MissionQuiz` + `content/quizzes/mission-0x.ts`). Cette phase formalise et généralise le système.
+
+- [x] Questions à choix. *(quiz M01–M05)*
 - [ ] Questions visuelles.
 - [ ] Placement/drag-and-drop.
 - [ ] Manipulation 3D comme réponse.
-- [ ] Feedback immédiat explicatif.
-- [ ] Pas de sanction forte en cas d'erreur.
-- [ ] Possibilité de nouvel essai.
-- [ ] Banque de questions extensible.
+- [x] Feedback immédiat explicatif. *(compagnon + choix quiz)*
+- [x] Pas de sanction forte en cas d'erreur.
+- [x] Possibilité de nouvel essai.
+- [x] Banque de questions extensible. *(`content/quizzes/`)*
 - [ ] Randomisation raisonnable.
-- [ ] Éviter les questions pièges.
-- [ ] Vérifier chaque réponse scientifiquement.
+- [ ] Éviter les questions pièges. *(revue éditoriale globale)*
+- [ ] Vérifier chaque réponse scientifiquement. *(revue Phase 17)*
 
 ---
 
@@ -640,15 +648,16 @@ Objectifs : forme, rotation, pôles, équateur, repères fondamentaux.
 - [ ] déverrouillage.
 - [ ] transition.
 - [ ] ambiance spatiale discrète.
-- [ ] volume global.
-- [ ] mute.
+- [x] volume global. *(volume musique — paramètres)*
+- [x] mute. *(couper la musique — paramètres)*
 
 ## 11.2 Musique
 
-- [ ] Déterminer si musique d'ambiance réellement utile.
-- [ ] Boucles légères et non fatigantes.
-- [ ] Pause automatique appropriée.
-- [ ] Respect des préférences utilisateur.
+- [x] Déterminer si musique d'ambiance réellement utile. *(oui — menus + missions)*
+- [x] Boucles légères et non fatigantes. *(menu en boucle ; jeu en shuffle)*
+- [x] Pause automatique appropriée. *(coupe au mute ; bascule menu/mission)*
+- [x] Respect des préférences utilisateur. *(mute + volume localStorage, réglages)*
+- [x] Une piste menu (`23 Space Ambience 1.mp3`) ; 5 pistes jeu en random au début de mission + shuffle enchaîné.
 
 ## 11.3 Narration
 
@@ -660,7 +669,7 @@ Objectifs : forme, rotation, pôles, équateur, repères fondamentaux.
 ### ASSET GATE — audio
 
 - [ ] Cursor doit fournir la liste précise des sons nécessaires avant recherche/génération.
-- [ ] Documenter licence/source de chaque son.
+- [x] Documenter licence/source de chaque son. *(musique KSP1 documentée dans `docs/ASSETS.md` — SFX/voix encore à faire ; musique = Temporaire, pas OK release publique)*
 
 ---
 
@@ -908,13 +917,16 @@ Cursor doit maintenir ce tableau au fil du projet.
 |---|---|---|---|---|---|---|
 | AST-001 | Logo Mission Cosmos | 2D | PNG transparent | Reçu | ImageGen | Branding — intégré accueil |
 | AST-002 | Icône application | 2D | PNG/SVG | À définir | — | PWA/store |
-| AST-003 | Compagnon | 2D sprites | WebP 512/256 | Reçu | ImageGen | Guide — `public/assets/sprites/companion/` |
+| AST-003 | Compagnon | 2D sprites | WebP 512/256 | Reçu | ImageGen | Guide UI — `public/assets/sprites/companion/` |
+| AST-003b | Compagnon 3D | modèle GLB | GLB skinned | Reçu | À confirmer | Scènes M02–M04 — `public/assets/models/compagon/compagon.glb` (~6,5 Mo) |
 | AST-010 | Terre | modèle GLB + WebP | GLB/WebP | Reçu | CGTrader pack (licence à vérifier) | Missions 1+ — `public/assets/models/solarsystem/celestial-bodies/earth/` |
 | AST-011 | Lune | modèle GLB + WebP | GLB/WebP | Reçu | idem | Missions 3+ — `…/moon/` |
 | AST-012 | Planètes / Soleil / astéroïdes | pack GLB | GLB/WebP | Reçu | idem | Mission 5+ — `…/celestial-bodies/` (AST-030→038) |
 | AST-020 | Voie lactée artistique | Fond 2D | WebP panorama + mobile | Reçu | ImageGen, non cartographique | `public/assets/textures/backgrounds/` |
 | AST-021 | Ciel étoilé discret | Fond 2D | WebP panorama + mobile | Reçu | ImageGen artistique | `public/assets/textures/backgrounds/` |
 | AST-022 | Nébuleuse turquoise | Fond 2D | WebP panorama + mobile | Reçu | ImageGen artistique | `public/assets/textures/backgrounds/` |
+| AST-040 | Musique menu | audio | MP3 | Temporaire | KSP1 (Squad / Take-Two) — usage perso seulement | `23 Space Ambience 1.mp3` — menus |
+| AST-041 | Musique missions | audio | MP3 | Temporaire | KSP1 (Squad / Take-Two) — usage perso seulement | 5 pistes shuffle — `public/assets/audio/music/` |
 | AST-100 | UI SFX | audio | OGG/MP3 | À définir | — | Interface |
 
 États possibles : `À définir`, `Demandé`, `Reçu`, `Temporaire`, `Validé`, `À remplacer`.
@@ -947,7 +959,7 @@ Phase actuelle : **Phase 8 — Missions pédagogiques**
 
 Sous-phases : Mission 01 · Mission 02 · Mission 03 · Mission 04 · Mission 05 terminées.
 
-Prochaine action : **Mission 06 — Les orbites**.
+Prochaine action : **Mission 06 — Les orbites** *(après validation propriétaire)*.
 
 ### Notes découvertes
 
@@ -956,3 +968,6 @@ Prochaine action : **Mission 06 — Les orbites**.
 - `manifest.json` du pack pointe vers `/assets/celestial-bodies/…` alors que le chemin réel est `/assets/models/solarsystem/celestial-bodies/…` — chargeur utilise `CELESTIAL_BODIES_BASE`.
 - UX jeu natif : pas de scroll page (`100dvh`, `overflow: hidden`) ; `ScrollRegion` pour listes ; viewport non scalable (gestes 3D). Portrait prioritaire menus ; missions OK portrait/paysage (HUD latéral en paysage).
 - **Fonds missions 3D = image** (`MISSION_STARFIELD_SRC` / `ast-021-space-starfield-fine-v2.webp`), pas procédural — ADR-002. À réutiliser pour les prochaines missions.
+- Compagnon 3D (AST-003b) intégré en marqueur de surface M02–M04 (remplace la maison) ; tip UI 2D reste le guide de séquence. Occlusion / layer masks documentés dans le code (`companionSurfaceMarker`).
+- Mission 05 (2026-09-27→28) : séquence exploration → défi ordre → tailles (bulle) → distances (bulle + portraits) → Pluton → quiz. Modes d’échelle via steps compagnon uniquement. Pas de redesign « vraie échelle unique » (volontairement abandonné — trop illisible).
+- Musique (2026-09-28) : AST-040/041 issus de **KSP1** — documentés dans `docs/ASSETS.md`, état **Temporaire** (propriétaire Squad/Take-Two). Remplacer avant toute publication.

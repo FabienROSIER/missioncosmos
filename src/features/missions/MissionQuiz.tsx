@@ -3,37 +3,29 @@
 import { useState } from 'react';
 import { QuizChoice } from '@/components/ui/QuizChoice';
 import type { CompanionFeedbackMood } from '@/features/companion';
-import type { Quiz, QuizChoice as QuizChoiceData } from '@/types/quiz';
+import type { Quiz } from '@/types/quiz';
 import styles from './MissionQuiz.module.css';
+import { shuffleArray } from '@/lib/shuffle';
 
 type MissionQuizProps = {
   quiz: Quiz;
   onSolved: () => void;
   /** Réaction compagnon selon la réponse. */
   onMoodChange?: (mood: CompanionFeedbackMood) => void;
+  /** Densifie l’UI pour la bulle compagnon (pas de scroll). */
+  compact?: boolean;
 };
-
-function shuffleChoices(choices: QuizChoiceData[]): QuizChoiceData[] {
-  const copy = [...choices];
-  for (let i = copy.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    const tmp = copy[i]!;
-    copy[i] = copy[j]!;
-    copy[j] = tmp;
-  }
-  return copy;
-}
 
 /**
  * Quiz multi-questions — une à la fois, choix mélangés.
  * Erreur = indice, on peut réessayer. onSolved quand toutes sont réussies.
  */
-export function MissionQuiz({ quiz, onSolved, onMoodChange }: MissionQuizProps) {
+export function MissionQuiz({ quiz, onSolved, onMoodChange, compact = false }: MissionQuizProps) {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [questionOk, setQuestionOk] = useState(false);
   const [shuffledChoices, setShuffledChoices] = useState(() =>
-    shuffleChoices(quiz.questions[0]!.choices),
+    shuffleArray(quiz.questions[0]!.choices),
   );
 
   const question = quiz.questions[questionIndex]!;
@@ -60,7 +52,7 @@ export function MissionQuiz({ quiz, onSolved, onMoodChange }: MissionQuizProps) 
     setQuestionIndex(nextIndex);
     setSelectedId(null);
     setQuestionOk(false);
-    setShuffledChoices(shuffleChoices(nextQuestion.choices));
+    setShuffledChoices(shuffleArray(nextQuestion.choices));
     onMoodChange?.('none');
   };
 
@@ -73,7 +65,7 @@ export function MissionQuiz({ quiz, onSolved, onMoodChange }: MissionQuizProps) 
   };
 
   return (
-    <div className={styles.root}>
+    <div className={[styles.root, compact ? styles.compact : ''].filter(Boolean).join(' ')}>
       <p className={styles.progress}>
         Question {questionIndex + 1} / {quiz.questions.length}
       </p>
