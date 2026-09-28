@@ -61,7 +61,11 @@ export const viewport: Viewport = {
   themeColor: '#0B1220',
 };
 
-export default function RootLayout({ children }: LayoutProps<'/'>) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="fr" className={`${spaceGrotesk.variable} ${nunito.variable}`}>
       <body>
