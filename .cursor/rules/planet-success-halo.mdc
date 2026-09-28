@@ -1,0 +1,30 @@
+---
+description: Halo de validation planète — feedback succès unique pour défis pick planète
+globs: "**/3d/**/*.{ts,tsx},**/content/missions/**/*.ts,**/MissionImmersive.tsx"
+alwaysApply: false
+---
+
+# Validation planète — halo lumineux
+
+Quand un défi demande de **toucher / sélectionner une planète** et que la réponse est correcte, utiliser **uniquement** le halo partagé :
+
+- API : `playPlanetSuccessHalo(scene, position, planetRadius)` dans `src/3d/fx/planetSuccessHalo.ts`
+- Effet : anneau soft billboard hors globe (trou central), expand + fade (~300 ms)
+- Respecter `prefers-reduced-motion` (déjà géré dans le helper)
+
+## À faire
+
+```typescript
+import { playPlanetSuccessHalo } from '@/3d/fx/planetSuccessHalo';
+
+// Bonne planète
+playPlanetSuccessHalo(scene, entity.pivot.position.clone(), visualRadius);
+```
+
+## À ne pas faire
+
+- Nouveau flash / HighlightLayer / glow custom pour ce type de validation
+- Recopier le code du halo dans une scène (importer le helper)
+- Halo sur une mauvaise réponse (indice / feedback texte seulement)
+
+Références : défi ordre M05 (`SolarSystemScene`), défi course M06 (`OrbitsScene`).

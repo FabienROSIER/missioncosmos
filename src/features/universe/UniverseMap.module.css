@@ -163,7 +163,7 @@
 
 @media (min-width: 700px) {
   .grid {
-    grid-template-columns: repeat(9, minmax(0, 1fr));
+    grid-template-columns: repeat(8, minmax(0, 1fr));
   }
 
   .nodeTitle {
@@ -181,7 +181,7 @@
   }
 
   .grid {
-    grid-template-columns: repeat(9, minmax(0, 1fr));
+    grid-template-columns: repeat(8, minmax(0, 1fr));
     gap: var(--space-1);
   }
 

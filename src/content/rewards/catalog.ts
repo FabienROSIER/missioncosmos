@@ -3,6 +3,8 @@ import { REWARD_DAY_NIGHT } from '@/content/missions/mission-02';
 import { REWARD_MOON_PHASES } from '@/content/missions/mission-03';
 import { REWARD_ECLIPSES } from '@/content/missions/mission-04';
 import { REWARD_SOLAR_SYSTEM } from '@/content/missions/mission-05';
+import { REWARD_ORBITS } from '@/content/missions/mission-06';
+import { REWARD_SEASONS } from '@/content/missions/mission-07';
 import type { Reward } from '@/types/progress';
 
 /** Registre des récompenses (badges de connaissance). */
@@ -12,6 +14,8 @@ export const REWARD_CATALOG: Reward[] = [
   REWARD_MOON_PHASES,
   REWARD_ECLIPSES,
   REWARD_SOLAR_SYSTEM,
+  REWARD_ORBITS,
+  REWARD_SEASONS,
 ];
 
 export function getRewardById(id: string): Reward | undefined {

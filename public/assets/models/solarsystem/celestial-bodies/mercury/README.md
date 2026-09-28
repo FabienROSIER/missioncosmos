@@ -1,3 +1,5 @@
+> **Archive historique** : le GLB et le WebP actuels utilisent désormais la carte 2K de Solar System Scope / INOVE (CC BY 4.0). Les PNG, aperçus, prompt et anciens rapports de ce dossier décrivent la version artistique précédente. Voir le [README du pack](../../README.md) et le manifest pour la version en service.
+
 # Mercure — texture artistique v2
 
 Texture originale générée avec l’outil intégré ImageGen pour Mission Cosmos, cohérente avec les textures du pack. Interprétation artistique inspirée de Mercure, non géolocalisée et non issue de données de sonde.

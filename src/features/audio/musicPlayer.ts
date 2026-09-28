@@ -43,17 +43,8 @@ class MusicController {
   unlock(): void {
     if (this.unlocked) return;
     this.unlocked = true;
-    const el = this.ensureAudio();
-    // Play/pause silencieux pour « warmer » le contexte.
-    void el
-      .play()
-      .then(() => {
-        el.pause();
-        this.applyMode(this.mode, true);
-      })
-      .catch(() => {
-        this.applyMode(this.mode, true);
-      });
+    // Relance le mode courant avec une vraie source (évite play() sur src vide).
+    this.applyMode(this.mode, true);
   }
 
   setMode(mode: MusicMode, options?: { reshuffle?: boolean }): void {
@@ -141,20 +132,28 @@ class MusicController {
   private playTrack(track: MusicTrack, loop: boolean, restart: boolean): void {
     const el = this.ensureAudio();
     const url = musicPublicUrl(track.file);
-    const sameSrc = el.src.endsWith(encodeURIComponent(track.file)) || el.src.includes(track.file.replace(/ /g, '%20'));
+    const sameSrc =
+      el.src.endsWith(encodeURIComponent(track.file)) ||
+      el.src.includes(track.file.replace(/ /g, '%20'));
     if (!restart && sameSrc && !el.paused) {
       el.loop = loop;
       return;
     }
     this.current = track;
-    el.loop = loop;
+    // Important : assigner loop APRÈS src — certains navigateurs réinitialisent loop au changement de source.
     el.src = url;
+    el.loop = loop;
     el.volume = this.volume;
     el.muted = this.muted;
     void el.play().catch(() => undefined);
   }
 
   private onEnded(): void {
+    // Filet si loop n’a pas tenu (navigateur) : relancer la piste menu.
+    if (this.mode === 'menu') {
+      this.playTrack(MENU_MUSIC, true, true);
+      return;
+    }
     if (this.mode !== 'game') return;
     this.gameIndex += 1;
     if (this.gameIndex >= this.gameQueue.length) {

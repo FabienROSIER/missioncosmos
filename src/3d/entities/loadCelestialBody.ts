@@ -10,6 +10,7 @@ import {
   CELESTIAL_BODIES_BASE,
   type CelestialBodyId,
 } from '@/lib/constants';
+import { withBasePath } from '@/lib/basePath';
 
 export type LoadedCelestialBody = {
   id: CelestialBodyId;
@@ -29,7 +30,7 @@ export async function loadCelestialBody(
   visualScale = 1,
   assetBase: string = CELESTIAL_BODIES_BASE,
 ): Promise<LoadedCelestialBody> {
-  const rootUrl = `${assetBase}/${id}/`;
+  const rootUrl = `${withBasePath(assetBase)}/${id}/`;
   const fileName = `${id}.glb`;
 
   const result = await SceneLoader.ImportMeshAsync('', rootUrl, fileName, scene);

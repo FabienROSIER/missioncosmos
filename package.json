@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "build:pages": "node scripts/build-pages.mjs",
+    "preview": "node scripts/preview-static.mjs",
+    "preview:pages": "node scripts/preview-pages.mjs",
+    "start": "node scripts/preview-static.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",

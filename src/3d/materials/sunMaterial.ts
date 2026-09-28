@@ -23,9 +23,11 @@ export function applyEmissiveSunMaterial(scene: Scene, meshes: AbstractMesh[]): 
       if (pbr.albedoTexture && !pbr.emissiveTexture) {
         pbr.emissiveTexture = pbr.albedoTexture;
       }
-      pbr.emissiveColor = new Color3(1, 0.9, 0.55);
-      pbr.emissiveIntensity = 1.6;
-      pbr.albedoColor = new Color3(1, 0.9, 0.55);
+      // La carte porte déjà sa teinte dorée : une seconde teinte orange
+      // et une émission trop forte effacent la granulation.
+      pbr.emissiveColor = Color3.White();
+      pbr.emissiveIntensity = 1.15;
+      pbr.albedoColor = Color3.Black();
       pbr.metallic = 0;
       pbr.roughness = 1;
       continue;
@@ -37,8 +39,8 @@ export function applyEmissiveSunMaterial(scene: Scene, meshes: AbstractMesh[]): 
       if (std.diffuseTexture) {
         std.emissiveTexture = std.diffuseTexture;
       }
-      std.emissiveColor = new Color3(1, 0.92, 0.55);
-      std.diffuseColor = new Color3(1, 0.9, 0.5);
+      std.emissiveColor = Color3.White();
+      std.diffuseColor = Color3.Black();
       std.specularColor = Color3.Black();
       continue;
     }

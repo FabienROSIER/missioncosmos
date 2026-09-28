@@ -2,6 +2,7 @@ import { AppShell } from '@/components/layout/AppShell';
 import { MissionImmersive } from '@/components/layout/MissionImmersive';
 import { SafeBackButton } from '@/components/layout/SafeBackButton';
 import { DialogueBubble } from '@/components/ui/DialogueBubble';
+import { MISSION_CATALOG } from '@/content/missions/catalog';
 import { getMissionById } from '@/content/missions';
 import styles from './mission.module.css';
 
@@ -15,7 +16,14 @@ const PLAYABLE_SCENES = new Set([
   'moon-phases',
   'eclipses',
   'solar-system',
+  'orbits',
+  'seasons',
 ]);
+
+/** Export statique : une page HTML par mission du catalogue. */
+export function generateStaticParams() {
+  return MISSION_CATALOG.map((entry) => ({ missionId: entry.id }));
+}
 
 export default async function MissionPage({ params }: MissionPageProps) {
   const { missionId } = await params;

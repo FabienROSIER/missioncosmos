@@ -2,14 +2,14 @@
 
 import { SOLAR_SYSTEM_PLANETS } from '@/content/bodies/solarSystem';
 import {
-  DISTANCE_FLIGHTS,
   celestialPortraitUrl,
   nearestPlanetId,
+  type DistanceFlight,
 } from '@/content/bodies/solarLearningGames';
 import styles from './SolarSystemScene.module.css';
 
 type SolarDistanceRailProps = {
-  round: number;
+  flight: DistanceFlight;
   choice: number | null;
   solved: boolean;
   /** Permutation d’affichage des indices de choix (même ordre que la bulle). */
@@ -22,17 +22,21 @@ const RAIL_X_MAX = 764;
 
 /** Schéma du voyage de la sonde — destiné au viewport principal (pas la bulle). */
 export function SolarDistanceRail({
-  round,
+  flight,
   choice,
   solved,
   order,
   onChoose,
 }: SolarDistanceRailProps) {
-  const flight = DISTANCE_FLIGHTS[round]!;
   const reference = SOLAR_SYSTEM_PLANETS[flight.reference];
+  const referenceB = flight.referenceB ? SOLAR_SYSTEM_PLANETS[flight.referenceB] : null;
   const position = choice === null ? 0 : flight.choices[choice]!;
   // Échelle linéaire en UA, calée sur le point le plus loin (frise remplie, proportions gardées).
-  const extentAu = Math.max(reference.approxAu, ...flight.choices);
+  const extentAu = Math.max(
+    reference.approxAu,
+    referenceB?.approxAu ?? 0,
+    ...flight.choices,
+  );
   const x = (au: number) => RAIL_X_MIN + (au / extentAu) * (RAIL_X_MAX - RAIL_X_MIN);
   const displayNumber = (originalIndex: number) => order.indexOf(originalIndex) + 1;
 
@@ -42,7 +46,11 @@ export function SolarDistanceRail({
         className={styles.flightRailViewport}
         viewBox="0 0 800 140"
         role="img"
-        aria-label={`Repères à comparer à ${reference.nameFr}`}
+        aria-label={
+          referenceB
+            ? `Repères entre ${reference.nameFr} et ${referenceB.nameFr}`
+            : `Repères à comparer à ${reference.nameFr}`
+        }
       >
         <defs>
           <linearGradient id="flight-trail-viewport">
@@ -53,6 +61,9 @@ export function SolarDistanceRail({
             <circle cx="0" cy="0" r="22" />
           </clipPath>
           <clipPath id="clip-ref-vp">
+            <circle cx="0" cy="0" r="18" />
+          </clipPath>
+          <clipPath id="clip-ref-b-vp">
             <circle cx="0" cy="0" r="18" />
           </clipPath>
           {flight.choices.map((_, i) => (
@@ -107,6 +118,32 @@ export function SolarDistanceRail({
         >
           {reference.nameFr}
         </text>
+        {referenceB && flight.referenceB && (
+          <>
+            <g transform={`translate(${x(referenceB.approxAu)} 72)`}>
+              <image
+                href={celestialPortraitUrl(flight.referenceB)}
+                x="-18"
+                y="-18"
+                width="36"
+                height="36"
+                clipPath="url(#clip-ref-b-vp)"
+                preserveAspectRatio="xMidYMid slice"
+              />
+              <circle r="18" fill="none" stroke="#a9d3ed" strokeWidth="2" />
+            </g>
+            <text
+              x={Math.min(720, x(referenceB.approxAu))}
+              y="28"
+              fill="#a9d3ed"
+              fontSize="16"
+              fontWeight="700"
+              textAnchor="middle"
+            >
+              {referenceB.nameFr}
+            </text>
+          </>
+        )}
         {flight.choices.map((value, i) => {
           const planetId = nearestPlanetId(value);
           const selected = choice === i;

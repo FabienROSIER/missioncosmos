@@ -39,6 +39,53 @@ export const MISSION_CATALOG: MissionCatalogEntry[] = [
     objective: 'Connaître les 8 planètes et leur ordre depuis le Soleil.',
     unlocksNextId: 'mission-06',
   },
+  {
+    id: 'mission-06',
+    title: 'Les orbites',
+    objective: 'Voir comment les planètes tournent et comparer leurs périodes.',
+    unlocksNextId: 'mission-07',
+  },
+  {
+    id: 'mission-07',
+    title: 'Les saisons',
+    objective: 'Comprendre l’inclinaison de la Terre et l’été / l’hiver.',
+    unlocksNextId: 'mission-08',
+  },
+  {
+    id: 'mission-08',
+    title: 'Les étoiles',
+    objective: 'Comparer des étoiles : tailles, couleurs, le Soleil comme étoile.',
+    unlocksNextId: 'mission-09',
+  },
+  {
+    id: 'mission-09',
+    title: 'La lumière des étoiles',
+    objective: 'Relier couleur et température de la lumière stellaire.',
+    unlocksNextId: 'mission-10',
+  },
+  {
+    id: 'mission-10',
+    title: 'Notre galaxie',
+    objective: 'Situer le Soleil dans la Voie lactée.',
+    unlocksNextId: 'mission-11',
+  },
+  {
+    id: 'mission-11',
+    title: 'Les galaxies',
+    objective: 'Découvrir d’autres galaxies, comme Andromède — des îles d’étoiles.',
+    unlocksNextId: 'mission-12',
+  },
+  {
+    id: 'mission-12',
+    title: 'Les distances dans l’Univers',
+    objective: 'Comparer les ordres de grandeur, de la Terre à l’Univers observable.',
+    unlocksNextId: 'mission-13',
+  },
+  {
+    id: 'mission-13',
+    title: 'Les trous noirs',
+    objective: 'Aborder gravité extrême et horizon des événements sans fausse analogie.',
+  },
 ];
 
 export function getCatalogEntry(id: string): MissionCatalogEntry | undefined {

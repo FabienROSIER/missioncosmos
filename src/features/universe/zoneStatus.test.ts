@@ -4,7 +4,7 @@ import {
   isZoneUnlockedByProgression,
   pickInitialZoneId,
 } from '@/features/universe/zoneStatus';
-import { getZoneById } from '@/content/universe';
+import { getZoneById, UNIVERSE_ZONES } from '@/content/universe';
 
 describe('zoneStatus', () => {
   it('terre disponible si mission-01 débloquée', () => {
@@ -34,24 +34,7 @@ describe('zoneStatus', () => {
     expect(status).toBe('locked');
   });
 
-  it('voisinage bientôt après zone lune terminée', () => {
-    const input = {
-      isMissionUnlocked: (id: string) =>
-        id === 'mission-01' ||
-        id === 'mission-02' ||
-        id === 'mission-03' ||
-        id === 'mission-04',
-      isMissionCompleted: (id: string) =>
-        id === 'mission-01' ||
-        id === 'mission-02' ||
-        id === 'mission-03' ||
-        id === 'mission-04',
-    };
-    expect(isZoneUnlockedByProgression('earth-neighborhood', input)).toBe(true);
-    expect(getZoneStatus(getZoneById('earth-neighborhood')!, input)).toBe('coming-soon');
-  });
-
-  it('système solaire disponible si mission-05 débloquée', () => {
+  it('système solaire disponible si mission-05 débloquée (plus de zone voisinage)', () => {
     const input = {
       isMissionUnlocked: (id: string) =>
         id === 'mission-01' ||
@@ -65,7 +48,32 @@ describe('zoneStatus', () => {
         id === 'mission-03' ||
         id === 'mission-04',
     };
+    expect(isZoneUnlockedByProgression('solar-system', input)).toBe(true);
     expect(getZoneStatus(getZoneById('solar-system')!, input)).toBe('available');
+    expect(UNIVERSE_ZONES.some((z) => z.id === ('earth-neighborhood' as never))).toBe(false);
+  });
+
+  it('galaxies verrouillée tant que mission-11 pas débloquée', () => {
+    const input = {
+      isMissionUnlocked: (id: string) => id === 'mission-01' || id === 'mission-10',
+      isMissionCompleted: () => false,
+    };
+    expect(getZoneStatus(getZoneById('galaxies')!, input)).toBe('locked');
+  });
+
+  it('galaxies disponible si mission-11 débloquée', () => {
+    const input = {
+      isMissionUnlocked: (id: string) => id === 'mission-11',
+      isMissionCompleted: () => false,
+    };
+    expect(getZoneStatus(getZoneById('galaxies')!, input)).toBe('available');
+  });
+
+  it('chaque zone a au moins une mission catalogue', () => {
+    for (const zone of UNIVERSE_ZONES) {
+      expect(zone.missionIds.length).toBeGreaterThan(0);
+    }
+    expect(UNIVERSE_ZONES).toHaveLength(8);
   });
 
   it('pickInitialZoneId privilégie une mission en cours', () => {

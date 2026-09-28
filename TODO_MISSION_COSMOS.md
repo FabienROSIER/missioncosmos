@@ -14,7 +14,22 @@ Principe pédagogique général :
 
 La progression principale suit une logique d'échelle :
 
-**Terre → Lune → Soleil → Système solaire → étoiles → lumière → Voie lactée → galaxies → Univers → phénomènes extrêmes**
+**Terre → Lune → Système solaire → étoiles → Voie lactée → galaxies → Univers → phénomènes extrêmes**
+
+Carte (`UNIVERSE_ZONES`, 8 zones) alignée sur **13 missions** (mix C, 2026-09-28) :
+
+| Zone | Missions |
+|---|---|
+| La Terre | 01, 02 |
+| La Lune | 03, 04 |
+| Système solaire | 05, 06, 07 |
+| Étoiles | 08, 09 |
+| Voie lactée | 10 |
+| Galaxies | 11 |
+| Univers profond | 12 |
+| Extrêmes | 13 |
+
+*(Zone « Voisinage » retirée — orpheline sans mission.)*
 
 Nom du produit : **Mission Cosmos**.
 
@@ -429,18 +444,18 @@ Si 3D :
 La carte doit matérialiser l'élargissement progressif du champ de connaissance.
 
 - [x] Terre comme point de départ. *(`UNIVERSE_ZONES` + missions 01–02)*
-- [x] Lune. *(mission 03)*
-- [x] voisinage terrestre. *(nœud « bientôt »)*
-- [x] Système solaire. *(mission 05 — nœud jouable)*
-- [x] Soleil/étoiles. *(nœud placeholder)*
-- [x] Voie lactée. *(nœud placeholder)*
-- [x] galaxies. *(nœud placeholder)*
-- [x] Univers profond. *(nœud placeholder)*
-- [x] phénomènes extrêmes. *(nœud placeholder)*
+- [x] Lune. *(missions 03–04)*
+- [x] voisinage terrestre. *(retiré 2026-09-28 — zone orpheline ; progression Lune → Système solaire)*
+- [x] Système solaire. *(missions 05–07 catalogue)*
+- [x] Soleil/étoiles. *(missions 08–09 catalogue)*
+- [x] Voie lactée. *(mission 10 catalogue)*
+- [x] galaxies. *(mission 11 catalogue)*
+- [x] Univers profond. *(mission 12 catalogue — distances)*
+- [x] phénomènes extrêmes. *(mission 13 catalogue — trous noirs)*
 
 ## 7.2 Fonctionnalités
 
-- [x] Navigation tactile fluide. *(grille 3×3 / rangée desktop — sans scroll)*
+- [x] Navigation tactile fluide. *(grille zones desktop/mobile — sans scroll)*
 - [x] Missions terminées clairement visibles.
 - [x] Missions disponibles clairement visibles.
 - [x] Missions verrouillées compréhensibles.
@@ -530,23 +545,24 @@ Objectifs : forme, rotation, pôles, équateur, repères fondamentaux.
 
 ## Mission 06 — Les orbites
 
-- [ ] Visualiser trajectoires orbitales.
-- [ ] Manipuler vitesse de simulation.
-- [ ] Comparer périodes orbitales.
-- [ ] Introduire gravité sans fausse analogie excessive.
-- [ ] Interaction distance/période adaptée à l'âge.
-- [ ] Défi pédagogique.
-- [ ] Éviter un simulateur physiquement faux présenté comme exact.
+- [x] Visualiser trajectoires orbitales.
+- [x] Manipuler vitesse de simulation.
+- [x] Comparer périodes orbitales.
+- [x] Introduire gravité sans fausse analogie excessive.
+- [x] Interaction distance/période adaptée à l'âge.
+- [x] Défi pédagogique.
+- [x] Défi « chute perpétuelle » (curseur continu, bande modérée, pas 3 boutons couleur).
+- [x] Éviter un simulateur physiquement faux présenté comme exact.
 
 ## Mission 07 — Pourquoi y a-t-il des saisons ?
 
-- [ ] Terre inclinée.
-- [ ] Orbite autour du Soleil.
-- [ ] Rayons solaires visualisés.
-- [ ] Manipulation de l'inclinaison.
-- [ ] Comparaison hémisphère nord/sud.
-- [ ] Défi été/hiver.
-- [ ] Corriger l'idée fausse « été = Terre plus proche du Soleil ».
+- [x] Terre inclinée.
+- [x] Orbite autour du Soleil.
+- [x] Rayons solaires visualisés.
+- [x] Manipulation de l'inclinaison.
+- [x] Comparaison hémisphère nord/sud.
+- [x] Défi été/hiver.
+- [x] Corriger l'idée fausse « été = Terre plus proche du Soleil ».
 
 ## Mission 08 — Les étoiles
 
@@ -580,7 +596,22 @@ Objectifs : forme, rotation, pôles, équateur, repères fondamentaux.
 - [ ] déterminer si texture, skybox, particules ou modèle est préférable.
 - [ ] demander l'asset seulement après définition technique précise.
 
-## Mission 11 — Les distances dans l'Univers
+## Mission 11 — Les galaxies
+
+Objectifs : d’autres galaxies que la nôtre ; idée d’« îles d’étoiles » ; Andromède comme exemple proche.
+
+- [ ] Distinguer Voie lactée vs autres galaxies.
+- [ ] Introduire Andromède (voisine, très loin).
+- [ ] Types simplifiés (spirale / elliptique / irrégulière) sans jargon excessif.
+- [ ] Comparaison d’échelle visuelle (galaxie vs système solaire).
+- [ ] Défi pédagogique (association ou ordre).
+- [ ] Éviter de présenter les galaxies comme des « soleils géants ».
+
+### ASSET GATE — galaxies
+- [ ] choisir représentation (illustration, skybox, modèle simplifié).
+- [ ] licence documentée avant intégration définitive.
+
+## Mission 12 — Les distances dans l'Univers
 
 - [ ] Terre → Lune.
 - [ ] Terre → Soleil.
@@ -594,7 +625,7 @@ Objectifs : forme, rotation, pôles, équateur, repères fondamentaux.
 - [ ] Signaler les compressions d'échelle.
 - [ ] Défi d'ordre de grandeur.
 
-## Mission 12 — Les trous noirs
+## Mission 13 — Les trous noirs
 
 - [ ] Définition adaptée aux enfants.
 - [ ] Horizon des événements.
@@ -625,7 +656,7 @@ Objectifs : forme, rotation, pôles, équateur, repères fondamentaux.
 
 > Socle partiel déjà en place pour M01–M05 (`MissionQuiz` + `content/quizzes/mission-0x.ts`). Cette phase formalise et généralise le système.
 
-- [x] Questions à choix. *(quiz M01–M05)*
+- [x] Questions à choix. *(quiz M01–M07)*
 - [ ] Questions visuelles.
 - [ ] Placement/drag-and-drop.
 - [ ] Manipulation 3D comme réponse.
@@ -709,21 +740,22 @@ Objectifs : forme, rotation, pôles, équateur, repères fondamentaux.
 
 # PHASE 14 — PWA et expérience mobile
 
-- [ ] Manifest PWA.
-- [ ] Icônes adaptées.
-- [ ] Mode standalone.
-- [ ] Theme color.
+- [x] Manifest PWA. — `src/app/manifest.ts`
+- [x] Icônes adaptées. — `public/assets/icons/icon-192.png`, `icon-512.png`, `apple-touch-icon.png` (depuis AST-001)
+- [x] Mode standalone. — manifest `display: standalone`
+- [x] Theme color. — `#0B1220` (manifest + viewport)
 - [ ] Écran de lancement adapté.
 - [ ] Gestion safe areas iOS.
 - [ ] Portrait prioritaire ou orientation à décider mission par mission.
 - [ ] Tester portrait.
 - [ ] Tester paysage.
-- [ ] Installation Android.
+- [x] Installation Android. — config prête (manifest + SW + prompt) ; validation téléphone propriétaire
 - [ ] Installation iOS/PWA.
-- [ ] Gestion hors ligne des éléments essentiels.
-- [ ] Stratégie de cache des assets lourds.
-- [ ] Mise à jour de version sans cache cassé.
-- [ ] Message clair lorsque des contenus nécessitent encore un téléchargement.
+- [x] Gestion hors ligne des éléments essentiels. — shell + cache runtime à la demande (pas hors-ligne complet)
+- [x] Stratégie de cache des assets lourds. — cache-first runtime, sans précache massif
+- [x] Mise à jour de version sans cache cassé. — shell versionné ; pas de skipWaiting mid-mission ; sauvegardes non touchées
+- [x] Message clair lorsque des contenus nécessitent encore un téléchargement. — pas de promesse hors-ligne totale ; install prioritaire en ligne
+- [x] Export statique + GitHub Pages. — ADR-003, workflow `.github/workflows/deploy-pages.yml`
 
 ---
 
@@ -942,6 +974,7 @@ Les décisions importantes doivent avoir une ADR dans `/docs/decisions/` et êtr
 
 | Date | Décision | ADR |
 |---|---|---|
+| 2026-09-28 | Carte 8 zones alignée sur 13 missions (mix C) ; suppression zone Voisinage ; M11 Galaxies ; Distances→12 ; Trous noirs→13 | — |
 | 2026-09-26 | Next.js + React + TypeScript comme socle web | `docs/decisions/001-stack-initiale.md` |
 | 2026-09-26 | Babylon.js (`@babylonjs/core`) comme moteur 3D | `docs/decisions/001-stack-initiale.md` |
 | 2026-09-26 | CSS natif (tokens en Phase 2), pas Tailwind au démarrage | `docs/decisions/001-stack-initiale.md` |
@@ -953,13 +986,15 @@ Les décisions importantes doivent avoir une ADR dans `/docs/decisions/` et êtr
 
 # État global du projet
 
-**Statut : MISSION 05 FAITE — prêt pour Mission 06 (Les orbites)**
+**Statut : MISSION 07 FAITE — prêt pour Mission 08 (Les étoiles)**
 
 Phase actuelle : **Phase 8 — Missions pédagogiques**
 
-Sous-phases : Mission 01 · Mission 02 · Mission 03 · Mission 04 · Mission 05 terminées.
+Carte / catalogue : **13 missions** branchées sur **8 zones** (alignement mix C). Scènes jouables : M01–M07 ; M08–M13 catalogue + TODO.
 
-Prochaine action : **Mission 06 — Les orbites** *(après validation propriétaire)*.
+Sous-phases : Mission 01 · Mission 02 · Mission 03 · Mission 04 · Mission 05 · Mission 06 · Mission 07 terminées.
+
+Prochaine action : **Mission 08 — Les étoiles** *(après validation propriétaire)*.
 
 ### Notes découvertes
 
@@ -970,4 +1005,6 @@ Prochaine action : **Mission 06 — Les orbites** *(après validation propriéta
 - **Fonds missions 3D = image** (`MISSION_STARFIELD_SRC` / `ast-021-space-starfield-fine-v2.webp`), pas procédural — ADR-002. À réutiliser pour les prochaines missions.
 - Compagnon 3D (AST-003b) intégré en marqueur de surface M02–M04 (remplace la maison) ; tip UI 2D reste le guide de séquence. Occlusion / layer masks documentés dans le code (`companionSurfaceMarker`).
 - Mission 05 (2026-09-27→28) : séquence exploration → défi ordre → tailles (bulle) → distances (bulle + portraits) → Pluton → quiz. Modes d’échelle via steps compagnon uniquement. Pas de redesign « vraie échelle unique » (volontairement abandonné — trop illisible).
+- Mission 06 (2026-09-28) : scène dédiée Soleil + Mercure/Terre/Jupiter ; anneaux d’orbite ; Pause/Normal/Rapide ; fiches période ; défi « plus rapide » ; défi chute perpétuelle (curseur continu ~16 % de bande, indices directionnels) ; gravité simplifiée ; notice cercles ≠ ellipses exactes.
+- Mission 07 (2026-09-28) : Soleil + Terre inclinée sur orbite ; axe violet ; rayons ; labels N/S ; curseur d’inclinaison 0–35° ; boutons saisons ; défi « été au nord » ; quiz anti-mythe « plus proche du Soleil ».
 - Musique (2026-09-28) : AST-040/041 issus de **KSP1** — documentés dans `docs/ASSETS.md`, état **Temporaire** (propriétaire Squad/Take-Two). Remplacer avant toute publication.

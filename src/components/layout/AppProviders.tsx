@@ -2,8 +2,16 @@
 
 import type { ReactNode } from 'react';
 import { MusicProvider } from '@/features/audio/MusicProvider';
+import { InstallPrompt } from '@/components/pwa/InstallPrompt';
+import { ServiceWorkerRegister } from '@/components/pwa/ServiceWorkerRegister';
 
-/** Providers client (musique, etc.) montés depuis le layout racine. */
+/** Providers client (musique, PWA, etc.) montés depuis le layout racine. */
 export function AppProviders({ children }: { children: ReactNode }) {
-  return <MusicProvider>{children}</MusicProvider>;
+  return (
+    <MusicProvider>
+      <ServiceWorkerRegister />
+      {children}
+      <InstallPrompt />
+    </MusicProvider>
+  );
 }

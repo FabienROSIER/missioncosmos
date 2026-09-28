@@ -145,6 +145,56 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     unlockRewardId: 'reward-solar-system',
     aliases: ['planète naine', 'pluton', 'Pluton'],
   },
+  {
+    id: 'periode-orbitale',
+    term: 'Période orbitale',
+    definition:
+      'Le temps qu’une planète met pour faire un tour complet autour du Soleil. Pour la Terre, c’est environ une année.',
+    enrichedDefinition:
+      'Mercure : ~88 jours. Jupiter : ~12 années terrestres. Plus la planète est loin, plus ce tour dure longtemps.',
+    unlockRewardId: 'reward-orbits',
+    aliases: ['période', 'période orbitale', 'année planétaire', 'annee'],
+  },
+  {
+    id: 'gravite',
+    term: 'Gravité',
+    definition:
+      'La force qui attire les objets les uns vers les autres. Le Soleil attire les planètes.',
+    enrichedDefinition:
+      'Sans mouvement de côté, une planète tomberait vers le Soleil. Avec ce mouvement + l’attraction, elle reste en orbite. Ce n’est pas une corde invisible.',
+    unlockRewardId: 'reward-orbits',
+    aliases: ['gravité', 'gravite', 'attirer', 'attraction'],
+  },
+  {
+    id: 'inclinaison',
+    term: 'Inclinaison',
+    definition:
+      'La Terre n’est pas droite : son axe est penché d’environ 23°. C’est cette inclinaison qui donne les saisons.',
+    enrichedDefinition:
+      'Sans inclinaison, il n’y aurait presque plus d’été ni d’hiver liés à la position sur l’orbite.',
+    unlockRewardId: 'reward-seasons',
+    aliases: ['inclinaison', 'penchée', 'pencher', 'axe penché'],
+  },
+  {
+    id: 'hemisphere',
+    term: 'Hémisphère',
+    definition:
+      'Une moitié de la Terre : hémisphère nord (au-dessus de l’équateur) et hémisphère sud (en dessous).',
+    enrichedDefinition:
+      'Quand c’est l’été au nord, c’est en général l’hiver au sud — et l’inverse six mois plus tard.',
+    unlockRewardId: 'reward-seasons',
+    aliases: ['hémisphère', 'hemisphere', 'nord', 'sud'],
+  },
+  {
+    id: 'saison',
+    term: 'Saison',
+    definition:
+      'Une période de l’année (printemps, été, automne, hiver) liée surtout à l’inclinaison de la Terre, pas à sa distance au Soleil.',
+    enrichedDefinition:
+      'En été, un hémisphère est penché vers le Soleil : les rayons arrivent plus « droits », il fait plus chaud.',
+    unlockRewardId: 'reward-seasons',
+    aliases: ['saison', 'saisons', 'été', 'hiver'],
+  },
 ];
 
 const BY_ID: Record<string, GlossaryEntry> = Object.fromEntries(

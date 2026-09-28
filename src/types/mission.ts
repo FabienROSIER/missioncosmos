@@ -35,6 +35,12 @@ export interface MissionStep {
   targetEclipse?: 'solar' | 'lunar';
   /** Défi ordre des planètes (Mission 05). */
   challengePlanetOrder?: boolean;
+  /** Défi course orbitale : toucher la planète la plus rapide (Mission 06). */
+  challengeOrbitRace?: boolean;
+  /** Défi chute perpétuelle : régler la vitesse pour orbiter (Mission 06). */
+  challengeOrbitFall?: boolean;
+  /** Défi été dans l’hémisphère nord (Mission 07). */
+  challengeNorthernSummer?: boolean;
   /** Défi orbite Terre autour du Soleil (Mission 01). */
   challengeOrbit?: boolean;
   successFeedback?: string;

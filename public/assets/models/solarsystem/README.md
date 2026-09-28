@@ -3,7 +3,7 @@
 Copier **le contenu de `public/`** dans le dossier `public/` de l'application Next.js. Les onze GLB se chargent indépendamment. Chaque GLB embarque ses textures WebP : les fichiers WebP voisins sont des copies de travail facultatives, sans requête supplémentaire au chargement du GLB. Ne pas déployer `sources/` ou `qa/` dans `public/`.
 
 ```text
-public/assets/celestial-bodies/
+public/assets/models/solarsystem/celestial-bodies/
   manifest.json
   sun/sun.glb + sun.webp
   mercury/mercury.glb + mercury.webp
@@ -29,27 +29,40 @@ Saturne contient son globe et ses anneaux dans **un seul GLB**. Les astéroïdes
 - Les normales ont été recalculées ; UV des globes conservés. Aucun triangle de surface nul ni UV de triangle dégénéré dans les maillages texturés finaux. Les UV dégénérés et inutilisés des astéroïdes ont été supprimés.
 - Surfaces mates non métalliques ; Soleil émissif. Ajouter une lumière dans Babylon.js : le matériau émissif du Soleil n'éclaire pas automatiquement les autres astres. Faces arrière masquées, sauf anneaux à double face avec transparence.
 
-## Textures et limites des sources
+## Textures mises à jour
 
-| Corps | Source fournie | Version mobile |
+Les neuf globes planétaires (Lune incluse) utilisent désormais de véritables images sources **2048 × 1024**, converties en **WebP qualité 88** et réembarquées dans chaque GLB. Les copies `.webp` voisines sont identiques aux images embarquées. Géométrie, normales, UV, matériaux et anneaux sont conservés.
+
+| Corps | Ancienne résolution réellement embarquée | Nouvelle résolution |
 |---|---:|---:|
-| Soleil, Jupiter, Saturne | 4096 × 2048 malgré le préfixe « 8k » | WebP 2048 × 1024 |
-| Uranus, Neptune | 1024 × 512 | WebP 1024 × 512 |
-| Mercure, Vénus, Terre, Lune, Mars | 318 × 159 | WebP 318 × 159 |
-| Anneaux de Saturne | Aucune texture dédiée fournie | WebP RGBA procédural 2048 × 16 |
-| Astéroïdes | Aucune texture ni matériau fourni | Matériau roche mat |
+| Terre, Mars, Vénus, Lune | 318 × 159 | 2048 × 1024 |
+| Mercure (ancienne création artistique) | 1774 × 887 | 2048 × 1024 |
+| Uranus, Neptune | 1024 × 512 | 2048 × 1024 |
+| Jupiter, Saturne | 2048 × 1024 | 2048 × 1024, source documentée |
+| Soleil | 2048 × 1024 | 1774 × 887, nouvelle photosphère ImageGen |
+| Anneaux de Saturne | 2048 × 16 RGBA procédural | Inchangés |
 
-Les images ne sont pas agrandies artificiellement. Les cinq textures 318 × 159 sont visiblement floues en gros plan. Les JPEG **Mercure et Lune sont strictement identiques** (SHA-256 identique) ; leurs associations fournies ont été conservées, sans prétendre à une représentation scientifique correcte. Les textures et UV peuvent montrer un pincement aux pôles ; aucune nouvelle cartographie scientifique n'a été créée.
+**Attribution des planètes et de la Lune : Solar System Scope / INOVE**, [Solar Textures](https://www.solarsystemscope.com/textures/), sous [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/). Adaptation : conversion JPEG vers WebP, sans agrandissement ni détails générés. Les URL et empreintes des sources figurent dans `celestial-bodies/manifest.json` ; l'attribution est également embarquée dans les GLB.
 
-Neptune référençait `Neptun.jpg` dans un chemin disparu : le modèle utilise maintenant le `Neptune.jpg` fourni. Le Soleil a reçu sa texture explicite. Les matériaux importés ont été reconstruits pour éviter les anciens chemins et nœuds inutilisables ; aucune fausse normal map n'a été générée.
+Ces cartes équirectangulaires s'appuient sur les données et images de la NASA ; l'éditeur précise que certaines lacunes sont reconstituées et les couleurs légèrement accentuées. Elles ne constituent pas une cartographie scientifique parfaitement calibrée. La Terre utilise la carte diurne ; Vénus sa couverture nuageuse visible depuis l'espace, et non sa surface radar. Mercure et la Lune ont des cartes distinctes. Les couleurs de Neptune restent illustratives. Le Soleil est une nouvelle reconstitution ImageGen : granulation, petits groupes de taches et teinte dorée illustrative. Ce n’est pas une carte mesurée. Sa résolution native 1774 × 887 est conservée sans agrandissement ; son matériau émissif évite une seconde coloration orange et limite la surexposition. Voir `celestial-bodies/sun/README.md`.
 
-Saturne avait un anneau épais utilisant le matériau du globe, sans texture d'anneaux. Il a été remplacé par une surface annulaire légère avec bandes et transparence procédurales, **illustratives, non issues d'une carte mesurée**. Le pôle UV du globe source était décalé par rapport au plan des anneaux ; il a été réaligné. L'anneau source reste récupérable dans le FBX archivé.
+Les anneaux de Saturne restent procéduraux et illustratifs. Leur transparence n'a pas été modifiée. Les anciennes images PNG, prompts et captures conservés dans le dossier de Mercure sont des archives de la version artistique, pas les assets chargés aujourd'hui.
+
+### Budget et vérification de cette mise à jour
+
+- Dix GLB : **2 169 928 → 3 587 388 octets** (environ +1,42 Mo). Aucun polygone ni téléchargement supplémentaire par modèle.
+- Une surface 2K : environ **10,7 Mio GPU avec mipmaps** ; les dix surfaces représentent environ 104 Mio si toutes sont résidentes, hors anneaux et autres ressources. Le WebP réduit le transfert, pas la mémoire décodée. Les anciennes petites textures utilisaient moins de mémoire.
+- Le plafond reste 2K. La configuration `low` actuelle ne redimensionne pas réellement les textures : ce lot utilise donc aussi les mêmes cartes en mode bas. Aucun benchmark sur téléphone physique n'est revendiqué.
+- Le script contrôle octet par octet que les buffers de géométrie, les UV et les anneaux sont inchangés, et conserve les matériaux et accessors.
+- Vérification visuelle dans Babylon.js 9.28.0 : les dix GLB se chargent, toutes les textures sont prêtes et les cartes s'appliquent correctement aux globes.
+
+Reproduction depuis la racine : `node --use-system-ca scripts/refresh-planet-textures.mjs` (Node 24, `sharp` fourni par Next.js). Le script télécharge les sources officielles des planètes, réutilise le WebP solaire local, reconstruit les GLB et met à jour les tailles, chemins et empreintes du manifest. Il ne lance pas le test navigateur.
 
 Les astéroïdes passent de **456 722 à 54 804 triangles** par décimation (environ −88 %). Leur silhouette globale est conservée, mais les petits reliefs et certains fragments peuvent être altérés. Charger cette ceinture à la demande ; pour de très faibles budgets mobiles, préférer ultérieurement des instances ou une représentation simplifiée. Aucun benchmark sur appareil physique n'est inclus.
 
 ## Intégration Next.js + Babylon.js
 
-Utiliser `@babylonjs/core` et `@babylonjs/loaders` de même version. Les GLB ont été chargés avec **Babylon.js 9.28.0, WebGL 2**. L'extension **EXT_texture_webp est requise** : les GLB n'embarquent pas une seconde copie JPEG de secours. Le validateur indique seulement une information NPOT pour les textures 318 × 159 ; cibler WebGL 2. Pour d'anciens moteurs sans WebP, reconvertir les images embarquées avec les sources fournies.
+Utiliser `@babylonjs/core` et `@babylonjs/loaders` de même version. Les GLB ont été chargés avec **Babylon.js 9.28.0, WebGL 2**. L'extension **EXT_texture_webp est requise** : les GLB n'embarquent pas une seconde copie JPEG de secours. Les nouvelles surfaces sont de dimensions puissance de deux ; cibler WebGL 2. Pour d'anciens moteurs sans WebP, reconvertir les images embarquées avec les sources fournies.
 
 ```bash
 npm install @babylonjs/core @babylonjs/loaders
@@ -85,12 +98,12 @@ Charger uniquement les corps nécessaires à chaque mission. Les WebP réduisent
 
 Documentation du chargeur : https://doc.babylonjs.com/features/featuresDeepDive/importers/glTF/
 
-## Provenance, archives et vérification
+## Provenance historique des maillages et archives
 
 Sources lues dans `D:\PROG\Mission Cosmos\src\3d\assets\solorsystem`. La conversation d'origine désigne le pack « Solar System Free Download » de CGTrader : https://www.cgtrader.com/free-3d-models/space/planet/solar-system-free-download . Cette provenance est **déclarée dans la conversation**, sans auteur ni fichier de licence présent dans le dossier fourni ; la licence n'a pas été vérifiée indépendamment.
 
 `sources/models/` conserve les FBX originaux, renommés en anglais lowercase, et `sources/textures/` les JPEG originaux, y compris les trois images 4K. Les empreintes SHA-256 et le nom de fichier original sont dans le manifest. Les anneaux procéduraux et le matériau des astéroïdes ont été créés pour ce pack. Les originaux du dossier de projet n'ont pas été modifiés.
 
-`qa/source-inspection.json` décrit les FBX importés. `qa/mesh-checks.json` décrit les maillages après traitement. `qa/gltf-validation.json` contient le rapport Khronos et `qa/babylon-validation.json` le test de chargement réel et la disponibilité des textures. Les aperçus permettent de comparer le rendu. Le test navigateur utilise Chrome headless / SwiftShader sur ordinateur ; il ne certifie pas les performances d'un téléphone.
+Les rapports du pack initial (non renouvelés par cette mise à jour de textures) sont historiques : `qa/source-inspection.json` décrit les FBX importés. `qa/mesh-checks.json` décrit les maillages après traitement. `qa/gltf-validation.json` contient le rapport Khronos et `qa/babylon-validation.json` le test de chargement réel et la disponibilité des textures. Les aperçus permettent de comparer le rendu. Le test navigateur utilise Chrome headless / SwiftShader sur ordinateur ; il ne certifie pas les performances d'un téléphone.
 
 `FILELIST.sha256` permet de vérifier tous les fichiers livrés, hors lui-même.

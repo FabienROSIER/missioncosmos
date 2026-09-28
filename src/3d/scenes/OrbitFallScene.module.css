@@ -1,0 +1,122 @@
+.wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.hud {
+  position: absolute;
+  z-index: 4;
+  left: max(0.5rem, env(safe-area-inset-left, 0px));
+  right: max(0.5rem, env(safe-area-inset-right, 0px));
+  bottom: calc(var(--mission-bottom-clearance, 11rem) + 0.35rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-width: min(22rem, 94vw);
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(126, 214, 223, 0.35);
+  background: rgba(11, 18, 32, 0.88);
+  pointer-events: auto;
+}
+
+.lead {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--color-nebula-soft);
+}
+
+.sliderLabel {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--color-star);
+}
+
+.sliderRow {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.sliderEnd {
+  flex: 0 0 auto;
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: var(--color-star-muted);
+}
+
+.slider {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--color-nebula);
+  height: 1.5rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.launch,
+.retry {
+  flex: 1;
+  min-height: 2.25rem;
+  border-radius: 999px;
+  border: 1px solid rgba(126, 214, 223, 0.45);
+  background: rgba(61, 184, 197, 0.2);
+  color: var(--color-star);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.retry {
+  background: rgba(11, 18, 32, 0.65);
+}
+
+.launch:disabled,
+.retry:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ok {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--color-success);
+  line-height: 1.3;
+}
+
+.hint {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #ffe6b0;
+  line-height: 1.3;
+}
+
+.tries {
+  margin: 0;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--color-star-muted);
+}
+
+.note {
+  margin: 0;
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--color-star-muted);
+  opacity: 0.85;
+}

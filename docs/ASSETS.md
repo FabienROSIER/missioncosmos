@@ -62,6 +62,7 @@ URL publique type : `/assets/models/solarsystem/celestial-bodies/{body}/{body}.g
 - Source déclarée : pack CGTrader « Solar System Free Download »
 - **Usage actuel : personnel / privé** — validation licence commerciale non bloquante pour l’instant.
 - Avant distribution publique/commerciale : vérifier et documenter la licence.
+- **Publication GitHub Pages :** même frein que la musique — l’URL Pages diffuse les GLB/WebP. Confirmer la licence CGTrader (usage perso / redistribution web) avant activation Pages, ou retirer/remplacer le pack.
 - Anneaux Saturne procéduraux + matériau astéroïdes : générés pour Mission Cosmos.
 - Archives FBX/JPEG sources : **supprimées** de `src/3d/assets/` (2026-09-26).
 
@@ -145,10 +146,11 @@ Catalogue code : `src/content/audio/musicCatalog.ts`. Lecteur : `src/features/au
 - **Source :** musiques extraites / provenant de **Kerbal Space Program 1 (KSP1)** (jeu Squad / Take-Two Interactive — Private Division).
 - **Droits :** contenu propriétaire du jeu ; **pas** une licence libre (pas CC, pas usage commercial implicite).
 - **Usage actuel : personnel / privé** (développement Mission Cosmos) — **non validé** pour distribution publique, PWA publiée, store ou usage commercial.
+- **Blocage publication GitHub Pages (2026-09-28) :** une URL Pages est publiquement accessible. Publier ces MP3 sans autorisation Take-Two / sans remplacement sous licence compatible reste interdit par la politique assets du projet.
 - Avant toute publication : remplacer par des pistes sous licence compatible **ou** obtenir une autorisation explicite ; retirer ces fichiers du dépôt public le cas échéant.
 - Crédit provisoire (écran crédits à prévoir) : *Musique : Kerbal Space Program (Squad / Take-Two)*.
 
-État registre : **Temporaire** (bloquant pour release publique).
+État registre : **Temporaire** (bloquant pour release publique / Pages).
 
 
 ## Règles

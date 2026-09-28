@@ -1,4 +1,5 @@
 import { ASSETS_PUBLIC_ROOT } from '@/lib/constants';
+import { withBasePath } from '@/lib/basePath';
 import { shuffleArray } from '@/lib/shuffle';
 
 /**
@@ -33,7 +34,7 @@ export const GAME_MUSIC: readonly MusicTrack[] = [
 ] as const;
 
 export function musicPublicUrl(file: string): string {
-  return `${ASSETS_PUBLIC_ROOT}/audio/music/${encodeURIComponent(file)}`;
+  return withBasePath(`${ASSETS_PUBLIC_ROOT}/audio/music/${encodeURIComponent(file)}`);
 }
 
 /** Mélange Fisher–Yates (copie). */

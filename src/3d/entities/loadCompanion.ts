@@ -8,6 +8,7 @@ import {
 } from '@babylonjs/core';
 import '@babylonjs/loaders/glTF';
 import { COMPANION_3D_URL } from '@/lib/assets/paths';
+import { withBasePath } from '@/lib/basePath';
 
 export type CompanionClip =
   | 'idle'
@@ -47,9 +48,10 @@ export async function loadCompanion(
   targetHeight = 0.1,
   url: string = COMPANION_3D_URL,
 ): Promise<LoadedCompanion> {
-  const slash = url.lastIndexOf('/');
-  const rootUrl = slash >= 0 ? url.slice(0, slash + 1) : '/';
-  const fileName = slash >= 0 ? url.slice(slash + 1) : url;
+  const resolved = withBasePath(url);
+  const slash = resolved.lastIndexOf('/');
+  const rootUrl = slash >= 0 ? resolved.slice(0, slash + 1) : '/';
+  const fileName = slash >= 0 ? resolved.slice(slash + 1) : resolved;
 
   const result = await SceneLoader.ImportMeshAsync('', rootUrl, fileName, scene);
   const pivot = new TransformNode('companion-pivot', scene);

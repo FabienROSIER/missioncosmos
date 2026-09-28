@@ -1,0 +1,53 @@
+.bar {
+  position: fixed;
+  z-index: 40;
+  left: max(0.75rem, env(safe-area-inset-left));
+  right: max(0.75rem, env(safe-area-inset-right));
+  bottom: max(0.75rem, env(safe-area-inset-bottom));
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  background: rgba(11, 18, 32, 0.94);
+  border: 1px solid rgba(61, 184, 197, 0.35);
+  color: var(--color-text, #f4f7fb);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+}
+
+.text {
+  margin: 0;
+  flex: 1 1 12rem;
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.dismiss,
+.install {
+  min-height: 44px;
+  padding: 0.45rem 0.9rem;
+  border-radius: 10px;
+  border: none;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dismiss {
+  background: transparent;
+  color: rgba(244, 247, 251, 0.8);
+  border: 1px solid rgba(244, 247, 251, 0.25);
+}
+
+.install {
+  background: #3db8c5;
+  color: #0b1220;
+}

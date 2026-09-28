@@ -4,7 +4,6 @@ import { MISSION_CATALOG } from '@/content/missions/catalog';
 export type UniverseZoneId =
   | 'earth'
   | 'moon'
-  | 'earth-neighborhood'
   | 'solar-system'
   | 'stars'
   | 'milky-way'
@@ -23,7 +22,8 @@ export type UniverseZone = {
 
 /**
  * Ordre de gauche à droite sur la carte.
- * Missions actuelles : Terre (01–02), Lune (03–04), Système solaire (05).
+ * Aligné mix C : 8 zones, chacune ≥1 mission (01–13).
+ * (Zone « Voisinage » retirée — orpheline.)
  */
 export const UNIVERSE_ZONES: UniverseZone[] = [
   {
@@ -39,46 +39,40 @@ export const UNIVERSE_ZONES: UniverseZone[] = [
     missionIds: ['mission-03', 'mission-04'],
   },
   {
-    id: 'earth-neighborhood',
-    title: 'Voisinage',
-    blurb: 'Autour de la Terre.',
-    missionIds: [],
-  },
-  {
     id: 'solar-system',
     title: 'Système solaire',
-    blurb: 'Planètes et Soleil.',
-    missionIds: ['mission-05'],
+    blurb: 'Planètes, orbites et saisons.',
+    missionIds: ['mission-05', 'mission-06', 'mission-07'],
   },
   {
     id: 'stars',
     title: 'Étoiles',
     blurb: 'Soleil et autres soleils.',
-    missionIds: [],
+    missionIds: ['mission-08', 'mission-09'],
   },
   {
     id: 'milky-way',
     title: 'Voie lactée',
     blurb: 'Notre galaxie.',
-    missionIds: [],
+    missionIds: ['mission-10'],
   },
   {
     id: 'galaxies',
     title: 'Galaxies',
     blurb: 'D’autres îles d’étoiles.',
-    missionIds: [],
+    missionIds: ['mission-11'],
   },
   {
     id: 'deep-universe',
     title: 'Univers profond',
-    blurb: 'Très loin dans le temps.',
-    missionIds: [],
+    blurb: 'Les distances immenses.',
+    missionIds: ['mission-12'],
   },
   {
     id: 'extremes',
     title: 'Extrêmes',
     blurb: 'Phénomènes hors du commun.',
-    missionIds: [],
+    missionIds: ['mission-13'],
   },
 ];
 

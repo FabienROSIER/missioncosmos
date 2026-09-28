@@ -354,7 +354,8 @@
 }
 
 .planetChoice,
-.planetChoiceActive {
+.planetChoiceActive,
+.planetChoiceCorrect {
   display: flex;
   align-items: center;
   gap: 0.4rem;
@@ -377,8 +378,16 @@
   color: #ffe6b0;
 }
 
+/* Bonne réponse : vert pâle transparent (aligné QuizChoice.correct). */
+.planetChoiceCorrect {
+  border-color: rgba(95, 207, 138, 0.75);
+  background: rgba(95, 207, 138, 0.18);
+  color: #d8f5e4;
+}
+
 .planetChoice:disabled,
-.planetChoiceActive:disabled {
+.planetChoiceActive:disabled,
+.planetChoiceCorrect:disabled {
   cursor: default;
 }
 

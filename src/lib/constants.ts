@@ -7,10 +7,13 @@ export const TARGET_AGE = { min: 6, max: 12 } as const;
 /** Version du schéma de sauvegarde locale */
 export const SAVE_SCHEMA_VERSION = 1;
 
-/** Racine publique des assets (servie depuis /public/assets) */
+/**
+ * Racine logique des assets (sans basePath).
+ * Pour une URL réelle (fetch / Babylon / CSS), passer par `withBasePath()`.
+ */
 export const ASSETS_PUBLIC_ROOT = '/assets';
 
-/** Pack corps célestes (GLB indépendants) — chemin réel sur disque */
+/** Pack corps célestes (GLB indépendants) — chemin logique */
 export const CELESTIAL_BODIES_BASE =
   `${ASSETS_PUBLIC_ROOT}/models/solarsystem/celestial-bodies` as const;
 

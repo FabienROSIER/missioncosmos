@@ -3,10 +3,12 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { SOLAR_SYSTEM_PLANETS } from '@/content/bodies/solarSystem';
 import {
-  DISTANCE_FLIGHTS,
+  DISTANCE_ROUND_COUNT,
   assessFlight,
+  buildDistanceDeck,
   celestialPortraitUrl,
   nearestPlanetId,
+  type DistanceFlight,
 } from '@/content/bodies/solarLearningGames';
 import { SolarDistanceRail } from './SolarDistanceRail';
 import quizStyles from '@/features/missions/MissionQuiz.module.css';
@@ -20,15 +22,17 @@ type SolarDistancePanelProps = {
 };
 
 export function SolarDistancePanel({ onComplete, schemaPortalId }: SolarDistancePanelProps) {
+  const [deck] = useState<DistanceFlight[]>(() => buildDistanceDeck(DISTANCE_ROUND_COUNT));
   const [round, setRound] = useState(0);
   const [choice, setChoice] = useState<number | null>(null);
   const [complete, setComplete] = useState(false);
   const [schemaHost, setSchemaHost] = useState<HTMLElement | null>(null);
-  const [order, setOrder] = useState(() => shuffledIndices(DISTANCE_FLIGHTS[0]!.choices.length));
-  const flight = DISTANCE_FLIGHTS[round]!;
+  const [order, setOrder] = useState(() => shuffledIndices(deck[0]!.choices.length));
+  const flight = deck[round]!;
   const body = SOLAR_SYSTEM_PLANETS[flight.target];
-  const assessment = assessFlight(choice ?? -1, round);
+  const assessment = assessFlight(choice ?? -1, flight);
   const solved = assessment.success;
+  const lastRound = round === deck.length - 1;
 
   useEffect(() => {
     if (!schemaPortalId) {
@@ -42,7 +46,7 @@ export function SolarDistancePanel({ onComplete, schemaPortalId }: SolarDistance
     !complete && schemaHost
       ? createPortal(
           <SolarDistanceRail
-            round={round}
+            flight={flight}
             choice={choice}
             solved={solved}
             order={order}
@@ -57,7 +61,9 @@ export function SolarDistancePanel({ onComplete, schemaPortalId }: SolarDistance
       {rail}
       <div className={`${quizStyles.root} ${quizStyles.compact}`} aria-label="Mini-jeu des distances">
         <p className={quizStyles.progress}>
-          {complete ? 'Mission accomplie · 3 / 3' : `Cap sur ${body.nameFr} · ${round + 1} / 3`}
+          {complete
+            ? `Mission accomplie · ${deck.length} / ${deck.length}`
+            : `Cap sur ${body.nameFr} · ${round + 1} / ${deck.length}`}
         </p>
 
         {complete ? (
@@ -83,7 +89,13 @@ export function SolarDistancePanel({ onComplete, schemaPortalId }: SolarDistance
                   <button
                     key={`${round}-${originalIndex}`}
                     type="button"
-                    className={selected ? styles.planetChoiceActive : styles.planetChoice}
+                    className={
+                      selected
+                        ? solved
+                          ? styles.planetChoiceCorrect
+                          : styles.planetChoiceActive
+                        : styles.planetChoice
+                    }
                     disabled={solved}
                     aria-pressed={selected}
                     aria-label={revealed ? `Repère ${num} : ${name}` : `Repère ${num}`}
@@ -115,18 +127,18 @@ export function SolarDistancePanel({ onComplete, schemaPortalId }: SolarDistance
                 type="button"
                 className={quizStyles.next}
                 onClick={() => {
-                  if (round === 2) {
+                  if (lastRound) {
                     setComplete(true);
                     onComplete?.();
                   } else {
                     const next = round + 1;
                     setRound(next);
                     setChoice(null);
-                    setOrder(shuffledIndices(DISTANCE_FLIGHTS[next]!.choices.length));
+                    setOrder(shuffledIndices(deck[next]!.choices.length));
                   }
                 }}
               >
-                {round === 2 ? 'J’ai réussi !' : 'Planète suivante →'}
+                {lastRound ? 'J’ai réussi !' : 'Mission suivante →'}
               </button>
             )}
           </>

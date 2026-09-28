@@ -1,9 +1,14 @@
-/** Chemins assets UI — alignés sur public/assets */
+/** Chemins assets UI — URLs publiques (avec basePath Pages si défini). */
 
-export const COMPANION_BASE = '/assets/sprites/companion' as const;
+import { ASSETS_PUBLIC_ROOT } from '@/lib/constants';
+import { withBasePath } from '@/lib/basePath';
+
+export const COMPANION_BASE = withBasePath(`${ASSETS_PUBLIC_ROOT}/sprites/companion`);
 
 /** Compagnon 3D (scènes Mission 02–04) — dossier orthographe asset telle quelle. */
-export const COMPANION_3D_URL = '/assets/models/compagon/compagon.glb' as const;
+export const COMPANION_3D_URL = withBasePath(
+  `${ASSETS_PUBLIC_ROOT}/models/compagon/compagon.glb`,
+);
 
 export const COMPANION_POSES = [
   'neutral',
@@ -24,10 +29,19 @@ export function companionSrc(pose: CompanionPose, size: 256 | 512 = 256): string
   return `${COMPANION_BASE}/ast-003-companion-${pose}${suffix}.webp`;
 }
 
-export const LOGO_SRC = '/assets/icons/ast-001-mission-cosmos-logo.png' as const;
+export const LOGO_SRC = withBasePath(
+  `${ASSETS_PUBLIC_ROOT}/icons/ast-001-mission-cosmos-logo.png`,
+);
+
+/** Icônes PWA (générées depuis le logo AST-001) */
+export const PWA_ICON_192 = withBasePath(`${ASSETS_PUBLIC_ROOT}/icons/icon-192.png`);
+export const PWA_ICON_512 = withBasePath(`${ASSETS_PUBLIC_ROOT}/icons/icon-512.png`);
+export const PWA_APPLE_TOUCH = withBasePath(
+  `${ASSETS_PUBLIC_ROOT}/icons/apple-touch-icon.png`,
+);
 
 /** Fonds spatiaux — manifest : public/assets/textures/backgrounds/manifest.json */
-export const SKY_BASE = '/assets/textures/backgrounds' as const;
+export const SKY_BASE = withBasePath(`${ASSETS_PUBLIC_ROOT}/textures/backgrounds`);
 
 export const SKY_BACKGROUNDS = ['starfield', 'nebula', 'milky-way'] as const;
 
@@ -52,5 +66,4 @@ export function skyBackgroundSrc(
  * Fond image pour scènes 3D (préférence produit : plus joli que procédural).
  * À réutiliser pour les prochaines missions.
  */
-export const MISSION_STARFIELD_SRC =
-  `${SKY_BASE}/ast-021-space-starfield-fine-v2.webp` as const;
+export const MISSION_STARFIELD_SRC = `${SKY_BASE}/ast-021-space-starfield-fine-v2.webp`;

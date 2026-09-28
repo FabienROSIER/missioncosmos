@@ -1,5 +1,6 @@
 import { Color3, Mesh, MeshBuilder, StandardMaterial, Texture, type Scene } from '@babylonjs/core';
 import { MISSION_STARFIELD_SRC } from '@/lib/assets/paths';
+import { withBasePath } from '@/lib/basePath';
 
 export type ImageSpaceBackgroundOptions = {
   /** UV tiling — garde les étoiles petites sur la voûte. */
@@ -23,6 +24,7 @@ export function createSpaceBackground(
   const uScale = options.uScale ?? 4;
   const vScale = options.vScale ?? 2;
   const level = options.level ?? 0.8;
+  const resolvedUrl = withBasePath(url);
 
   const dome = MeshBuilder.CreateSphere(
     'image-starfield-dome',
@@ -39,7 +41,7 @@ export function createSpaceBackground(
   dome.alwaysSelectAsActiveMesh = true;
   dome.freezeWorldMatrix();
 
-  const texture = new Texture(url, scene);
+  const texture = new Texture(resolvedUrl, scene);
   texture.gammaSpace = true;
   texture.wrapU = Texture.WRAP_ADDRESSMODE;
   texture.wrapV = Texture.WRAP_ADDRESSMODE;

@@ -7,11 +7,11 @@ import {
   Camera,
   Color3,
   Color4,
+  Mesh,
   MeshBuilder,
   Quaternion,
   StandardMaterial,
   Vector3,
-  type Mesh,
   type Scene,
 } from '@babylonjs/core';
 import type { BabylonSceneContext } from '@/3d/core/BabylonCanvas';
@@ -24,6 +24,7 @@ import {
   createMissionCameraApi,
 } from '@/3d/controls/missionCamera';
 import { CelestialBodyEntity } from '@/3d/entities/CelestialBodyEntity';
+import { playPlanetSuccessHalo } from '@/3d/fx/planetSuccessHalo';
 import {
   applyEmissiveSunMaterial,
   applyPlanetaryMaterials,
@@ -212,13 +213,12 @@ export function SolarSystemScene({
     const planetEntities = new Map<PlanetId, CelestialBodyEntity>();
     const orbitRings: OrbitRing[] = [];
 
-    // Angles étalés pour éviter l’alignement radial (évoluent en mode ciné)
-    const startAngles = PLANET_ORDER.map((_, i) => (i / PLANET_ORDER.length) * Math.PI * 2 + 0.35);
-    const orbitAngles = [...startAngles];
+    // Angles aléatoires sur chaque orbite (toute la mission ; évoluent en mode ciné)
+    const orbitAngles = PLANET_ORDER.map(() => Math.random() * Math.PI * 2);
 
     await Promise.all(
       PLANET_ORDER.map(async (id, i) => {
-        const angle = startAngles[i]!;
+        const angle = orbitAngles[i]!;
         const orbit = resolveOrbit(id);
         const entity = await CelestialBodyEntity.create(scene, {
           definition: planetDefinition(id),
@@ -458,6 +458,10 @@ export function SolarSystemScene({
         const expected = PLANET_ORDER[orderIndex]!;
         if (id === expected) {
           selectBody(id);
+          const entity = planetEntities.get(id);
+          if (entity) {
+            playPlanetSuccessHalo(scene, entity.pivot.position.clone(), radiusFor(id));
+          }
           orderIndex += 1;
           if (orderIndex >= PLANET_ORDER.length) {
             orderDone = true;
