@@ -1,5 +1,7 @@
 'use client';
 
+import { SceneControls } from '@/components/layout/SceneControls';
+
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ArcRotateCamera,
@@ -130,6 +132,7 @@ export function OrbitsScene({
   const [raceMode, setRaceMode] = useState(false);
   const [card, setCard] = useState<PlanetCard | null>(null);
   const [raceHint, setRaceHint] = useState<string | null>(null);
+  const mobilePickRef = useRef<((id: OrbitComparePlanetId) => void) | null>(null);
   const apiRef = useRef<OrbitsSceneApi | null>(null);
   const onSceneApiRef = useRef(onSceneApi);
   const onRaceSuccessRef = useRef(onRaceSuccess);
@@ -145,12 +148,15 @@ export function OrbitsScene({
     onRaceMissRef.current = onRaceMiss;
   }, [onRaceMiss]);
 
-  const applySpeed = useCallback((mult: OrbitSpeedPreset) => {
-    // Défi course : Pause ou Normal seulement
-    if (raceMode && mult > 1) return;
-    setSpeedUi(mult);
-    apiRef.current?.setSpeed(mult);
-  }, [raceMode]);
+  const applySpeed = useCallback(
+    (mult: OrbitSpeedPreset) => {
+      // Défi course : Pause ou Normal seulement
+      if (raceMode && mult > 1) return;
+      setSpeedUi(mult);
+      apiRef.current?.setSpeed(mult);
+    },
+    [raceMode],
+  );
 
   const onSceneReady = useCallback(async ({ engine, scene }: BabylonSceneContext) => {
     const quality = resolveGraphicsQuality();
@@ -285,6 +291,8 @@ export function OrbitsScene({
       }
     };
 
+    mobilePickRef.current = handlePick;
+
     const pickObs = ORBIT_COMPARE_PLANETS.map((id) =>
       planetEntities.get(id)!.onPick.add(() => handlePick(id)),
     );
@@ -364,6 +372,7 @@ export function OrbitsScene({
       sun.dispose();
       background.dispose();
       lighting.dispose();
+      mobilePickRef.current = null;
       apiRef.current = null;
     };
   }, []);
@@ -371,7 +380,7 @@ export function OrbitsScene({
   return (
     <div className={[styles.wrap, className].filter(Boolean).join(' ')}>
       <BabylonCanvas className={styles.canvas} fill={fill} onSceneReady={onSceneReady} />
-      <div className={styles.hud} aria-label="Contrôles du temps">
+      <SceneControls className={styles.hud} aria-label="Contrôles du temps">
         <div className={styles.speedRow} role="group" aria-label="Vitesse de simulation">
           {(
             [
@@ -396,6 +405,18 @@ export function OrbitsScene({
             );
           })}
         </div>
+        <div className={styles.mobileTargets} role="group" aria-label="Toucher une planète">
+          {ORBIT_COMPARE_PLANETS.map((id) => (
+            <button
+              type="button"
+              key={id}
+              className={styles.speedBtn}
+              onClick={() => mobilePickRef.current?.(id)}
+            >
+              {SOLAR_SYSTEM_PLANETS[id].nameFr}
+            </button>
+          ))}
+        </div>
         {card ? (
           <div className={styles.card} role="status">
             <p className={styles.cardTitle}>{card.name}</p>
@@ -410,7 +431,7 @@ export function OrbitsScene({
         <p className={styles.scaleNote}>
           Cercles pour comparer · 1 tour Terre ≈ {Math.round(EARTH_ORBIT_PERIOD_DAYS)} j en vrai
         </p>
-      </div>
+      </SceneControls>
     </div>
   );
 }

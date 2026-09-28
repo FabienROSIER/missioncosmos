@@ -104,6 +104,7 @@ export function EarthPreviewScene({
   onOrbitChallengeSuccess,
   markersVisible = false,
 }: EarthPreviewSceneProps) {
+  const [orbitView, setOrbitView] = useState(false);
   const [label, setLabel] = useState<LabelState | null>(null);
   const [sunLabel, setSunLabel] = useState<LabelState | null>(null);
   const markersRef = useRef<EarthMarkersHandle | null>(null);
@@ -369,6 +370,7 @@ export function EarthPreviewScene({
           else stopOrbitDetect();
         },
         setOrbitViewEnabled: (enabled) => {
+          setOrbitView(enabled);
           if (enabled) enterOrbitView();
           else exitOrbitView();
         },
@@ -418,6 +420,7 @@ export function EarthPreviewScene({
         className={styles.canvas}
         fill={fill}
         onSceneReady={onSceneReady}
+        mobileFovScale={orbitView ? 1.4 : 0.8}
         loadingMessage="Approche de la Terre…"
       />
       {label ? (

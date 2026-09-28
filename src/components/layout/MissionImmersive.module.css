@@ -417,3 +417,190 @@
   font-size: 0.72rem;
   line-height: 1.2;
 }
+
+/* Preserve the existing containing block on desktop. */
+.sceneArea {
+  display: contents;
+}
+.controlsSlot:empty,
+.mobilePanelNav {
+  display: none;
+}
+
+/* Phone layout: the canvas and reading panel never cover one another. */
+@media (max-width: 899px), (pointer: coarse) and (max-width: 1180px) and (max-height: 600px) {
+  .stage {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr);
+    touch-action: auto;
+  }
+  .stage .sceneArea {
+    display: block;
+    position: relative;
+    grid-row: 2;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    --mission-top-clearance: 0px;
+    --mission-bottom-clearance: 0px;
+  }
+  .stage .topBar {
+    position: relative;
+    grid-row: 1;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.25rem 0.5rem;
+    padding: max(0.35rem, env(safe-area-inset-top)) max(0.5rem, env(safe-area-inset-right)) 0.35rem
+      max(0.5rem, env(safe-area-inset-left));
+    background: #0b1220;
+  }
+  .stage .title {
+    grid-column: 2 / -1;
+    min-width: 0;
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+  .stage .ghostBtn,
+  .stage .recenter {
+    flex: 1;
+    min-height: 44px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+  }
+  .stage .bottomBar {
+    position: relative;
+    grid-row: 3;
+    inset: auto;
+    width: 100%;
+    max-height: 42dvh;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+    justify-content: flex-start;
+    align-items: stretch;
+    padding: 0.5rem max(0.5rem, env(safe-area-inset-right)) max(0.5rem, env(safe-area-inset-bottom))
+      max(0.5rem, env(safe-area-inset-left));
+    background: #0b1220;
+    border-top: 1px solid var(--color-border);
+    pointer-events: auto;
+    scroll-padding-block: 0.75rem;
+  }
+  .stage .bottomBar > * {
+    flex-shrink: 0;
+  }
+  .stage .tipCard {
+    width: 100%;
+    max-height: none;
+    overflow: visible;
+    padding: 0.65rem;
+    margin: 0;
+    background: #152238;
+  }
+  .stage .tipCard button,
+  .stage .tipCard a,
+  .stage .resumeDismiss {
+    min-height: 48px;
+    font-size: 0.875rem;
+    line-height: 1.35;
+  }
+  .stage .tipBody,
+  .stage .hint,
+  .stage .success,
+  .stage .companionLine {
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+  .stage .tipBody button {
+    min-height: 0;
+    padding: 0;
+    font: inherit;
+    font-weight: 800;
+    line-height: inherit;
+  }
+  .stage .notice {
+    font-size: 0.7rem;
+    order: 3;
+  }
+  .stage .schemaRoot {
+    inset: 0;
+    transform: none;
+    padding: 0.5rem;
+    overflow: auto;
+    touch-action: pan-y;
+    align-items: safe center;
+    pointer-events: auto;
+  }
+  .stage .schemaRoot:empty {
+    display: none;
+  }
+}
+@media (orientation: landscape) and (max-width: 899px),
+  (orientation: landscape) and (pointer: coarse) and (max-width: 1180px) and (max-height: 600px) {
+  .stage {
+    grid-template-columns: minmax(0, 1fr) clamp(16rem, 36vw, 22rem);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .stage .topBar {
+    display: flex;
+    grid-column: 1 / -1;
+    flex-wrap: nowrap;
+  }
+  .stage .title {
+    flex: 1;
+  }
+  .stage .ghostBtn,
+  .stage .recenter {
+    flex: 0 0 auto;
+  }
+  .stage .sceneArea {
+    grid-column: 1;
+  }
+  .stage .bottomBar {
+    grid-column: 2;
+    grid-row: 2;
+    height: 100%;
+    max-height: none;
+    border-top: 0;
+    border-left: 1px solid var(--color-border);
+  }
+}
+
+@media (max-width: 899px), (pointer: coarse) and (max-width: 1180px) and (max-height: 600px) {
+  .mobilePanelNav {
+    display: flex;
+    position: sticky;
+    top: -0.5rem;
+    z-index: 2;
+    gap: 0.5rem;
+    padding-block: 0.25rem;
+    background: #0b1220;
+  }
+  .mobilePanelNav button {
+    flex: 1;
+    min-height: 44px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--color-star);
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .mobilePanelNav button[aria-pressed='true'] {
+    background: var(--color-nebula);
+    color: var(--color-space-950);
+  }
+  .stage .controlsSlot {
+    display: none;
+  }
+  .showControls .controlsSlot {
+    display: block;
+  }
+  .showControls .tipCard,
+  .showControls .notice {
+    display: none;
+  }
+}

@@ -1,5 +1,7 @@
 'use client';
 
+import { SceneControls } from '@/components/layout/SceneControls';
+
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ArcRotateCamera,
@@ -439,10 +441,10 @@ export function OrbitFallScene({
   return (
     <div className={[styles.wrap, className].filter(Boolean).join(' ')}>
       <BabylonCanvas className={styles.canvas} fill={fill} onSceneReady={onSceneReady} />
-      <div className={styles.hud}>
+      <SceneControls className={styles.hud}>
         <p className={styles.lead}>
-          Règle la vitesse, puis lance {COMPANION_TEMP_NAME}. Observe : tombe, tourne, ou
-          s’éloigne ?
+          Règle la vitesse, puis lance {COMPANION_TEMP_NAME}. Observe : tombe, tourne, ou s’éloigne
+          ?
         </p>
         <label className={styles.sliderLabel} htmlFor="orbit-fall-speed">
           Vitesse de lancement
@@ -490,11 +492,9 @@ export function OrbitFallScene({
               : status}
           </p>
         ) : null}
-        {attempts > 0 ? (
-          <p className={styles.tries}>Essai {attempts}</p>
-        ) : null}
+        {attempts > 0 ? <p className={styles.tries}>Essai {attempts}</p> : null}
         <p className={styles.note}>Maquette : pas un simulateur exact.</p>
-      </div>
+      </SceneControls>
     </div>
   );
 }

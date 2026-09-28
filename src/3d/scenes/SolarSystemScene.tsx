@@ -1,5 +1,7 @@
 'use client';
 
+import { SceneControls } from '@/components/layout/SceneControls';
+
 import '@babylonjs/core/Culling/ray';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
@@ -146,6 +148,7 @@ export function SolarSystemScene({
   );
   const [orderProgress, setOrderProgress] = useState<string | null>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
+  const mobilePickRef = useRef<((id: PlanetId | 'sun') => void) | null>(null);
   const apiRef = useRef<SolarSystemSceneApi | null>(null);
   const onSceneApiRef = useRef(onSceneApi);
   const onPlanetSelectRef = useRef(onPlanetSelect);
@@ -499,6 +502,8 @@ export function SolarSystemScene({
       selectBody(id);
     };
 
+    mobilePickRef.current = handlePick;
+
     sun.onPick.add(() => handlePick('sun'));
     for (const id of PLANET_ORDER) {
       planetEntities.get(id)!.onPick.add(() => handlePick(id));
@@ -608,11 +613,7 @@ export function SolarSystemScene({
 
     // Mode ciné (quiz+) : planètes en orbite + spin ; caméra suit le corps focalisé
     const cineObserver = scene.onBeforeRenderObservable.add(() => {
-      if (
-        scaleMode !== 'readable' ||
-        !cinematic ||
-        prefersReducedMotion()
-      ) {
+      if (scaleMode !== 'readable' || !cinematic || prefersReducedMotion()) {
         return;
       }
       const dt = scene.getEngine().getDeltaTime() / 1000;
@@ -642,6 +643,7 @@ export function SolarSystemScene({
     return () => {
       scene.onBeforeRenderObservable.remove(cineObserver);
       resize.disconnect();
+      mobilePickRef.current = null;
       apiRef.current = null;
       perf.dispose();
       for (const ring of orbitRings) ring.dispose();
@@ -694,7 +696,7 @@ export function SolarSystemScene({
         )}
       </div>
 
-      <div className={styles.hud} onPointerDown={(e) => e.stopPropagation()}>
+      <SceneControls className={styles.hud} onPointerDown={(e) => e.stopPropagation()}>
         {scaleModeLabel === 'readable' && (
           <>
             <div className={styles.navRow} role="group" aria-label="Navigation planètes">
@@ -707,6 +709,18 @@ export function SolarSystemScene({
               <button type="button" className={styles.hudBtn} onClick={onNext}>
                 Suiv.
               </button>
+            </div>
+            <div className={styles.mobileTargets} role="group" aria-label="Toucher une planète">
+              {PLANET_ORDER.map((id) => (
+                <button
+                  type="button"
+                  key={id}
+                  className={styles.hudBtn}
+                  onClick={() => mobilePickRef.current?.(id)}
+                >
+                  {SOLAR_SYSTEM_PLANETS[id].nameFr}
+                </button>
+              ))}
             </div>
             <p className={styles.progress}>
               Maquette : tailles et distances adaptées. Positions illustratives.
@@ -725,7 +739,7 @@ export function SolarSystemScene({
             {fact.orderHint ? <p className={styles.factHint}>{fact.orderHint}</p> : null}
           </article>
         ) : null}
-      </div>
+      </SceneControls>
     </div>
   );
 }

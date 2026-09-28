@@ -1,5 +1,7 @@
 'use client';
 
+import { SceneControls } from '@/components/layout/SceneControls';
+
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ArcRotateCamera,
@@ -110,7 +112,10 @@ function createAxis(scene: Scene, length: number) {
   };
 }
 
-function createRays(scene: Scene): { update: (from: Vector3, to: Vector3) => void; dispose: () => void } {
+function createRays(scene: Scene): {
+  update: (from: Vector3, to: Vector3) => void;
+  dispose: () => void;
+} {
   let line: LinesMesh | null = null;
   const matColor = new Color3(1, 0.85, 0.35);
   return {
@@ -268,7 +273,8 @@ export function SeasonsScene({
       if (!dragEnabled) return;
       if (info.type === PointerEventTypes.POINTERDOWN) {
         const mesh = info.pickInfo?.pickedMesh;
-        const hitEarth = mesh && earth.meshes.some((m) => m === mesh || mesh.isDescendantOf(earth.pivot));
+        const hitEarth =
+          mesh && earth.meshes.some((m) => m === mesh || mesh.isDescendantOf(earth.pivot));
         dragging = Boolean(hitEarth);
       } else if (
         info.type === PointerEventTypes.POINTERUP ||
@@ -340,8 +346,13 @@ export function SeasonsScene({
 
   return (
     <div className={[styles.wrap, className].filter(Boolean).join(' ')}>
-      <BabylonCanvas className={styles.canvas} fill={fill} onSceneReady={onSceneReady} />
-      <div className={styles.hud}>
+      <BabylonCanvas
+        className={styles.canvas}
+        fill={fill}
+        mobileFovScale={1.65}
+        onSceneReady={onSceneReady}
+      />
+      <SceneControls className={styles.hud}>
         <div className={styles.seasonRow} aria-live="polite">
           <p className={styles.seasonChip}>
             Nord : <strong>{northLabel}</strong>
@@ -365,11 +376,7 @@ export function SeasonsScene({
           <button type="button" className={styles.jumpBtn} onClick={() => jump(0)}>
             Printemps
           </button>
-          <button
-            type="button"
-            className={styles.jumpBtn}
-            onClick={() => jump(NORTH_SUMMER_ANGLE)}
-          >
+          <button type="button" className={styles.jumpBtn} onClick={() => jump(NORTH_SUMMER_ANGLE)}>
             Été N
           </button>
           <button type="button" className={styles.jumpBtn} onClick={() => jump(Math.PI)}>
@@ -389,7 +396,7 @@ export function SeasonsScene({
           </p>
         ) : null}
         <p className={styles.note}>Glisse la Terre sur l’anneau · maquette simplifiée</p>
-      </div>
+      </SceneControls>
     </div>
   );
 }

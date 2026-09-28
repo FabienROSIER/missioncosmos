@@ -98,3 +98,13 @@
     font-size: 0.6rem;
   }
 }
+
+@media (max-width: 899px), (pointer: coarse) and (max-width: 1180px) and (max-height: 600px) {
+  .earthPip {
+    top: 0.5rem;
+    bottom: auto;
+    left: 0.5rem;
+    width: min(36%, 9rem);
+    max-height: 38%;
+  }
+}

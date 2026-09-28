@@ -1,15 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import {
-  ArcRotateCamera,
-  Color4,
-  Engine,
-  HemisphericLight,
-  Scene,
-  Vector3,
-} from '@babylonjs/core';
+import { ArcRotateCamera, Color4, Engine, HemisphericLight, Scene, Vector3 } from '@babylonjs/core';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
+import { MOBILE_GAME_QUERY } from '@/lib/mobileLayout';
 import { logger } from '@/lib/logger';
 import styles from './BabylonCanvas.module.css';
 
@@ -30,6 +24,8 @@ type BabylonCanvasProps = {
   loadingMessage?: string;
   /** Remplit le parent sans min-height forcée (missions immersives). */
   fill?: boolean;
+  /** Phone framing margin; leaves the desktop projection unchanged. */
+  mobileFovScale?: number;
 };
 
 /**
@@ -42,15 +38,23 @@ export function BabylonCanvas({
   onSceneReady,
   loadingMessage = 'Chargement de la scène…',
   fill = false,
+  mobileFovScale = 1.4,
 }: BabylonCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const onSceneReadyRef = useRef<SceneReadyHandler | undefined>(onSceneReady);
+  const mobileFovScaleRef = useRef(mobileFovScale);
+  const resizeRef = useRef<(() => void) | null>(null);
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     onSceneReadyRef.current = onSceneReady;
   }, [onSceneReady]);
+
+  useEffect(() => {
+    mobileFovScaleRef.current = mobileFovScale;
+    resizeRef.current?.();
+  }, [mobileFovScale]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -64,9 +68,25 @@ export function BabylonCanvas({
     let contextRestoredHandler: (() => void) | undefined;
     let booting = false;
 
+    let mainCamera: ArcRotateCamera | undefined;
+    const mobileLayout = window.matchMedia(MOBILE_GAME_QUERY);
     const onResize = () => {
       engine?.resize();
+      if (!mainCamera) return;
+      // Fit the smaller game area without changing camera targets, zoom gestures or PiP cameras.
+      const aspect = canvas.clientWidth / Math.max(1, canvas.clientHeight);
+      mainCamera.fov = mobileLayout.matches
+        ? 2 *
+          Math.atan(
+            Math.tan(0.8 / 2) *
+              Math.max(mobileFovScaleRef.current, mobileFovScaleRef.current / aspect),
+          )
+        : 0.8;
     };
+
+    resizeRef.current = onResize;
+    const resizeObserver = new ResizeObserver(onResize);
+    resizeObserver.observe(canvas);
 
     const tearDown = () => {
       try {
@@ -103,6 +123,8 @@ export function BabylonCanvas({
           Vector3.Zero(),
           scene,
         );
+        mainCamera = camera;
+        onResize();
         camera.attachControl(canvas, true);
         camera.lowerRadiusLimit = 2.2;
         camera.upperRadiusLimit = 10;
@@ -112,6 +134,7 @@ export function BabylonCanvas({
         camera.pinchDeltaPercentage = 0.02;
         new HemisphericLight('defaultLight', new Vector3(0, 1, 0), scene);
 
+        mobileLayout.addEventListener('change', onResize);
         window.addEventListener('resize', onResize);
         window.addEventListener('orientationchange', onResize);
 
@@ -176,6 +199,9 @@ export function BabylonCanvas({
     return () => {
       disposed = true;
       window.clearTimeout(startId);
+      resizeObserver.disconnect();
+      resizeRef.current = null;
+      mobileLayout.removeEventListener('change', onResize);
       window.removeEventListener('resize', onResize);
       window.removeEventListener('orientationchange', onResize);
       if (contextLostHandler) {
