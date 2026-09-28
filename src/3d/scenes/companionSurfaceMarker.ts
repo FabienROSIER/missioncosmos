@@ -205,7 +205,8 @@ export async function createCompanionSurfaceMarker(
     getLocalPosition: () => pivot.position.clone(),
     getViewPose,
     setLayerMask: (mask) => {
-      for (const mesh of pivot.getChildMeshes(true)) {
+      // Tous les meshes du GLB (hiérarchie imbriquée), pas seulement les enfants directs
+      for (const mesh of loaded.meshes) {
         mesh.layerMask = mask;
       }
     },
