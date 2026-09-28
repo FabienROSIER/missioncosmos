@@ -41,6 +41,18 @@ export const QUIZ_MISSION_01: Quiz = {
       explainCorrect: 'Oui : les pôles sont les extrémités de l’axe autour duquel la Terre tourne.',
       explainWrong: 'Les pôles sont les points orange en haut et en bas — pas le cercle du milieu.',
     },
+    {
+      id: 'q4-orbit',
+      prompt: 'L’orbite de la Terre, c’est…',
+      choices: [
+        { id: 'spin', label: 'La Terre qui tourne sur elle-même' },
+        { id: 'path-sun', label: 'Le chemin de la Terre autour du Soleil' },
+        { id: 'equator-line', label: 'Le cercle jaune au milieu du globe' },
+      ],
+      correctChoiceId: 'path-sun',
+      explainCorrect: 'Exact : l’orbite, c’est le chemin de la Terre autour du Soleil — comme une piste. Un tour ≈ une année.',
+      explainWrong: 'Tourner sur soi-même, c’est la rotation (jour/nuit). L’orbite, c’est avancer autour du Soleil.',
+    },
   ],
 };
 

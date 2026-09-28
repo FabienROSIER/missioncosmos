@@ -44,6 +44,7 @@ type ChallengeContext = {
   stepId: string;
   challengeSolved: boolean;
   targetMarkerId: EarthMarkerId | undefined;
+  challengeOrbit: boolean;
   successFeedback: string;
   hint: string;
 };
@@ -60,6 +61,7 @@ function challengeFromStep(step: MissionStep): {
   targetPhase: MoonPhaseId | undefined;
   targetEclipse: EclipseTarget | undefined;
   challengePlanetOrder: boolean;
+  challengeOrbit: boolean;
   successFeedback: string;
   hint: string;
 } {
@@ -69,6 +71,7 @@ function challengeFromStep(step: MissionStep): {
     targetPhase: step.targetPhase,
     targetEclipse: step.targetEclipse,
     challengePlanetOrder: Boolean(step.challengePlanetOrder),
+    challengeOrbit: Boolean(step.challengeOrbit),
     successFeedback: step.successFeedback ?? 'Oui, c’est ça !',
     hint: step.hint ?? 'Pas tout à fait — réessaie sans te presser.',
   };
@@ -99,6 +102,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
 
   const {
     step,
+    stepIndex,
     challengeSolved,
     canAdvance,
     resumeAvailable,
@@ -154,6 +158,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     targetPhase,
     targetEclipse,
     challengePlanetOrder,
+    challengeOrbit,
     successFeedback,
     hint,
   } = challengeFromStep(step);
@@ -197,6 +202,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     stepId: step.id,
     challengeSolved,
     targetMarkerId,
+    challengeOrbit,
     successFeedback,
     hint,
   });
@@ -207,17 +213,32 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
       stepId: step.id,
       challengeSolved,
       targetMarkerId,
+      challengeOrbit,
       successFeedback,
       hint,
     };
-  }, [step.kind, step.id, challengeSolved, targetMarkerId, successFeedback, hint]);
+  }, [step.kind, step.id, challengeSolved, targetMarkerId, challengeOrbit, successFeedback, hint]);
 
   useEffect(() => {
     if (!earthApi || isDayNight || isMoonPhases || isEclipses || isSolarSystem) return;
-    earthApi.setMarkersVisible(showMarkers);
-    earthApi.setChallengePickEnabled(challengeActive && Boolean(targetMarkerId));
 
-    if (challengeActive || (step.kind === 'challenge' && challengeSolved)) {
+    const orbitStepIndex = mission.steps.findIndex((s) => s.challengeOrbit);
+    const earthOrbitView = orbitStepIndex >= 0 && stepIndex >= orbitStepIndex;
+
+    earthApi.setOrbitViewEnabled(earthOrbitView);
+    earthApi.setOrbitChallengeEnabled(challengeActive && challengeOrbit);
+    earthApi.setMarkersVisible(showMarkers && !earthOrbitView);
+    earthApi.setChallengePickEnabled(
+      challengeActive && Boolean(targetMarkerId) && !earthOrbitView,
+    );
+    // Intro / manip : avance dès qu’on tourne assez le globe
+    earthApi.setOrbitDetectEnabled(
+      !earthOrbitView && (step.kind === 'intro' || step.kind === 'manipulate'),
+    );
+
+    if (earthOrbitView) {
+      earthApi.setMarkerHighlight(null);
+    } else if (challengeActive || (step.kind === 'challenge' && challengeSolved)) {
       earthApi.setMarkerHighlight(targetMarkerId ?? null);
     } else if (step.id.includes('pole')) {
       earthApi.setMarkerHighlight('north-pole');
@@ -232,9 +253,12 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     isMoonPhases,
     isEclipses,
     isSolarSystem,
+    mission.steps,
+    stepIndex,
     showMarkers,
     challengeActive,
     challengeSolved,
+    challengeOrbit,
     targetMarkerId,
     step.kind,
     step.id,
@@ -331,6 +355,19 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     },
     [markChallengeSolved, earthApi],
   );
+
+  const onSignificantOrbit = useCallback(() => {
+    if (step.kind !== 'intro' && step.kind !== 'manipulate') return;
+    setFeedback(null);
+    goNext();
+  }, [step.kind, goNext]);
+
+  const onOrbitChallengeSuccess = useCallback(() => {
+    const ctx = pickCtxRef.current;
+    if (ctx.stepKind !== 'challenge' || ctx.challengeSolved || !ctx.challengeOrbit) return;
+    setFeedback({ stepId: ctx.stepId, text: ctx.successFeedback, wrong: false });
+    markChallengeSolved();
+  }, [markChallengeSolved]);
 
   const onLightingSuccess = useCallback(
     (_lit: SurfaceLighting) => {
@@ -439,7 +476,9 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     funFact: step.kind === 'explain' && mission.funFacts?.[0] ? mission.funFacts[0] : undefined,
   });
 
-  const challengeHint = challengePlanetOrder
+  const challengeHint = challengeOrbit
+    ? 'Glisse à gauche ou à droite pour faire avancer la Terre sur l’anneau autour du Soleil.'
+    : challengePlanetOrder
     ? 'Touche Mercure, puis Vénus, Terre, Mars, Jupiter, Saturne, Uranus, Neptune.'
     : targetEclipse
       ? targetEclipse === 'solar'
@@ -509,6 +548,8 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
           markersVisible={showMarkers}
           onSceneApi={onEarthApi}
           onMarkerPick={onMarkerPick}
+          onSignificantOrbit={onSignificantOrbit}
+          onOrbitChallengeSuccess={onOrbitChallengeSuccess}
         />
       )}
 

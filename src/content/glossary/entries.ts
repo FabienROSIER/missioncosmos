@@ -46,6 +46,16 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     aliases: ['axe', 'axe de rotation', 'rotation'],
   },
   {
+    id: 'orbite',
+    term: 'Orbite',
+    definition:
+      'Le chemin que suit la Terre autour du Soleil, comme une piste en cercle. La Terre avance dessus sans s’arrêter.',
+    enrichedDefinition:
+      'Imagine une voiture sur une piste ronde : la voiture, c’est la Terre ; le milieu de la piste, c’est le Soleil. Un tour complet dure environ une année (365 jours). Tourner sur soi-même (jour/nuit), c’est autre chose. Ici, tailles et distances sont une maquette.',
+    unlockRewardId: 'reward-earth-explorer',
+    aliases: ['orbite', 'orbites', "l'orbite", 'l’orbite'],
+  },
+  {
     id: 'jour-nuit',
     term: 'Jour et nuit',
     definition:

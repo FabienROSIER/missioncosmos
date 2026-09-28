@@ -35,6 +35,8 @@ export interface MissionStep {
   targetEclipse?: 'solar' | 'lunar';
   /** Défi ordre des planètes (Mission 05). */
   challengePlanetOrder?: boolean;
+  /** Défi orbite Terre autour du Soleil (Mission 01). */
+  challengeOrbit?: boolean;
   successFeedback?: string;
   hint?: string;
   /** Quiz lié à une étape `kind: 'quiz'`. */

@@ -25,7 +25,7 @@ export type EarthMarkersHandle = {
 
 /**
  * Repères pédagogiques : pôles + équateur (plan XZ local, axe Y = pôles).
- * Ne touche jamais aux matériaux de la Terre — anneaux / points séparés.
+ * Style discret / graphique — mis en avant seulement pendant les défis.
  */
 export function createEarthMarkers(
   scene: Scene,
@@ -37,30 +37,32 @@ export function createEarthMarkers(
   const meshes: AbstractMesh[] = [];
   let surfacePickEnabled = false;
 
-  const north = MeshBuilder.CreateSphere(
+  const north = MeshBuilder.CreateDisc(
     'marker-north-pole',
-    { diameter: radius * 0.16, segments: 12 },
+    { radius: radius * 0.048, tessellation: 28 },
     scene,
   );
   north.parent = parent;
-  north.position = new Vector3(0, radius * 1.03, 0);
+  north.rotation.x = Math.PI / 2;
+  north.position = new Vector3(0, radius * 1.018, 0);
   north.metadata = { markerId: 'north-pole' satisfies EarthMarkerId };
 
-  const south = MeshBuilder.CreateSphere(
+  const south = MeshBuilder.CreateDisc(
     'marker-south-pole',
-    { diameter: radius * 0.16, segments: 12 },
+    { radius: radius * 0.048, tessellation: 28 },
     scene,
   );
   south.parent = parent;
-  south.position = new Vector3(0, -radius * 1.03, 0);
+  south.rotation.x = -Math.PI / 2;
+  south.position = new Vector3(0, -radius * 1.018, 0);
   south.metadata = { markerId: 'south-pole' satisfies EarthMarkerId };
 
   const equator = createEquatorRing(scene, parent, radius);
 
-  const poleMat = makeEmissiveMat(scene, 'pole-mat', new Color3(1, 0.55, 0.15));
-  const equatorMat = makeEmissiveMat(scene, 'equator-mat', new Color3(1, 0.88, 0.2));
-  const highlightPoleMat = makeEmissiveMat(scene, 'pole-hl-mat', new Color3(1, 0.95, 0.45));
-  const highlightEquatorMat = makeEmissiveMat(scene, 'equator-hl-mat', new Color3(1, 0.98, 0.55));
+  const poleMat = makeEmissiveMat(scene, 'pole-mat', new Color3(1, 0.58, 0.28), 0.72);
+  const equatorMat = makeEmissiveMat(scene, 'equator-mat', new Color3(1, 0.78, 0.32), 0.55);
+  const highlightPoleMat = makeEmissiveMat(scene, 'pole-hl-mat', new Color3(1, 0.82, 0.4), 0.95);
+  const highlightEquatorMat = makeEmissiveMat(scene, 'equator-hl-mat', new Color3(1, 0.9, 0.45), 0.9);
 
   north.material = poleMat;
   south.material = poleMat;
@@ -108,8 +110,7 @@ export function createEarthMarkers(
       equator.material = id === 'equator' ? highlightEquatorMat : equatorMat;
       scalePulse(north as Mesh, id === 'north-pole');
       scalePulse(south as Mesh, id === 'south-pole');
-      // Équator un peu plus épais quand mis en avant (ne touche pas la Terre)
-      equator.scaling.setAll(id === 'equator' ? 1.12 : 1);
+      equator.scaling.setAll(id === 'equator' ? 1.06 : 1);
     },
     setSurfacePickEnabled: (enabled) => {
       surfacePickEnabled = enabled;
@@ -126,11 +127,11 @@ export function createEarthMarkers(
   };
 }
 
-/** Anneau équatorial bien visible — tube jaune, hors texture Terre. */
+/** Anneau équatorial fin, légèrement au-dessus de la surface. */
 function createEquatorRing(scene: Scene, parent: TransformNode, radius: number): Mesh {
-  const ringRadius = radius * 1.035;
+  const ringRadius = radius * 1.022;
   const path: Vector3[] = [];
-  const segments = 72;
+  const segments = 96;
   for (let i = 0; i <= segments; i += 1) {
     const a = (i / segments) * Math.PI * 2;
     path.push(new Vector3(Math.cos(a) * ringRadius, 0, Math.sin(a) * ringRadius));
@@ -140,8 +141,8 @@ function createEquatorRing(scene: Scene, parent: TransformNode, radius: number):
     'marker-equator',
     {
       path,
-      radius: radius * 0.042,
-      tessellation: 10,
+      radius: radius * 0.014,
+      tessellation: 8,
       cap: 0,
     },
     scene,
@@ -171,15 +172,25 @@ export function classifyGlobeHit(
   return null;
 }
 
-function makeEmissiveMat(scene: Scene, name: string, color: Color3): StandardMaterial {
+function makeEmissiveMat(
+  scene: Scene,
+  name: string,
+  color: Color3,
+  alpha = 1,
+): StandardMaterial {
   const mat = new StandardMaterial(name, scene);
   mat.disableLighting = true;
   mat.emissiveColor = color;
   mat.diffuseColor = Color3.Black();
   mat.specularColor = Color3.Black();
+  mat.alpha = alpha;
+  if (alpha < 1) {
+    mat.transparencyMode = StandardMaterial.MATERIAL_ALPHABLEND;
+    mat.backFaceCulling = false;
+  }
   return mat;
 }
 
 function scalePulse(mesh: Mesh, active: boolean): void {
-  mesh.scaling.setAll(active ? 1.4 : 1);
+  mesh.scaling.setAll(active ? 1.35 : 1);
 }
