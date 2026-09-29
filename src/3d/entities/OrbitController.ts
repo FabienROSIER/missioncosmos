@@ -128,6 +128,8 @@ export class OrbitController {
     const pos = this.body.position;
     const dx = center.x - pos.x;
     const dz = center.z - pos.z;
+    // Un quaternion actif (obliquité) ignore rotation.y — forcer l’Euler pour le lock.
+    this.body.rotationQuaternion = null;
     this.body.rotation.x = 0;
     this.body.rotation.z = 0;
     // +Z local pointe vers le centre (Terre)

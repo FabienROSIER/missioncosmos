@@ -72,9 +72,15 @@ export class CelestialBodyEntity {
     this.loaded = await loadCelestialBody(this.scene, visual.bodyId, visual.visualRadius);
 
     const tilt = ((scientific.axialTiltDeg ?? 0) * Math.PI) / 180;
-    // Obliquité : axe de spin (local +Y) penché dans le plan orbital (XZ)
-    this.loaded.pivot.rotationQuaternion = Quaternion.RotationAxis(Vector3.Forward(), tilt);
-    this.loaded.pivot.rotation.setAll(0);
+    // Obliquité via quaternion seulement si nécessaire.
+    // Sinon laisser rotationQuaternion = null pour que l’Euler (tidal lock) fonctionne.
+    if (Math.abs(tilt) > 1e-6) {
+      this.loaded.pivot.rotationQuaternion = Quaternion.RotationAxis(Vector3.Forward(), tilt);
+      this.loaded.pivot.rotation.setAll(0);
+    } else {
+      this.loaded.pivot.rotationQuaternion = null;
+      this.loaded.pivot.rotation.setAll(0);
+    }
 
     if (options.position) {
       this.loaded.pivot.position.copyFrom(options.position);
