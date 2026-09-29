@@ -30,6 +30,7 @@ import { playPlanetSuccessHalo } from '@/3d/fx/planetSuccessHalo';
 import {
   applyEmissiveSunMaterial,
   applyPlanetaryMaterials,
+  createSimpleAtmosphere,
   resolveGraphicsQuality,
   setupSceneLighting,
 } from '@/3d/materials';
@@ -237,6 +238,17 @@ export function SolarSystemScene({
         planetEntities.set(id, entity);
         orbitRings[i] = createOrbitRing(scene, orbit, quality === 'low' ? 'low' : 'high');
       }),
+    );
+
+    const earthAtmosphere = createSimpleAtmosphere(
+      scene,
+      planetEntities.get('earth')!.pivot,
+      {
+        quality,
+        scale: 1.07,
+        alpha: 0.24,
+        color: new Color3(0.4, 0.68, 1),
+      },
     );
 
     await Promise.all([
@@ -645,6 +657,7 @@ export function SolarSystemScene({
       mobilePickRef.current = null;
       apiRef.current = null;
       perf.dispose();
+      earthAtmosphere.dispose();
       for (const ring of orbitRings) ring.dispose();
       for (const e of planetEntities.values()) e.dispose();
       sun.dispose();

@@ -566,13 +566,14 @@ Objectifs : forme, rotation, pôles, équateur, repères fondamentaux.
 
 ## Mission 08 — Les étoiles
 
-- [ ] Introduire le Soleil comme étoile.
-- [ ] Comparateur de tailles.
-- [ ] Comparateur de températures/couleurs.
-- [ ] Sélection d'étoiles représentatives scientifiquement vérifiées.
-- [ ] Montrer que taille apparente ≠ taille réelle.
-- [ ] Défi de comparaison.
-- [ ] Limiter les objets simultanés pour les performances.
+- [x] Introduire le Soleil comme étoile.
+- [x] Comparateur de tailles.
+- [x] Comparateur de températures/couleurs.
+- [x] Sélection d'étoiles représentatives scientifiquement vérifiées.
+- [x] Montrer que taille apparente ≠ taille réelle.
+- [x] Défi de comparaison.
+- [x] Limiter les objets simultanés pour les performances.
+- [x] Défi observatoire en 2 manches (mire + podium) — notes dans `docs/pedagogy/mission-08-stars.md`.
 
 ## Mission 09 — La lumière des étoiles
 
@@ -986,15 +987,15 @@ Les décisions importantes doivent avoir une ADR dans `/docs/decisions/` et êtr
 
 # État global du projet
 
-**Statut : MISSION 07 FAITE — prêt pour Mission 08 (Les étoiles)**
+**Statut : MISSION 08 FAITE — prêt pour Mission 09 (La lumière des étoiles)**
 
 Phase actuelle : **Phase 8 — Missions pédagogiques**
 
-Carte / catalogue : **13 missions** branchées sur **8 zones** (alignement mix C). Scènes jouables : M01–M07 ; M08–M13 catalogue + TODO.
+Carte / catalogue : **13 missions** branchées sur **8 zones** (alignement mix C). Scènes jouables : M01–M08 ; M09–M13 catalogue + TODO.
 
-Sous-phases : Mission 01 · Mission 02 · Mission 03 · Mission 04 · Mission 05 · Mission 06 · Mission 07 terminées.
+Sous-phases : Mission 01 · Mission 02 · Mission 03 · Mission 04 · Mission 05 · Mission 06 · Mission 07 · Mission 08 terminées.
 
-Prochaine action : **Mission 08 — Les étoiles** *(après validation propriétaire)*.
+Prochaine action : **Mission 09 — La lumière des étoiles** *(après validation propriétaire)*.
 
 ### Notes découvertes
 
@@ -1006,5 +1007,6 @@ Prochaine action : **Mission 08 — Les étoiles** *(après validation propriét
 - Compagnon 3D (AST-003b) intégré en marqueur de surface M02–M04 (remplace la maison) ; tip UI 2D reste le guide de séquence. Occlusion / layer masks documentés dans le code (`companionSurfaceMarker`).
 - Mission 05 (2026-09-27→28) : séquence exploration → défi ordre → tailles (bulle) → distances (bulle + portraits) → Pluton → quiz. Modes d’échelle via steps compagnon uniquement. Pas de redesign « vraie échelle unique » (volontairement abandonné — trop illisible).
 - Mission 06 (2026-09-28) : scène dédiée Soleil + Mercure/Terre/Jupiter ; anneaux d’orbite ; Pause/Normal/Rapide ; fiches période ; défi « plus rapide » ; défi chute perpétuelle (curseur continu ~16 % de bande, indices directionnels) ; gravité simplifiée ; notice cercles ≠ ellipses exactes.
-- Mission 07 (2026-09-28) : Soleil + Terre inclinée sur orbite ; axe violet ; rayons ; labels N/S ; curseur d’inclinaison 0–35° ; boutons saisons ; défi « été au nord » ; quiz anti-mythe « plus proche du Soleil ».
+- Mission 07 (2026-09-28) : Soleil + Terre inclinée sur orbite ; axe coloré ; rayons ; labels N/S ; curseur d’inclinaison 0–35° ; boutons saisons ; défi « été au nord » ; quiz anti-mythe « plus proche du Soleil ».
+- Mission 08 (2026-09-29) : scène procédurale `stars` ; Proxima / Soleil / Sirius / Bételgeuse ; modes tailles (log), couleurs, taille apparente ; défi observatoire 2 manches (mire + podium) ; max 3 astres détaillés ; notes `docs/pedagogy/mission-08-stars.md`.
 - Musique (2026-09-28) : AST-040/041 issus de **KSP1** — documentés dans `docs/ASSETS.md`, état **Temporaire** (propriétaire Squad/Take-Two). Remplacer avant toute publication.

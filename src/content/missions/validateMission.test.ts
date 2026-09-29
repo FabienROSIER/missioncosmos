@@ -4,6 +4,7 @@ import { MISSION_04 } from '@/content/missions/mission-04';
 import { MISSION_05 } from '@/content/missions/mission-05';
 import { MISSION_06 } from '@/content/missions/mission-06';
 import { MISSION_07 } from '@/content/missions/mission-07';
+import { MISSION_08 } from '@/content/missions/mission-08';
 import { validateMission } from '@/content/missions/validateMission';
 
 describe('validateMission', () => {
@@ -29,6 +30,12 @@ describe('validateMission', () => {
     expect(validateMission(MISSION_07)).toEqual([]);
     expect(MISSION_07.steps.some((s) => s.challengeNorthernSummer)).toBe(true);
     expect(MISSION_07.sceneId).toBe('seasons');
+  });
+
+  it('valide Mission 08', () => {
+    expect(validateMission(MISSION_08)).toEqual([]);
+    expect(MISSION_08.steps.some((s) => s.challengeObservatory)).toBe(true);
+    expect(MISSION_08.sceneId).toBe('stars');
   });
 
   it('signale les champs manquants', () => {

@@ -147,16 +147,13 @@ export function EclipsesScene({
     applyDayNightEarthMaterials(scene, earth.meshes);
     optimizeCelestialMeshes(earth.meshes, quality, 'planet');
 
-    const atmosphere =
-      quality === 'low'
-        ? null
-        : createSimpleAtmosphere(scene, earth.pivot, {
-            quality,
-            scale: 1.045,
-            alpha: 0.28,
-            litBySun: true,
-            color: new Color3(0.45, 0.65, 0.98),
-          });
+    const atmosphere = createSimpleAtmosphere(scene, earth.pivot, {
+      quality,
+      scale: 1.045,
+      alpha: 0.28,
+      litBySun: true,
+      color: new Color3(0.45, 0.65, 0.98),
+    });
 
     const moon = await CelestialBodyEntity.create(scene, {
       definition: {

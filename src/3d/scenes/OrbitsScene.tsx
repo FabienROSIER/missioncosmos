@@ -26,6 +26,7 @@ import { playPlanetSuccessHalo } from '@/3d/fx/planetSuccessHalo';
 import {
   applyEmissiveSunMaterial,
   applyPlanetaryMaterials,
+  createSimpleAtmosphere,
   resolveGraphicsQuality,
   setupSceneLighting,
 } from '@/3d/materials';
@@ -222,6 +223,17 @@ export function OrbitsScene({
       }),
     );
 
+    const earthAtmosphere = createSimpleAtmosphere(
+      scene,
+      planetEntities.get('earth')!.pivot,
+      {
+        quality,
+        scale: 1.075,
+        alpha: 0.26,
+        color: new Color3(0.4, 0.68, 1),
+      },
+    );
+
     await Promise.all([
       sun.playAppear(),
       ...ORBIT_COMPARE_PLANETS.map((id) => planetEntities.get(id)!.playAppear()),
@@ -367,6 +379,7 @@ export function OrbitsScene({
         const id = ORBIT_COMPARE_PLANETS[i]!;
         planetEntities.get(id)?.onPick.remove(obs);
       });
+      earthAtmosphere.dispose();
       for (const ring of orbitRings) ring.dispose();
       for (const id of ORBIT_COMPARE_PLANETS) planetEntities.get(id)?.dispose();
       sun.dispose();

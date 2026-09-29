@@ -10,6 +10,7 @@ import {
   PointerEventTypes,
   Quaternion,
   StandardMaterial,
+  TransformNode,
   Vector3,
   type LinesMesh,
   type Scene,
@@ -18,6 +19,7 @@ import type { BabylonSceneContext } from '@/3d/core/BabylonCanvas';
 import { BabylonCanvas } from '@/3d/core/BabylonCanvas';
 import type { MissionCameraApi } from '@/3d/controls/missionCamera';
 import {
+  animateCameraTo,
   captureCameraHome,
   configureMissionCamera,
   createMissionCameraApi,
@@ -26,6 +28,7 @@ import { CelestialBodyEntity } from '@/3d/entities/CelestialBodyEntity';
 import {
   applyDayNightEarthMaterials,
   applyEmissiveSunMaterial,
+  createSimpleAtmosphere,
   resolveGraphicsQuality,
   setupSceneLighting,
 } from '@/3d/materials';
@@ -40,6 +43,7 @@ import {
   EARTH_AXIAL_TILT_DEG,
   NORTH_SUMMER_ANGLE,
   isNorthernSummer,
+  normalizeAngle,
   northSeasonAt,
   seasonLabelFr,
   southSeasonAt,
@@ -61,6 +65,7 @@ type SeasonsSceneProps = {
   fill?: boolean;
   onSceneApi?: (api: SeasonsSceneApi) => void;
   onSummerSuccess?: () => void;
+  onSummerExit?: () => void;
 };
 
 const ORBIT_R = 5.2;
@@ -93,21 +98,57 @@ function createOrbitRing(scene: Scene, radius: number, quality: 'low' | 'high') 
 }
 
 function createAxis(scene: Scene, length: number) {
+  const root = new TransformNode('season-axis-root', scene);
   const mesh = MeshBuilder.CreateCylinder(
     'season-axis',
-    { height: length, diameter: 0.045, tessellation: 8 },
+    { height: length, diameter: 0.07, tessellation: 12 },
     scene,
   );
+  mesh.parent = root;
   mesh.isPickable = false;
   const mat = new StandardMaterial('season-axis-mat', scene);
   mat.disableLighting = true;
-  mat.emissiveColor = new Color3(0.75, 0.45, 0.95);
+  mat.emissiveColor = new Color3(0.55, 0.9, 1);
   mesh.material = mat;
+
+  // Pointe nord : forme + couleur distinctes pour lire immédiatement le sens.
+  const north = MeshBuilder.CreateCylinder(
+    'season-axis-north',
+    { height: 0.2, diameterTop: 0, diameterBottom: 0.18, tessellation: 16 },
+    scene,
+  );
+  north.parent = root;
+  north.position.y = length / 2 + 0.1;
+  north.isPickable = false;
+  const northMat = new StandardMaterial('season-axis-north-mat', scene);
+  northMat.disableLighting = true;
+  northMat.emissiveColor = new Color3(1, 0.78, 0.2);
+  north.material = northMat;
+
+  // Extrémité sud arrondie, violette : contraste avec le nord et le fond.
+  const south = MeshBuilder.CreateSphere(
+    'season-axis-south',
+    { diameter: 0.16, segments: 12 },
+    scene,
+  );
+  south.parent = root;
+  south.position.y = -length / 2;
+  south.isPickable = false;
+  const southMat = new StandardMaterial('season-axis-south-mat', scene);
+  southMat.disableLighting = true;
+  southMat.emissiveColor = new Color3(0.78, 0.38, 1);
+  south.material = southMat;
+
   return {
-    mesh,
+    root,
     dispose: () => {
+      north.dispose();
+      south.dispose();
       mesh.dispose();
       mat.dispose();
+      northMat.dispose();
+      southMat.dispose();
+      root.dispose();
     },
   };
 }
@@ -139,6 +180,7 @@ export function SeasonsScene({
   fill = false,
   onSceneApi,
   onSummerSuccess,
+  onSummerExit,
 }: SeasonsSceneProps) {
   const [tiltDeg, setTiltUi] = useState(EARTH_AXIAL_TILT_DEG);
   const [northLabel, setNorthLabel] = useState('Été');
@@ -147,6 +189,7 @@ export function SeasonsScene({
   const runtimeRef = useRef<SeasonsSceneApi | null>(null);
   const onSceneApiRef = useRef(onSceneApi);
   const onSummerSuccessRef = useRef(onSummerSuccess);
+  const onSummerExitRef = useRef(onSummerExit);
 
   useEffect(() => {
     onSceneApiRef.current = onSceneApi;
@@ -154,6 +197,9 @@ export function SeasonsScene({
   useEffect(() => {
     onSummerSuccessRef.current = onSummerSuccess;
   }, [onSummerSuccess]);
+  useEffect(() => {
+    onSummerExitRef.current = onSummerExit;
+  }, [onSummerExit]);
 
   const onSceneReady = useCallback(async ({ engine, scene }: BabylonSceneContext) => {
     const quality = resolveGraphicsQuality();
@@ -193,7 +239,9 @@ export function SeasonsScene({
     let tilt = EARTH_AXIAL_TILT_DEG;
     let challenge = false;
     let challengeDone = false;
+    let challengePreparing = false;
     let dragEnabled = true;
+    let cancelChallengeTransition: (() => void) | null = null;
 
     const earth = await CelestialBodyEntity.create(scene, {
       definition: {
@@ -206,13 +254,20 @@ export function SeasonsScene({
     });
     applyDayNightEarthMaterials(scene, earth.meshes);
     optimizeCelestialMeshes(earth.meshes, quality, 'planet');
+    const atmosphere = createSimpleAtmosphere(scene, earth.pivot, {
+      quality,
+      scale: 1.05,
+      alpha: 0.28,
+      litBySun: true,
+      color: new Color3(0.45, 0.68, 1),
+    });
     earth.meshes.forEach((m) => {
       m.isPickable = true;
     });
 
     const orbit = createOrbitRing(scene, ORBIT_R, quality === 'low' ? 'low' : 'high');
-    const axis = createAxis(scene, EARTH_R * 2.6);
-    axis.mesh.parent = earth.pivot;
+    const axis = createAxis(scene, EARTH_R * 3.1);
+    axis.root.parent = earth.pivot;
     const rays = createRays(scene);
 
     const refreshLabels = () => {
@@ -231,14 +286,26 @@ export function SeasonsScene({
       const tiltRad = (tilt * Math.PI) / 180;
       earth.pivot.rotationQuaternion = Quaternion.RotationAxis(Vector3.Right(), tiltRad);
       earth.pivot.rotation.setAll(0);
-      lighting.sunLight.direction = new Vector3(-x, 0.15, -z).normalize();
-      rays.update(Vector3.Zero(), earth.pivot.position);
+      sun.pivot.computeWorldMatrix(true);
+      earth.pivot.computeWorldMatrix(true);
+      const sunPosition = sun.pivot.getAbsolutePosition();
+      const earthPosition = earth.pivot.getAbsolutePosition();
+      // DirectionalLight.direction = sens de propagation des rayons : Soleil → Terre.
+      lighting.sunLight.direction = earthPosition.subtract(sunPosition).normalize();
+      rays.update(sunPosition, earthPosition);
       refreshLabels();
 
-      if (challenge && !challengeDone && isNorthernSummer(orbitAngle, tilt)) {
-        challengeDone = true;
-        setHint('Oui ! Été au nord.');
-        onSummerSuccessRef.current?.();
+      if (challenge && !challengePreparing) {
+        const northernSummer = isNorthernSummer(orbitAngle, tilt);
+        if (!challengeDone && northernSummer) {
+          challengeDone = true;
+          setHint('Oui ! Été au nord.');
+          onSummerSuccessRef.current?.();
+        } else if (challengeDone && !northernSummer) {
+          challengeDone = false;
+          setHint('Tu as quitté la zone d’été — replace la Terre.');
+          onSummerExitRef.current?.();
+        }
       }
     };
 
@@ -262,25 +329,120 @@ export function SeasonsScene({
     configureMissionCamera(camera);
 
     const home = captureCameraHome(camera);
-    const cameraApi = createMissionCameraApi(camera, home, sun.pivot, [
+    const baseCameraApi = createMissionCameraApi(camera, home, sun.pivot, [
       ...sun.meshes,
       ...earth.meshes,
     ]);
 
+    const canvas = engine.getRenderingCanvas();
+    let cameraControlsAttached = true;
+    let challengeCameraHome: ReturnType<typeof captureCameraHome> | null = null;
+    let challengeCameraLocked = false;
+
+    const setCameraControlsAttached = (attached: boolean) => {
+      if (!canvas || attached === cameraControlsAttached) return;
+      if (attached) {
+        camera.attachControl(canvas, true);
+        camera._panningMouseButton = 1;
+      } else {
+        camera.detachControl();
+        camera.inertialAlphaOffset = 0;
+        camera.inertialBetaOffset = 0;
+        camera.inertialRadiusOffset = 0;
+        camera.inertialPanningX = 0;
+        camera.inertialPanningY = 0;
+      }
+      cameraControlsAttached = attached;
+    };
+
+    const setChallengeCameraLocked = (locked: boolean) => {
+      if (locked === challengeCameraLocked) return;
+      challengeCameraLocked = locked;
+      scene.stopAnimation(camera);
+      scene.stopAnimation(camera.target);
+
+      if (locked) {
+        challengeCameraHome = captureCameraHome(camera);
+        setCameraControlsAttached(false);
+        // Vue de défi avec une marge réelle autour de l’orbite, y compris sur les
+        // écrans paysage peu hauts. Placée entre l’hiver et le printemps, mais
+        // plus près du printemps, elle montre l’inclinaison sans regarder dans son axe.
+        camera.setTarget(Vector3.Zero());
+        camera.alpha = Math.PI / 24;
+        camera.beta = 0.88;
+        camera.radius = 15.2;
+      } else {
+        setCameraControlsAttached(true);
+        if (challengeCameraHome) {
+          void animateCameraTo(camera, challengeCameraHome, 420);
+          challengeCameraHome = null;
+        }
+      }
+    };
+
+    const cameraApi: MissionCameraApi = {
+      getHome: baseCameraApi.getHome,
+      recenter: async () => {
+        if (challengeCameraLocked) return;
+        await baseCameraApi.recenter();
+      },
+      focusOn: async (node, meshes) => {
+        if (challengeCameraLocked) return;
+        await baseCameraApi.focusOn(node, meshes);
+      },
+    };
+
+    const startChallengeTransition = () => {
+      cancelChallengeTransition?.();
+      challengePreparing = true;
+
+      const startAngle = orbitAngle;
+      const springDelta = normalizeAngle(0 - startAngle);
+      const autumnDelta = normalizeAngle(Math.PI - startAngle);
+      const targetDelta =
+        Math.abs(springDelta) <= Math.abs(autumnDelta) ? springDelta : autumnDelta;
+      const durationMs = 1100;
+      let elapsedMs = 0;
+
+      const observer = scene.onBeforeRenderObservable.add(() => {
+        elapsedMs = Math.min(durationMs, elapsedMs + engine.getDeltaTime());
+        const progress = elapsedMs / durationMs;
+        const easedProgress = progress * progress * (3 - 2 * progress);
+        orbitAngle = normalizeAngle(startAngle + targetDelta * easedProgress);
+        placeEarth();
+
+        if (progress >= 1) {
+          scene.onBeforeRenderObservable.remove(observer);
+          cancelChallengeTransition = null;
+          challengePreparing = false;
+          orbitAngle = normalizeAngle(startAngle + targetDelta);
+          placeEarth();
+        }
+      });
+
+      cancelChallengeTransition = () => {
+        scene.onBeforeRenderObservable.remove(observer);
+        cancelChallengeTransition = null;
+        challengePreparing = false;
+      };
+    };
+
     // Drag : faire glisser la Terre sur l’orbite (projection sur le plan XZ)
     let dragging = false;
     const pointerObs = scene.onPointerObservable.add((info) => {
-      if (!dragEnabled) return;
+      if (!dragEnabled || challengePreparing) return;
       if (info.type === PointerEventTypes.POINTERDOWN) {
         const mesh = info.pickInfo?.pickedMesh;
         const hitEarth =
           mesh && earth.meshes.some((m) => m === mesh || mesh.isDescendantOf(earth.pivot));
         dragging = Boolean(hitEarth);
+        if (dragging) setCameraControlsAttached(false);
       } else if (
         info.type === PointerEventTypes.POINTERUP ||
         info.type === PointerEventTypes.POINTERDOUBLETAP
       ) {
         dragging = false;
+        if (!challengeCameraLocked) setCameraControlsAttached(true);
       } else if (info.type === PointerEventTypes.POINTERMOVE && dragging) {
         const ray = scene.createPickingRay(scene.pointerX, scene.pointerY, null, camera);
         const n = Vector3.Up();
@@ -300,6 +462,7 @@ export function SeasonsScene({
     const api: SeasonsSceneApi = {
       camera: cameraApi,
       setOrbitAngle: (rad) => {
+        cancelChallengeTransition?.();
         orbitAngle = rad;
         placeEarth();
       },
@@ -308,12 +471,23 @@ export function SeasonsScene({
         placeEarth();
       },
       setChallengeEnabled: (enabled) => {
+        const changed = challenge !== enabled;
         challenge = enabled;
-        challengeDone = false;
+        if (enabled && changed) {
+          challengeDone = false;
+          startChallengeTransition();
+        } else if (!enabled) {
+          cancelChallengeTransition?.();
+        }
+        setChallengeCameraLocked(enabled);
         setHint(enabled ? 'Place la Terre pour l’été au nord.' : null);
       },
       setOrbitDragEnabled: (enabled) => {
         dragEnabled = enabled;
+        if (!enabled) {
+          dragging = false;
+          if (!challengeCameraLocked) setCameraControlsAttached(true);
+        }
       },
     };
     runtimeRef.current = api;
@@ -323,10 +497,13 @@ export function SeasonsScene({
 
     return () => {
       perf.dispose();
+      cancelChallengeTransition?.();
+      setCameraControlsAttached(false);
       scene.onPointerObservable.remove(pointerObs);
       rays.dispose();
       axis.dispose();
       orbit.dispose();
+      atmosphere.dispose();
       earth.dispose();
       sun.dispose();
       background.dispose();
@@ -361,17 +538,29 @@ export function SeasonsScene({
             Sud : <strong>{southLabel}</strong>
           </p>
         </div>
-        <p className={styles.sliderLabel}>Inclinaison : {Math.round(tiltDeg)}°</p>
-        <input
-          className={styles.slider}
-          type="range"
-          min={0}
-          max={35}
-          step={1}
-          value={Math.round(tiltDeg)}
-          onChange={(e) => setTilt(Number(e.target.value))}
-          aria-label="Inclinaison de la Terre"
-        />
+        <p className={styles.sliderLabel}>
+          Inclinaison testée : {tiltDeg.toFixed(1).replace('.', ',')}°
+        </p>
+        <div className={styles.sliderWrap}>
+          <input
+            className={styles.slider}
+            type="range"
+            min={0}
+            max={35}
+            step={0.5}
+            value={tiltDeg}
+            onChange={(e) => setTilt(Number(e.target.value))}
+            aria-label="Inclinaison testée dans la maquette"
+            aria-valuetext={`${tiltDeg.toFixed(1).replace('.', ',')} degrés`}
+          />
+          <span className={styles.realTiltMarker} aria-hidden="true">
+            <span className={styles.realTiltMarkerLabel}>Terre réelle : 23,5°</span>
+          </span>
+        </div>
+        <p className={styles.experimentNote}>
+          <strong>Expérience :</strong> ce curseur change seulement la maquette. En réalité,
+          l&apos;axe de la Terre reste incliné d&apos;environ 23,5°.
+        </p>
         <div className={styles.jumpRow} role="group" aria-label="Positions sur l’orbite">
           <button type="button" className={styles.jumpBtn} onClick={() => jump(0)}>
             Printemps

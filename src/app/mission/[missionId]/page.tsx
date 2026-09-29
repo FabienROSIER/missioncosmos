@@ -18,6 +18,7 @@ const PLAYABLE_SCENES = new Set([
   'solar-system',
   'orbits',
   'seasons',
+  'stars',
 ]);
 
 /** Export statique : une page HTML par mission du catalogue. */
@@ -40,11 +41,7 @@ export default async function MissionPage({ params }: MissionPageProps) {
   return (
     <AppShell title="Mission" showNav={false}>
       <div className={styles.root}>
-        <SafeBackButton
-          fallbackHref="/missions"
-          label="Quitter la mission"
-          preferFallback
-        />
+        <SafeBackButton fallbackHref="/missions" label="Quitter la mission" preferFallback />
         <h1 className={styles.title}>Mission en préparation</h1>
         <p className={styles.id}>Identifiant : {missionId}</p>
         <DialogueBubble>

@@ -21,10 +21,13 @@ import type { OrbitFallSceneApi } from '@/3d/scenes/OrbitFallScene';
 import { OrbitFallScene } from '@/3d/scenes/OrbitFallScene';
 import type { SeasonsSceneApi } from '@/3d/scenes/SeasonsScene';
 import { SeasonsScene } from '@/3d/scenes/SeasonsScene';
+import type { StarsSceneApi } from '@/3d/scenes/StarsScene';
+import { StarsScene } from '@/3d/scenes/StarsScene';
 import { SolarDistancePanel } from '@/3d/scenes/SolarDistancePanel';
 import { SolarSizeChallenge } from '@/3d/scenes/SolarSizeChallenge';
 import type { SurfaceLighting } from '@/3d/scenes/dayNightMarkers';
 import type { MoonPhaseId } from '@/3d/utils/moonPhase';
+import type { StarsSceneMode } from '@/content/bodies/stars';
 import type { PlanetId } from '@/content/bodies/solarSystem';
 import { SOLAR_SYSTEM_PLANETS } from '@/content/bodies/solarSystem';
 import { getQuizById } from '@/content/quizzes';
@@ -71,6 +74,7 @@ function challengeFromStep(step: MissionStep): {
   challengeOrbitRace: boolean;
   challengeOrbitFall: boolean;
   challengeNorthernSummer: boolean;
+  challengeObservatory: boolean;
   challengeOrbit: boolean;
   successFeedback: string;
   hint: string;
@@ -84,6 +88,7 @@ function challengeFromStep(step: MissionStep): {
     challengeOrbitRace: Boolean(step.challengeOrbitRace),
     challengeOrbitFall: Boolean(step.challengeOrbitFall),
     challengeNorthernSummer: Boolean(step.challengeNorthernSummer),
+    challengeObservatory: Boolean(step.challengeObservatory),
     challengeOrbit: Boolean(step.challengeOrbit),
     successFeedback: step.successFeedback ?? 'Oui, c’est ça !',
     hint: step.hint ?? 'Pas tout à fait — réessaie sans te presser.',
@@ -98,6 +103,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const isSolarSystem = mission.sceneId === 'solar-system';
   const isOrbits = mission.sceneId === 'orbits';
   const isSeasons = mission.sceneId === 'seasons';
+  const isStars = mission.sceneId === 'stars';
   const [tipOpen, setTipOpen] = useState(true);
   const [mobilePanel, setMobilePanel] = useState<'mission' | 'controls'>('mission');
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
@@ -109,6 +115,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const [orbitsApi, setOrbitsApi] = useState<OrbitsSceneApi | null>(null);
   const [orbitFallApi, setOrbitFallApi] = useState<OrbitFallSceneApi | null>(null);
   const [seasonsApi, setSeasonsApi] = useState<SeasonsSceneApi | null>(null);
+  const [starsApi, setStarsApi] = useState<StarsSceneApi | null>(null);
   const [recentering, setRecentering] = useState(false);
   const [feedback, setFeedback] = useState<StepFeedback | null>(null);
   const [glossaryOpen, setGlossaryOpen] = useState(false);
@@ -128,6 +135,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     resumeAvailable,
     goNext,
     markChallengeSolved,
+    resetChallengeSolved,
     restart,
     dismissResumeBanner,
     isComplete,
@@ -192,6 +200,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     challengeOrbitRace,
     challengeOrbitFall,
     challengeNorthernSummer,
+    challengeObservatory,
     challengeOrbit,
     successFeedback,
     hint,
@@ -200,6 +209,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const hasSceneControls =
     isOrbits ||
     isSeasons ||
+    isStars ||
     (isSolarSystem && step.id !== 'm05-scale' && step.id !== 'm05-distances');
   const visibleFeedback = feedback?.stepId === step.id ? feedback : null;
   const quiz = step.quizId ? getQuizById(step.quizId) : undefined;
@@ -208,21 +218,23 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const nextMission = nextMissionId ? getCatalogEntry(nextMissionId) : undefined;
   const reward = getRewardById(mission.rewardIds[0] ?? '');
 
-  const cameraApi = isSeasons
-    ? seasonsApi?.camera
-    : showOrbitFall
-      ? orbitFallApi?.camera
-      : isOrbits
-        ? orbitsApi?.camera
-        : isSolarSystem
-          ? solarApi?.camera
-          : isEclipses
-            ? eclipsesApi?.camera
-            : isMoonPhases
-              ? moonPhasesApi?.camera
-              : isDayNight
-                ? dayNightApi?.camera
-                : earthApi?.camera;
+  const cameraApi = isStars
+    ? starsApi?.camera
+    : isSeasons
+      ? seasonsApi?.camera
+      : showOrbitFall
+        ? orbitFallApi?.camera
+        : isOrbits
+          ? orbitsApi?.camera
+          : isSolarSystem
+            ? solarApi?.camera
+            : isEclipses
+              ? eclipsesApi?.camera
+              : isMoonPhases
+                ? moonPhasesApi?.camera
+                : isDayNight
+                  ? dayNightApi?.camera
+                  : earthApi?.camera;
 
   const openGlossary = useCallback((focusId?: string) => {
     setGlossaryFocusId(focusId ?? null);
@@ -272,7 +284,8 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
       isEclipses ||
       isSolarSystem ||
       isOrbits ||
-      isSeasons
+      isSeasons ||
+      isStars
     )
       return;
 
@@ -307,6 +320,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     isSolarSystem,
     isOrbits,
     isSeasons,
+    isStars,
     mission.steps,
     stepIndex,
     showMarkers,
@@ -390,7 +404,10 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     if (!seasonsApi || !isSeasons) return;
     const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
     seasonsApi.setOrbitDragEnabled(!cinematic && step.kind !== 'intro');
-    seasonsApi.setChallengeEnabled(!cinematic && challengeActive && challengeNorthernSummer);
+    // Conserver le cadrage global après la réussite, jusqu’au clic sur « Continuer ».
+    // Sinon la caméra revenait immédiatement à son ancienne vue et recoupait l’orbite.
+    const northernSummerStep = !cinematic && step.kind === 'challenge' && challengeNorthernSummer;
+    seasonsApi.setChallengeEnabled(northernSummerStep);
     if (step.id === 'm07-tilt') {
       seasonsApi.setTiltDeg(0);
     } else if (
@@ -401,6 +418,22 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
       seasonsApi.setTiltDeg(23.5);
     }
   }, [seasonsApi, isSeasons, challengeActive, challengeNorthernSummer, step.kind, step.id]);
+
+  useEffect(() => {
+    if (!starsApi || !isStars) return;
+    const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
+    starsApi.setPickEnabled(!cinematic && step.kind !== 'intro');
+    const observatoryStep = !cinematic && step.kind === 'challenge' && challengeObservatory;
+    starsApi.setChallengeEnabled(observatoryStep);
+
+    let mode: StarsSceneMode = 'explore';
+    if (step.id === 'm08-sun' || step.id === 'm08-intro') mode = 'sun';
+    else if (step.id === 'm08-sizes') mode = 'sizes';
+    else if (step.id === 'm08-colors') mode = 'colors';
+    else if (step.id === 'm08-apparent') mode = 'apparent';
+    else if (step.id === 'm08-challenge') mode = 'challenge';
+    if (!observatoryStep) starsApi.setMode(mode);
+  }, [starsApi, isStars, challengeActive, challengeObservatory, step.kind, step.id]);
 
   const onEarthApi = useCallback((api: EarthSceneApi) => {
     setEarthApi(api);
@@ -432,6 +465,10 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
 
   const onSeasonsApi = useCallback((api: SeasonsSceneApi) => {
     setSeasonsApi(api);
+  }, []);
+
+  const onStarsApi = useCallback((api: StarsSceneApi) => {
+    setStarsApi(api);
   }, []);
 
   const onMarkerPick = useCallback(
@@ -536,8 +573,27 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     if (ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
     setFeedback({ stepId: ctx.stepId, text: ctx.successFeedback, wrong: false });
     markChallengeSolved();
-    seasonsApi?.setChallengeEnabled(false);
-  }, [markChallengeSolved, seasonsApi]);
+  }, [markChallengeSolved]);
+
+  const onSummerExit = useCallback(() => {
+    const ctx = pickCtxRef.current;
+    if (ctx.stepKind !== 'challenge') return;
+    setFeedback((current) => (current?.stepId === ctx.stepId ? null : current));
+    resetChallengeSolved();
+  }, [resetChallengeSolved]);
+
+  const onObservatorySuccess = useCallback(() => {
+    const ctx = pickCtxRef.current;
+    if (ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
+    setFeedback({ stepId: ctx.stepId, text: ctx.successFeedback, wrong: false });
+    markChallengeSolved();
+  }, [markChallengeSolved]);
+
+  const onObservatoryMiss = useCallback((hintText: string) => {
+    const ctx = pickCtxRef.current;
+    if (ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
+    setFeedback({ stepId: ctx.stepId, text: hintText || ctx.hint, wrong: true });
+  }, []);
 
   const onSizeChallengeSuccess = useCallback(() => {
     const ctx = pickCtxRef.current;
@@ -613,39 +669,41 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
 
   const challengeHint = challengeOrbit
     ? 'Glisse à gauche ou à droite pour faire avancer la Terre sur l’anneau autour du Soleil.'
-    : challengeNorthernSummer
-      ? 'Glisse la Terre (ou utilise Été N) pour que le nord soit penché vers le Soleil.'
-      : challengeOrbitFall
-        ? 'Règle le curseur, lance, observe, puis ajuste — sans zones colorées toutes faites.'
-        : challengeOrbitRace
-          ? 'Touche la planète qui finit un tour en premier (la plus rapide).'
-          : challengePlanetOrder
-            ? 'Touche Mercure, puis Vénus, Terre, Mars, Jupiter, Saturne, Uranus, Neptune.'
-            : targetEclipse
-              ? targetEclipse === 'solar'
-                ? 'Glisse pour mettre la Lune entre la Terre et le Soleil (alignement).'
-                : 'Glisse pour mettre la Lune derrière la Terre, dans son ombre.'
-              : targetPhase
-                ? targetPhase === 'full'
-                  ? 'Glisse pour mettre la Lune à l’opposé du Soleil (pleine Lune dans la vue Terre).'
-                  : targetPhase === 'crescent'
-                    ? 'Glisse pour rapprocher la Lune du Soleil, sans la coller dessus (croissant).'
-                    : targetPhase === 'new'
-                      ? 'Glisse pour mettre la Lune presque entre la Terre et le Soleil.'
-                      : targetPhase === 'quarter'
-                        ? 'Glisse jusqu’à un quartier (Lune à angle droit avec le Soleil).'
-                        : 'Glisse jusqu’à une Lune gibbeuse (presque pleine).'
-                : targetLighting
-                  ? targetLighting === 'day'
-                    ? 'Glisse pour tourner la Terre jusqu’à ce que le Guide soit dans la lumière.'
-                    : 'Glisse pour mettre le Guide dans l’ombre (côté sombre).'
-                  : targetMarkerId === 'equator'
-                    ? 'Clique sur la bande jaune au milieu du globe.'
-                    : targetMarkerId === 'north-pole'
-                      ? 'Clique sur le point orange en haut (pôle Nord).'
-                      : targetMarkerId === 'south-pole'
-                        ? 'Clique sur le point orange en bas (pôle Sud).'
-                        : 'Touche la bonne zone sur le globe.';
+    : challengeObservatory
+      ? 'Manche 1 : aligne le disque sur la mire. Manche 2 : classe du plus petit au plus grand.'
+      : challengeNorthernSummer
+        ? 'Glisse la Terre (ou utilise Été N) pour que le nord soit penché vers le Soleil.'
+        : challengeOrbitFall
+          ? 'Règle le curseur, lance, observe, puis ajuste — sans zones colorées toutes faites.'
+          : challengeOrbitRace
+            ? 'Touche la planète qui finit un tour en premier (la plus rapide).'
+            : challengePlanetOrder
+              ? 'Touche Mercure, puis Vénus, Terre, Mars, Jupiter, Saturne, Uranus, Neptune.'
+              : targetEclipse
+                ? targetEclipse === 'solar'
+                  ? 'Glisse pour mettre la Lune entre la Terre et le Soleil (alignement).'
+                  : 'Glisse pour mettre la Lune derrière la Terre, dans son ombre.'
+                : targetPhase
+                  ? targetPhase === 'full'
+                    ? 'Glisse pour mettre la Lune à l’opposé du Soleil (pleine Lune dans la vue Terre).'
+                    : targetPhase === 'crescent'
+                      ? 'Glisse pour rapprocher la Lune du Soleil, sans la coller dessus (croissant).'
+                      : targetPhase === 'new'
+                        ? 'Glisse pour mettre la Lune presque entre la Terre et le Soleil.'
+                        : targetPhase === 'quarter'
+                          ? 'Glisse jusqu’à un quartier (Lune à angle droit avec le Soleil).'
+                          : 'Glisse jusqu’à une Lune gibbeuse (presque pleine).'
+                  : targetLighting
+                    ? targetLighting === 'day'
+                      ? 'Glisse pour tourner la Terre jusqu’à ce que le Guide soit dans la lumière.'
+                      : 'Glisse pour mettre le Guide dans l’ombre (côté sombre).'
+                    : targetMarkerId === 'equator'
+                      ? 'Clique sur la bande jaune au milieu du globe.'
+                      : targetMarkerId === 'north-pole'
+                        ? 'Clique sur le point orange en haut (pôle Nord).'
+                        : targetMarkerId === 'south-pole'
+                          ? 'Clique sur le point orange en bas (pôle Sud).'
+                          : 'Touche la bonne zone sur le globe.';
 
   return (
     <div
@@ -657,12 +715,21 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
       ].join(' ')}
     >
       <div className={styles.sceneArea}>
-        {isSeasons ? (
+        {isStars ? (
+          <StarsScene
+            className={styles.viewport}
+            fill
+            onSceneApi={onStarsApi}
+            onObservatorySuccess={onObservatorySuccess}
+            onObservatoryMiss={onObservatoryMiss}
+          />
+        ) : isSeasons ? (
           <SeasonsScene
             className={styles.viewport}
             fill
             onSceneApi={onSeasonsApi}
             onSummerSuccess={onSummerSuccess}
+            onSummerExit={onSummerExit}
           />
         ) : showOrbitFall ? (
           <OrbitFallScene
@@ -730,12 +797,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
       </div>
 
       <header ref={topBarRef} className={styles.topBar}>
-        <SafeBackButton
-          fallbackHref="/missions"
-          label="Quitter"
-          compact
-          preferFallback
-        />
+        <SafeBackButton fallbackHref="/missions" label="Quitter" compact preferFallback />
         <h1 className={styles.title}>{mission.title}</h1>
         <button
           type="button"
@@ -908,11 +970,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                 {isComplete ? (
                   <>
                     {nextMission ? (
-                      <Link
-                        href={`/mission/${nextMission.id}`}
-                        replace
-                        className={styles.cta}
-                      >
+                      <Link href={`/mission/${nextMission.id}`} replace className={styles.cta}>
                         Mission suivante : {nextMission.title}
                       </Link>
                     ) : (

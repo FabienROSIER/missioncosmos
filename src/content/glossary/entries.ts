@@ -118,8 +118,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
   {
     id: 'systeme-solaire',
     term: 'Système solaire',
-    definition:
-      'Le Soleil et tout ce qui tourne autour : planètes, lunes, astéroïdes, comètes…',
+    definition: 'Le Soleil et tout ce qui tourne autour : planètes, lunes, astéroïdes, comètes…',
     enrichedDefinition:
       'Il y a 8 planètes. Les distances sont énormes : les maquettes de l’app ne sont pas à l’échelle.',
     unlockRewardId: 'reward-solar-system',
@@ -194,6 +193,46 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
       'En été, un hémisphère est penché vers le Soleil : les rayons arrivent plus « droits », il fait plus chaud.',
     unlockRewardId: 'reward-seasons',
     aliases: ['saison', 'saisons', 'été', 'hiver'],
+  },
+  {
+    id: 'etoile',
+    term: 'Étoile',
+    definition:
+      'Une énorme boule de gaz très chaude qui produit sa propre lumière. Le Soleil est une étoile.',
+    enrichedDefinition:
+      'Les étoiles n’ont pas toutes la même taille ni la même couleur. Certaines sont plus petites que le Soleil, d’autres sont d’énormes géantes.',
+    unlockRewardId: 'reward-stars',
+    aliases: ['étoile', 'etoile', 'étoiles', 'etoiles'],
+  },
+  {
+    id: 'taille-apparente',
+    term: 'Taille apparente',
+    definition:
+      'La taille qu’un objet semble avoir vue depuis ici. Un objet énorme très loin peut paraître tout petit.',
+    enrichedDefinition:
+      'Ce n’est pas la vraie taille. Pour la connaître, il faut aussi savoir à quelle distance se trouve l’objet.',
+    unlockRewardId: 'reward-stars',
+    aliases: ['taille apparente', 'apparence', 'disque apparent'],
+  },
+  {
+    id: 'geante-rouge',
+    term: 'Géante rouge',
+    definition:
+      'Une étoile très gonflée et plutôt rouge. Elle est bien plus grande que le Soleil, mais sa surface est plus froide.',
+    enrichedDefinition:
+      'Bételgeuse est un exemple. Son rayon exact change un peu : on donne un ordre de grandeur.',
+    unlockRewardId: 'reward-stars',
+    aliases: ['géante rouge', 'geante rouge', 'Bételgeuse', 'Betelgeuse'],
+  },
+  {
+    id: 'temperature-etoile',
+    term: 'Température d’une étoile',
+    definition:
+      'La chaleur de la surface de l’étoile. En simplifiant : plus chaude → plus bleutée ; plus froide → plus rouge.',
+    enrichedDefinition:
+      'Ce n’est pas toute l’histoire de la lumière des étoiles — on l’approfondit dans une autre mission.',
+    unlockRewardId: 'reward-stars',
+    aliases: ['température', 'temperature', 'chaude', 'froide'],
   },
 ];
 

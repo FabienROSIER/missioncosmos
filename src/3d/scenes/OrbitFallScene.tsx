@@ -26,6 +26,7 @@ import { CelestialBodyEntity } from '@/3d/entities/CelestialBodyEntity';
 import { loadCompanion } from '@/3d/entities/loadCompanion';
 import {
   applyPlanetaryMaterials,
+  createSimpleAtmosphere,
   resolveGraphicsQuality,
   setupSceneLighting,
 } from '@/3d/materials';
@@ -208,6 +209,12 @@ export function OrbitFallScene({
     });
     applyPlanetaryMaterials(scene, earth.meshes, quality);
     optimizeCelestialMeshes(earth.meshes, quality, 'planet');
+    const atmosphere = createSimpleAtmosphere(scene, earth.pivot, {
+      quality,
+      scale: 1.045,
+      alpha: 0.24,
+      color: new Color3(0.4, 0.68, 1),
+    });
     earth.meshes.forEach((m) => {
       m.isPickable = false;
     });
@@ -427,6 +434,7 @@ export function OrbitFallScene({
       companion.dispose();
       ghost.dispose();
       ghostMat.dispose();
+      atmosphere.dispose();
       earth.dispose();
       background.dispose();
       lighting.dispose();

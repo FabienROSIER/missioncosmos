@@ -67,6 +67,10 @@ export function useMissionSequence(mission: Mission) {
     setChallengeSolved(true);
   }, []);
 
+  const resetChallengeSolved = useCallback(() => {
+    setChallengeSolved(false);
+  }, []);
+
   const goNext = useCallback(() => {
     const current = mission.steps[stepIndex];
     if (current?.requiresSuccess && !challengeSolved) return;
@@ -99,6 +103,7 @@ export function useMissionSequence(mission: Mission) {
     resumeAvailable,
     goNext,
     markChallengeSolved,
+    resetChallengeSolved,
     restart,
     dismissResumeBanner,
   };

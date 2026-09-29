@@ -33,9 +33,8 @@ export function createSimpleAtmosphere(
      */
     litBySun?: boolean;
   },
-): AtmosphereHandle | null {
+): AtmosphereHandle {
   const quality = options?.quality ?? 'high';
-  if (quality === 'low') return null;
 
   const scale = options?.scale ?? 1.035;
   const color = options?.color ?? new Color3(0.35, 0.55, 0.95);
@@ -44,7 +43,7 @@ export function createSimpleAtmosphere(
 
   const mesh = MeshBuilder.CreateSphere(
     `${parent.name}-atmosphere`,
-    { diameter: 2, segments: 24 },
+    { diameter: 2, segments: quality === 'low' ? 12 : quality === 'medium' ? 18 : 24 },
     scene,
   );
   mesh.parent = parent;

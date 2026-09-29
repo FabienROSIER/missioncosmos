@@ -48,7 +48,7 @@ export const MISSION_07: Mission = assertValidMission({
       id: 'm07-observe',
       kind: 'observe',
       title: 'Une Terre penchée',
-      body: 'La Terre n’est pas droite : elle est penchée d’environ 23°. L’axe violet montre cette inclinaison. Les rayons viennent du Soleil.',
+      body: 'La Terre n’est pas droite : elle est penchée d’environ 23°. L’axe coloré montre cette inclinaison ; la pointe dorée indique le nord. Les rayons viennent du Soleil.',
       ctaLabel: 'Je vois l’inclinaison',
     },
     {
@@ -62,7 +62,7 @@ export const MISSION_07: Mission = assertValidMission({
       id: 'm07-tilt',
       kind: 'manipulate',
       title: 'Et sans inclinaison ?',
-      body: 'Mets l’inclinaison à 0°. Plus de vrai été / hiver : l’inclinaison est indispensable pour les saisons.',
+      body: 'Dans la maquette, teste 0° avec le curseur. Plus de vrai été / hiver : l’inclinaison est indispensable pour les saisons. La vraie Terre, elle, ne se redresse pas : son axe reste incliné d’environ 23,5°.',
       ctaLabel: 'Je comprends',
     },
     {
@@ -73,7 +73,7 @@ export const MISSION_07: Mission = assertValidMission({
       requiresSuccess: true,
       challengeNorthernSummer: true,
       successFeedback: 'Oui ! Le nord est penché vers le Soleil : c’est l’été au nord.',
-      hint: 'Cherche où le nord (axe violet) se penche le plus vers le Soleil.',
+      hint: 'Cherche où la pointe dorée du nord se penche le plus vers le Soleil.',
     },
     {
       id: 'm07-explain',

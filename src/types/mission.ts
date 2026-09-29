@@ -6,14 +6,7 @@ export type DifficultyBand = 'easy' | 'medium' | 'challenge';
 export type MissionInteraction = 'rotate' | 'zoom' | 'pan' | 'pick';
 
 export type MissionStepKind =
-  | 'intro'
-  | 'observe'
-  | 'manipulate'
-  | 'challenge'
-  | 'explain'
-  | 'quiz'
-  | 'reward'
-  | 'complete';
+  'intro' | 'observe' | 'manipulate' | 'challenge' | 'explain' | 'quiz' | 'reward' | 'complete';
 
 export interface MissionStep {
   id: string;
@@ -41,6 +34,8 @@ export interface MissionStep {
   challengeOrbitFall?: boolean;
   /** Défi été dans l’hémisphère nord (Mission 07). */
   challengeNorthernSummer?: boolean;
+  /** Défi observatoire : mire + podium des tailles (Mission 08). */
+  challengeObservatory?: boolean;
   /** Défi orbite Terre autour du Soleil (Mission 01). */
   challengeOrbit?: boolean;
   successFeedback?: string;
