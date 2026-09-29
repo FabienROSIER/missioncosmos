@@ -17,7 +17,6 @@ import {
   type Scene,
 } from '@babylonjs/core';
 import type { BabylonSceneContext } from '@/3d/core/BabylonCanvas';
-import { applyEngineResolution } from '@/3d/core/engineResolution';
 import { BabylonCanvas } from '@/3d/core/BabylonCanvas';
 import type { MissionCameraApi } from '@/3d/controls/missionCamera';
 import {

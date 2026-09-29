@@ -2,11 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { ArcRotateCamera, Color4, Engine, HemisphericLight, Scene, Vector3 } from '@babylonjs/core';
-import { applyEngineResolution } from '@/3d/core/engineResolution';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
 import { MOBILE_GAME_QUERY } from '@/lib/mobileLayout';
 import { logger } from '@/lib/logger';
-import { resolveGraphicsQuality } from '@/3d/materials/graphicsQuality';
 import styles from './BabylonCanvas.module.css';
 
 export type BabylonSceneContext = {
@@ -73,9 +71,7 @@ export function BabylonCanvas({
     let mainCamera: ArcRotateCamera | undefined;
     const mobileLayout = window.matchMedia(MOBILE_GAME_QUERY);
     const onResize = () => {
-      if (engine) {
-        applyEngineResolution(engine, resolveGraphicsQuality());
-      }
+      engine?.resize();
       if (!mainCamera) return;
       // Fit the smaller game area without changing camera targets, zoom gestures or PiP cameras.
       const aspect = canvas.clientWidth / Math.max(1, canvas.clientHeight);
@@ -111,14 +107,10 @@ export function BabylonCanvas({
       booting = true;
       try {
         engine = new Engine(canvas, true, {
-          // DPR géré par applyEngineResolution (évite double scaling mobile).
-          adaptToDeviceRatio: false,
-          // true = très coûteux sur GPU téléphone et peut casser les clear scissor.
-          preserveDrawingBuffer: false,
+          adaptToDeviceRatio: true,
+          preserveDrawingBuffer: true,
           stencil: true,
-          antialias: true,
         });
-        applyEngineResolution(engine, resolveGraphicsQuality());
         scene = new Scene(engine);
         scene.clearColor = new Color4(0.03, 0.05, 0.09, 1);
         scene.useRightHandedSystem = true;
