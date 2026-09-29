@@ -179,7 +179,7 @@ export function OrbitFallScene({
 
   const onSceneReady = useCallback(async ({ engine, scene }: BabylonSceneContext) => {
     const quality = resolveGraphicsQuality();
-    const dprCap = quality === 'low' ? 1.4 : 2;
+    const dprCap = quality === 'low' ? 1.4 : quality === 'medium' ? 1.6 : 2;
     const dpr = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, dprCap) : 1;
     engine.setHardwareScalingLevel(1 / dpr);
     applyScenePerformancePriority(scene, quality);

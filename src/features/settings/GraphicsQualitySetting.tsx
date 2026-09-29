@@ -11,6 +11,7 @@ import styles from './GraphicsQualitySetting.module.css';
 const OPTIONS: { value: GraphicsQualityLevel; label: string; help: string }[] = [
   { value: 'auto', label: 'Auto', help: 'Choisit selon l’appareil' },
   { value: 'low', label: 'Basse', help: 'Plus fluide sur mobile' },
+  { value: 'medium', label: 'Moyenne', help: 'Équilibrée pour mobile' },
   { value: 'high', label: 'Élevée', help: 'Meilleur rendu' },
 ];
 

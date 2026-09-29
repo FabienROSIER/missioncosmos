@@ -33,5 +33,5 @@ export const CELESTIAL_BODY_IDS = [
 
 export type CelestialBodyId = (typeof CELESTIAL_BODY_IDS)[number];
 
-export const GRAPHICS_QUALITY = ['auto', 'low', 'high'] as const;
+export const GRAPHICS_QUALITY = ['auto', 'low', 'medium', 'high'] as const;
 export type GraphicsQuality = (typeof GRAPHICS_QUALITY)[number];

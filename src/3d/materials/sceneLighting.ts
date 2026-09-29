@@ -61,10 +61,10 @@ export function setupSceneLighting(
     pipeline = new DefaultRenderingPipeline('missionPipeline', true, scene, [camera]);
     pipeline.fxaaEnabled = true;
     pipeline.bloomEnabled = false;
-    pipeline.samples = quality === 'high' ? 4 : 1;
-    pipeline.sharpenEnabled = quality === 'high';
+    pipeline.samples = quality === 'high' ? 4 : quality === 'medium' ? 2 : 1;
+    pipeline.sharpenEnabled = quality !== 'low';
     if (pipeline.sharpenEnabled) {
-      pipeline.sharpen.edgeAmount = 0.16;
+      pipeline.sharpen.edgeAmount = quality === 'high' ? 0.16 : 0.1;
     }
     pipeline.imageProcessingEnabled = true;
     pipeline.imageProcessing.contrast = options.contrast ?? 1.06;

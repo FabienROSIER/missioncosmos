@@ -27,7 +27,7 @@ export function optimizeCelestialMeshes(
   category: TextureAssetCategory = 'planet',
 ): void {
   const maxSide = getTextureMaxSide(category, quality);
-  const aniso = quality === 'low' ? 2 : 4;
+  const aniso = quality === 'low' ? 2 : quality === 'medium' ? 3 : 4;
 
   for (const mesh of meshes) {
     if (!mesh.material) continue;
@@ -76,7 +76,7 @@ export function applyScenePerformancePriority(
   quality: ResolvedGraphicsQuality,
 ): void {
   scene.performancePriority =
-    quality === 'low'
+    quality !== 'high'
       ? ScenePerformancePriority.Intermediate
       : ScenePerformancePriority.BackwardCompatible;
 }

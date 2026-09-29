@@ -10,21 +10,21 @@ export type TextureAssetCategory =
   | 'ui'
   | 'sprite';
 
-/** Max côté long (px) — high / low. */
+/** Max côté long (px) selon le profil graphique. */
 export const TEXTURE_MAX_RESOLUTION: Record<
   TextureAssetCategory,
-  { high: number; low: number }
+  { high: number; medium: number; low: number }
 > = {
-  planet: { high: 2048, low: 1024 },
-  sun: { high: 2048, low: 1024 },
-  background: { high: 2048, low: 1024 },
-  ui: { high: 1024, low: 512 },
-  sprite: { high: 512, low: 256 },
+  planet: { high: 2048, medium: 1536, low: 1024 },
+  sun: { high: 2048, medium: 1536, low: 1024 },
+  background: { high: 2048, medium: 1536, low: 1024 },
+  ui: { high: 1024, medium: 768, low: 512 },
+  sprite: { high: 512, medium: 384, low: 256 },
 };
 
 export function getTextureMaxSide(
   category: TextureAssetCategory,
-  quality: 'low' | 'high',
+  quality: 'low' | 'medium' | 'high',
 ): number {
   return TEXTURE_MAX_RESOLUTION[category][quality];
 }
