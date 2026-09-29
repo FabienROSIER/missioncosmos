@@ -97,6 +97,7 @@ export function DayNightScene({
   const [pipLighting, setPipLighting] = useState<PipSkyPhase>('day');
   const companionRef = useRef<CompanionSurfaceMarkerHandle | null>(null);
   const pipFrameRef = useRef<HTMLDivElement | null>(null);
+  const pipSkyRef = useRef<HTMLDivElement | null>(null);
   const onLightingSuccessRef = useRef(onLightingSuccess);
   const onSceneApiRef = useRef(onSceneApi);
   const houseVisibleRef = useRef(houseVisible);
@@ -218,6 +219,7 @@ export function DayNightScene({
           earthMeshes: earth.meshes,
           frameEl,
           canvasEl,
+          skyEl: pipSkyRef.current,
           onLightingChange: (phase) => setPipLighting(phase),
         });
       }
@@ -349,6 +351,7 @@ export function DayNightScene({
         loadingMessage="Approche Soleil et Terre…"
       />
       <div ref={pipFrameRef} className={styles.housePip} aria-hidden="true">
+        <div ref={pipSkyRef} className={styles.housePipSky} />
         <div className={styles.housePipChrome}>
           <p className={styles.housePipLabel}>Avec {COMPANION_TEMP_NAME}</p>
           <p

@@ -17,6 +17,7 @@ import {
   type TransformNode,
 } from '@babylonjs/core';
 import type { HouseMarkerHandle, PipSkyPhase } from '@/3d/scenes/dayNightMarkers';
+import { applyDayNightCssPipSky, clearCssPipSky } from '@/3d/scenes/pipCssSky';
 
 /** Calque réservé à la vue principale (compagnon / repère invisible dans le PiP). */
 export const HOUSE_MESH_LAYER = 0x20000000;
@@ -40,6 +41,8 @@ type AttachHouseViewPipOptions = {
   earthMeshes: AbstractMesh[];
   frameEl: HTMLElement;
   canvasEl: HTMLElement;
+  /** Calque HTML ciel (mobile) — optionnel. */
+  skyEl?: HTMLElement | null;
   onLightingChange?: (phase: PipSkyPhase) => void;
 };
 
@@ -116,6 +119,7 @@ export function attachHouseViewPip({
   earthMeshes,
   frameEl,
   canvasEl,
+  skyEl = null,
   onLightingChange,
 }: AttachHouseViewPipOptions): HouseViewPipHandle {
   house.setLayerMask(HOUSE_MESH_LAYER);
@@ -229,6 +233,8 @@ export function attachHouseViewPip({
     skyMat.emissiveColor.copyFrom(skySample.color);
     skyMat.alpha = skySample.alpha;
     pipClear.copyFrom(skySample.clear);
+    // Mobile : ciel CSS (ne dépend pas du clear WebGL / GPU).
+    applyDayNightCssPipSky(skyEl ?? null, skySample.color);
 
     hazeMat.emissiveColor.set(
       Math.min(1, skySample.color.r * 1.05 + 0.08),
@@ -327,6 +333,7 @@ export function attachHouseViewPip({
       horizonMat.dispose();
       groundTex?.dispose();
       pipCam.dispose();
+      clearCssPipSky(skyEl ?? null);
     },
   };
 }

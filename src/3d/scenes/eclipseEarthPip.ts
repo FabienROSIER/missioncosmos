@@ -21,6 +21,7 @@ import {
   PIP_LOCAL_LAYER,
   samplePipSky,
 } from '@/3d/scenes/houseViewPip';
+import { applyEclipseCssPipSky, clearCssPipSky } from '@/3d/scenes/pipCssSky';
 import { classifyEclipse, type EclipseKind } from '@/3d/utils/eclipseAlignment';
 
 export type EclipseEarthPipHandle = {
@@ -41,6 +42,8 @@ type AttachEclipseEarthPipOptions = {
   sunMeshes: AbstractMesh[];
   frameEl: HTMLElement;
   canvasEl: HTMLElement;
+  /** Calque HTML ciel (mobile) — optionnel. */
+  skyEl?: HTMLElement | null;
   onEclipseChange?: (kind: EclipseKind) => void;
 };
 
@@ -62,6 +65,7 @@ export function attachEclipseEarthPip({
   sunMeshes,
   frameEl,
   canvasEl,
+  skyEl = null,
   onEclipseChange,
 }: AttachEclipseEarthPipOptions): EclipseEarthPipHandle {
   mainCamera.layerMask = MAIN_CAMERA_LAYER;
@@ -208,6 +212,7 @@ export function attachEclipseEarthPip({
     pipClear.r = skyColor.r;
     pipClear.g = skyColor.g;
     pipClear.b = skyColor.b;
+    applyEclipseCssPipSky(skyEl ?? null, skyColor);
     // Soleil PiP un peu moins éclatant sous la couverture
     pipSunMat.emissiveColor.set(
       1 * (1 - 0.35 * solarCover),
@@ -272,6 +277,7 @@ export function attachEclipseEarthPip({
       pipSun.dispose();
       pipSunMat.dispose();
       pipCam.dispose();
+      clearCssPipSky(skyEl ?? null);
     },
   };
 }
