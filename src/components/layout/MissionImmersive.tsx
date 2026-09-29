@@ -115,6 +115,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const [orbitsApi, setOrbitsApi] = useState<OrbitsSceneApi | null>(null);
   const [orbitFallApi, setOrbitFallApi] = useState<OrbitFallSceneApi | null>(null);
   const [seasonsApi, setSeasonsApi] = useState<SeasonsSceneApi | null>(null);
+  const [starFilmPlaying, setStarFilmPlaying] = useState(false);
   const [starsApi, setStarsApi] = useState<StarsSceneApi | null>(null);
   const [recentering, setRecentering] = useState(false);
   const [feedback, setFeedback] = useState<StepFeedback | null>(null);
@@ -710,6 +711,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
       ref={stageRef}
       className={[
         styles.stage,
+        starFilmPlaying ? styles.starFilmStage : '',
         isSolarSystem ? styles.solarStage : '',
         mobilePanel === 'controls' && hasSceneControls ? styles.showControls : '',
       ].join(' ')}
@@ -720,6 +722,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
             className={styles.viewport}
             fill
             onSceneApi={onStarsApi}
+            onCinematicPlaying={setStarFilmPlaying}
             onObservatorySuccess={onObservatorySuccess}
             onObservatoryMiss={onObservatoryMiss}
           />

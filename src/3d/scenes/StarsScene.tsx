@@ -3,16 +3,7 @@
 import { SceneControls } from '@/components/layout/SceneControls';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  ArcRotateCamera,
-  Color3,
-  Mesh,
-  MeshBuilder,
-  PointerEventTypes,
-  StandardMaterial,
-  Vector3,
-  type Scene,
-} from '@babylonjs/core';
+import { ArcRotateCamera, Color3, PointerEventTypes, Vector3 } from '@babylonjs/core';
 import type { BabylonSceneContext } from '@/3d/core/BabylonCanvas';
 import { BabylonCanvas } from '@/3d/core/BabylonCanvas';
 import type { MissionCameraApi } from '@/3d/controls/missionCamera';
@@ -21,6 +12,7 @@ import {
   configureMissionCamera,
   createMissionCameraApi,
 } from '@/3d/controls/missionCamera';
+import { createStarMesh, type StarMesh } from '@/3d/entities/createStarMesh';
 import { playPlanetSuccessHalo } from '@/3d/fx/planetSuccessHalo';
 import { resolveGraphicsQuality, setupSceneLighting } from '@/3d/materials';
 import { applyScenePerformancePriority, startPerfMonitor } from '@/3d/performance';
@@ -52,6 +44,11 @@ import {
 import { MISSION_STARFIELD_SRC } from '@/lib/assets/paths';
 import { logger } from '@/lib/logger';
 import { prefersReducedMotion } from '@/lib/motion';
+import {
+  sampleStarCinematic,
+  STAR_FILM_CHAPTERS,
+  STAR_FILM_DURATION,
+} from '@/3d/utils/starCinematic';
 import styles from './StarsScene.module.css';
 
 export type StarsSceneApi = {
@@ -67,63 +64,8 @@ type StarsSceneProps = {
   onSceneApi?: (api: StarsSceneApi) => void;
   onObservatorySuccess?: () => void;
   onObservatoryMiss?: (hint: string) => void;
+  onCinematicPlaying?: (playing: boolean) => void;
 };
-
-type StarMesh = {
-  id: StarId;
-  root: Mesh;
-  glow: Mesh;
-  mat: StandardMaterial;
-  glowMat: StandardMaterial;
-  dispose: () => void;
-};
-
-function createStarMesh(scene: Scene, id: StarId, quality: 'low' | 'medium' | 'high'): StarMesh {
-  const def = STARS[id];
-  const segments = quality === 'low' ? 16 : quality === 'medium' ? 24 : 32;
-  const root = MeshBuilder.CreateSphere(`star-${id}`, { diameter: 2, segments }, scene);
-  root.isPickable = true;
-
-  const mat = new StandardMaterial(`star-mat-${id}`, scene);
-  mat.disableLighting = true;
-  mat.emissiveColor = new Color3(def.color.r, def.color.g, def.color.b);
-  mat.diffuseColor = Color3.Black();
-  mat.specularColor = Color3.Black();
-  root.material = mat;
-
-  const glow = MeshBuilder.CreateSphere(
-    `star-glow-${id}`,
-    { diameter: 2.55, segments: Math.max(12, segments - 8) },
-    scene,
-  );
-  glow.parent = root;
-  glow.isPickable = false;
-  const glowMat = new StandardMaterial(`star-glow-mat-${id}`, scene);
-  glowMat.disableLighting = true;
-  glowMat.emissiveColor = new Color3(def.color.r, def.color.g, def.color.b);
-  glowMat.alpha = quality === 'low' ? 0.18 : 0.28;
-  glowMat.diffuseColor = Color3.Black();
-  glowMat.specularColor = Color3.Black();
-  glow.material = glowMat;
-
-  return {
-    id,
-    root,
-    glow,
-    mat,
-    glowMat,
-    dispose: () => {
-      glow.dispose();
-      glowMat.dispose();
-      root.dispose();
-      mat.dispose();
-    },
-  };
-}
-
-function setStarRadius(star: StarMesh, radius: number) {
-  star.root.scaling.setAll(Math.max(0.05, radius));
-}
 
 /** Scène Mission 08 — Soleil comme étoile, tailles, couleurs, taille apparente, défi observatoire. */
 export function StarsScene({
@@ -132,6 +74,7 @@ export function StarsScene({
   onSceneApi,
   onObservatorySuccess,
   onObservatoryMiss,
+  onCinematicPlaying,
 }: StarsSceneProps) {
   const [mode, setModeUi] = useState<StarsSceneMode>('sun');
   const [fact, setFact] = useState<string | null>(STARS.sun.shortFact);
@@ -145,7 +88,18 @@ export function StarsScene({
   const [showReticle, setShowReticle] = useState(false);
   const [flashKey, setFlashKey] = useState(0);
 
+  const [film, setFilm] = useState<'playing' | 'paused' | 'finished' | null>(null);
+  const [filmChapter, setFilmChapter] = useState(0);
+  const [reducedFilm, setReducedFilm] = useState(false);
+  const filmRef = useRef<{
+    play: () => void;
+    pause: () => void;
+    finish: () => void;
+    next: () => void;
+  } | null>(null);
+
   const runtimeRef = useRef<StarsSceneApi | null>(null);
+  const reticleRef = useRef<HTMLDivElement | null>(null);
   const hudRef = useRef<{
     setDistance: (value: number) => void;
     shiftDistance: (delta: number) => void;
@@ -164,6 +118,10 @@ export function StarsScene({
   useEffect(() => {
     onMissRef.current = onObservatoryMiss;
   }, [onObservatoryMiss]);
+
+  useEffect(() => {
+    onCinematicPlaying?.(film === 'playing' || film === 'paused');
+  }, [film, onCinematicPlaying]);
 
   const onSceneReady = useCallback(async ({ engine, scene }: BabylonSceneContext) => {
     const quality = resolveGraphicsQuality();
@@ -192,6 +150,8 @@ export function StarsScene({
     let currentPhotoIndex = 0;
     let completed: StarId[] = [];
     let flashTimer: number | null = null;
+    let startFilm = () => {};
+    let filmVisible = false;
 
     const photoStartDistance = (id: StarId) => {
       if (id === 'proxima') return 58;
@@ -215,7 +175,7 @@ export function StarsScene({
       if (!star) return;
       star.root.setEnabled(true);
       star.root.position.copyFrom(position);
-      setStarRadius(star, radius);
+      star.setRadius(radius);
     };
 
     const applyLayout = () => {
@@ -229,10 +189,16 @@ export function StarsScene({
       }
 
       if (modeLocal === 'sizes') {
-        const spacing = 2.15;
+        const surfaceGap = 0.55;
+        const radii = SIZE_COMPARE_STARS.map((id) => comparisonVisualRadius(STARS[id].radiusSolar));
+        const totalWidth =
+          radii.reduce((sum, radius) => sum + radius * 2, 0) + surfaceGap * (radii.length - 1);
+        let cursor = -totalWidth / 2;
         SIZE_COMPARE_STARS.forEach((id, index) => {
-          const x = (index - 1) * spacing;
-          showStar(id, new Vector3(x, 0, 0), comparisonVisualRadius(STARS[id].radiusSolar));
+          const radius = radii[index]!;
+          const x = cursor + radius;
+          showStar(id, new Vector3(x, 0, 0), radius);
+          cursor += radius * 2 + surfaceGap;
         });
         setFact('Tailles compressées pour tout voir : Proxima ≪ Soleil ≪ Bételgeuse.');
         return;
@@ -300,9 +266,7 @@ export function StarsScene({
       const progress = photoProgress(completed);
       if (progress.complete) {
         challengeDone = true;
-        setCelebrating(true);
-        setRoundOk('Album complet ! Même cadrage, mais tailles et distances très différentes.');
-        onSuccessRef.current?.();
+        startFilm();
         return;
       }
 
@@ -327,7 +291,9 @@ export function StarsScene({
       return;
     }
     camera.setTarget(Vector3.Zero());
-    camera.alpha = -Math.PI / 2.15;
+    // Vue orthogonale à l’axe horizontal des comparaisons : les centres des
+    // étoiles gardent ainsi exactement le même entraxe à l’écran.
+    camera.alpha = -Math.PI / 2;
     camera.beta = 1.15;
     camera.radius = 8.2;
     camera.lowerRadiusLimit = 4.5;
@@ -341,9 +307,105 @@ export function StarsScene({
       ...Array.from(stars.values()).map((s) => s.root),
     ]);
 
+    let filmTime = 0;
+    let filmPaused = false;
+    let filmFinished = false;
+    let announcedChapter = -1;
+    let filmHome: ReturnType<typeof captureCameraHome> | null = null;
+    const originalUpperLimit = camera.upperRadiusLimit;
+    const reducedMotion = prefersReducedMotion();
+    const renderFilm = () => {
+      const frame = sampleStarCinematic(filmTime);
+      hideAll();
+      frame.stars.forEach(({ id, position }) => {
+        const star = stars.get(id)!;
+        star.root.setEnabled(true);
+        star.root.position.copyFromFloats(...position);
+      });
+      camera.setTarget(Vector3.FromArray(frame.target));
+      camera.setPosition(Vector3.FromArray(frame.camera));
+      if (announcedChapter !== frame.chapter) {
+        announcedChapter = frame.chapter;
+        setFilmChapter(frame.chapter);
+      }
+    };
+    const finishFilm = () => {
+      if (!filmVisible || filmFinished) return;
+      filmTime = STAR_FILM_DURATION;
+      renderFilm();
+      filmFinished = true;
+      setFilm('finished');
+      onSuccessRef.current?.();
+    };
+    const cancelFilm = () => {
+      if (!filmVisible) return;
+      filmVisible = false;
+      setFilm(null);
+      camera.upperRadiusLimit = originalUpperLimit;
+      if (filmHome) {
+        camera.setTarget(filmHome.target);
+        camera.alpha = filmHome.alpha;
+        camera.beta = filmHome.beta;
+        camera.radius = filmHome.radius;
+      }
+      camera.attachControl(engine.getRenderingCanvas(), true);
+    };
+    startFilm = () => {
+      if (!filmVisible) filmHome = captureCameraHome(camera);
+      if (flashTimer != null) window.clearTimeout(flashTimer);
+      filmVisible = true;
+      filmTime = 0;
+      sampleStarCinematic(0).stars.forEach(({ id, radius }) => stars.get(id)!.setRadius(radius));
+      filmPaused = reducedMotion;
+      filmFinished = false;
+      announcedChapter = -1;
+      scene.stopAnimation(camera);
+      camera.detachControl();
+      camera.inertialAlphaOffset = camera.inertialBetaOffset = camera.inertialRadiusOffset = 0;
+      camera.inertialPanningX = camera.inertialPanningY = 0;
+      camera.upperRadiusLimit = 100;
+      setShowReticle(false);
+      setCelebrating(false);
+      setRoundOk(null);
+      setRoundHint(null);
+      setReducedFilm(reducedMotion);
+      setFilm(reducedMotion ? 'paused' : 'playing');
+      renderFilm();
+    };
+    filmRef.current = {
+      play: startFilm,
+      finish: finishFilm,
+      pause: () => {
+        filmPaused = !filmPaused;
+        setFilm(filmPaused ? 'paused' : 'playing');
+      },
+      next: () => {
+        const next = announcedChapter + 1;
+        if (next >= STAR_FILM_CHAPTERS.length) {
+          finishFilm();
+          return;
+        }
+        // Reduced-motion version uses settled tableaux, without travelling shots.
+        filmTime = STAR_FILM_CHAPTERS[next]!.tableau;
+        renderFilm();
+      },
+    };
+    const filmObserver = scene.onBeforeRenderObservable.add(() => {
+      if (!filmVisible || filmPaused || filmFinished || document.hidden) return;
+      filmTime += Math.min(engine.getDeltaTime() / 1000, 0.05);
+      renderFilm();
+      if (filmTime >= STAR_FILM_DURATION) finishFilm();
+    });
+
     const api: StarsSceneApi = {
-      camera: cameraApi,
+      camera: {
+        ...cameraApi,
+        recenter: () => (filmVisible ? Promise.resolve() : cameraApi.recenter()),
+        focusOn: (node, meshes) =>
+          filmVisible ? Promise.resolve() : cameraApi.focusOn(node, meshes),
+      },
       setMode: (next) => {
+        cancelFilm();
         modeLocal = next;
         setModeUi(next);
         if (next !== 'challenge') {
@@ -360,6 +422,7 @@ export function StarsScene({
         const changed = challenge !== enabled;
         challenge = enabled;
         if (enabled && changed) {
+          cancelFilm();
           challengeDone = false;
           completed = [];
           currentPhotoIndex = 0;
@@ -375,6 +438,7 @@ export function StarsScene({
           setCelebrating(false);
           applyLayout();
         } else if (!enabled) {
+          cancelFilm();
           setChallengeActive(false);
           setShowReticle(false);
           if (modeLocal === 'challenge') {
@@ -392,7 +456,7 @@ export function StarsScene({
     onSceneApiRef.current?.(api);
 
     const pointerObs = scene.onPointerObservable.add((info) => {
-      if (!pickEnabled) return;
+      if (!pickEnabled || filmVisible) return;
       if (info.type !== PointerEventTypes.POINTERDOWN) return;
       const mesh = info.pickInfo?.pickedMesh;
       if (!mesh) return;
@@ -421,6 +485,7 @@ export function StarsScene({
 
     hudRef.current = {
       setDistance: (value: number) => {
+        if (filmVisible) return;
         distance =
           modeLocal === 'challenge'
             ? Math.min(PHOTO_DISTANCE_MAX, Math.max(PHOTO_DISTANCE_MIN, value))
@@ -433,6 +498,7 @@ export function StarsScene({
         applyLayout();
       },
       shiftDistance: (delta: number) => {
+        if (filmVisible) return;
         const next = Math.min(PHOTO_DISTANCE_MAX, Math.max(PHOTO_DISTANCE_MIN, distance + delta));
         distance = next;
         setDistanceUi(next);
@@ -445,13 +511,32 @@ export function StarsScene({
 
     const perf = startPerfMonitor(scene, { label: 'mission-08-stars' });
 
+    // La mire suit exactement la projection du rayon cible (1,05 unité).
+    // Elle reste donc cohérente avec le seuil sur PC, mobile, orientation et zoom.
+    const reticleObserver = scene.onBeforeRenderObservable.add(() => {
+      const reticle = reticleRef.current;
+      const canvas = engine.getRenderingCanvas();
+      if (!reticle || !canvas) return;
+      const viewHeight = Math.max(1, canvas.clientHeight * camera.viewport.height);
+      const targetRadius = 1.05;
+      const cameraDistance = Math.max(targetRadius + 0.01, camera.radius);
+      const projectedDiameter =
+        (viewHeight * targetRadius) /
+        (Math.sqrt(cameraDistance * cameraDistance - targetRadius * targetRadius) *
+          Math.tan(camera.fov / 2));
+      reticle.style.setProperty(
+        '--reticle-size',
+        `${Math.max(48, Math.min(280, projectedDiameter))}px`,
+      );
+    });
+
     // Soft pulse on glow (reduced motion = skip)
     let pulseT = 0;
     const pulseObs = prefersReducedMotion()
       ? null
       : scene.onBeforeRenderObservable.add(() => {
           pulseT += engine.getDeltaTime() * 0.001;
-          const a = 0.2 + 0.08 * Math.sin(pulseT * 2.2);
+          const a = 0.7 + 0.035 * Math.sin(pulseT * 0.8);
           stars.forEach((star) => {
             if (star.root.isEnabled()) star.glowMat.alpha = a;
           });
@@ -459,7 +544,10 @@ export function StarsScene({
 
     return () => {
       perf.dispose();
+      scene.onBeforeRenderObservable.remove(filmObserver);
+      filmRef.current = null;
       if (flashTimer != null) window.clearTimeout(flashTimer);
+      scene.onBeforeRenderObservable.remove(reticleObserver);
       if (pulseObs) scene.onBeforeRenderObservable.remove(pulseObs);
       scene.onPointerObservable.remove(pointerObs);
       stars.forEach((star) => star.dispose());
@@ -483,13 +571,17 @@ export function StarsScene({
     hudRef.current?.takePhoto();
   };
 
-  const showDistanceControls = mode === 'apparent' || challengeActive;
+  const showDistanceControls = !film && (mode === 'apparent' || challengeActive);
+  const showProfilePip = !film && (mode === 'apparent' || challengeActive);
   const progress = photoProgress(completedPhotos);
+  const profileStarId = challengeActive ? photoStar : APPARENT_SIZE_STAR;
+  const profileDistanceMin = challengeActive ? PHOTO_DISTANCE_MIN : APPARENT_DISTANCE_MIN;
+  const profileDistanceMax = challengeActive ? PHOTO_DISTANCE_MAX : APPARENT_DISTANCE_MAX;
   const telescopePosition =
-    28 + ((distanceAu - PHOTO_DISTANCE_MIN) / (PHOTO_DISTANCE_MAX - PHOTO_DISTANCE_MIN)) * 62;
-  const profileStarRadius = comparisonVisualRadius(STARS[photoStar].radiusSolar);
+    28 + ((distanceAu - profileDistanceMin) / (profileDistanceMax - profileDistanceMin)) * 62;
+  const profileStarRadius = comparisonVisualRadius(STARS[profileStarId].radiusSolar);
   const profileStarSize = 2.5 + ((profileStarRadius - 0.28) / 1.55) * 2.8;
-  const profileColor = STARS[photoStar].color;
+  const profileColor = STARS[profileStarId].color;
 
   return (
     <div className={[styles.wrap, className].filter(Boolean).join(' ')}>
@@ -500,12 +592,12 @@ export function StarsScene({
         onSceneReady={onSceneReady}
       />
       <div
-        className={`${styles.profilePip} ${challengeActive ? styles.profilePipVisible : ''}`}
-        aria-hidden={!challengeActive}
+        className={`${styles.profilePip} ${showProfilePip ? styles.profilePipVisible : ''}`}
+        aria-hidden={!showProfilePip}
       >
         <div className={styles.profilePipChrome}>
           <p>Vue de profil</p>
-          <strong>{STARS[photoStar].nameFr}</strong>
+          <strong>{STARS[profileStarId].nameFr}</strong>
           <span>Étoile ← distance → télescope</span>
         </div>
         <div className={styles.profileModel}>
@@ -531,94 +623,137 @@ export function StarsScene({
           </div>
         </div>
       </div>
-      {showReticle ? <div className={styles.reticle} aria-hidden="true" /> : null}
+      {showReticle ? <div ref={reticleRef} className={styles.reticle} aria-hidden="true" /> : null}
       {flashKey > 0 ? (
         <div key={flashKey} className={styles.photoFlash} aria-hidden="true" />
       ) : null}
       {celebrating ? <p className={styles.celebrate}>Observatoire activé</p> : null}
-      <SceneControls className={styles.hud}>
-        {challengeActive ? (
-          <p className={styles.progress}>
-            <strong>
-              Album : {progress.done} / {progress.total}
-            </strong>
-            <span className={styles.album} aria-label={`${progress.done} photos réussies`}>
-              {PHOTO_STARS.map((id) => (
-                <span
-                  key={id}
-                  className={completedPhotos.includes(id) ? styles.photoDone : styles.photoEmpty}
-                  title={STARS[id].nameFr}
-                >
-                  {completedPhotos.includes(id) ? '✓' : '○'}
-                </span>
-              ))}
+      {film ? (
+        <section className={styles.cinema} aria-label="Le ballet des distances">
+          <div className={styles.cinemaCaption} aria-live="polite" aria-atomic="true">
+            <span>
+              {film === 'finished'
+                ? 'Album complet'
+                : `Le ballet des distances · ${filmChapter + 1} / 4`}
             </span>
-          </p>
-        ) : null}
-        {fact ? (
-          <p className={styles.fact} role="status">
-            {fact}
-          </p>
-        ) : null}
-
-        {showDistanceControls ? (
-          <>
-            <p className={styles.roundTitle}>
-              {challengeActive
-                ? `Photo ${Math.min(progress.done + 1, 3)}/3 — ${STARS[photoStar].nameFr}`
-                : 'Distance pédagogique'}
-            </p>
-            <p className={styles.sliderLabel}>
-              🔭 Distance : {Math.round(distanceAu)} — glisse vers « loin » pour reculer
-            </p>
-            <input
-              className={styles.slider}
-              type="range"
-              min={challengeActive ? PHOTO_DISTANCE_MIN : APPARENT_DISTANCE_MIN}
-              max={challengeActive ? PHOTO_DISTANCE_MAX : APPARENT_DISTANCE_MAX}
-              step={1}
-              value={distanceAu}
-              onChange={(e) => setDistance(Number(e.target.value))}
-              aria-label="Distance de l’étoile"
-            />
-            <div className={styles.rangeLegend} aria-hidden="true">
-              <span>Proche</span>
-              <span>Loin</span>
-            </div>
-            {challengeActive ? (
-              <>
-                <div className={styles.distanceActions}>
+            <h2>{STAR_FILM_CHAPTERS[filmChapter]!.title}</h2>
+            <p>{STAR_FILM_CHAPTERS[filmChapter]!.text}</p>
+          </div>
+          <div className={styles.cinemaFooter}>
+            <p>Diamètres constants · tailles et distances simplifiées</p>
+            <div>
+              {film === 'finished' ? (
+                <button type="button" onClick={() => filmRef.current?.play()}>
+                  Revoir le voyage
+                </button>
+              ) : (
+                <>
                   <button
                     type="button"
-                    className={styles.moveBtn}
-                    onClick={() => shiftDistance(-5)}
+                    onClick={() =>
+                      reducedFilm ? filmRef.current?.next() : filmRef.current?.pause()
+                    }
                   >
-                    ← Rapprocher
+                    {reducedFilm ? 'Tableau suivant' : film === 'paused' ? 'Reprendre' : 'Pause'}
                   </button>
-                  <button type="button" className={styles.moveBtn} onClick={() => shiftDistance(5)}>
-                    Éloigner →
+                  <button type="button" onClick={() => filmRef.current?.finish()}>
+                    Passer
                   </button>
-                </div>
-                <button type="button" className={styles.actionBtn} onClick={takePhoto}>
-                  Prendre la photo
-                </button>
-              </>
-            ) : null}
-          </>
-        ) : null}
+                </>
+              )}
+            </div>
+          </div>
+        </section>
+      ) : null}
+      {!film ? (
+        <SceneControls className={styles.hud}>
+          {challengeActive ? (
+            <p className={styles.progress}>
+              <strong>
+                Album : {progress.done} / {progress.total}
+              </strong>
+              <span className={styles.album} aria-label={`${progress.done} photos réussies`}>
+                {PHOTO_STARS.map((id) => (
+                  <span
+                    key={id}
+                    className={completedPhotos.includes(id) ? styles.photoDone : styles.photoEmpty}
+                    title={STARS[id].nameFr}
+                  >
+                    {completedPhotos.includes(id) ? '✓' : '○'}
+                  </span>
+                ))}
+              </span>
+            </p>
+          ) : null}
+          {fact ? (
+            <p className={styles.fact} role="status">
+              {fact}
+            </p>
+          ) : null}
 
-        {roundOk ? (
-          <p className={styles.ok} role="status">
-            {roundOk}
-          </p>
-        ) : null}
-        {roundHint ? (
-          <p className={styles.hint} role="status">
-            {roundHint}
-          </p>
-        ) : null}
-        <p className={styles.note}>Maquette simplifiée · Bételgeuse : rayon estimé</p>
-      </SceneControls>
+          {showDistanceControls ? (
+            <>
+              <p className={styles.roundTitle}>
+                {challengeActive
+                  ? `Photo ${Math.min(progress.done + 1, 3)}/3 — ${STARS[photoStar].nameFr}`
+                  : 'Distance pédagogique'}
+              </p>
+              <p className={styles.sliderLabel}>
+                🔭 Distance : {Math.round(distanceAu)} — glisse vers « loin » pour reculer
+              </p>
+              <input
+                className={styles.slider}
+                type="range"
+                min={challengeActive ? PHOTO_DISTANCE_MIN : APPARENT_DISTANCE_MIN}
+                max={challengeActive ? PHOTO_DISTANCE_MAX : APPARENT_DISTANCE_MAX}
+                step={1}
+                value={distanceAu}
+                onChange={(e) => setDistance(Number(e.target.value))}
+                aria-label="Distance de l’étoile"
+              />
+              <div className={styles.rangeLegend} aria-hidden="true">
+                <span>Proche</span>
+                <span>Loin</span>
+              </div>
+              {challengeActive ? (
+                <>
+                  <div className={styles.distanceActions}>
+                    <button
+                      type="button"
+                      className={styles.moveBtn}
+                      onClick={() => shiftDistance(-5)}
+                    >
+                      ← Rapprocher
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.moveBtn}
+                      onClick={() => shiftDistance(5)}
+                    >
+                      Éloigner →
+                    </button>
+                  </div>
+                  <button type="button" className={styles.actionBtn} onClick={takePhoto}>
+                    Prendre la photo
+                  </button>
+                </>
+              ) : null}
+            </>
+          ) : null}
+
+          {roundOk ? (
+            <p className={styles.ok} role="status">
+              {roundOk}
+            </p>
+          ) : null}
+          {roundHint ? (
+            <p className={styles.hint} role="status">
+              {roundHint}
+            </p>
+          ) : null}
+          <p className={styles.note}>Maquette simplifiée · Bételgeuse : rayon estimé</p>
+        </SceneControls>
+      ) : null}
     </div>
   );
 }
