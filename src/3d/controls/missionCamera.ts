@@ -11,8 +11,11 @@ import {
 import { MOBILE_GAME_QUERY } from '@/lib/mobileLayout';
 import { frameCelestialCamera, getVisualRadius } from '@/3d/utils/cameraFraming';
 
-/** Sur mobile, le FOV élargi « éloigne » la scène : limite avant à 45 % du desktop. */
-const MOBILE_ZOOM_IN_FACTOR = 0.45;
+/** Limite avant relative au desktop ; paysage plus permissif car la vue est plus étroite. */
+const MOBILE_PORTRAIT_ZOOM_IN_FACTOR = 0.38;
+const MOBILE_LANDSCAPE_ZOOM_IN_FACTOR = 0.26;
+/** Rapprochement automatique appliqué à l’entrée en paysage. */
+const MOBILE_LANDSCAPE_AUTO_ZOOM_FACTOR = 0.7;
 
 /** Sensibilité pan Babylon : plus bas = translation plus rapide. */
 const DESKTOP_PANNING_SENSIBILITY = 900;
@@ -22,16 +25,78 @@ function isMobileGameLayout(): boolean {
   return typeof window !== 'undefined' && window.matchMedia(MOBILE_GAME_QUERY).matches;
 }
 
+function isLandscapeLayout(): boolean {
+  return typeof window !== 'undefined' && window.matchMedia('(orientation: landscape)').matches;
+}
+
+type ResponsiveZoomState = {
+  baseLowerLimit: number;
+  appliedLowerLimit: number;
+  landscapeBoostApplied: boolean;
+};
+
+const responsiveZoomStates = new WeakMap<ArcRotateCamera, ResponsiveZoomState>();
+
 /**
  * Abaisse la limite de zoom avant sur mobile (dézoom inchangé).
  * À appeler après avoir posé `lowerRadiusLimit` desktop, si `configureMissionCamera` ne suit pas.
  */
 export function allowCloserZoomOnMobile(camera: ArcRotateCamera): void {
-  if (!isMobileGameLayout()) return;
   const lower = camera.lowerRadiusLimit;
   if (lower == null || !Number.isFinite(lower) || lower <= 0) return;
+
+  let state = responsiveZoomStates.get(camera);
+  if (!state) {
+    state = {
+      baseLowerLimit: lower,
+      appliedLowerLimit: lower,
+      landscapeBoostApplied: false,
+    };
+    responsiveZoomStates.set(camera, state);
+  } else if (Math.abs(lower - state.appliedLowerLimit) > 1e-5) {
+    // Une scène vient de poser une nouvelle limite : elle devient la référence desktop.
+    state.baseLowerLimit = lower;
+    // Le cadrage (radius) a généralement été reposé lui aussi : réappliquer le boost.
+    state.landscapeBoostApplied = false;
+  }
+
+  if (!isMobileGameLayout()) {
+    camera.lowerRadiusLimit = state.baseLowerLimit;
+    state.appliedLowerLimit = state.baseLowerLimit;
+    return;
+  }
+
+  const factor = isLandscapeLayout()
+    ? MOBILE_LANDSCAPE_ZOOM_IN_FACTOR
+    : MOBILE_PORTRAIT_ZOOM_IN_FACTOR;
   const floor = Math.max((camera.minZ || 0.05) * 6, 0.12);
-  camera.lowerRadiusLimit = Math.max(lower * MOBILE_ZOOM_IN_FACTOR, floor);
+  camera.lowerRadiusLimit = Math.max(state.baseLowerLimit * factor, floor);
+  state.appliedLowerLimit = camera.lowerRadiusLimit;
+}
+
+/**
+ * Applique/retire le rapprochement de cadrage quand l’orientation change.
+ * Le rayon courant est multiplié puis divisé : le zoom choisi par l’utilisateur est conservé.
+ */
+export function syncResponsiveCameraZoom(camera: ArcRotateCamera): void {
+  allowCloserZoomOnMobile(camera);
+
+  const lower = camera.lowerRadiusLimit ?? 0;
+  const upper = camera.upperRadiusLimit ?? Number.POSITIVE_INFINITY;
+  const state = responsiveZoomStates.get(camera);
+  if (!state) return;
+
+  const shouldBoost = isMobileGameLayout() && isLandscapeLayout();
+  if (shouldBoost && !state.landscapeBoostApplied) {
+    camera.radius = Math.max(lower, Math.min(upper, camera.radius * MOBILE_LANDSCAPE_AUTO_ZOOM_FACTOR));
+    state.landscapeBoostApplied = true;
+  } else if (!shouldBoost && state.landscapeBoostApplied) {
+    camera.radius = Math.max(
+      lower,
+      Math.min(upper, camera.radius / MOBILE_LANDSCAPE_AUTO_ZOOM_FACTOR),
+    );
+    state.landscapeBoostApplied = false;
+  }
 }
 
 export type MissionCameraHome = {
@@ -113,7 +178,7 @@ export function configureMissionCamera(
   // Évite que le pinch UI navigateur concurrence (viewport déjà userScalable=false)
   camera.useInputToRestoreState = false;
 
-  allowCloserZoomOnMobile(camera);
+  syncResponsiveCameraZoom(camera);
 }
 
 export function captureCameraHome(camera: ArcRotateCamera): MissionCameraHome {
@@ -215,12 +280,22 @@ export function createMissionCameraApi(
   focusPivot?: TransformNode,
   focusMeshes: AbstractMesh[] = [],
 ): MissionCameraApi {
+  const initialZoomState = responsiveZoomStates.get(camera);
+  const baseHomeRadius = initialZoomState?.landscapeBoostApplied
+    ? home.radius / MOBILE_LANDSCAPE_AUTO_ZOOM_FACTOR
+    : home.radius;
+  const responsiveHome = (): MissionCameraHome => ({
+    ...home,
+    radius:
+      isMobileGameLayout() && isLandscapeLayout()
+        ? baseHomeRadius * MOBILE_LANDSCAPE_AUTO_ZOOM_FACTOR
+        : baseHomeRadius,
+    target: home.target.clone(),
+  });
+
   return {
-    getHome: () => ({
-      ...home,
-      target: home.target.clone(),
-    }),
-    recenter: () => animateCameraTo(camera, home),
+    getHome: responsiveHome,
+    recenter: () => animateCameraTo(camera, responsiveHome()),
     focusOn: async (node, meshes = []) => {
       const list = meshes.length > 0 ? meshes : focusMeshes;
       const radius = getVisualRadius(node, list);

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { ArcRotateCamera, Color4, Engine, HemisphericLight, Scene, Vector3 } from '@babylonjs/core';
+import { syncResponsiveCameraZoom } from '@/3d/controls/missionCamera';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
 import { MOBILE_GAME_QUERY } from '@/lib/mobileLayout';
 import { logger } from '@/lib/logger';
@@ -83,6 +84,10 @@ export function BabylonCanvas({
           )
         : 0.8;
     };
+    const onResponsiveLayoutChange = () => {
+      onResize();
+      if (mainCamera) syncResponsiveCameraZoom(mainCamera);
+    };
 
     resizeRef.current = onResize;
     const resizeObserver = new ResizeObserver(onResize);
@@ -136,9 +141,9 @@ export function BabylonCanvas({
         camera.pinchDeltaPercentage = 0.02;
         new HemisphericLight('defaultLight', new Vector3(0, 1, 0), scene);
 
-        mobileLayout.addEventListener('change', onResize);
-        window.addEventListener('resize', onResize);
-        window.addEventListener('orientationchange', onResize);
+        mobileLayout.addEventListener('change', onResponsiveLayoutChange);
+        window.addEventListener('resize', onResponsiveLayoutChange);
+        window.addEventListener('orientationchange', onResponsiveLayoutChange);
 
         contextLostHandler = (event: Event) => {
           event.preventDefault();
@@ -203,9 +208,9 @@ export function BabylonCanvas({
       window.clearTimeout(startId);
       resizeObserver.disconnect();
       resizeRef.current = null;
-      mobileLayout.removeEventListener('change', onResize);
-      window.removeEventListener('resize', onResize);
-      window.removeEventListener('orientationchange', onResize);
+      mobileLayout.removeEventListener('change', onResponsiveLayoutChange);
+      window.removeEventListener('resize', onResponsiveLayoutChange);
+      window.removeEventListener('orientationchange', onResponsiveLayoutChange);
       if (contextLostHandler) {
         canvas.removeEventListener('webglcontextlost', contextLostHandler);
       }
