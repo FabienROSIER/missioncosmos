@@ -1,7 +1,6 @@
 import {
   Color3,
   Color4,
-  Engine,
   FreeCamera,
   Mesh,
   MeshBuilder,
@@ -20,6 +19,7 @@ import {
   PIP_CAMERA_LAYER,
   PIP_LOCAL_LAYER,
 } from '@/3d/scenes/houseViewPip';
+import { scissorClearPipViewport, syncPipCameraToFrame } from '@/3d/scenes/pipViewport';
 import type { MoonPhaseId } from '@/3d/utils/moonPhase';
 import { elongationBetween, phaseFromElongation } from '@/3d/utils/moonPhase';
 
@@ -111,10 +111,7 @@ export function attachMoonEarthPip({
     }
     scene.autoClear = false;
     scene.autoClearDepthAndStencil = false;
-    const engine = scene.getEngine();
-    if (!(engine instanceof Engine)) return;
-    const global = cam.viewport.toGlobal(engine.getRenderWidth(), engine.getRenderHeight());
-    engine.scissorClear(global.x, global.y, global.width, global.height, pipClear);
+    scissorClearPipViewport(scene.getEngine(), cam.viewport, pipClear);
   });
 
   const syncPose = () => {
@@ -149,22 +146,11 @@ export function attachMoonEarthPip({
   };
 
   const syncViewport = () => {
-    const canvasRect = canvasEl.getBoundingClientRect();
-    const frameRect = frameEl.getBoundingClientRect();
-    if (canvasRect.width < 1 || canvasRect.height < 1) return;
-    if (frameRect.width < 1 || frameRect.height < 1) return;
-
-    const x = (frameRect.left - canvasRect.left) / canvasRect.width;
-    const y = (canvasRect.bottom - frameRect.bottom) / canvasRect.height;
-    const w = frameRect.width / canvasRect.width;
-    const h = frameRect.height / canvasRect.height;
-    pipCam.viewport.x = Math.max(0, Math.min(1, x));
-    pipCam.viewport.y = Math.max(0, Math.min(1, y));
-    pipCam.viewport.width = Math.max(0.05, Math.min(1 - pipCam.viewport.x, w));
-    pipCam.viewport.height = Math.max(0.05, Math.min(1 - pipCam.viewport.y, h));
+    syncPipCameraToFrame(pipCam, frameEl, canvasEl);
   };
 
   const renderObs: Observer<Scene> = scene.onBeforeRenderObservable.add(() => {
+    syncViewport();
     syncPose();
   });
 
@@ -177,12 +163,17 @@ export function attachMoonEarthPip({
   ro.observe(frameEl);
   window.addEventListener('resize', syncViewport);
   window.addEventListener('orientationchange', syncViewport);
+  const vv = window.visualViewport;
+  vv?.addEventListener('resize', syncViewport);
+  vv?.addEventListener('scroll', syncViewport);
 
   return {
     dispose: () => {
       ro.disconnect();
       window.removeEventListener('resize', syncViewport);
       window.removeEventListener('orientationchange', syncViewport);
+      vv?.removeEventListener('resize', syncViewport);
+      vv?.removeEventListener('scroll', syncViewport);
       scene.onBeforeRenderObservable.remove(renderObs);
       scene.onBeforeCameraRenderObservable.remove(beforeCamObs);
       scene.activeCameras = null;

@@ -1,7 +1,6 @@
 import {
   Color3,
   Color4,
-  Engine,
   FreeCamera,
   Mesh,
   MeshBuilder,
@@ -17,6 +16,7 @@ import {
   type TransformNode,
 } from '@babylonjs/core';
 import type { HouseMarkerHandle, PipSkyPhase } from '@/3d/scenes/dayNightMarkers';
+import { scissorClearPipViewport, syncPipCameraToFrame } from '@/3d/scenes/pipViewport';
 
 /** Calque réservé à la vue principale (compagnon / repère invisible dans le PiP). */
 export const HOUSE_MESH_LAYER = 0x20000000;
@@ -82,10 +82,12 @@ export function samplePipSky(score: number): { color: Color3; alpha: number; cle
   } else if (score >= -0.35) {
     const t = (score + 0.35) / 0.23;
     color = Color3.Lerp(night, dusk, t);
-    alpha = 0.12 + 0.8 * t;
+    // Opacité minimale élevée : sinon le fond laisse fuiter la scène principale
+    // (surtout en PiP mobile où le scissor est plus fragile).
+    alpha = 0.55 + 0.45 * t;
   } else {
     color = night;
-    alpha = Math.max(0, Math.min(0.12, (score + 0.55) / 0.2) * 0.12);
+    alpha = 0.55;
   }
 
   return {
@@ -159,9 +161,10 @@ export function attachHouseViewPip({
   skyMat.diffuseColor = Color3.Black();
   skyMat.specularColor = Color3.Black();
   skyMat.emissiveColor = new Color3(0.4, 0.7, 0.98);
+  // Opaque : le fond doit suivre l’éclairement (sinon fuite de la vue principale,
+  // souvent bleue côté jour) — surtout visible en layout responsive.
   skyMat.alpha = 1;
-  skyMat.transparencyMode = StandardMaterial.MATERIAL_ALPHABLEND;
-  skyMat.disableDepthWrite = true;
+  skyMat.transparencyMode = StandardMaterial.MATERIAL_OPAQUE;
   skyMat.backFaceCulling = false;
   sky.material = skyMat;
 
@@ -227,8 +230,11 @@ export function attachHouseViewPip({
     const score = house.getLightingScore();
     const skySample = samplePipSky(score);
     skyMat.emissiveColor.copyFrom(skySample.color);
-    skyMat.alpha = skySample.alpha;
-    pipClear.copyFrom(skySample.clear);
+    skyMat.alpha = 1;
+    pipClear.r = skySample.color.r;
+    pipClear.g = skySample.color.g;
+    pipClear.b = skySample.color.b;
+    pipClear.a = 1;
 
     hazeMat.emissiveColor.set(
       Math.min(1, skySample.color.r * 1.05 + 0.08),
@@ -250,11 +256,7 @@ export function attachHouseViewPip({
 
     scene.autoClear = false;
     scene.autoClearDepthAndStencil = false;
-
-    const engine = scene.getEngine();
-    if (!(engine instanceof Engine)) return;
-    const global = cam.viewport.toGlobal(engine.getRenderWidth(), engine.getRenderHeight());
-    engine.scissorClear(global.x, global.y, global.width, global.height, pipClear);
+    scissorClearPipViewport(scene.getEngine(), cam.viewport, pipClear);
   });
 
   let lastPhase: PipSkyPhase | null = null;
@@ -274,22 +276,13 @@ export function attachHouseViewPip({
   };
 
   const syncViewport = () => {
-    const canvasRect = canvasEl.getBoundingClientRect();
-    const frameRect = frameEl.getBoundingClientRect();
-    if (canvasRect.width < 1 || canvasRect.height < 1) return;
-    if (frameRect.width < 1 || frameRect.height < 1) return;
-
-    const x = (frameRect.left - canvasRect.left) / canvasRect.width;
-    const y = (canvasRect.bottom - frameRect.bottom) / canvasRect.height;
-    const w = frameRect.width / canvasRect.width;
-    const h = frameRect.height / canvasRect.height;
-    pipCam.viewport.x = Math.max(0, Math.min(1, x));
-    pipCam.viewport.y = Math.max(0, Math.min(1, y));
-    pipCam.viewport.width = Math.max(0.05, Math.min(1 - pipCam.viewport.x, w));
-    pipCam.viewport.height = Math.max(0.05, Math.min(1 - pipCam.viewport.y, h));
+    syncPipCameraToFrame(pipCam, frameEl, canvasEl);
   };
 
   const renderObs: Observer<Scene> = scene.onBeforeRenderObservable.add(() => {
+    // Chaque frame : le layout mobile (barre d’adresse, grille mission) bouge souvent
+    // sans resize événement — un sync ponctuel laisse le PiP sur un coin « figé ».
+    syncViewport();
     syncPose();
   });
 
@@ -302,12 +295,17 @@ export function attachHouseViewPip({
   ro.observe(frameEl);
   window.addEventListener('resize', syncViewport);
   window.addEventListener('orientationchange', syncViewport);
+  const vv = window.visualViewport;
+  vv?.addEventListener('resize', syncViewport);
+  vv?.addEventListener('scroll', syncViewport);
 
   return {
     dispose: () => {
       ro.disconnect();
       window.removeEventListener('resize', syncViewport);
       window.removeEventListener('orientationchange', syncViewport);
+      vv?.removeEventListener('resize', syncViewport);
+      vv?.removeEventListener('scroll', syncViewport);
       scene.onBeforeRenderObservable.remove(renderObs);
       scene.onBeforeCameraRenderObservable.remove(beforeCamObs);
       scene.activeCameras = null;
