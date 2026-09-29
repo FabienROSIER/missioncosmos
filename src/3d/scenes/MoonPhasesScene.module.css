@@ -104,10 +104,7 @@
     top: 0.5rem;
     bottom: auto;
     left: 0.5rem;
-    /* Éviter max-height % + aspect-ratio (hauteur 0 / sync viewport raté sur mobile). */
-    width: min(42vw, 11rem);
-    height: auto;
-    max-height: none;
-    aspect-ratio: 4 / 3;
+    width: min(36%, 9rem);
+    max-height: 38%;
   }
 }

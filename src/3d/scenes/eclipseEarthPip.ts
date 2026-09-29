@@ -1,6 +1,7 @@
 import {
   Color3,
   Color4,
+  Engine,
   FreeCamera,
   Mesh,
   MeshBuilder,
@@ -20,7 +21,6 @@ import {
   PIP_LOCAL_LAYER,
   samplePipSky,
 } from '@/3d/scenes/houseViewPip';
-import { scissorClearPipViewport, syncPipCameraToFrame } from '@/3d/scenes/pipViewport';
 import { classifyEclipse, type EclipseKind } from '@/3d/utils/eclipseAlignment';
 
 export type EclipseEarthPipHandle = {
@@ -102,7 +102,8 @@ export function attachEclipseEarthPip({
   skyMat.specularColor = Color3.Black();
   skyMat.emissiveColor = new Color3(0.4, 0.7, 0.98);
   skyMat.alpha = 1;
-  skyMat.transparencyMode = StandardMaterial.MATERIAL_OPAQUE;
+  skyMat.transparencyMode = StandardMaterial.MATERIAL_ALPHABLEND;
+  skyMat.disableDepthWrite = true;
   skyMat.backFaceCulling = false;
   sky.material = skyMat;
 
@@ -136,7 +137,10 @@ export function attachEclipseEarthPip({
     }
     scene.autoClear = false;
     scene.autoClearDepthAndStencil = false;
-    scissorClearPipViewport(scene.getEngine(), cam.viewport, pipClear);
+    const engine = scene.getEngine();
+    if (!(engine instanceof Engine)) return;
+    const global = cam.viewport.toGlobal(engine.getRenderWidth(), engine.getRenderHeight());
+    engine.scissorClear(global.x, global.y, global.width, global.height, pipClear);
   });
 
   const syncPose = () => {
@@ -193,20 +197,17 @@ export function attachEclipseEarthPip({
     }
 
     // Jour / crépuscule / nuit au point de vue (même courbe que Mission 02)
-    // Éclairement = normale surface (regard depuis la Terre) · direction Soleil
-    const surfaceOut = lookDir;
-    const lightingScore = Vector3.Dot(surfaceOut, toSun);
+    const lightingScore = Vector3.Dot(lookDir, toSun);
     const skySample = samplePipSky(lightingScore);
     // Éclipse solaire : le ciel s’assombrit comme en vrai (Lune devant le Soleil)
     const solarCover = Math.min(1, Math.max(0, (0.28 - elong) / 0.28));
     const nightSky = new Color3(0.02, 0.03, 0.06);
     const skyColor = Color3.Lerp(skySample.color, nightSky, solarCover);
     skyMat.emissiveColor.copyFrom(skyColor);
-    skyMat.alpha = 1;
+    skyMat.alpha = Math.max(0.1, skySample.alpha * (1 - 0.9 * solarCover));
     pipClear.r = skyColor.r;
     pipClear.g = skyColor.g;
     pipClear.b = skyColor.b;
-    pipClear.a = 1;
     // Soleil PiP un peu moins éclatant sous la couverture
     pipSunMat.emissiveColor.set(
       1 * (1 - 0.35 * solarCover),
@@ -222,11 +223,22 @@ export function attachEclipseEarthPip({
   };
 
   const syncViewport = () => {
-    syncPipCameraToFrame(pipCam, frameEl, canvasEl);
+    const canvasRect = canvasEl.getBoundingClientRect();
+    const frameRect = frameEl.getBoundingClientRect();
+    if (canvasRect.width < 1 || canvasRect.height < 1) return;
+    if (frameRect.width < 1 || frameRect.height < 1) return;
+
+    const x = (frameRect.left - canvasRect.left) / canvasRect.width;
+    const y = (canvasRect.bottom - frameRect.bottom) / canvasRect.height;
+    const w = frameRect.width / canvasRect.width;
+    const h = frameRect.height / canvasRect.height;
+    pipCam.viewport.x = Math.max(0, Math.min(1, x));
+    pipCam.viewport.y = Math.max(0, Math.min(1, y));
+    pipCam.viewport.width = Math.max(0.05, Math.min(1 - pipCam.viewport.x, w));
+    pipCam.viewport.height = Math.max(0.05, Math.min(1 - pipCam.viewport.y, h));
   };
 
   const renderObs: Observer<Scene> = scene.onBeforeRenderObservable.add(() => {
-    syncViewport();
     syncPose();
   });
 
@@ -239,17 +251,12 @@ export function attachEclipseEarthPip({
   ro.observe(frameEl);
   window.addEventListener('resize', syncViewport);
   window.addEventListener('orientationchange', syncViewport);
-  const vv = window.visualViewport;
-  vv?.addEventListener('resize', syncViewport);
-  vv?.addEventListener('scroll', syncViewport);
 
   return {
     dispose: () => {
       ro.disconnect();
       window.removeEventListener('resize', syncViewport);
       window.removeEventListener('orientationchange', syncViewport);
-      vv?.removeEventListener('resize', syncViewport);
-      vv?.removeEventListener('scroll', syncViewport);
       scene.onBeforeRenderObservable.remove(renderObs);
       scene.onBeforeCameraRenderObservable.remove(beforeCamObs);
       scene.activeCameras = null;
