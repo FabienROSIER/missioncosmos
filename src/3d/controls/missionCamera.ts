@@ -11,11 +11,12 @@ import {
 import { MOBILE_GAME_QUERY } from '@/lib/mobileLayout';
 import { frameCelestialCamera, getVisualRadius } from '@/3d/utils/cameraFraming';
 
-/** Sur mobile, le FOV élargi « éloigne » la scène : on autorise ~45 % plus de zoom avant. */
-const MOBILE_ZOOM_IN_FACTOR = 0.55;
+/** Sur mobile, le FOV élargi « éloigne » la scène : limite avant à 45 % du desktop. */
+const MOBILE_ZOOM_IN_FACTOR = 0.45;
 
-/** Sensibilité pan : plus bas = translation plus rapide. */
-const PANNING_SENSIBILITY = 900;
+/** Sensibilité pan Babylon : plus bas = translation plus rapide. */
+const DESKTOP_PANNING_SENSIBILITY = 900;
+const MOBILE_PANNING_SENSIBILITY = 300;
 
 function isMobileGameLayout(): boolean {
   return typeof window !== 'undefined' && window.matchMedia(MOBILE_GAME_QUERY).matches;
@@ -69,8 +70,11 @@ export function configureMissionCamera(
   options: ConfigureMissionCameraOptions = {},
 ): void {
   const allowPan = options.allowPan ?? true;
+  const panningSensibility = isMobileGameLayout()
+    ? MOBILE_PANNING_SENSIBILITY
+    : DESKTOP_PANNING_SENSIBILITY;
 
-  camera.panningSensibility = allowPan ? PANNING_SENSIBILITY : 0;
+  camera.panningSensibility = allowPan ? panningSensibility : 0;
   camera.panningInertia = 0.75;
   camera.panningAxis = new Vector3(1, 1, 0);
   camera.mapPanning = false;
@@ -89,7 +93,7 @@ export function configureMissionCamera(
     pointers.multiTouchPanAndZoom = allowPan;
     pointers.pinchZoom = true;
     if (allowPan) {
-      pointers.panningSensibility = PANNING_SENSIBILITY;
+      pointers.panningSensibility = panningSensibility;
     }
   }
 
