@@ -66,26 +66,25 @@ export function syncPipViewportLayout(
   const landscape = window.matchMedia('(orientation: landscape)').matches;
   const splitLandscape = mobileLayout && landscape;
 
+  if (mobileLayout && !landscape) {
+    pipCamera.fovMode = Camera.FOVMODE_VERTICAL_FIXED;
+    restoreViewport(mainCamera, defaultMainViewport);
+    // Bandeau PiP en haut ; la caméra principale commence sous celui-ci.
+    const gutterPx = 8;
+    const availableHeight = canvasRect.bottom - frameRect.bottom - gutterPx;
+    mainCamera.viewport.x = 0;
+    mainCamera.viewport.y = 0;
+    mainCamera.viewport.width = 1;
+    mainCamera.viewport.height = Math.max(
+      0.45,
+      Math.min(1, availableHeight / canvasRect.height),
+    );
+    return;
+  }
+
   if (!splitLandscape) {
     pipCamera.fovMode = Camera.FOVMODE_VERTICAL_FIXED;
     restoreViewport(mainCamera, defaultMainViewport);
-
-    if (mobileLayout) {
-      // Le PiP portrait masque le coin haut-gauche : décaler légèrement le
-      // centre projeté vers le bas-droite, proportionnellement au cadre réel.
-      // targetScreenOffset est exprimé en unités monde : convertir le décalage
-      // souhaité en pixels pour ne pas dépendre de la distance caméra.
-      const shiftXPx = Math.min(frameRect.width * 0.3, canvasRect.width * 0.14);
-      const shiftYPx = Math.min(frameRect.height * 0.28, canvasRect.height * 0.11);
-      const halfViewHeight = mainCamera.radius * Math.tan(mainCamera.fov / 2);
-      const halfViewWidth = halfViewHeight * (canvasRect.width / canvasRect.height);
-      const offsetX = (shiftXPx * 2 * halfViewWidth) / canvasRect.width;
-      const offsetY = (shiftYPx * 2 * halfViewHeight) / canvasRect.height;
-      mainCamera.targetScreenOffset.set(
-        defaultMainViewport.targetScreenOffsetX + offsetX,
-        defaultMainViewport.targetScreenOffsetY - offsetY,
-      );
-    }
     return;
   }
 

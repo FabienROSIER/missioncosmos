@@ -100,6 +100,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const isSeasons = mission.sceneId === 'seasons';
   const [tipOpen, setTipOpen] = useState(true);
   const [mobilePanel, setMobilePanel] = useState<'mission' | 'controls'>('mission');
+  const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
   const [earthApi, setEarthApi] = useState<EarthSceneApi | null>(null);
   const [dayNightApi, setDayNightApi] = useState<DayNightSceneApi | null>(null);
   const [moonPhasesApi, setMoonPhasesApi] = useState<MoonPhasesSceneApi | null>(null);
@@ -736,20 +737,52 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
           preferFallback
         />
         <h1 className={styles.title}>{mission.title}</h1>
-        <button type="button" className={styles.ghostBtn} onClick={() => openGlossary()}>
-          Mots
-        </button>
-        <button type="button" className={styles.ghostBtn} onClick={onRestart}>
-          Recommencer
-        </button>
         <button
           type="button"
-          className={styles.recenter}
-          onClick={() => void onRecenter()}
-          disabled={!cameraApi || recentering}
+          className={styles.menuToggle}
+          aria-label="Ouvrir les actions de la mission"
+          aria-expanded={headerMenuOpen}
+          aria-controls="mission-header-actions"
+          onClick={() => setHeaderMenuOpen((open) => !open)}
         >
-          Recentrer
+          {headerMenuOpen ? '×' : '☰'}
         </button>
+        <div
+          id="mission-header-actions"
+          className={`${styles.topActions} ${headerMenuOpen ? styles.topActionsOpen : ''}`}
+        >
+          <button
+            type="button"
+            className={styles.ghostBtn}
+            onClick={() => {
+              setHeaderMenuOpen(false);
+              openGlossary();
+            }}
+          >
+            Mots
+          </button>
+          <button
+            type="button"
+            className={styles.ghostBtn}
+            onClick={() => {
+              setHeaderMenuOpen(false);
+              onRestart();
+            }}
+          >
+            Recommencer
+          </button>
+          <button
+            type="button"
+            className={styles.recenter}
+            onClick={() => {
+              setHeaderMenuOpen(false);
+              void onRecenter();
+            }}
+            disabled={!cameraApi || recentering}
+          >
+            Recentrer
+          </button>
+        </div>
       </header>
 
       <div ref={bottomBarRef} className={styles.bottomBar}>
