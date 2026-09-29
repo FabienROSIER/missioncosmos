@@ -85,7 +85,6 @@ export function EclipsesScene({
 }: EclipsesSceneProps) {
   const [pipKind, setPipKind] = useState<EclipseKind>('none');
   const pipFrameRef = useRef<HTMLDivElement | null>(null);
-  const pipSkyRef = useRef<HTMLDivElement | null>(null);
   const onEclipseSuccessRef = useRef(onEclipseSuccess);
   const onSceneApiRef = useRef(onSceneApi);
 
@@ -248,7 +247,6 @@ export function EclipsesScene({
           sunMeshes: sun.meshes,
           frameEl,
           canvasEl,
-          skyEl: pipSkyRef.current,
           onEclipseChange: (kind) => setPipKind(kind),
         });
       }
@@ -392,7 +390,6 @@ export function EclipsesScene({
         loadingMessage="Approche Soleil, Terre et Lune…"
       />
       <div ref={pipFrameRef} className={styles.earthPip} aria-hidden="true">
-        <div ref={pipSkyRef} className={styles.earthPipSky} />
         <div className={styles.earthPipChrome}>
           <p className={styles.earthPipLabel}>Avec {COMPANION_TEMP_NAME}</p>
           <p className={styles.earthPipBadge}>{ECLIPSE_LABELS[pipKind]}</p>
