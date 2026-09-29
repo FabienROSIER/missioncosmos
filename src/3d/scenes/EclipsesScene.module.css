@@ -187,3 +187,16 @@
     display: inline;
   }
 }
+
+/* Paysage mobile : PiP dans une colonne caméra dédiée, à côté de la vue principale. */
+@media (orientation: landscape) and (max-width: 899px),
+  (orientation: landscape) and (pointer: coarse) and (max-width: 1180px) and (max-height: 600px) {
+  .earthPip {
+    top: 50%;
+    right: 0.5rem;
+    bottom: auto;
+    left: auto;
+    width: min(31vw, 11rem);
+    transform: translateY(-50%);
+  }
+}

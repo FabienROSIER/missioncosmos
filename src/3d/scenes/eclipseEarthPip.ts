@@ -21,6 +21,11 @@ import {
   samplePipSky,
 } from '@/3d/scenes/houseViewPip';
 import { createPipSkyLayer } from '@/3d/scenes/pipSkyLayer';
+import {
+  captureViewport,
+  restoreViewport,
+  syncPipViewportLayout,
+} from '@/3d/scenes/pipViewportLayout';
 import { classifyEclipse, type EclipseKind } from '@/3d/utils/eclipseAlignment';
 
 export type EclipseEarthPipHandle = {
@@ -91,6 +96,7 @@ export function attachEclipseEarthPip({
   pipCam.fov = 0.55;
   pipCam.layerMask = PIP_CAMERA_LAYER;
   pipCam.viewport = new Viewport(0.02, 0.55, 0.3, 0.22);
+  const defaultMainViewport = captureViewport(mainCamera);
 
   const skyLayer = createPipSkyLayer(
     scene,
@@ -216,19 +222,7 @@ export function attachEclipseEarthPip({
   };
 
   const syncViewport = () => {
-    const canvasRect = canvasEl.getBoundingClientRect();
-    const frameRect = frameEl.getBoundingClientRect();
-    if (canvasRect.width < 1 || canvasRect.height < 1) return;
-    if (frameRect.width < 1 || frameRect.height < 1) return;
-
-    const x = (frameRect.left - canvasRect.left) / canvasRect.width;
-    const y = (canvasRect.bottom - frameRect.bottom) / canvasRect.height;
-    const w = frameRect.width / canvasRect.width;
-    const h = frameRect.height / canvasRect.height;
-    pipCam.viewport.x = Math.max(0, Math.min(1, x));
-    pipCam.viewport.y = Math.max(0, Math.min(1, y));
-    pipCam.viewport.width = Math.max(0.05, Math.min(1 - pipCam.viewport.x, w));
-    pipCam.viewport.height = Math.max(0.05, Math.min(1 - pipCam.viewport.y, h));
+    syncPipViewportLayout(mainCamera, pipCam, frameEl, canvasEl, defaultMainViewport);
   };
 
   const renderObs: Observer<Scene> = scene.onBeforeRenderObservable.add(() => {
@@ -257,6 +251,7 @@ export function attachEclipseEarthPip({
       scene.autoClearDepthAndStencil = true;
       scene.cameraToUseForPointers = null;
       mainCamera.layerMask = 0x0fffffff;
+      restoreViewport(mainCamera, defaultMainViewport);
       for (const entry of layerBackup) {
         entry.mesh.layerMask = entry.mask;
       }

@@ -18,6 +18,11 @@ import {
 } from '@babylonjs/core';
 import type { HouseMarkerHandle, PipSkyPhase } from '@/3d/scenes/dayNightMarkers';
 import { createPipSkyLayer } from '@/3d/scenes/pipSkyLayer';
+import {
+  captureViewport,
+  restoreViewport,
+  syncPipViewportLayout,
+} from '@/3d/scenes/pipViewportLayout';
 
 /** Calque réservé à la vue principale (compagnon / repère invisible dans le PiP). */
 export const HOUSE_MESH_LAYER = 0x20000000;
@@ -143,6 +148,7 @@ export function attachHouseViewPip({
   pipCam.fov = 1.35;
   pipCam.layerMask = PIP_CAMERA_LAYER;
   pipCam.viewport = new Viewport(0.02, 0.55, 0.3, 0.22);
+  const defaultMainViewport = captureViewport(mainCamera);
 
   // Fond caméra PiP : Layer plein écran, indépendant du depth buffer mobile.
   const skyLayer = createPipSkyLayer(
@@ -260,19 +266,7 @@ export function attachHouseViewPip({
   };
 
   const syncViewport = () => {
-    const canvasRect = canvasEl.getBoundingClientRect();
-    const frameRect = frameEl.getBoundingClientRect();
-    if (canvasRect.width < 1 || canvasRect.height < 1) return;
-    if (frameRect.width < 1 || frameRect.height < 1) return;
-
-    const x = (frameRect.left - canvasRect.left) / canvasRect.width;
-    const y = (canvasRect.bottom - frameRect.bottom) / canvasRect.height;
-    const w = frameRect.width / canvasRect.width;
-    const h = frameRect.height / canvasRect.height;
-    pipCam.viewport.x = Math.max(0, Math.min(1, x));
-    pipCam.viewport.y = Math.max(0, Math.min(1, y));
-    pipCam.viewport.width = Math.max(0.05, Math.min(1 - pipCam.viewport.x, w));
-    pipCam.viewport.height = Math.max(0.05, Math.min(1 - pipCam.viewport.y, h));
+    syncPipViewportLayout(mainCamera, pipCam, frameEl, canvasEl, defaultMainViewport);
   };
 
   const renderObs: Observer<Scene> = scene.onBeforeRenderObservable.add(() => {
@@ -301,6 +295,7 @@ export function attachHouseViewPip({
       scene.autoClearDepthAndStencil = true;
       scene.cameraToUseForPointers = null;
       mainCamera.layerMask = 0x0fffffff;
+      restoreViewport(mainCamera, defaultMainViewport);
       for (const entry of earthLayerBackup) {
         entry.mesh.layerMask = entry.mask;
       }
