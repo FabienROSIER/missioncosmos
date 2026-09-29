@@ -397,9 +397,16 @@ export function EclipsesScene({
       />
       <div ref={pipFrameRef} className={styles.earthPip} aria-hidden="true">
         <div className={styles.earthPipChrome}>
-          <p className={styles.earthPipLabel}>Avec {COMPANION_TEMP_NAME}</p>
-          <p className={styles.earthPipBadge}>{ECLIPSE_LABELS[pipKind]}</p>
-          <p className={styles.safety}>Ne regarde jamais le vrai Soleil sans filtre !</p>
+          <div className={styles.pipChromeTop}>
+            <p className={styles.earthPipLabel}>Avec {COMPANION_TEMP_NAME}</p>
+            <p className={styles.earthPipBadge}>{ECLIPSE_LABELS[pipKind]}</p>
+          </div>
+          <p className={styles.safety}>
+            <span className={styles.safetyFull}>
+              Ne regarde jamais le vrai Soleil sans filtre !
+            </span>
+            <span className={styles.safetyCompact}>Soleil : filtre obligatoire</span>
+          </p>
         </div>
       </div>
     </div>
