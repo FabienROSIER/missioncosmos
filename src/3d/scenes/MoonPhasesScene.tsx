@@ -360,8 +360,15 @@ export function MoonPhasesScene({
       />
       <div ref={pipFrameRef} className={styles.earthPip} aria-hidden="true">
         <div className={styles.earthPipChrome}>
-          <p className={styles.earthPipLabel}>Avec {COMPANION_TEMP_NAME}</p>
-          <p className={styles.earthPipBadge}>{MOON_PHASE_LABELS[pipPhase]}</p>
+          <div className={styles.pipChromeTop}>
+            <p className={styles.earthPipLabel}>Avec {COMPANION_TEMP_NAME}</p>
+            <p className={styles.earthPipBadge}>
+              <span className={styles.badgeFull}>{MOON_PHASE_LABELS[pipPhase]}</span>
+              <span className={styles.badgeCompact}>
+                {pipPhase === 'quarter' ? 'Quartier' : MOON_PHASE_LABELS[pipPhase]}
+              </span>
+            </p>
+          </div>
         </div>
       </div>
     </div>

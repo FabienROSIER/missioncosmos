@@ -32,10 +32,12 @@
 .housePipChrome {
   position: absolute;
   inset: 0;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 0.35rem 0.45rem;
+  pointer-events: none;
   /* Uniquement un voile haut pour le titre — pas de bande noire en bas (horizon) */
   background: linear-gradient(
     to bottom,
@@ -43,6 +45,14 @@
     rgba(7, 11, 22, 0.2) 22%,
     transparent 42%
   );
+}
+
+.pipChromeTop {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+  max-width: 100%;
 }
 
 .housePipLabel {
@@ -127,7 +137,36 @@
     top: 0.5rem;
     bottom: auto;
     left: 0.5rem;
-    width: min(36%, 9rem);
-    max-height: 38%;
+    width: min(42vw, 11rem);
+    height: auto;
+    max-height: none;
+    aspect-ratio: 4 / 3;
+  }
+
+  .housePipChrome {
+    padding: 0.2rem 0.28rem 0.22rem;
+    background: linear-gradient(
+      to bottom,
+      rgba(7, 11, 22, 0.72) 0%,
+      rgba(7, 11, 22, 0.35) 18%,
+      transparent 32%
+    );
+  }
+
+  .pipChromeTop {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.15rem 0.25rem;
+  }
+
+  .housePipLabel,
+  .housePipBadge {
+    font-size: 0.5rem;
+    line-height: 1.15;
+  }
+
+  .housePipBadge {
+    padding: 0.08rem 0.28rem;
   }
 }

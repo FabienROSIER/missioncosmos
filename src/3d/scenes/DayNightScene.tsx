@@ -352,18 +352,20 @@ export function DayNightScene({
       />
       <div ref={pipFrameRef} className={styles.housePip} aria-hidden="true">
         <div className={styles.housePipChrome}>
-          <p className={styles.housePipLabel}>Avec {COMPANION_TEMP_NAME}</p>
-          <p
-            className={`${styles.housePipBadge} ${
-              pipLighting === 'day'
-                ? styles.housePipBadgeDay
-                : pipLighting === 'twilight'
-                  ? styles.housePipBadgeTwilight
-                  : styles.housePipBadgeNight
-            }`}
-          >
-            {pipLighting === 'day' ? 'Jour' : pipLighting === 'twilight' ? 'Crépuscule' : 'Nuit'}
-          </p>
+          <div className={styles.pipChromeTop}>
+            <p className={styles.housePipLabel}>Avec {COMPANION_TEMP_NAME}</p>
+            <p
+              className={`${styles.housePipBadge} ${
+                pipLighting === 'day'
+                  ? styles.housePipBadgeDay
+                  : pipLighting === 'twilight'
+                    ? styles.housePipBadgeTwilight
+                    : styles.housePipBadgeNight
+              }`}
+            >
+              {pipLighting === 'day' ? 'Jour' : pipLighting === 'twilight' ? 'Crépuscule' : 'Nuit'}
+            </p>
+          </div>
         </div>
       </div>
       {label ? (
