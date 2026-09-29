@@ -9,17 +9,27 @@ type SafeBackButtonProps = {
   label?: string;
   /** Version compacte pour HUD mission */
   compact?: boolean;
+  /**
+   * true = toujours aller vers fallbackHref (ex. « Quitter » une mission),
+   * sans router.back() — évite de revenir à la mission précédente après un enchaînement.
+   */
+  preferFallback?: boolean;
 };
 
-/** Retour navigateur / Android ; fallback si historique vide. */
+/** Retour navigateur / Android ; fallback si historique vide ou preferFallback. */
 export function SafeBackButton({
   fallbackHref = '/',
   label = 'Retour',
   compact = false,
+  preferFallback = false,
 }: SafeBackButtonProps) {
   const router = useRouter();
 
   const goBack = () => {
+    if (preferFallback) {
+      router.push(fallbackHref);
+      return;
+    }
     if (typeof window !== 'undefined' && window.history.length > 1) {
       router.back();
       return;

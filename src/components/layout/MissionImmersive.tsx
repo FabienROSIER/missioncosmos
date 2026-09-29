@@ -729,7 +729,12 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
       </div>
 
       <header ref={topBarRef} className={styles.topBar}>
-        <SafeBackButton fallbackHref="/missions" label="Quitter" compact />
+        <SafeBackButton
+          fallbackHref="/missions"
+          label="Quitter"
+          compact
+          preferFallback
+        />
         <h1 className={styles.title}>{mission.title}</h1>
         <button type="button" className={styles.ghostBtn} onClick={() => openGlossary()}>
           Mots
@@ -870,7 +875,11 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                 {isComplete ? (
                   <>
                     {nextMission ? (
-                      <Link href={`/mission/${nextMission.id}`} className={styles.cta}>
+                      <Link
+                        href={`/mission/${nextMission.id}`}
+                        replace
+                        className={styles.cta}
+                      >
                         Mission suivante : {nextMission.title}
                       </Link>
                     ) : (

@@ -126,6 +126,8 @@ export function BabylonCanvas({
         mainCamera = camera;
         onResize();
         camera.attachControl(canvas, true);
+        // Molette = translation (typings attachControl ≤ 3 args)
+        camera._panningMouseButton = 1;
         camera.lowerRadiusLimit = 2.2;
         camera.upperRadiusLimit = 10;
         camera.wheelPrecision = 40;

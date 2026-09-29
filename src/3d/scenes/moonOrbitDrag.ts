@@ -10,6 +10,7 @@ import {
   type PointerInfo,
   type Scene,
 } from '@babylonjs/core';
+import { isSingleFingerOrLeftDrag } from '@/3d/controls/singlePointerDrag';
 import type { OrbitController } from '@/3d/entities/OrbitController';
 import { EARTH_MAIN_LAYER } from '@/3d/scenes/houseViewPip';
 
@@ -30,6 +31,7 @@ export function attachMoonOrbitDrag(
   let enabled = true;
   let dragging = false;
   let lastX = 0;
+  const activePointers = new Set<number>();
   const savedAngularX = camera.angularSensibilityX;
   const savedAngularY = camera.angularSensibilityY;
 
@@ -38,6 +40,13 @@ export function attachMoonOrbitDrag(
     const evt = info.event as PointerEvent;
 
     if (info.type === PointerEventTypes.POINTERDOWN) {
+      activePointers.add(evt.pointerId);
+      if (!isSingleFingerOrLeftDrag(evt, activePointers.size)) {
+        dragging = false;
+        camera.angularSensibilityX = savedAngularX;
+        camera.angularSensibilityY = savedAngularY;
+        return;
+      }
       dragging = true;
       lastX = evt.clientX;
       camera.angularSensibilityX = 100000;
@@ -46,10 +55,12 @@ export function attachMoonOrbitDrag(
       info.type === PointerEventTypes.POINTERUP ||
       info.type === PointerEventTypes.POINTERDOUBLETAP
     ) {
+      activePointers.delete(evt.pointerId);
       dragging = false;
       camera.angularSensibilityX = savedAngularX;
       camera.angularSensibilityY = savedAngularY;
     } else if (info.type === PointerEventTypes.POINTERMOVE && dragging) {
+      if (activePointers.size > 1) return;
       const dx = evt.clientX - lastX;
       lastX = evt.clientX;
       // Même sens que l’animation ciné (OrbitController.nudgeFromSwipe)
@@ -62,6 +73,7 @@ export function attachMoonOrbitDrag(
       enabled = next;
       if (!next && dragging) {
         dragging = false;
+        activePointers.clear();
         camera.angularSensibilityX = savedAngularX;
         camera.angularSensibilityY = savedAngularY;
       }

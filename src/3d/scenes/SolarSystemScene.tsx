@@ -316,11 +316,11 @@ export function SolarSystemScene({
         camera.mode = Camera.PERSPECTIVE_CAMERA;
         if (scaleMode === 'readable') {
           configureMissionCamera(camera, {
-            allowPan: false,
             lowerBetaLimit: 0.25,
             upperBetaLimit: Math.PI / 2.05,
           });
           camera.attachControl(engine.getRenderingCanvas(), true);
+          camera._panningMouseButton = 1;
         } else camera.detachControl();
       }
       if (scaleMode === 'sizes') {
@@ -512,7 +512,6 @@ export function SolarSystemScene({
     if (camera instanceof ArcRotateCamera) {
       frameSolarSystemOverview(camera, maxOrbit());
       configureMissionCamera(camera, {
-        allowPan: false,
         lowerBetaLimit: 0.25,
         upperBetaLimit: Math.PI / 2.05,
       });

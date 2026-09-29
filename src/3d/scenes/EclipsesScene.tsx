@@ -226,7 +226,6 @@ export function EclipsesScene({
       const lockedBeta = camera.beta;
 
       configureMissionCamera(camera, {
-        allowPan: false,
         lowerBetaLimit: lockedBeta,
         upperBetaLimit: lockedBeta,
         lowerAlphaLimit: lockedAlpha,

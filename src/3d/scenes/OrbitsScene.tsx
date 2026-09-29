@@ -244,7 +244,7 @@ export function OrbitsScene({
     camera.upperRadiusLimit = maxOrbit * 4.2;
     camera.lowerBetaLimit = 0.35;
     camera.upperBetaLimit = Math.PI / 2 - 0.08;
-    configureMissionCamera(camera, { allowPan: false });
+    configureMissionCamera(camera);
 
     const home = captureCameraHome(camera);
     const allMeshes: AbstractMesh[] = [

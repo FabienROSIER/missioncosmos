@@ -259,7 +259,7 @@ export function SeasonsScene({
     camera.upperRadiusLimit = 16;
     camera.lowerBetaLimit = 0.4;
     camera.upperBetaLimit = Math.PI / 2 - 0.1;
-    configureMissionCamera(camera, { allowPan: false });
+    configureMissionCamera(camera);
 
     const home = captureCameraHome(camera);
     const cameraApi = createMissionCameraApi(camera, home, sun.pivot, [

@@ -1,4 +1,5 @@
 import { ArcRotateCamera, Vector3 } from '@babylonjs/core';
+import { allowCloserZoomOnMobile } from '@/3d/controls/missionCamera';
 
 /** Vue d’ensemble maquette système solaire. */
 export function frameSolarSystemOverview(
@@ -31,4 +32,6 @@ export function frameSolarSystemBody(
   camera.upperRadiusLimit = Math.max(r * 24, 80);
   camera.minZ = Math.max(0.05, r * 0.04);
   camera.beta = Math.PI / 2.55;
+  // Pas de configureMissionCamera ensuite → appliquer ici
+  allowCloserZoomOnMobile(camera);
 }

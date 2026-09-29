@@ -5,9 +5,33 @@ import {
   EasingFunction,
   Vector3,
   type AbstractMesh,
+  type ArcRotateCameraPointersInput,
   type TransformNode,
 } from '@babylonjs/core';
+import { MOBILE_GAME_QUERY } from '@/lib/mobileLayout';
 import { frameCelestialCamera, getVisualRadius } from '@/3d/utils/cameraFraming';
+
+/** Sur mobile, le FOV élargi « éloigne » la scène : on autorise ~45 % plus de zoom avant. */
+const MOBILE_ZOOM_IN_FACTOR = 0.55;
+
+/** Sensibilité pan : plus bas = translation plus rapide. */
+const PANNING_SENSIBILITY = 900;
+
+function isMobileGameLayout(): boolean {
+  return typeof window !== 'undefined' && window.matchMedia(MOBILE_GAME_QUERY).matches;
+}
+
+/**
+ * Abaisse la limite de zoom avant sur mobile (dézoom inchangé).
+ * À appeler après avoir posé `lowerRadiusLimit` desktop, si `configureMissionCamera` ne suit pas.
+ */
+export function allowCloserZoomOnMobile(camera: ArcRotateCamera): void {
+  if (!isMobileGameLayout()) return;
+  const lower = camera.lowerRadiusLimit;
+  if (lower == null || !Number.isFinite(lower) || lower <= 0) return;
+  const floor = Math.max((camera.minZ || 0.05) * 6, 0.12);
+  camera.lowerRadiusLimit = Math.max(lower * MOBILE_ZOOM_IN_FACTOR, floor);
+}
 
 export type MissionCameraHome = {
   alpha: number;
@@ -23,7 +47,11 @@ export type MissionCameraApi = {
 };
 
 export type ConfigureMissionCameraOptions = {
-  /** Autoriser le pan (rarement utile pédagogiquement). */
+  /**
+   * Translation caméra (défaut true) :
+   * - mobile : glisser à deux doigts
+   * - PC : clic molette + déplacement
+   */
   allowPan?: boolean;
   lowerBetaLimit?: number;
   upperBetaLimit?: number;
@@ -33,16 +61,38 @@ export type ConfigureMissionCameraOptions = {
 };
 
 /**
- * Caméra mission : rotation + pinch/molette, pas de pan par défaut.
+ * Caméra mission : rotation + pinch/molette + translation (pan).
  * Limites zoom déjà posées via frameCelestialCamera.
  */
 export function configureMissionCamera(
   camera: ArcRotateCamera,
   options: ConfigureMissionCameraOptions = {},
 ): void {
-  const allowPan = options.allowPan ?? false;
+  const allowPan = options.allowPan ?? true;
 
-  camera.panningSensibility = allowPan ? 1000 : 0;
+  camera.panningSensibility = allowPan ? PANNING_SENSIBILITY : 0;
+  camera.panningInertia = 0.75;
+  camera.panningAxis = new Vector3(1, 1, 0);
+  camera.mapPanning = false;
+  // Molette = pan (au lieu du clic droit Babylon par défaut)
+  camera._panningMouseButton = 1;
+  // Soft limit pour ne pas perdre la scène ; « Recentrer » restaure la vue
+  const upper = camera.upperRadiusLimit ?? camera.radius ?? 10;
+  camera.panningDistanceLimit = allowPan
+    ? Math.max(upper * 0.9, (camera.radius ?? 5) * 1.4)
+    : null;
+
+  const pointers = camera.inputs?.attached
+    ?.pointers as ArcRotateCameraPointersInput | undefined;
+  if (pointers) {
+    pointers.multiTouchPanning = allowPan;
+    pointers.multiTouchPanAndZoom = allowPan;
+    pointers.pinchZoom = true;
+    if (allowPan) {
+      pointers.panningSensibility = PANNING_SENSIBILITY;
+    }
+  }
+
   camera.allowUpsideDown = false;
   camera.lowerBetaLimit = options.lowerBetaLimit ?? 0.2;
   camera.upperBetaLimit = options.upperBetaLimit ?? Math.PI - 0.2;
@@ -55,10 +105,11 @@ export function configureMissionCamera(
   camera.wheelDeltaPercentage = 0.02;
   camera.pinchDeltaPercentage = 0.02;
   camera.inertia = 0.78;
-  camera.panningInertia = 0.8;
 
   // Évite que le pinch UI navigateur concurrence (viewport déjà userScalable=false)
   camera.useInputToRestoreState = false;
+
+  allowCloserZoomOnMobile(camera);
 }
 
 export function captureCameraHome(camera: ArcRotateCamera): MissionCameraHome {
@@ -187,7 +238,7 @@ export function setupPlanetMissionCamera(
   frameOptions?: Parameters<typeof frameCelestialCamera>[3],
 ): MissionCameraApi {
   frameCelestialCamera(camera, pivot, meshes, frameOptions);
-  configureMissionCamera(camera, { allowPan: false });
+  configureMissionCamera(camera);
   const home = captureCameraHome(camera);
   return createMissionCameraApi(camera, home, pivot, meshes);
 }

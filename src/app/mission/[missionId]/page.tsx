@@ -40,7 +40,11 @@ export default async function MissionPage({ params }: MissionPageProps) {
   return (
     <AppShell title="Mission" showNav={false}>
       <div className={styles.root}>
-        <SafeBackButton fallbackHref="/missions" label="Quitter la mission" />
+        <SafeBackButton
+          fallbackHref="/missions"
+          label="Quitter la mission"
+          preferFallback
+        />
         <h1 className={styles.title}>Mission en préparation</h1>
         <p className={styles.id}>Identifiant : {missionId}</p>
         <DialogueBubble>

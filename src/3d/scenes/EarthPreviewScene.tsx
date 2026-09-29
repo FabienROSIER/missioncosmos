@@ -296,7 +296,6 @@ export function EarthPreviewScene({
       if (!globeHome) globeHome = captureCameraHome(camera);
       frameEarthSunOrbitOverview(camera, sun.pivot.position, EARTH_SUN_ORBIT_RADIUS);
       configureMissionCamera(camera, {
-        allowPan: false,
         lowerBetaLimit: 0.55,
         upperBetaLimit: 1.35,
       });
@@ -324,7 +323,7 @@ export function EarthPreviewScene({
         camera.lowerRadiusLimit = Math.max(globeHome.radius * 0.55, 2.2);
         camera.upperRadiusLimit = Math.min(camera.upperRadiusLimit ?? 50, 50);
       }
-      configureMissionCamera(camera, { allowPan: false });
+      configureMissionCamera(camera);
       refreshLabels();
     };
 

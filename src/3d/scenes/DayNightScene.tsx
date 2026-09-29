@@ -196,7 +196,6 @@ export function DayNightScene({
 
       // Point de vue fixe au départ : on tourne la Terre, pas la caméra (zoom OK)
       configureMissionCamera(camera, {
-        allowPan: false,
         lowerBetaLimit: lockedBeta,
         upperBetaLimit: lockedBeta,
         lowerAlphaLimit: lockedAlpha,

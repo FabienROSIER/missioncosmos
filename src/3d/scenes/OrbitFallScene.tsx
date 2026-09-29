@@ -360,7 +360,7 @@ export function OrbitFallScene({
     camera.upperRadiusLimit = 12;
     camera.lowerBetaLimit = 0.45;
     camera.upperBetaLimit = Math.PI / 2 - 0.12;
-    configureMissionCamera(camera, { allowPan: false });
+    configureMissionCamera(camera);
 
     const home = captureCameraHome(camera);
     const cameraApi = createMissionCameraApi(camera, home, earth.pivot, [
