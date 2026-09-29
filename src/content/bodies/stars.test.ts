@@ -2,14 +2,16 @@ import { describe, expect, it } from 'vitest';
 import {
   APPARENT_SIZE_STAR,
   APPARENT_TARGET,
-  PODIUM_STARS,
+  PHOTO_STARS,
   STARS,
   apparentAngularSize,
   apparentTargetDistance,
   comparisonVisualRadius,
   isApparentSizeMatch,
-  isPodiumOrderCorrect,
-  observatoryProgress,
+  isPhotoFramed,
+  photoFramingHint,
+  photoProgress,
+  photoTargetDistance,
   radiusLabelFr,
 } from './stars';
 
@@ -37,21 +39,31 @@ describe('stars learning', () => {
     expect(isApparentSizeMatch(size * 1.5)).toBe(false);
   });
 
-  it('valide le podium du plus petit au plus grand', () => {
-    expect(isPodiumOrderCorrect(['proxima', 'sun', 'betelgeuse'])).toBe(true);
-    expect(isPodiumOrderCorrect(['betelgeuse', 'sun', 'proxima'])).toBe(false);
-    expect(PODIUM_STARS).toContain('sun');
+  it('donne un cadrage photo atteignable pour chaque étoile', () => {
+    for (const id of PHOTO_STARS) {
+      const targetDistance = photoTargetDistance(id);
+      expect(isPhotoFramed(id, targetDistance)).toBe(true);
+      expect(photoFramingHint(id, targetDistance)).toContain('photo');
+    }
+    expect(photoTargetDistance('proxima')).toBeLessThan(photoTargetDistance('sun'));
+    expect(photoTargetDistance('sun')).toBeLessThan(photoTargetDistance('betelgeuse'));
   });
 
-  it('compte la progression de l’observatoire', () => {
-    expect(observatoryProgress([])).toEqual({ done: 0, total: 2, complete: false });
-    expect(observatoryProgress(['apparent'])).toEqual({ done: 1, total: 2, complete: false });
-    expect(observatoryProgress(['apparent', 'podium'])).toEqual({
-      done: 2,
-      total: 2,
+  it('explique dans quel sens déplacer le télescope', () => {
+    const target = photoTargetDistance('sun');
+    expect(photoFramingHint('sun', target * 0.5)).toContain('éloigne');
+    expect(photoFramingHint('sun', target * 1.8)).toContain('rapproche');
+  });
+
+  it('compte les photos uniques de l’album', () => {
+    expect(photoProgress([])).toEqual({ done: 0, total: 3, complete: false });
+    expect(photoProgress(['proxima'])).toEqual({ done: 1, total: 3, complete: false });
+    expect(photoProgress(['proxima', 'sun', 'betelgeuse'])).toEqual({
+      done: 3,
+      total: 3,
       complete: true,
     });
-    expect(observatoryProgress(['podium', 'apparent', 'apparent']).complete).toBe(true);
+    expect(photoProgress(['proxima', 'proxima']).done).toBe(1);
   });
 
   it('formate un libellé de rayon lisible', () => {

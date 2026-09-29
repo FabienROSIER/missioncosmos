@@ -38,6 +38,31 @@
   color: var(--color-solar);
 }
 
+.album {
+  display: inline-flex;
+  gap: 0.28rem;
+  margin-left: 0.55rem;
+}
+
+.photoDone,
+.photoEmpty {
+  display: inline-grid;
+  width: 1.15rem;
+  height: 1.15rem;
+  place-items: center;
+  border-radius: 0.25rem;
+}
+
+.photoDone {
+  color: #10251a;
+  background: #b8f5c8;
+}
+
+.photoEmpty {
+  color: var(--color-star-muted);
+  border: 1px dashed rgba(126, 214, 223, 0.45);
+}
+
 .fact {
   margin: 0;
   font-size: 0.7rem;
@@ -58,6 +83,16 @@
   accent-color: var(--color-nebula);
   height: 1.35rem;
   margin: 0;
+}
+
+.rangeLegend {
+  display: flex;
+  justify-content: space-between;
+  margin-top: -0.35rem;
+  color: var(--color-star-muted);
+  font-size: 0.56rem;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
 .roundTitle {
@@ -82,15 +117,12 @@
   color: #b8f5c8;
 }
 
-.tokenRow,
-.slotRow {
+.distanceActions {
   display: flex;
-  flex-wrap: wrap;
   gap: 0.3rem;
 }
 
-.tokenBtn,
-.slotBtn,
+.moveBtn,
 .actionBtn {
   flex: 1 1 30%;
   min-height: 2.15rem;
@@ -102,22 +134,6 @@
   font-size: 0.66rem;
   font-weight: 800;
   cursor: pointer;
-}
-
-.tokenBtn[aria-pressed='true'] {
-  border-color: var(--color-solar);
-  background: rgba(244, 201, 95, 0.18);
-}
-
-.slotBtn {
-  text-align: left;
-  padding: 0.35rem 0.55rem;
-}
-
-.slotBtn strong {
-  display: block;
-  color: var(--color-nebula-soft);
-  font-size: 0.58rem;
 }
 
 .actionBtn {
@@ -157,6 +173,25 @@
   border: 1px solid rgba(244, 201, 95, 0.7);
 }
 
+.photoFlash {
+  position: absolute;
+  z-index: 5;
+  inset: 0;
+  background: white;
+  pointer-events: none;
+  animation: photo-flash 420ms ease-out forwards;
+}
+
+@keyframes photo-flash {
+  from {
+    opacity: 0.82;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
 .celebrate {
   position: absolute;
   z-index: 3;
@@ -187,5 +222,9 @@
 @media (prefers-reduced-motion: reduce) {
   .celebrate {
     animation: none;
+  }
+
+  .photoFlash {
+    animation-duration: 80ms;
   }
 }

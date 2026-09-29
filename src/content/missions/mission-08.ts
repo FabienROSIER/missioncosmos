@@ -75,13 +75,13 @@ export const MISSION_08: Mission = assertValidMission({
     {
       id: 'm08-challenge',
       kind: 'challenge',
-      title: 'Défi : observatoire',
-      body: 'Deux manches : aligne la mire, puis classe les étoiles du plus petit au plus grand.',
+      title: 'Défi : photographe d’étoiles',
+      body: 'Complète l’album de l’observatoire. Pour chaque étoile, rapproche ou éloigne le télescope afin que son disque remplisse le cadre, puis prends la photo.',
       requiresSuccess: true,
       challengeObservatory: true,
       successFeedback:
-        'Observatoire activé ! Tu as vu la différence entre apparence et vraie taille.',
-      hint: 'Manche 1 : rapproche ou éloigne pour caler le disque. Manche 2 : du plus petit au plus grand.',
+        'Album complet ! Les étoiles remplissent le même cadre malgré des tailles et distances très différentes.',
+      hint: 'Si l’étoile déborde, éloigne le télescope. Si elle paraît trop petite, rapproche-le.',
     },
     {
       id: 'm08-explain',
@@ -115,9 +115,9 @@ export const MISSION_08: Mission = assertValidMission({
   ],
   challenge: {
     id: 'm08-observatory',
-    prompt: 'Active l’observatoire en deux manches.',
-    successFeedback: 'Oui ! Apparence et vraie taille, ce n’est pas la même chose.',
-    hint: 'Aligne d’abord la mire, puis classe du plus petit au plus grand.',
+    prompt: 'Photographie trois étoiles avec le même cadrage.',
+    successFeedback: 'Oui ! Même cadrage, mais tailles et distances différentes.',
+    hint: 'Ajuste la distance du télescope avant chaque photo.',
   },
   finalExplanation:
     'Le Soleil est une étoile. Les étoiles ont des tailles et des couleurs (températures) différentes. Une étoile peut paraître petite simplement parce qu’elle est loin.',

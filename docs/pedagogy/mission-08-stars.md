@@ -8,12 +8,12 @@
 
 ## Catalogue utilisé (arrondis)
 
-| Étoile | Rayon (× Soleil) | T° surface (K) | Couleur pédagogique |
-|---|---|---|---|
-| Proxima du Centaure | ≈ 0,15 | ≈ 3000 | rouge-orangé |
-| Soleil | 1 | ≈ 5800 | jaune-blanc |
-| Sirius A | ≈ 1,7 | ≈ 9900 | blanc-bleuté |
-| Bételgeuse | ≈ 700 (estimé) | ≈ 3500 | rouge |
+| Étoile              | Rayon (× Soleil) | T° surface (K) | Couleur pédagogique |
+| ------------------- | ---------------- | -------------- | ------------------- |
+| Proxima du Centaure | ≈ 0,15           | ≈ 3000         | rouge-orangé        |
+| Soleil              | 1                | ≈ 5800         | jaune-blanc         |
+| Sirius A            | ≈ 1,7            | ≈ 9900         | blanc-bleuté        |
+| Bételgeuse          | ≈ 700 (estimé)   | ≈ 3500         | rouge               |
 
 Bételgeuse est une **géante rouge variable** : le rayon exact change selon les mesures et les modèles. L’app affiche un **ordre de grandeur** et le signale à l’écran.
 
@@ -22,14 +22,19 @@ Bételgeuse est une **géante rouge variable** : le rayon exact change selon les
 - **Comparaison de tailles** : échelle **compressée (log)** pour garder Proxima, Soleil et Bételgeuse visibles ensemble. Ce n’est **pas** une échelle linéaire.
 - **Couleurs** : jetons de même taille visuelle pour isoler la lecture couleur / température.
 - **Taille apparente** : distances **pédagogiques** (pas des années-lumière exactes). Formule UI : `θ ∝ rayon / distance`.
-- **Podium du défi** : jetons volontairement de **même diamètre** pour forcer le classement par taille réelle.
+- **Défi photo** : même cadre pour chaque étoile ; le joueur déplace le télescope sur un rail pédagogique.
 
-## Défi « Observatoire » (2 manches)
+## Défi « Photographe d’étoiles »
 
-1. **Mire** : caler le disque apparent de Bételgeuse sur une mire dorée.
-2. **Podium** : classer Proxima → Soleil → Bételgeuse.
+Une seule mécanique répétée trois fois :
 
-Enjeu ludique : jauge `0/2` puis activation visuelle de l’observatoire. Pas de chronomètre ni de pénalité.
+1. cadrer Proxima ;
+2. cadrer le Soleil ;
+3. cadrer Bételgeuse.
+
+Le joueur rapproche ou éloigne le télescope jusqu’à ce que le disque remplisse la mire, puis prend la photo. Les indices expliquent directement la correction : « déborde → éloigne » ou « trop petite → rapproche ».
+
+Enjeu ludique : compléter un album `0/3`, avec flash et validation de chaque photo, puis activer l’observatoire. Pas de chronomètre ni de pénalité.
 
 ## Frontière avec la Mission 09
 

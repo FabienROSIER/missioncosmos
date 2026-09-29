@@ -670,7 +670,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const challengeHint = challengeOrbit
     ? 'Glisse à gauche ou à droite pour faire avancer la Terre sur l’anneau autour du Soleil.'
     : challengeObservatory
-      ? 'Manche 1 : aligne le disque sur la mire. Manche 2 : classe du plus petit au plus grand.'
+      ? 'Cadre chaque étoile : si elle déborde, éloigne le télescope ; si elle paraît trop petite, rapproche-le.'
       : challengeNorthernSummer
         ? 'Glisse la Terre (ou utilise Été N) pour que le nord soit penché vers le Soleil.'
         : challengeOrbitFall

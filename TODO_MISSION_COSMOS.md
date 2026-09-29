@@ -18,18 +18,18 @@ La progression principale suit une logique d'échelle :
 
 Carte (`UNIVERSE_ZONES`, 8 zones) alignée sur **13 missions** (mix C, 2026-09-28) :
 
-| Zone | Missions |
-|---|---|
-| La Terre | 01, 02 |
-| La Lune | 03, 04 |
+| Zone            | Missions   |
+| --------------- | ---------- |
+| La Terre        | 01, 02     |
+| La Lune         | 03, 04     |
 | Système solaire | 05, 06, 07 |
-| Étoiles | 08, 09 |
-| Voie lactée | 10 |
-| Galaxies | 11 |
-| Univers profond | 12 |
-| Extrêmes | 13 |
+| Étoiles         | 08, 09     |
+| Voie lactée     | 10         |
+| Galaxies        | 11         |
+| Univers profond | 12         |
+| Extrêmes        | 13         |
 
-*(Zone « Voisinage » retirée — orpheline sans mission.)*
+_(Zone « Voisinage » retirée — orpheline sans mission.)_
 
 Nom du produit : **Mission Cosmos**.
 
@@ -200,7 +200,7 @@ docs/
 ### ASSET GATE — identité
 
 - [x] Déterminer si un logo Mission Cosmos est nécessaire immédiatement.
-- [x] Si oui, demander au propriétaire un logo ou proposer un brief précis de génération. *(Non requis : wordmark typo ; brief favicon dans `docs/DESIGN.md`.)*
+- [x] Si oui, demander au propriétaire un logo ou proposer un brief précis de génération. _(Non requis : wordmark typo ; brief favicon dans `docs/DESIGN.md`.)_
 - [x] Déterminer les besoins d'icône d'application / favicon.
 - [x] Documenter les assets reçus dans `docs/ASSETS.md`.
 
@@ -247,16 +247,16 @@ docs/
 - [x] Éviter les doubles initialisations React.
 - [x] Prévoir chargement asynchrone des scènes.
 - [x] Prévoir écran de chargement des assets.
-- [x] Tester perte/restauration du contexte WebGL si possible. *(écouteurs contextlost/restored branchés ; test matériel à faire sur appareil.)*
+- [x] Tester perte/restauration du contexte WebGL si possible. _(écouteurs contextlost/restored branchés ; test matériel à faire sur appareil.)_
 
 ## 3.2 Caméra et contrôles
 
 - [x] Contrôles tactiles : rotation.
 - [x] Pinch zoom.
-- [x] Pan uniquement lorsque pédagogiquement utile. *(désactivé par défaut)*
+- [x] Pan uniquement lorsque pédagogiquement utile. _(désactivé par défaut)_
 - [x] Contrôles souris desktop.
 - [x] Limites de zoom par scène.
-- [x] Limites de rotation par scène. *(beta borné ; alpha libre pour Terre)*
+- [x] Limites de rotation par scène. _(beta borné ; alpha libre pour Terre)_
 - [x] Fonction recentrer la caméra.
 - [x] Transitions caméra animées.
 - [x] Fonction focus sur un objet.
@@ -278,25 +278,25 @@ docs/
 
 - [x] Matériaux planétaires.
 - [x] Textures albedo/diffuse selon besoin.
-- [x] Normal maps uniquement si utiles sur mobile. *(désactivées en low)*
+- [x] Normal maps uniquement si utiles sur mobile. _(désactivées en low)_
 - [x] Gestion atmosphère simplifiée.
 - [x] Soleil émissif.
 - [x] Éclairage directionnel/ponctuel adapté.
-- [x] Fond étoilé performant. *(image mission ADR-002)*
-- [x] Tester PBR vs matériaux plus simples sur mobile. *(Standard en low ; doc `RENDERING.md`)*
+- [x] Fond étoilé performant. _(image mission ADR-002)_
+- [x] Tester PBR vs matériaux plus simples sur mobile. _(Standard en low ; doc `RENDERING.md`)_
 - [x] Définir niveaux de qualité graphique.
 
 ## 3.5 Performance 3D
 
-- [x] Mesurer FPS et mémoire sur desktop. *(instrumentation `startPerfMonitor` — logs console en dev)*
-- [x] Mesurer sur smartphone Android réel. *(protocole documenté dans `docs/PERFORMANCE.md` — à exécuter sur appareil)*
-- [x] Réduire draw calls. *(freeze matériaux, fond figé, atmosphère off en low)*
-- [x] Instancing lorsque pertinent. *(helper thin instances pour missions futures)*
-- [x] Optimiser textures. *(aniso / sampling selon qualité)*
-- [x] Définir résolutions max par catégorie d'asset. *(`textureLimits.ts` + PERFORMANCE.md)*
-- [x] Lazy loading des modèles/textures. *(ImportMeshAsync + `prefetchCelestialGlb`)*
-- [x] Dispose systématique des scènes quittées. *(BabylonCanvas)*
-- [x] Mode graphique réduit pour appareils faibles. *(qualité auto/low)*
+- [x] Mesurer FPS et mémoire sur desktop. _(instrumentation `startPerfMonitor` — logs console en dev)_
+- [x] Mesurer sur smartphone Android réel. _(protocole documenté dans `docs/PERFORMANCE.md` — à exécuter sur appareil)_
+- [x] Réduire draw calls. _(freeze matériaux, fond figé, atmosphère off en low)_
+- [x] Instancing lorsque pertinent. _(helper thin instances pour missions futures)_
+- [x] Optimiser textures. _(aniso / sampling selon qualité)_
+- [x] Définir résolutions max par catégorie d'asset. _(`textureLimits.ts` + PERFORMANCE.md)_
+- [x] Lazy loading des modèles/textures. _(ImportMeshAsync + `prefetchCelestialGlb`)_
+- [x] Dispose systématique des scènes quittées. _(BabylonCanvas)_
+- [x] Mode graphique réduit pour appareils faibles. _(qualité auto/low)_
 - [x] Respecter `prefers-reduced-motion` pour les animations non essentielles.
 
 ---
@@ -326,9 +326,9 @@ Chaque mission doit pouvoir définir :
 
 - [x] Définir le schéma TypeScript.
 - [x] Ajouter validation runtime des contenus si pertinent.
-- [x] Séparer textes pédagogiques du code des scènes. *(`content/missions/` vs `3d/scenes/`)*
-- [x] Permettre plusieurs variantes de difficulté à terme. *(`variantGroupId`)*
-- [x] Préparer les champs pour future traduction. *(`locale: 'fr'`)*
+- [x] Séparer textes pédagogiques du code des scènes. _(`content/missions/` vs `3d/scenes/`)_
+- [x] Permettre plusieurs variantes de difficulté à terme. _(`variantGroupId`)_
+- [x] Préparer les champs pour future traduction. _(`locale: 'fr'`)_
 
 ## 4.2 Moteur de séquence pédagogique
 
@@ -337,21 +337,21 @@ Chaque mission doit pouvoir définir :
 - [x] État MANIPULATE.
 - [x] État CHALLENGE.
 - [x] État EXPLAIN.
-- [x] État QUIZ facultatif. *(`MissionQuiz` + `quiz-mission-01`)*
+- [x] État QUIZ facultatif. _(`MissionQuiz` + `quiz-mission-01`)_
 - [x] État REWARD.
 - [x] État COMPLETE.
-- [x] Reprise après interruption. *(`mc:mission-session` localStorage)*
-- [x] Possibilité de recommencer une expérience. *(bouton Recommencer / Rejouer)*
+- [x] Reprise après interruption. _(`mc:mission-session` localStorage)_
+- [x] Possibilité de recommencer une expérience. _(bouton Recommencer / Rejouer)_
 - [x] Possibilité d'explorer librement après réussite.
 
 ## 4.3 Texte et niveau de langage
 
-- [x] Écrire des phrases courtes. *(revue Mission 01)*
-- [x] Éviter le jargon non expliqué. *(mots liés au glossaire)*
-- [x] Ajouter un glossaire interactif. *(bouton Mots + termes cliquables)*
-- [x] Ne pas infantiliser les 10–12 ans. *(ton clair, pas « bébé »)*
-- [x] Vérifier scientifiquement chaque explication. *(forme / équateur / pôles / axe — niveau scolaire)*
-- [x] Signaler clairement les représentations « non à l'échelle ». *(notice renforcée en mission)*
+- [x] Écrire des phrases courtes. _(revue Mission 01)_
+- [x] Éviter le jargon non expliqué. _(mots liés au glossaire)_
+- [x] Ajouter un glossaire interactif. _(bouton Mots + termes cliquables)_
+- [x] Ne pas infantiliser les 10–12 ans. _(ton clair, pas « bébé »)_
+- [x] Vérifier scientifiquement chaque explication. _(forme / équateur / pôles / axe — niveau scolaire)_
+- [x] Signaler clairement les représentations « non à l'échelle ». _(notice renforcée en mission)_
 
 ---
 
@@ -361,9 +361,9 @@ Chaque mission doit pouvoir définir :
 
 - [x] Création d'un profil local simple.
 - [x] Choix d'un prénom/pseudo facultatif.
-- [x] Avatar sans photo personnelle. *(emojis prédéfinis)*
+- [x] Avatar sans photo personnelle. _(emojis prédéfinis)_
 - [x] Stockage local.
-- [x] Plusieurs profils sur un même appareil à étudier. *(max 3)*
+- [x] Plusieurs profils sur un même appareil à étudier. _(max 3)_
 - [x] Aucun compte obligatoire dans la première version.
 - [x] Éviter la collecte de données personnelles inutiles.
 
@@ -371,22 +371,22 @@ Chaque mission doit pouvoir définir :
 
 - [x] Missions verrouillées/déverrouillées.
 - [x] Sauvegarde des missions terminées.
-- [x] Sauvegarde des défis réussis. *(via étape reward/complete de mission)*
+- [x] Sauvegarde des défis réussis. _(via étape reward/complete de mission)_
 - [x] Sauvegarde des récompenses.
 - [x] Pourcentage de progression.
 - [x] Rejouer une mission terminée.
-- [x] Migration/versionnage du format de sauvegarde. *(version + reset si schéma inconnu)*
+- [x] Migration/versionnage du format de sauvegarde. _(version + reset si schéma inconnu)_
 - [x] Bouton de réinitialisation avec confirmation parentale/simple protection adaptée.
 
 ## 5.3 Récompenses
 
 Éviter les mécaniques addictives artificielles.
 
-- [x] Créer des badges de connaissance. *(Explorateur de la Terre)*
-- [x] Débloquer des objets/fiches dans une collection cosmique. *(écran Collection branché)*
-- [x] Débloquer des entrées de glossaire enrichies. *(bonus après badge Mission 01)*
-- [x] Débloquer éventuellement des variantes visuelles du compagnon. *(teinte CSS « explorer » ; assets Phase 6)*
-- [x] Animation de récompense courte et non intrusive. *(RewardPanel celebrate + reduced-motion)*
+- [x] Créer des badges de connaissance. _(Explorateur de la Terre)_
+- [x] Débloquer des objets/fiches dans une collection cosmique. _(écran Collection branché)_
+- [x] Débloquer des entrées de glossaire enrichies. _(bonus après badge Mission 01)_
+- [x] Débloquer éventuellement des variantes visuelles du compagnon. _(teinte CSS « explorer » ; assets Phase 6)_
+- [x] Animation de récompense courte et non intrusive. _(RewardPanel celebrate + reduced-motion)_
 - [x] Écran collection.
 - [x] Aucun loot aléatoire payant.
 - [x] Aucune streak quotidienne obligatoire.
@@ -406,12 +406,12 @@ Le compagnon doit :
 - expliquer les erreurs ;
 - introduire certaines curiosités scientifiques.
 
-- [x] Définir personnalité et ton. *(`src/content/companion/persona.ts`)*
-- [x] Définir nom du compagnon ultérieurement avec le propriétaire. *(placeholder `Guide` — `COMPANION_TEMP_NAME`)*
+- [x] Définir personnalité et ton. _(`src/content/companion/persona.ts`)_
+- [x] Définir nom du compagnon ultérieurement avec le propriétaire. _(placeholder `Guide` — `COMPANION_TEMP_NAME`)_
 - [x] Déterminer sprite 2D vs modèle 3D. — sprites 2D transparents livrés (AST-003).
-- [x] Concevoir système de dialogues. *(`resolveCompanionCue` + lignes courtes)*
+- [x] Concevoir système de dialogues. _(`resolveCompanionCue` + lignes courtes)_
 - [x] Concevoir système d'expressions/poses. — 9 états et manifest dans `docs/COMPANION_ASSETS.md`.
-- [x] Concevoir apparition non intrusive. *(sprite sm, flottement CSS, tip repliable)*
+- [x] Concevoir apparition non intrusive. _(sprite sm, flottement CSS, tip repliable)_
 
 ### ASSET GATE — compagnon
 
@@ -431,9 +431,9 @@ Si sprite 2D :
 
 Si 3D :
 
-- [x] demander GLB/GLTF optimisé ; *(`public/assets/models/compagon/compagon.glb` — ~6,5 Mo, compression à prévoir)*
-- [x] définir animations nécessaires ; *(Idle, Cheer, Confused, Agree, restpose — branchées M02–M04 via `loadCompanion` / `companionSurfaceMarker`)*
-- [ ] vérifier licence et poids. *(GLB ~6,5 Mo — compression Draco/meshopt à prévoir ; licence à confirmer)*
+- [x] demander GLB/GLTF optimisé ; _(`public/assets/models/compagon/compagon.glb` — ~6,5 Mo, compression à prévoir)_
+- [x] définir animations nécessaires ; _(Idle, Cheer, Confused, Agree, restpose — branchées M02–M04 via `loadCompanion` / `companionSurfaceMarker`)_
+- [ ] vérifier licence et poids. _(GLB ~6,5 Mo — compression Draco/meshopt à prévoir ; licence à confirmer)_
 
 ---
 
@@ -443,27 +443,27 @@ Si 3D :
 
 La carte doit matérialiser l'élargissement progressif du champ de connaissance.
 
-- [x] Terre comme point de départ. *(`UNIVERSE_ZONES` + missions 01–02)*
-- [x] Lune. *(missions 03–04)*
-- [x] voisinage terrestre. *(retiré 2026-09-28 — zone orpheline ; progression Lune → Système solaire)*
-- [x] Système solaire. *(missions 05–07 catalogue)*
-- [x] Soleil/étoiles. *(missions 08–09 catalogue)*
-- [x] Voie lactée. *(mission 10 catalogue)*
-- [x] galaxies. *(mission 11 catalogue)*
-- [x] Univers profond. *(mission 12 catalogue — distances)*
-- [x] phénomènes extrêmes. *(mission 13 catalogue — trous noirs)*
+- [x] Terre comme point de départ. _(`UNIVERSE_ZONES` + missions 01–02)_
+- [x] Lune. _(missions 03–04)_
+- [x] voisinage terrestre. _(retiré 2026-09-28 — zone orpheline ; progression Lune → Système solaire)_
+- [x] Système solaire. _(missions 05–07 catalogue)_
+- [x] Soleil/étoiles. _(missions 08–09 catalogue)_
+- [x] Voie lactée. _(mission 10 catalogue)_
+- [x] galaxies. _(mission 11 catalogue)_
+- [x] Univers profond. _(mission 12 catalogue — distances)_
+- [x] phénomènes extrêmes. _(mission 13 catalogue — trous noirs)_
 
 ## 7.2 Fonctionnalités
 
-- [x] Navigation tactile fluide. *(grille zones desktop/mobile — sans scroll)*
+- [x] Navigation tactile fluide. _(grille zones desktop/mobile — sans scroll)_
 - [x] Missions terminées clairement visibles.
 - [x] Missions disponibles clairement visibles.
 - [x] Missions verrouillées compréhensibles.
-- [x] Aperçu au tap. *(panneau zone sélectionnée)*
-- [x] Affichage objectif pédagogique court. *(MissionCard)*
+- [x] Aperçu au tap. _(panneau zone sélectionnée)_
+- [x] Affichage objectif pédagogique court. _(MissionCard)_
 - [x] Bouton démarrer/rejouer.
-- [x] Animation de déverrouillage. *(pulse sessionStorage)*
-- [x] Transition caméra entre zones. *(sélection instantanée, panneau aperçu)*
+- [x] Animation de déverrouillage. _(pulse sessionStorage)_
+- [x] Transition caméra entre zones. _(sélection instantanée, panneau aperçu)_
 - [x] Ne pas sacrifier la lisibilité à l'effet visuel.
 
 ---
@@ -482,16 +482,17 @@ Objectifs : forme, rotation, pôles, équateur, repères fondamentaux.
 - [x] Identifier équateur/pôles.
 - [x] Défi simple de repérage.
 - [x] Explication finale.
-- [x] Récompense. *(badge local UI — persistance Phase 5)*
+- [x] Récompense. _(badge local UI — persistance Phase 5)_
 
 ### ASSET GATE
-- [x] demander texture Terre si aucune texture libre adaptée n'est déjà intégrée avec licence documentée. *(GLB pack AST-010)*
+
+- [x] demander texture Terre si aucune texture libre adaptée n'est déjà intégrée avec licence documentée. _(GLB pack AST-010)_
 
 ## Mission 02 — Pourquoi fait-il jour et nuit ?
 
 - [x] Soleil + Terre.
 - [x] Source lumineuse cohérente.
-- [x] Repère/personnage sur Terre. *(compagnon 3D AST-003b — remplace l’ancienne maison)*
+- [x] Repère/personnage sur Terre. _(compagnon 3D AST-003b — remplace l’ancienne maison)_
 - [x] Rotation manuelle de la Terre.
 - [x] Visualiser face éclairée / face nocturne.
 - [x] Défi : placer le repère dans la nuit/le jour.
@@ -504,9 +505,9 @@ Objectifs : forme, rotation, pôles, équateur, repères fondamentaux.
 - [x] Orbite lunaire simplifiée.
 - [x] Déplacement de la Lune.
 - [x] Vue depuis l'espace.
-- [x] Vue depuis la Terre. *(PiP temps réel, pattern Mission 02)*
-- [x] Croissant/quartier/gibbeuse/pleine/nouvelle. *(badge phase + détection)*
-- [x] Défi de reproduction d'une phase. *(pleine + croissant)*
+- [x] Vue depuis la Terre. _(PiP temps réel, pattern Mission 02)_
+- [x] Croissant/quartier/gibbeuse/pleine/nouvelle. _(badge phase + détection)_
+- [x] Défi de reproduction d'une phase. _(pleine + croissant)_
 - [x] Corriger l'idée fausse « l'ombre de la Terre crée les phases ».
 
 ## Mission 04 — Les éclipses
@@ -514,10 +515,10 @@ Objectifs : forme, rotation, pôles, équateur, repères fondamentaux.
 - [x] Éclipse solaire.
 - [x] Éclipse lunaire.
 - [x] Manipulation des alignements.
-- [x] Visualisation ombre/pénombre simplifiée. *(cônes translucides)*
-- [x] Défi d'alignement. *(solaire + lunaire)*
-- [x] Expliquer pourquoi il n'y a pas une éclipse chaque mois. *(orbite penchée à l’étape explain)*
-- [x] Ne jamais suggérer l'observation directe du Soleil sans protection adaptée. *(notice + bandeau PiP)*
+- [x] Visualisation ombre/pénombre simplifiée. _(cônes translucides)_
+- [x] Défi d'alignement. _(solaire + lunaire)_
+- [x] Expliquer pourquoi il n'y a pas une éclipse chaque mois. _(orbite penchée à l’étape explain)_
+- [x] Ne jamais suggérer l'observation directe du Soleil sans protection adaptée. _(notice + bandeau PiP)_
 
 ## Mission 05 — Le Système solaire
 
@@ -540,6 +541,7 @@ Objectifs : forme, rotation, pôles, équateur, repères fondamentaux.
 - [x] Aborder les distances moyennes au Soleil (étape « Mesurer le vide », zoom Soleil–Mars) — orbites/périodes → Mission 06 ; distances cosmiques → Mission 11.
 
 ### ASSET GATE — planètes
+
 - [x] inventorier textures nécessaires.
 - [x] demander/générer/rechercher uniquement les textures manquantes avec licence adaptée.
 
@@ -573,7 +575,7 @@ Objectifs : forme, rotation, pôles, équateur, repères fondamentaux.
 - [x] Montrer que taille apparente ≠ taille réelle.
 - [x] Défi de comparaison.
 - [x] Limiter les objets simultanés pour les performances.
-- [x] Défi observatoire en 2 manches (mire + podium) — notes dans `docs/pedagogy/mission-08-stars.md`.
+- [x] Défi « Photographe d’étoiles » : 3 cadrages avec une mécanique unique (rail de distance + album) — notes dans `docs/pedagogy/mission-08-stars.md`.
 
 ## Mission 09 — La lumière des étoiles
 
@@ -594,6 +596,7 @@ Objectifs : forme, rotation, pôles, équateur, repères fondamentaux.
 - [ ] Défi de localisation conceptuelle.
 
 ### ASSET GATE — Voie lactée
+
 - [ ] déterminer si texture, skybox, particules ou modèle est préférable.
 - [ ] demander l'asset seulement après définition technique précise.
 
@@ -609,6 +612,7 @@ Objectifs : d’autres galaxies que la nôtre ; idée d’« îles d’étoiles 
 - [ ] Éviter de présenter les galaxies comme des « soleils géants ».
 
 ### ASSET GATE — galaxies
+
 - [ ] choisir représentation (illustration, skybox, modèle simplifié).
 - [ ] licence documentée avant intégration définitive.
 
@@ -657,17 +661,17 @@ Objectifs : d’autres galaxies que la nôtre ; idée d’« îles d’étoiles 
 
 > Socle partiel déjà en place pour M01–M05 (`MissionQuiz` + `content/quizzes/mission-0x.ts`). Cette phase formalise et généralise le système.
 
-- [x] Questions à choix. *(quiz M01–M07)*
+- [x] Questions à choix. _(quiz M01–M07)_
 - [ ] Questions visuelles.
 - [ ] Placement/drag-and-drop.
 - [ ] Manipulation 3D comme réponse.
-- [x] Feedback immédiat explicatif. *(compagnon + choix quiz)*
+- [x] Feedback immédiat explicatif. _(compagnon + choix quiz)_
 - [x] Pas de sanction forte en cas d'erreur.
 - [x] Possibilité de nouvel essai.
-- [x] Banque de questions extensible. *(`content/quizzes/`)*
+- [x] Banque de questions extensible. _(`content/quizzes/`)_
 - [ ] Randomisation raisonnable.
-- [ ] Éviter les questions pièges. *(revue éditoriale globale)*
-- [ ] Vérifier chaque réponse scientifiquement. *(revue Phase 17)*
+- [ ] Éviter les questions pièges. _(revue éditoriale globale)_
+- [ ] Vérifier chaque réponse scientifiquement. _(revue Phase 17)_
 
 ---
 
@@ -680,15 +684,15 @@ Objectifs : d’autres galaxies que la nôtre ; idée d’« îles d’étoiles 
 - [ ] déverrouillage.
 - [ ] transition.
 - [ ] ambiance spatiale discrète.
-- [x] volume global. *(volume musique — paramètres)*
-- [x] mute. *(couper la musique — paramètres)*
+- [x] volume global. _(volume musique — paramètres)_
+- [x] mute. _(couper la musique — paramètres)_
 
 ## 11.2 Musique
 
-- [x] Déterminer si musique d'ambiance réellement utile. *(oui — menus + missions)*
-- [x] Boucles légères et non fatigantes. *(menu en boucle ; jeu en shuffle)*
-- [x] Pause automatique appropriée. *(coupe au mute ; bascule menu/mission)*
-- [x] Respect des préférences utilisateur. *(mute + volume localStorage, réglages)*
+- [x] Déterminer si musique d'ambiance réellement utile. _(oui — menus + missions)_
+- [x] Boucles légères et non fatigantes. _(menu en boucle ; jeu en shuffle)_
+- [x] Pause automatique appropriée. _(coupe au mute ; bascule menu/mission)_
+- [x] Respect des préférences utilisateur. _(mute + volume localStorage, réglages)_
 - [x] Une piste menu (`23 Space Ambience 1.mp3`) ; 5 pistes jeu en random au début de mission + shuffle enchaîné.
 
 ## 11.3 Narration
@@ -701,7 +705,7 @@ Objectifs : d’autres galaxies que la nôtre ; idée d’« îles d’étoiles 
 ### ASSET GATE — audio
 
 - [ ] Cursor doit fournir la liste précise des sons nécessaires avant recherche/génération.
-- [x] Documenter licence/source de chaque son. *(musique KSP1 documentée dans `docs/ASSETS.md` — SFX/voix encore à faire ; musique = Temporaire, pas OK release publique)*
+- [x] Documenter licence/source de chaque son. _(musique KSP1 documentée dans `docs/ASSETS.md` — SFX/voix encore à faire ; musique = Temporaire, pas OK release publique)_
 
 ---
 
@@ -946,26 +950,25 @@ Ces fonctionnalités ne doivent pas bloquer la version principale mais l'archite
 
 Cursor doit maintenir ce tableau au fil du projet.
 
-| ID | Asset | Type | Format cible | État | Source/licence | Utilisation |
-|---|---|---|---|---|---|---|
-| AST-001 | Logo Mission Cosmos | 2D | PNG transparent | Reçu | ImageGen | Branding — intégré accueil |
-| AST-002 | Icône application | 2D | PNG/SVG | À définir | — | PWA/store |
-| AST-003 | Compagnon | 2D sprites | WebP 512/256 | Reçu | ImageGen | Guide UI — `public/assets/sprites/companion/` |
-| AST-003b | Compagnon 3D | modèle GLB | GLB skinned | Reçu | À confirmer | Scènes M02–M04 — `public/assets/models/compagon/compagon.glb` (~6,5 Mo) |
-| AST-010 | Terre | modèle GLB + WebP | GLB/WebP | Reçu | CGTrader pack (licence à vérifier) | Missions 1+ — `public/assets/models/solarsystem/celestial-bodies/earth/` |
-| AST-011 | Lune | modèle GLB + WebP | GLB/WebP | Reçu | idem | Missions 3+ — `…/moon/` |
-| AST-012 | Planètes / Soleil / astéroïdes | pack GLB | GLB/WebP | Reçu | idem | Mission 5+ — `…/celestial-bodies/` (AST-030→038) |
-| AST-020 | Voie lactée artistique | Fond 2D | WebP panorama + mobile | Reçu | ImageGen, non cartographique | `public/assets/textures/backgrounds/` |
-| AST-021 | Ciel étoilé discret | Fond 2D | WebP panorama + mobile | Reçu | ImageGen artistique | `public/assets/textures/backgrounds/` |
-| AST-022 | Nébuleuse turquoise | Fond 2D | WebP panorama + mobile | Reçu | ImageGen artistique | `public/assets/textures/backgrounds/` |
-| AST-040 | Musique menu | audio | MP3 | Temporaire | KSP1 (Squad / Take-Two) — usage perso seulement | `23 Space Ambience 1.mp3` — menus |
-| AST-041 | Musique missions | audio | MP3 | Temporaire | KSP1 (Squad / Take-Two) — usage perso seulement | 5 pistes shuffle — `public/assets/audio/music/` |
-| AST-100 | UI SFX | audio | OGG/MP3 | À définir | — | Interface |
+| ID       | Asset                          | Type              | Format cible           | État       | Source/licence                                  | Utilisation                                                              |
+| -------- | ------------------------------ | ----------------- | ---------------------- | ---------- | ----------------------------------------------- | ------------------------------------------------------------------------ |
+| AST-001  | Logo Mission Cosmos            | 2D                | PNG transparent        | Reçu       | ImageGen                                        | Branding — intégré accueil                                               |
+| AST-002  | Icône application              | 2D                | PNG/SVG                | À définir  | —                                               | PWA/store                                                                |
+| AST-003  | Compagnon                      | 2D sprites        | WebP 512/256           | Reçu       | ImageGen                                        | Guide UI — `public/assets/sprites/companion/`                            |
+| AST-003b | Compagnon 3D                   | modèle GLB        | GLB skinned            | Reçu       | À confirmer                                     | Scènes M02–M04 — `public/assets/models/compagon/compagon.glb` (~6,5 Mo)  |
+| AST-010  | Terre                          | modèle GLB + WebP | GLB/WebP               | Reçu       | CGTrader pack (licence à vérifier)              | Missions 1+ — `public/assets/models/solarsystem/celestial-bodies/earth/` |
+| AST-011  | Lune                           | modèle GLB + WebP | GLB/WebP               | Reçu       | idem                                            | Missions 3+ — `…/moon/`                                                  |
+| AST-012  | Planètes / Soleil / astéroïdes | pack GLB          | GLB/WebP               | Reçu       | idem                                            | Mission 5+ — `…/celestial-bodies/` (AST-030→038)                         |
+| AST-020  | Voie lactée artistique         | Fond 2D           | WebP panorama + mobile | Reçu       | ImageGen, non cartographique                    | `public/assets/textures/backgrounds/`                                    |
+| AST-021  | Ciel étoilé discret            | Fond 2D           | WebP panorama + mobile | Reçu       | ImageGen artistique                             | `public/assets/textures/backgrounds/`                                    |
+| AST-022  | Nébuleuse turquoise            | Fond 2D           | WebP panorama + mobile | Reçu       | ImageGen artistique                             | `public/assets/textures/backgrounds/`                                    |
+| AST-040  | Musique menu                   | audio             | MP3                    | Temporaire | KSP1 (Squad / Take-Two) — usage perso seulement | `23 Space Ambience 1.mp3` — menus                                        |
+| AST-041  | Musique missions               | audio             | MP3                    | Temporaire | KSP1 (Squad / Take-Two) — usage perso seulement | 5 pistes shuffle — `public/assets/audio/music/`                          |
+| AST-100  | UI SFX                         | audio             | OGG/MP3                | À définir  | —                                               | Interface                                                                |
 
 États possibles : `À définir`, `Demandé`, `Reçu`, `Temporaire`, `Validé`, `À remplacer`.
 
 Détail pack système solaire : `docs/ASSETS.md` + `public/assets/models/solarsystem/README.md`.
-
 
 ---
 
@@ -973,15 +976,15 @@ Détail pack système solaire : `docs/ASSETS.md` + `public/assets/models/solarsy
 
 Les décisions importantes doivent avoir une ADR dans `/docs/decisions/` et être résumées ici.
 
-| Date | Décision | ADR |
-|---|---|---|
-| 2026-09-28 | Carte 8 zones alignée sur 13 missions (mix C) ; suppression zone Voisinage ; M11 Galaxies ; Distances→12 ; Trous noirs→13 | — |
-| 2026-09-26 | Next.js + React + TypeScript comme socle web | `docs/decisions/001-stack-initiale.md` |
-| 2026-09-26 | Babylon.js (`@babylonjs/core`) comme moteur 3D | `docs/decisions/001-stack-initiale.md` |
-| 2026-09-26 | CSS natif (tokens en Phase 2), pas Tailwind au démarrage | `docs/decisions/001-stack-initiale.md` |
-| 2026-09-26 | PWA avant application native | `docs/decisions/001-stack-initiale.md` |
-| 2026-09-26 | Pas de backend initial sans besoin fonctionnel | `docs/decisions/001-stack-initiale.md` |
-| 2026-09-26 | Fond missions 3D = image (pas procédural) | `docs/decisions/002-mission-image-background.md` |
+| Date       | Décision                                                                                                                  | ADR                                              |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| 2026-09-28 | Carte 8 zones alignée sur 13 missions (mix C) ; suppression zone Voisinage ; M11 Galaxies ; Distances→12 ; Trous noirs→13 | —                                                |
+| 2026-09-26 | Next.js + React + TypeScript comme socle web                                                                              | `docs/decisions/001-stack-initiale.md`           |
+| 2026-09-26 | Babylon.js (`@babylonjs/core`) comme moteur 3D                                                                            | `docs/decisions/001-stack-initiale.md`           |
+| 2026-09-26 | CSS natif (tokens en Phase 2), pas Tailwind au démarrage                                                                  | `docs/decisions/001-stack-initiale.md`           |
+| 2026-09-26 | PWA avant application native                                                                                              | `docs/decisions/001-stack-initiale.md`           |
+| 2026-09-26 | Pas de backend initial sans besoin fonctionnel                                                                            | `docs/decisions/001-stack-initiale.md`           |
+| 2026-09-26 | Fond missions 3D = image (pas procédural)                                                                                 | `docs/decisions/002-mission-image-background.md` |
 
 ---
 
@@ -995,7 +998,7 @@ Carte / catalogue : **13 missions** branchées sur **8 zones** (alignement mix C
 
 Sous-phases : Mission 01 · Mission 02 · Mission 03 · Mission 04 · Mission 05 · Mission 06 · Mission 07 · Mission 08 terminées.
 
-Prochaine action : **Mission 09 — La lumière des étoiles** *(après validation propriétaire)*.
+Prochaine action : **Mission 09 — La lumière des étoiles** _(après validation propriétaire)_.
 
 ### Notes découvertes
 
@@ -1008,5 +1011,5 @@ Prochaine action : **Mission 09 — La lumière des étoiles** *(après validati
 - Mission 05 (2026-09-27→28) : séquence exploration → défi ordre → tailles (bulle) → distances (bulle + portraits) → Pluton → quiz. Modes d’échelle via steps compagnon uniquement. Pas de redesign « vraie échelle unique » (volontairement abandonné — trop illisible).
 - Mission 06 (2026-09-28) : scène dédiée Soleil + Mercure/Terre/Jupiter ; anneaux d’orbite ; Pause/Normal/Rapide ; fiches période ; défi « plus rapide » ; défi chute perpétuelle (curseur continu ~16 % de bande, indices directionnels) ; gravité simplifiée ; notice cercles ≠ ellipses exactes.
 - Mission 07 (2026-09-28) : Soleil + Terre inclinée sur orbite ; axe coloré ; rayons ; labels N/S ; curseur d’inclinaison 0–35° ; boutons saisons ; défi « été au nord » ; quiz anti-mythe « plus proche du Soleil ».
-- Mission 08 (2026-09-29) : scène procédurale `stars` ; Proxima / Soleil / Sirius / Bételgeuse ; modes tailles (log), couleurs, taille apparente ; défi observatoire 2 manches (mire + podium) ; max 3 astres détaillés ; notes `docs/pedagogy/mission-08-stars.md`.
+- Mission 08 (2026-09-29) : scène procédurale `stars` ; Proxima / Soleil / Sirius / Bételgeuse ; modes tailles (log), couleurs, taille apparente ; défi photo à mécanique unique (3 cadrages, rail de distance, album) ; max 3 astres détaillés ; notes `docs/pedagogy/mission-08-stars.md`.
 - Musique (2026-09-28) : AST-040/041 issus de **KSP1** — documentés dans `docs/ASSETS.md`, état **Temporaire** (propriétaire Squad/Take-Two). Remplacer avant toute publication.

@@ -31,18 +31,21 @@ import {
   APPARENT_SIZE_STAR,
   APPARENT_TARGET,
   COLOR_COMPARE_STARS,
-  PODIUM_STARS,
+  PHOTO_DISTANCE_MAX,
+  PHOTO_DISTANCE_MIN,
+  PHOTO_STARS,
+  PHOTO_TARGET,
   SIZE_COMPARE_STARS,
   STARS,
   apparentAngularSize,
   clampApparentDistance,
   comparisonVisualRadius,
-  isApparentSizeMatch,
-  isPodiumOrderCorrect,
-  observatoryProgress,
+  isPhotoFramed,
+  photoApparentSize,
+  photoFramingHint,
+  photoProgress,
   radiusLabelFr,
   temperatureBandFr,
-  type ObservatoryRound,
   type StarId,
   type StarsSceneMode,
 } from '@/content/bodies/stars';
@@ -73,15 +76,6 @@ type StarMesh = {
   mat: StandardMaterial;
   glowMat: StandardMaterial;
   dispose: () => void;
-};
-
-type SlotKey = 'small' | 'medium' | 'large';
-
-const SLOT_ORDER: SlotKey[] = ['small', 'medium', 'large'];
-const SLOT_LABEL: Record<SlotKey, string> = {
-  small: 'Plus petite',
-  medium: 'Au milieu',
-  large: 'Plus grande',
 };
 
 function createStarMesh(scene: Scene, id: StarId, quality: 'low' | 'medium' | 'high'): StarMesh {
@@ -142,22 +136,20 @@ export function StarsScene({
   const [mode, setModeUi] = useState<StarsSceneMode>('sun');
   const [fact, setFact] = useState<string | null>(STARS.sun.shortFact);
   const [distanceAu, setDistanceUi] = useState(55);
-  const [challengeRound, setChallengeRound] = useState<ObservatoryRound | null>(null);
-  const [progressLabel, setProgressLabel] = useState('Observatoire : 0 / 2');
-  const [selectedToken, setSelectedToken] = useState<StarId | null>(null);
-  const [slots, setSlots] = useState<Partial<Record<SlotKey, StarId>>>({});
+  const [challengeActive, setChallengeActive] = useState(false);
+  const [photoStar, setPhotoStar] = useState<StarId>('proxima');
+  const [completedPhotos, setCompletedPhotos] = useState<StarId[]>([]);
   const [roundHint, setRoundHint] = useState<string | null>(null);
   const [roundOk, setRoundOk] = useState<string | null>(null);
   const [celebrating, setCelebrating] = useState(false);
   const [showReticle, setShowReticle] = useState(false);
+  const [flashKey, setFlashKey] = useState(0);
 
   const runtimeRef = useRef<StarsSceneApi | null>(null);
   const hudRef = useRef<{
     setDistance: (value: number) => void;
-    validateApparent: () => void;
-    selectToken: (id: StarId) => void;
-    placeToken: (slot: SlotKey) => void;
-    validatePodium: () => void;
+    shiftDistance: (delta: number) => void;
+    takePhoto: () => void;
   } | null>(null);
   const onSceneApiRef = useRef(onSceneApi);
   const onSuccessRef = useRef(onObservatorySuccess);
@@ -198,10 +190,15 @@ export function StarsScene({
     let challengeDone = false;
     let pickEnabled = true;
     let distance = 55;
-    let completed: ObservatoryRound[] = [];
-    let round: ObservatoryRound | null = null;
-    let podiumSlots: Partial<Record<SlotKey, StarId>> = {};
-    let selected: StarId | null = null;
+    let currentPhotoIndex = 0;
+    let completed: StarId[] = [];
+    let flashTimer: number | null = null;
+
+    const photoStartDistance = (id: StarId) => {
+      if (id === 'proxima') return 58;
+      if (id === 'sun') return 14;
+      return 58;
+    };
 
     const stars = new Map<StarId, StarMesh>();
     (Object.keys(STARS) as StarId[]).forEach((id) => {
@@ -222,19 +219,9 @@ export function StarsScene({
       setStarRadius(star, radius);
     };
 
-    const refreshProgressUi = () => {
-      const progress = observatoryProgress(completed);
-      setProgressLabel(`Observatoire : ${progress.done} / ${progress.total}`);
-      if (progress.complete) {
-        setCelebrating(true);
-        setRoundOk('Observatoire activé !');
-      }
-    };
-
     const applyLayout = () => {
       hideAll();
       setShowReticle(false);
-      setCelebrating(false);
 
       if (modeLocal === 'sun' || modeLocal === 'explore') {
         showStar('sun', Vector3.Zero(), 1.35);
@@ -262,7 +249,7 @@ export function StarsScene({
         return;
       }
 
-      if (modeLocal === 'apparent' || (modeLocal === 'challenge' && round === 'apparent')) {
+      if (modeLocal === 'apparent') {
         const starId = APPARENT_SIZE_STAR;
         const angular = apparentAngularSize(STARS[starId].radiusSolar, distance);
         // Rayon d’affichage : calé pour que la mire CSS corresponde à APPARENT_TARGET.
@@ -277,79 +264,60 @@ export function StarsScene({
         return;
       }
 
-      if (modeLocal === 'challenge' && round === 'podium') {
-        // Jetons de même taille : l’apparence ne trahit pas l’ordre réel.
-        PODIUM_STARS.forEach((id, index) => {
-          const x = (index - 1) * 2.05;
-          showStar(id, new Vector3(x, 0.2, 0), 0.72);
-        });
-        setFact('Même taille affichée exprès : classe-les selon leur vraie taille.');
+      if (modeLocal === 'challenge') {
+        const starId = PHOTO_STARS[currentPhotoIndex] ?? PHOTO_STARS[PHOTO_STARS.length - 1]!;
+        const apparent = photoApparentSize(starId, distance);
+        const displayRadius = (apparent / PHOTO_TARGET) * 1.05;
+        showStar(starId, Vector3.Zero(), displayRadius);
+        setShowReticle(true);
+        setPhotoStar(starId);
+        setFact(
+          `${STARS[starId].nameFr} · vraie taille : ${radiusLabelFr(
+            STARS[starId].radiusSolar,
+          )}. Ajuste seulement la distance du télescope.`,
+        );
       }
     };
 
-    const finishRound = (which: ObservatoryRound) => {
-      if (!completed.includes(which)) completed = [...completed, which];
-      refreshProgressUi();
-      const star = stars.get(which === 'apparent' ? APPARENT_SIZE_STAR : 'sun');
-      if (star?.root.isEnabled()) {
-        playPlanetSuccessHalo(scene, star.root.position.clone(), star.root.scaling.x);
-      }
-
-      const progress = observatoryProgress(completed);
-      if (progress.complete && !challengeDone) {
-        challengeDone = true;
-        setRoundHint(null);
-        setCelebrating(true);
-        onSuccessRef.current?.();
-        return;
-      }
-
-      if (which === 'apparent') {
-        round = 'podium';
-        setChallengeRound('podium');
-        setRoundOk('Manche 1 réussie — place les étoiles du plus petit au plus grand.');
-        setRoundHint(null);
-        podiumSlots = {};
-        selected = null;
-        setSlots({});
-        setSelectedToken(null);
-        applyLayout();
-      }
-    };
-
-    const tryValidateApparent = () => {
-      const size = apparentAngularSize(STARS[APPARENT_SIZE_STAR].radiusSolar, distance);
-      if (isApparentSizeMatch(size)) {
-        setRoundOk('Mire calée ! Une géante peut paraître petite si elle est loin.');
-        finishRound('apparent');
-        return;
-      }
-      const hint =
-        size < APPARENT_TARGET
-          ? 'Encore trop loin — rapproche un peu l’étoile.'
-          : 'Encore trop près — éloigne un peu l’étoile.';
-      setRoundOk(null);
-      setRoundHint(hint);
-      onMissRef.current?.(hint);
-    };
-
-    const tryValidatePodium = () => {
-      const order = SLOT_ORDER.map((key) => podiumSlots[key]).filter(Boolean) as StarId[];
-      if (order.length < 3) {
-        const hint = 'Place une étoile dans chaque case.';
+    const takePhoto = () => {
+      const starId = PHOTO_STARS[currentPhotoIndex];
+      if (!starId || challengeDone) return;
+      if (!isPhotoFramed(starId, distance)) {
+        const hint = photoFramingHint(starId, distance);
+        setRoundOk(null);
         setRoundHint(hint);
         onMissRef.current?.(hint);
         return;
       }
-      if (isPodiumOrderCorrect(order)) {
-        setRoundOk('Oui ! Du plus petit au plus grand.');
-        finishRound('podium');
+
+      completed = [...completed, starId];
+      setCompletedPhotos([...completed]);
+      setRoundHint(null);
+      setRoundOk(`Photo réussie : ${STARS[starId].nameFr} !`);
+      setFlashKey((key) => key + 1);
+      const star = stars.get(starId);
+      if (star) playPlanetSuccessHalo(scene, star.root.position.clone(), star.root.scaling.x);
+
+      const progress = photoProgress(completed);
+      if (progress.complete) {
+        challengeDone = true;
+        setCelebrating(true);
+        setRoundOk('Album complet ! Même cadrage, mais tailles et distances très différentes.');
+        onSuccessRef.current?.();
         return;
       }
-      const hint = 'Pas encore — pense : naine rouge → Soleil → géante rouge.';
-      setRoundOk(null);
-      setRoundHint(hint);
-      onMissRef.current?.(hint);
+
+      currentPhotoIndex += 1;
+      const nextId = PHOTO_STARS[currentPhotoIndex]!;
+      distance = photoStartDistance(nextId);
+      setDistanceUi(distance);
+      setPhotoStar(nextId);
+      setRoundHint(
+        `Nouvelle photo : ${STARS[nextId].nameFr}. Fais entrer son disque dans le cadre.`,
+      );
+      if (flashTimer != null) window.clearTimeout(flashTimer);
+      flashTimer = window.setTimeout(() => applyLayout(), 260);
+      applyLayout();
     };
 
     applyLayout();
@@ -381,8 +349,7 @@ export function StarsScene({
         setModeUi(next);
         if (next !== 'challenge') {
           challenge = false;
-          round = null;
-          setChallengeRound(null);
+          setChallengeActive(false);
           setShowReticle(next === 'apparent');
           setRoundHint(null);
           setRoundOk(null);
@@ -396,24 +363,20 @@ export function StarsScene({
         if (enabled && changed) {
           challengeDone = false;
           completed = [];
-          round = 'apparent';
+          currentPhotoIndex = 0;
           modeLocal = 'challenge';
-          distance = 55;
-          podiumSlots = {};
-          selected = null;
+          distance = photoStartDistance(PHOTO_STARS[0]!);
           setModeUi('challenge');
-          setChallengeRound('apparent');
+          setChallengeActive(true);
+          setPhotoStar(PHOTO_STARS[0]!);
+          setCompletedPhotos([]);
           setDistanceUi(distance);
-          setSlots({});
-          setSelectedToken(null);
-          setRoundHint('Manche 1 : fais coïncider le disque avec la mire dorée.');
+          setRoundHint('Photo 1/3 : rapproche ou éloigne le télescope pour remplir le cadre doré.');
           setRoundOk(null);
           setCelebrating(false);
-          refreshProgressUi();
           applyLayout();
         } else if (!enabled) {
-          round = null;
-          setChallengeRound(null);
+          setChallengeActive(false);
           setShowReticle(false);
           if (modeLocal === 'challenge') {
             modeLocal = 'explore';
@@ -439,13 +402,6 @@ export function StarsScene({
       );
       if (!hit) return;
 
-      if (modeLocal === 'challenge' && round === 'podium') {
-        selected = hit.id;
-        setSelectedToken(hit.id);
-        setRoundHint(`Jeton sélectionné : ${STARS[hit.id].nameFr}. Touche une case.`);
-        return;
-      }
-
       if (modeLocal === 'colors') {
         setFact(
           `${STARS[hit.id].nameFr} · ${STARS[hit.id].colorLabelFr} · ${temperatureBandFr(
@@ -466,32 +422,26 @@ export function StarsScene({
 
     hudRef.current = {
       setDistance: (value: number) => {
-        distance = clampApparentDistance(value);
+        distance =
+          modeLocal === 'challenge'
+            ? Math.min(PHOTO_DISTANCE_MAX, Math.max(PHOTO_DISTANCE_MIN, value))
+            : clampApparentDistance(value);
         setDistanceUi(distance);
+        if (modeLocal === 'challenge') {
+          setRoundHint(photoFramingHint(PHOTO_STARS[currentPhotoIndex]!, distance));
+          setRoundOk(null);
+        }
         applyLayout();
       },
-      validateApparent: () => tryValidateApparent(),
-      selectToken: (id: StarId) => {
-        selected = id;
-        setSelectedToken(id);
+      shiftDistance: (delta: number) => {
+        const next = Math.min(PHOTO_DISTANCE_MAX, Math.max(PHOTO_DISTANCE_MIN, distance + delta));
+        distance = next;
+        setDistanceUi(next);
+        setRoundHint(photoFramingHint(PHOTO_STARS[currentPhotoIndex]!, next));
+        setRoundOk(null);
+        applyLayout();
       },
-      placeToken: (slot: SlotKey) => {
-        if (!selected) {
-          setRoundHint('Choisis d’abord une étoile (touche-la ou un jeton).');
-          return;
-        }
-        const next: Partial<Record<SlotKey, StarId>> = { ...podiumSlots };
-        for (const key of SLOT_ORDER) {
-          if (next[key] === selected) delete next[key];
-        }
-        next[slot] = selected;
-        podiumSlots = next;
-        setSlots({ ...next });
-        selected = null;
-        setSelectedToken(null);
-        setRoundHint(null);
-      },
-      validatePodium: () => tryValidatePodium(),
+      takePhoto,
     };
 
     const perf = startPerfMonitor(scene, { label: 'mission-08-stars' });
@@ -510,6 +460,7 @@ export function StarsScene({
 
     return () => {
       perf.dispose();
+      if (flashTimer != null) window.clearTimeout(flashTimer);
       if (pulseObs) scene.onBeforeRenderObservable.remove(pulseObs);
       scene.onPointerObservable.remove(pointerObs);
       stars.forEach((star) => star.dispose());
@@ -525,25 +476,16 @@ export function StarsScene({
     hudRef.current?.setDistance(value);
   };
 
-  const validateApparent = () => {
-    hudRef.current?.validateApparent();
+  const shiftDistance = (delta: number) => {
+    hudRef.current?.shiftDistance(delta);
   };
 
-  const selectToken = (id: StarId) => {
-    setSelectedToken(id);
-    hudRef.current?.selectToken(id);
+  const takePhoto = () => {
+    hudRef.current?.takePhoto();
   };
 
-  const placeToken = (slot: SlotKey) => {
-    hudRef.current?.placeToken(slot);
-  };
-
-  const validatePodium = () => {
-    hudRef.current?.validatePodium();
-  };
-
-  const showApparentControls = mode === 'apparent' || challengeRound === 'apparent';
-  const showPodiumControls = challengeRound === 'podium';
+  const showDistanceControls = mode === 'apparent' || challengeActive;
+  const progress = photoProgress(completedPhotos);
 
   return (
     <div className={[styles.wrap, className].filter(Boolean).join(' ')}>
@@ -554,11 +496,27 @@ export function StarsScene({
         onSceneReady={onSceneReady}
       />
       {showReticle ? <div className={styles.reticle} aria-hidden="true" /> : null}
+      {flashKey > 0 ? (
+        <div key={flashKey} className={styles.photoFlash} aria-hidden="true" />
+      ) : null}
       {celebrating ? <p className={styles.celebrate}>Observatoire activé</p> : null}
       <SceneControls className={styles.hud}>
-        {challengeRound ? (
+        {challengeActive ? (
           <p className={styles.progress}>
-            <strong>{progressLabel}</strong>
+            <strong>
+              Album : {progress.done} / {progress.total}
+            </strong>
+            <span className={styles.album} aria-label={`${progress.done} photos réussies`}>
+              {PHOTO_STARS.map((id) => (
+                <span
+                  key={id}
+                  className={completedPhotos.includes(id) ? styles.photoDone : styles.photoEmpty}
+                  title={STARS[id].nameFr}
+                >
+                  {completedPhotos.includes(id) ? '✓' : '○'}
+                </span>
+              ))}
+            </span>
           </p>
         ) : null}
         {fact ? (
@@ -567,66 +525,49 @@ export function StarsScene({
           </p>
         ) : null}
 
-        {showApparentControls ? (
+        {showDistanceControls ? (
           <>
             <p className={styles.roundTitle}>
-              {challengeRound === 'apparent'
-                ? 'Manche 1 — Mire télescopique'
+              {challengeActive
+                ? `Photo ${Math.min(progress.done + 1, 3)}/3 — ${STARS[photoStar].nameFr}`
                 : 'Distance pédagogique'}
             </p>
             <p className={styles.sliderLabel}>
-              Distance : {Math.round(distanceAu)} (plus grand = plus loin)
+              🔭 Distance : {Math.round(distanceAu)} — glisse vers « loin » pour reculer
             </p>
             <input
               className={styles.slider}
               type="range"
-              min={APPARENT_DISTANCE_MIN}
-              max={APPARENT_DISTANCE_MAX}
+              min={challengeActive ? PHOTO_DISTANCE_MIN : APPARENT_DISTANCE_MIN}
+              max={challengeActive ? PHOTO_DISTANCE_MAX : APPARENT_DISTANCE_MAX}
               step={1}
               value={distanceAu}
               onChange={(e) => setDistance(Number(e.target.value))}
               aria-label="Distance de l’étoile"
             />
-            {challengeRound === 'apparent' ? (
-              <button type="button" className={styles.actionBtn} onClick={validateApparent}>
-                Valider la mire
-              </button>
+            <div className={styles.rangeLegend} aria-hidden="true">
+              <span>Proche</span>
+              <span>Loin</span>
+            </div>
+            {challengeActive ? (
+              <>
+                <div className={styles.distanceActions}>
+                  <button
+                    type="button"
+                    className={styles.moveBtn}
+                    onClick={() => shiftDistance(-5)}
+                  >
+                    ← Rapprocher
+                  </button>
+                  <button type="button" className={styles.moveBtn} onClick={() => shiftDistance(5)}>
+                    Éloigner →
+                  </button>
+                </div>
+                <button type="button" className={styles.actionBtn} onClick={takePhoto}>
+                  Prendre la photo
+                </button>
+              </>
             ) : null}
-          </>
-        ) : null}
-
-        {showPodiumControls ? (
-          <>
-            <p className={styles.roundTitle}>Manche 2 — Podium des tailles</p>
-            <div className={styles.tokenRow} role="group" aria-label="Jetons d’étoiles">
-              {PODIUM_STARS.map((id) => (
-                <button
-                  key={id}
-                  type="button"
-                  className={styles.tokenBtn}
-                  aria-pressed={selectedToken === id}
-                  onClick={() => selectToken(id)}
-                >
-                  {STARS[id].nameFr}
-                </button>
-              ))}
-            </div>
-            <div className={styles.slotRow} role="group" aria-label="Cases du podium">
-              {SLOT_ORDER.map((slot) => (
-                <button
-                  key={slot}
-                  type="button"
-                  className={styles.slotBtn}
-                  onClick={() => placeToken(slot)}
-                >
-                  <strong>{SLOT_LABEL[slot]}</strong>
-                  {slots[slot] ? STARS[slots[slot]!].nameFr : '—'}
-                </button>
-              ))}
-            </div>
-            <button type="button" className={styles.actionBtn} onClick={validatePodium}>
-              Valider le podium
-            </button>
           </>
         ) : null}
 

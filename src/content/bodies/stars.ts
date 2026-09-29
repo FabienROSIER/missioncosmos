@@ -4,8 +4,6 @@ export type StarId = 'proxima' | 'sun' | 'sirius' | 'betelgeuse';
 
 export type StarsSceneMode = 'sun' | 'sizes' | 'colors' | 'apparent' | 'challenge' | 'explore';
 
-export type ObservatoryRound = 'apparent' | 'podium';
-
 export type StarDefinition = {
   id: StarId;
   nameFr: string;
@@ -77,8 +75,8 @@ export const SIZE_COMPARE_STARS: StarId[] = ['proxima', 'sun', 'betelgeuse'];
 /** Étoiles pour l’aperçu couleur / température. */
 export const COLOR_COMPARE_STARS: StarId[] = ['proxima', 'sun', 'sirius'];
 
-/** Jetons du podium (mêmes diamètres affichés, ordre réel à trouver). */
-export const PODIUM_STARS: StarId[] = ['proxima', 'sun', 'betelgeuse'];
+/** Série photo du défi, de la petite naine à la géante. */
+export const PHOTO_STARS: StarId[] = ['proxima', 'sun', 'betelgeuse'];
 
 /** Étoile manipulée pour la mire (géante éloignée). */
 export const APPARENT_SIZE_STAR: StarId = 'betelgeuse';
@@ -92,6 +90,12 @@ export const APPARENT_TOLERANCE = 0.12;
 /** Bornes du curseur de distance (UA pédagogiques). */
 export const APPARENT_DISTANCE_MIN = 12;
 export const APPARENT_DISTANCE_MAX = 90;
+
+/** Rail du photographe : assez large pour montrer que la géante exige beaucoup de recul. */
+export const PHOTO_DISTANCE_MIN = 12;
+export const PHOTO_DISTANCE_MAX = 140;
+export const PHOTO_TARGET = comparisonVisualRadius(STARS.proxima.radiusSolar) / 22;
+export const PHOTO_TOLERANCE = 0.11;
 
 /**
  * Facteur pour que Bételgeuse puisse caler la mire dans la plage du curseur.
@@ -138,20 +142,37 @@ export function apparentTargetDistance(
   return clampApparentDistance((star.radiusSolar * APPARENT_SCALE) / target);
 }
 
-export function isPodiumOrderCorrect(order: StarId[]): boolean {
-  if (order.length !== PODIUM_STARS.length) return false;
-  const expected = [...PODIUM_STARS].sort((a, b) => STARS[a].radiusSolar - STARS[b].radiusSolar);
-  return expected.every((id, index) => order[index] === id);
+/** Taille dans le viseur, à partir de la taille compressée de la maquette. */
+export function photoApparentSize(starId: StarId, distance: number): number {
+  return comparisonVisualRadius(STARS[starId].radiusSolar) / Math.max(distance, 1);
 }
 
-export function observatoryProgress(completed: ObservatoryRound[]): {
+export function photoTargetDistance(starId: StarId): number {
+  const distance = comparisonVisualRadius(STARS[starId].radiusSolar) / PHOTO_TARGET;
+  return Math.min(PHOTO_DISTANCE_MAX, Math.max(PHOTO_DISTANCE_MIN, distance));
+}
+
+export function isPhotoFramed(starId: StarId, distance: number): boolean {
+  const current = photoApparentSize(starId, distance);
+  return Math.abs(current - PHOTO_TARGET) / PHOTO_TARGET <= PHOTO_TOLERANCE;
+}
+
+export function photoFramingHint(starId: StarId, distance: number): string {
+  const current = photoApparentSize(starId, distance);
+  if (isPhotoFramed(starId, distance)) return 'Cadrage prêt : prends la photo !';
+  return current > PHOTO_TARGET
+    ? 'L’étoile déborde du cadre : éloigne le télescope.'
+    : 'L’étoile paraît trop petite : rapproche le télescope.';
+}
+
+export function photoProgress(completed: StarId[]): {
   done: number;
-  total: 2;
+  total: 3;
   complete: boolean;
 } {
   const unique = new Set(completed);
-  const done = (unique.has('apparent') ? 1 : 0) + (unique.has('podium') ? 1 : 0);
-  return { done, total: 2, complete: done === 2 };
+  const done = PHOTO_STARS.filter((id) => unique.has(id)).length;
+  return { done, total: 3, complete: done === 3 };
 }
 
 export function temperatureBandFr(temperatureK: number): string {

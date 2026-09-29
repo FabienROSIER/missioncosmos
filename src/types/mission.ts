@@ -34,7 +34,7 @@ export interface MissionStep {
   challengeOrbitFall?: boolean;
   /** Défi été dans l’hémisphère nord (Mission 07). */
   challengeNorthernSummer?: boolean;
-  /** Défi observatoire : mire + podium des tailles (Mission 08). */
+  /** Défi observatoire : album de photos à cadrage constant (Mission 08). */
   challengeObservatory?: boolean;
   /** Défi orbite Terre autour du Soleil (Mission 01). */
   challengeOrbit?: boolean;
