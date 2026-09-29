@@ -575,7 +575,7 @@ Objectifs : forme, rotation, pôles, équateur, repères fondamentaux.
 - [x] Montrer que taille apparente ≠ taille réelle.
 - [x] Défi de comparaison.
 - [x] Limiter les objets simultanés pour les performances.
-- [x] Défi « Photographe d’étoiles » : 3 cadrages avec une mécanique unique (rail de distance + album) — notes dans `docs/pedagogy/mission-08-stars.md`.
+- [x] Défi « Photographe d’étoiles » : 3 cadrages avec une mécanique unique (rail de distance + album + PiP de profil synchronisé) — notes dans `docs/pedagogy/mission-08-stars.md`.
 
 ## Mission 09 — La lumière des étoiles
 

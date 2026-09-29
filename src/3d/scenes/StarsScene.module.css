@@ -10,6 +10,204 @@
   height: 100%;
 }
 
+.profilePip {
+  position: absolute;
+  z-index: 3;
+  bottom: max(0.65rem, env(safe-area-inset-bottom, 0px));
+  left: max(0.65rem, env(safe-area-inset-left, 0px));
+  display: none;
+  width: min(34vw, 22rem);
+  aspect-ratio: 2 / 1;
+  overflow: hidden;
+  pointer-events: none;
+  border: 2px solid rgba(126, 214, 223, 0.62);
+  border-radius: 0.85rem;
+  background: #06101d;
+  box-shadow:
+    0 0 0 1px rgba(7, 11, 22, 0.7),
+    0 8px 24px rgba(0, 0, 0, 0.48);
+}
+
+.profilePipVisible {
+  display: block;
+}
+
+.profilePipChrome {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  padding: 0.35rem 0.45rem;
+  background: linear-gradient(
+    to bottom,
+    rgba(7, 11, 22, 0.78) 0%,
+    rgba(7, 11, 22, 0.22) 34%,
+    transparent 54%
+  );
+}
+
+.profilePipChrome p,
+.profilePipChrome strong,
+.profilePipChrome span {
+  display: block;
+  margin: 0;
+  color: var(--color-star);
+  font-size: 0.62rem;
+  line-height: 1.2;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+}
+
+.profilePipChrome p {
+  color: var(--color-nebula-soft);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.profilePipChrome strong {
+  margin-top: 0.12rem;
+}
+
+.profilePipChrome span {
+  margin-top: 0.1rem;
+  color: #ffe6b0;
+  font-size: 0.54rem;
+  font-weight: 700;
+}
+
+.profileModel {
+  position: absolute;
+  inset: 2.45rem 0.5rem 0.4rem;
+  overflow: hidden;
+}
+
+.profileStar {
+  position: absolute;
+  z-index: 2;
+  left: 13%;
+  top: 45%;
+  max-width: 5.3rem;
+  max-height: 5.3rem;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 0.18rem rgba(255, 255, 255, 0.15),
+    0 0 1.2rem currentColor;
+}
+
+.profileRail {
+  position: absolute;
+  right: 3%;
+  top: calc(45% + 2.35rem);
+  left: 22%;
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(126, 214, 223, 0.75);
+  box-shadow: 0 0 0.35rem rgba(126, 214, 223, 0.45);
+}
+
+.profileDistance {
+  position: absolute;
+  z-index: 1;
+  left: 17%;
+  top: 45%;
+  height: 2px;
+  border-top: 2px dashed rgba(244, 201, 95, 0.8);
+}
+
+.profileDistance::after {
+  content: '';
+  position: absolute;
+  top: -0.28rem;
+  right: -0.08rem;
+  border-top: 0.25rem solid transparent;
+  border-bottom: 0.25rem solid transparent;
+  border-left: 0.35rem solid rgba(244, 201, 95, 0.9);
+}
+
+.profileTelescope {
+  position: absolute;
+  z-index: 3;
+  top: calc(45% - 0.56rem);
+  width: 2.7rem;
+  height: 3.2rem;
+  transform: translateX(-50%);
+  transition: left 140ms ease-out;
+}
+
+.profileTube {
+  position: absolute;
+  top: 0.18rem;
+  left: 0;
+  width: 2.65rem;
+  height: 0.78rem;
+  /* L'objectif, à gauche, vise légèrement vers le haut en direction de l'étoile. */
+  transform: rotate(10deg);
+  border: 2px solid #b6edf2;
+  border-radius: 0.2rem 0.45rem 0.45rem 0.2rem;
+  background: linear-gradient(to bottom, #32738b 0%, #173d55 52%, #0d263b 100%);
+  box-shadow:
+    inset 0 0.12rem 0 rgba(255, 255, 255, 0.18),
+    0 0 0.55rem rgba(126, 214, 223, 0.5);
+}
+
+.profileTube::before {
+  content: '';
+  position: absolute;
+  top: -0.16rem;
+  left: -0.24rem;
+  width: 0.27rem;
+  height: 1rem;
+  border: 2px solid #d9fbff;
+  border-radius: 0.18rem;
+  background: #398ba0;
+  box-shadow: 0 0 0.42rem rgba(126, 214, 223, 0.8);
+}
+
+.profileTube::after {
+  content: '';
+  position: absolute;
+  top: 0.19rem;
+  right: -0.38rem;
+  width: 0.38rem;
+  height: 0.28rem;
+  border-radius: 0 0.22rem 0.22rem 0;
+  background: var(--color-solar);
+  box-shadow: 0 0 0.3rem rgba(244, 201, 95, 0.55);
+}
+
+.profileStand {
+  position: absolute;
+  top: 1.08rem;
+  left: 1.2rem;
+  width: 0.18rem;
+  height: 1.45rem;
+  transform: rotate(7deg);
+  transform-origin: top;
+  background: #b8c7d9;
+}
+
+.profileStand::after {
+  box-shadow: 0 0 0.2rem rgba(184, 199, 217, 0.35);
+}
+
+.profileStand::before,
+.profileStand::after {
+  content: '';
+  position: absolute;
+  top: 1.15rem;
+  width: 0.16rem;
+  height: 1rem;
+  transform-origin: top;
+  background: #b8c7d9;
+}
+
+.profileStand::before {
+  transform: rotate(38deg);
+}
+
+.profileStand::after {
+  transform: rotate(-38deg);
+}
+
 .hud {
   position: absolute;
   z-index: 4;
@@ -153,7 +351,7 @@
   position: absolute;
   z-index: 3;
   left: 50%;
-  top: 52%;
+  top: 50%;
   width: min(28vw, 7.5rem);
   height: min(28vw, 7.5rem);
   transform: translate(-50%, -50%);
@@ -226,5 +424,46 @@
 
   .photoFlash {
     animation-duration: 80ms;
+  }
+}
+
+@media (max-width: 899px), (pointer: coarse) and (max-width: 1180px) and (max-height: 600px) {
+  .profilePip {
+    top: 0.35rem;
+    right: 0.5rem;
+    bottom: auto;
+    left: 0.5rem;
+    width: auto;
+    height: 5.5rem;
+    aspect-ratio: auto;
+  }
+
+  .profilePipChrome {
+    padding: 0.22rem 0.3rem;
+  }
+
+  .profilePipChrome p,
+  .profilePipChrome strong {
+    font-size: 0.5rem;
+  }
+
+  .profilePipChrome span {
+    font-size: 0.45rem;
+  }
+
+  .profileModel {
+    top: 2rem;
+  }
+}
+
+@media (orientation: landscape) and (max-width: 899px),
+  (orientation: landscape) and (pointer: coarse) and (max-width: 1180px) and (max-height: 600px) {
+  .profilePip {
+    top: 0.5rem;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    left: auto;
+    width: min(31vw, 11rem);
+    height: auto;
   }
 }

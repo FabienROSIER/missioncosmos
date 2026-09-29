@@ -34,6 +34,8 @@ Une seule mécanique répétée trois fois :
 
 Le joueur rapproche ou éloigne le télescope jusqu’à ce que le disque remplisse la mire, puis prend la photo. Les indices expliquent directement la correction : « déborde → éloigne » ou « trop petite → rapproche ».
 
+Un PiP synchronisé montre la scène de profil : l’étoile reste à gauche et le télescope glisse sur un rail. Il rend concret le changement de distance qui serait sinon seulement visible par le grossissement dans la mire.
+
 Enjeu ludique : compléter un album `0/3`, avec flash et validation de chaque photo, puis activer l’observatoire. Pas de chronomètre ni de pénalité.
 
 ## Frontière avec la Mission 09

@@ -184,7 +184,6 @@ export function StarsScene({
       level: quality === 'low' ? 0.7 : 0.82,
       segments: quality === 'low' ? 24 : 48,
     });
-
     let modeLocal: StarsSceneMode = 'sun';
     let challenge = false;
     let challengeDone = false;
@@ -486,6 +485,11 @@ export function StarsScene({
 
   const showDistanceControls = mode === 'apparent' || challengeActive;
   const progress = photoProgress(completedPhotos);
+  const telescopePosition =
+    28 + ((distanceAu - PHOTO_DISTANCE_MIN) / (PHOTO_DISTANCE_MAX - PHOTO_DISTANCE_MIN)) * 62;
+  const profileStarRadius = comparisonVisualRadius(STARS[photoStar].radiusSolar);
+  const profileStarSize = 2.5 + ((profileStarRadius - 0.28) / 1.55) * 2.8;
+  const profileColor = STARS[photoStar].color;
 
   return (
     <div className={[styles.wrap, className].filter(Boolean).join(' ')}>
@@ -495,6 +499,38 @@ export function StarsScene({
         mobileFovScale={1.55}
         onSceneReady={onSceneReady}
       />
+      <div
+        className={`${styles.profilePip} ${challengeActive ? styles.profilePipVisible : ''}`}
+        aria-hidden={!challengeActive}
+      >
+        <div className={styles.profilePipChrome}>
+          <p>Vue de profil</p>
+          <strong>{STARS[photoStar].nameFr}</strong>
+          <span>Étoile ← distance → télescope</span>
+        </div>
+        <div className={styles.profileModel}>
+          <div
+            className={styles.profileStar}
+            style={{
+              width: `${profileStarSize}rem`,
+              height: `${profileStarSize}rem`,
+              background: `rgb(${profileColor.r * 255} ${profileColor.g * 255} ${
+                profileColor.b * 255
+              })`,
+              color: `rgb(${profileColor.r * 255} ${profileColor.g * 255} ${profileColor.b * 255})`,
+            }}
+          />
+          <div className={styles.profileRail} />
+          <div
+            className={styles.profileDistance}
+            style={{ width: `${Math.max(6, telescopePosition - 19)}%` }}
+          />
+          <div className={styles.profileTelescope} style={{ left: `${telescopePosition}%` }}>
+            <div className={styles.profileTube} />
+            <div className={styles.profileStand} />
+          </div>
+        </div>
+      </div>
       {showReticle ? <div className={styles.reticle} aria-hidden="true" /> : null}
       {flashKey > 0 ? (
         <div key={flashKey} className={styles.photoFlash} aria-hidden="true" />
