@@ -3,7 +3,6 @@ import {
   Color4,
   Engine,
   FreeCamera,
-  Mesh,
   MeshBuilder,
   StandardMaterial,
   Vector3,
@@ -21,6 +20,7 @@ import {
   PIP_LOCAL_LAYER,
   samplePipSky,
 } from '@/3d/scenes/houseViewPip';
+import { createPipSkyLayer } from '@/3d/scenes/pipSkyLayer';
 import { classifyEclipse, type EclipseKind } from '@/3d/utils/eclipseAlignment';
 
 export type EclipseEarthPipHandle = {
@@ -86,26 +86,12 @@ export function attachEclipseEarthPip({
   pipCam.layerMask = PIP_CAMERA_LAYER;
   pipCam.viewport = new Viewport(0.02, 0.55, 0.3, 0.22);
 
-  const sky = MeshBuilder.CreateSphere(
-    'eclipse-pip-sky',
-    { diameter: 140, segments: 16, sideOrientation: Mesh.BACKSIDE },
+  const skyLayer = createPipSkyLayer(
     scene,
+    'eclipse-pip-sky-layer',
+    PIP_LOCAL_LAYER,
+    new Color3(0.4, 0.7, 0.98),
   );
-  sky.infiniteDistance = true;
-  sky.isPickable = false;
-  sky.applyFog = false;
-  sky.layerMask = PIP_LOCAL_LAYER;
-
-  const skyMat = new StandardMaterial('eclipse-pip-sky-mat', scene);
-  skyMat.disableLighting = true;
-  skyMat.diffuseColor = Color3.Black();
-  skyMat.specularColor = Color3.Black();
-  skyMat.emissiveColor = new Color3(0.4, 0.7, 0.98);
-  skyMat.alpha = 1;
-  skyMat.transparencyMode = StandardMaterial.MATERIAL_ALPHABLEND;
-  skyMat.disableDepthWrite = true;
-  skyMat.backFaceCulling = false;
-  sky.material = skyMat;
 
   const pipSun = MeshBuilder.CreateSphere(
     'eclipse-pip-sun',
@@ -203,8 +189,7 @@ export function attachEclipseEarthPip({
     const solarCover = Math.min(1, Math.max(0, (0.28 - elong) / 0.28));
     const nightSky = new Color3(0.02, 0.03, 0.06);
     const skyColor = Color3.Lerp(skySample.color, nightSky, solarCover);
-    skyMat.emissiveColor.copyFrom(skyColor);
-    skyMat.alpha = Math.max(0.1, skySample.alpha * (1 - 0.9 * solarCover));
+    skyLayer.setColor(skyColor);
     pipClear.r = skyColor.r;
     pipClear.g = skyColor.g;
     pipClear.b = skyColor.b;
@@ -267,8 +252,7 @@ export function attachEclipseEarthPip({
       for (const entry of layerBackup) {
         entry.mesh.layerMask = entry.mask;
       }
-      sky.dispose();
-      skyMat.dispose();
+      skyLayer.dispose();
       pipSun.dispose();
       pipSunMat.dispose();
       pipCam.dispose();

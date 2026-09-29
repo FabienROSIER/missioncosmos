@@ -17,6 +17,7 @@ import {
   type TransformNode,
 } from '@babylonjs/core';
 import type { HouseMarkerHandle, PipSkyPhase } from '@/3d/scenes/dayNightMarkers';
+import { createPipSkyLayer } from '@/3d/scenes/pipSkyLayer';
 
 /** Calque réservé à la vue principale (compagnon / repère invisible dans le PiP). */
 export const HOUSE_MESH_LAYER = 0x20000000;
@@ -142,28 +143,13 @@ export function attachHouseViewPip({
   pipCam.layerMask = PIP_CAMERA_LAYER;
   pipCam.viewport = new Viewport(0.02, 0.55, 0.3, 0.22);
 
-  // Ciel local (PiP)
-  const sky = MeshBuilder.CreateSphere(
-    'pip-sky',
-    { diameter: 90, segments: 20, sideOrientation: Mesh.BACKSIDE },
+  // Fond caméra PiP : Layer plein écran, indépendant du depth buffer mobile.
+  const skyLayer = createPipSkyLayer(
     scene,
+    'pip-sky-layer',
+    PIP_LOCAL_LAYER,
+    new Color3(0.4, 0.7, 0.98),
   );
-  sky.infiniteDistance = true;
-  sky.isPickable = false;
-  sky.applyFog = false;
-  sky.layerMask = PIP_LOCAL_LAYER;
-  sky.renderingGroupId = 0;
-
-  const skyMat = new StandardMaterial('pip-sky-mat', scene);
-  skyMat.disableLighting = true;
-  skyMat.diffuseColor = Color3.Black();
-  skyMat.specularColor = Color3.Black();
-  skyMat.emissiveColor = new Color3(0.4, 0.7, 0.98);
-  skyMat.alpha = 1;
-  skyMat.transparencyMode = StandardMaterial.MATERIAL_ALPHABLEND;
-  skyMat.disableDepthWrite = true;
-  skyMat.backFaceCulling = false;
-  sky.material = skyMat;
 
   // Coque Terre lisse (PiP) : remplace le GLB facetté pour un horizon rond
   const horizon = MeshBuilder.CreateSphere(
@@ -226,8 +212,7 @@ export function attachHouseViewPip({
   const updatePipAtmosphere = () => {
     const score = house.getLightingScore();
     const skySample = samplePipSky(score);
-    skyMat.emissiveColor.copyFrom(skySample.color);
-    skyMat.alpha = skySample.alpha;
+    skyLayer.setColor(skySample.color);
     pipClear.copyFrom(skySample.clear);
 
     hazeMat.emissiveColor.set(
@@ -318,8 +303,7 @@ export function attachHouseViewPip({
       for (const entry of earthLayerBackup) {
         entry.mesh.layerMask = entry.mask;
       }
-      sky.dispose();
-      skyMat.dispose();
+      skyLayer.dispose();
       haze.dispose();
       hazeMat.dispose();
       horizonMat.emissiveTexture = null;
