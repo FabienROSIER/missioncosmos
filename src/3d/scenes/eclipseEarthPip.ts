@@ -27,6 +27,12 @@ export type EclipseEarthPipHandle = {
   dispose: () => void;
 };
 
+/**
+ * Éloigne le Soleil artificiel derrière la Lune.
+ * Sa taille est multipliée par le même facteur : diamètre apparent inchangé.
+ */
+const PIP_SUN_DEPTH_SCALE = 3;
+
 type AttachEclipseEarthPipOptions = {
   scene: Scene;
   mainCamera: ArcRotateCamera;
@@ -168,8 +174,10 @@ export function attachEclipseEarthPip({
 
     pipSun.setEnabled(sunInView);
     if (sunInView) {
-      pipSun.position.copyFrom(eye.add(toSun.scale(focusDist * 1.04)));
-      pipSun.scaling.setAll(1);
+      // Ancien placement à 1,04× : les deux sphères se traversaient pendant
+      // une éclipse partielle, ce qui découpait / déformait le bord lunaire.
+      pipSun.position.copyFrom(eye.add(toSun.scale(focusDist * PIP_SUN_DEPTH_SCALE)));
+      pipSun.scaling.setAll(PIP_SUN_DEPTH_SCALE);
     }
 
     const moonHalfAngle = Math.atan(moonRadius / focusDist);
