@@ -56,8 +56,9 @@ function findEarthAlbedo(meshes: AbstractMesh[]): BaseTexture | null {
 
 /** Ciel PiP selon score d’éclairement (fluide : jour → orangé → nuit). */
 export function samplePipSky(score: number): { color: Color3; alpha: number; clear: Color4 } {
-  const day = new Color3(0.4, 0.7, 0.98);
-  const daySoft = new Color3(0.55, 0.74, 0.95);
+  // Bleu volontairement lumineux : le pipeline image baisse légèrement le rendu final.
+  const day = new Color3(0.52, 0.8, 1);
+  const daySoft = new Color3(0.62, 0.82, 1);
   const golden = new Color3(1.0, 0.52, 0.22);
   const dusk = new Color3(0.72, 0.26, 0.42);
   const night = new Color3(0.02, 0.03, 0.06);

@@ -41,7 +41,7 @@ import {
   createCompanionSurfaceMarker,
   type CompanionSurfaceMarkerHandle,
 } from '@/3d/scenes/companionSurfaceMarker';
-import { attachHouseViewPip } from '@/3d/scenes/houseViewPip';
+import { attachHouseViewPip, EARTH_MAIN_LAYER } from '@/3d/scenes/houseViewPip';
 import {
   frameDayNightOverview,
 } from '@/3d/utils/cameraFraming';
@@ -134,6 +134,8 @@ export function DayNightScene({
       level: quality === 'low' ? 0.7 : 0.8,
       segments: quality === 'low' ? 24 : 48,
     });
+    // Le fond spatial principal ne doit pas recouvrir le ciel dédié de la caméra PiP.
+    background.dome.layerMask = EARTH_MAIN_LAYER;
 
     // Soleil = source des rayons (opposé à DirectionalLight.direction)
     const sunPos = MISSION_SUN_DIRECTION.scale(-SUN_DISTANCE);

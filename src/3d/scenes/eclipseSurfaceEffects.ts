@@ -8,6 +8,7 @@ import {
   type Scene,
   type TransformNode,
 } from '@babylonjs/core';
+import { EARTH_MAIN_LAYER } from '@/3d/scenes/houseViewPip';
 import type { EclipseKind } from '@/3d/utils/eclipseAlignment';
 
 export type EclipseSurfaceEffectsHandle = {
@@ -34,6 +35,9 @@ export function createEclipseSurfaceEffects(scene: Scene): EclipseSurfaceEffects
     scene,
   );
   earthSpot.isPickable = false;
+  // Effet explicatif de la vue globale : placé près de la surface, il peut
+  // sinon remplir la caméra PiP lors d'une éclipse solaire.
+  earthSpot.layerMask = EARTH_MAIN_LAYER;
   earthSpot.setEnabled(false);
 
   const earthSpotMat = new StandardMaterial('earth-solar-umbra-mat', scene);

@@ -32,7 +32,11 @@ import {
 } from '@/3d/scenes/eclipseSurfaceEffects';
 import { attachEclipseEarthPip } from '@/3d/scenes/eclipseEarthPip';
 import { createCompanionSurfaceMarker } from '@/3d/scenes/companionSurfaceMarker';
-import { HOUSE_MESH_LAYER, MAIN_CAMERA_LAYER } from '@/3d/scenes/houseViewPip';
+import {
+  EARTH_MAIN_LAYER,
+  HOUSE_MESH_LAYER,
+  MAIN_CAMERA_LAYER,
+} from '@/3d/scenes/houseViewPip';
 import { attachMoonOrbitDrag, createOrbitGuide } from '@/3d/scenes/moonOrbitDrag';
 import { frameMoonPhasesOverview } from '@/3d/utils/cameraFraming';
 import {
@@ -115,6 +119,8 @@ export function EclipsesScene({
       level: quality === 'low' ? 0.7 : 0.8,
       segments: quality === 'low' ? 24 : 48,
     });
+    // Sinon le dôme étoilé noir, visible par les deux caméras, recouvre le Layer ciel du PiP.
+    background.dome.layerMask = EARTH_MAIN_LAYER;
 
     // Soleil, Terre, orbite lunaire : même plan Y=0 (éclipses possibles)
     const sunPos = new Vector3(SUN_DISTANCE, 0, 0);
