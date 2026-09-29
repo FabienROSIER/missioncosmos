@@ -10,6 +10,7 @@ import {
   type Scene,
 } from '@babylonjs/core';
 import type { BabylonSceneContext } from '@/3d/core/BabylonCanvas';
+import { applyEngineResolution } from '@/3d/core/engineResolution';
 import { BabylonCanvas } from '@/3d/core/BabylonCanvas';
 import type { MissionCameraApi } from '@/3d/controls/missionCamera';
 import {
@@ -116,9 +117,7 @@ export function DayNightScene({
 
   const onSceneReady = useCallback(async ({ engine, scene }: BabylonSceneContext) => {
     const quality = resolveGraphicsQuality();
-    const dprCap = quality === 'low' ? 1.5 : 2;
-    const dpr = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, dprCap) : 1;
-    engine.setHardwareScalingLevel(1 / dpr);
+    applyEngineResolution(engine, quality);
     applyScenePerformancePriority(scene, quality);
 
     // Fill quasi nul + neutre : face nuit noire, pas bleutée

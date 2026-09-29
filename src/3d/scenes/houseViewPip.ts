@@ -144,10 +144,10 @@ export function attachHouseViewPip({
   pipCam.layerMask = PIP_CAMERA_LAYER;
   pipCam.viewport = new Viewport(0.02, 0.55, 0.3, 0.22);
 
-  // Ciel local (PiP)
+  // Ciel local (PiP) — mesh léger, toujours forcé actif (GPU mobile).
   const sky = MeshBuilder.CreateSphere(
     'pip-sky',
-    { diameter: 90, segments: 20, sideOrientation: Mesh.BACKSIDE },
+    { diameter: 90, segments: 12, sideOrientation: Mesh.BACKSIDE },
     scene,
   );
   sky.infiniteDistance = true;
@@ -155,6 +155,7 @@ export function attachHouseViewPip({
   sky.applyFog = false;
   sky.layerMask = PIP_LOCAL_LAYER;
   sky.renderingGroupId = 0;
+  sky.alwaysSelectAsActiveMesh = true;
 
   const skyMat = new StandardMaterial('pip-sky-mat', scene);
   skyMat.disableLighting = true;
@@ -169,9 +170,12 @@ export function attachHouseViewPip({
   sky.material = skyMat;
 
   // Coque Terre lisse (PiP) : remplace le GLB facetté pour un horizon rond
+  // Segments réduits : le PiP est petit ; 96 sphères stressent les GPU téléphone.
+  const horizonSegments =
+    typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches ? 32 : 64;
   const horizon = MeshBuilder.CreateSphere(
     'pip-smooth-horizon',
-    { diameter: earthRadius * 2.04, segments: 96 },
+    { diameter: earthRadius * 2.04, segments: horizonSegments },
     scene,
   );
   horizon.parent = earthPivot;

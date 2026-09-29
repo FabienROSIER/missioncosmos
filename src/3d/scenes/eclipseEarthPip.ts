@@ -88,13 +88,14 @@ export function attachEclipseEarthPip({
 
   const sky = MeshBuilder.CreateSphere(
     'eclipse-pip-sky',
-    { diameter: 140, segments: 16, sideOrientation: Mesh.BACKSIDE },
+    { diameter: 140, segments: 12, sideOrientation: Mesh.BACKSIDE },
     scene,
   );
   sky.infiniteDistance = true;
   sky.isPickable = false;
   sky.applyFog = false;
   sky.layerMask = PIP_LOCAL_LAYER;
+  sky.alwaysSelectAsActiveMesh = true;
 
   const skyMat = new StandardMaterial('eclipse-pip-sky-mat', scene);
   skyMat.disableLighting = true;
