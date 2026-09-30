@@ -234,6 +234,36 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     unlockRewardId: 'reward-stars',
     aliases: ['température', 'temperature', 'chaude', 'froide'],
   },
+  {
+    id: 'spectre',
+    term: 'Spectre',
+    definition:
+      'La lumière d’une étoile étalée en couleurs, comme un arc-en-ciel. Une zone brille souvent plus fort.',
+    enrichedDefinition:
+      'Dans le jeu, c’est une maquette simplifiée (corps noir) : pas de raies d’absorption. Le pic se déplace avec la température.',
+    unlockRewardId: 'reward-stellar-light',
+    aliases: ['spectre', 'spectres', 'arc-en-ciel', 'bande'],
+  },
+  {
+    id: 'spectroscope',
+    term: 'Spectroscope',
+    definition:
+      'Un instrument qui étale la lumière pour étudier ses couleurs. Les astronomes s’en servent pour « lire » les étoiles.',
+    enrichedDefinition:
+      'Avec un vrai spectroscope, on voit aussi des raies fines manquantes ou plus sombres — omises dans notre laboratoire pédagogique.',
+    unlockRewardId: 'reward-stellar-light',
+    aliases: ['spectroscope', 'spectroscopes', 'spectroscopie'],
+  },
+  {
+    id: 'kelvin',
+    term: 'Kelvin',
+    definition:
+      'Une unité de température (symbole K). Les astronomes l’utilisent pour parler de la surface des étoiles.',
+    enrichedDefinition:
+      'Le Soleil fait environ 5800 K en surface. 0 K, c’est le zéro absolu — bien plus froid que 0 °C.',
+    unlockRewardId: 'reward-stellar-light',
+    aliases: ['kelvin', 'kelvins', 'K', 'température'],
+  },
 ];
 
 const BY_ID: Record<string, GlossaryEntry> = Object.fromEntries(

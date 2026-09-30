@@ -23,11 +23,14 @@ import type { SeasonsSceneApi } from '@/3d/scenes/SeasonsScene';
 import { SeasonsScene } from '@/3d/scenes/SeasonsScene';
 import type { StarsSceneApi } from '@/3d/scenes/StarsScene';
 import { StarsScene } from '@/3d/scenes/StarsScene';
+import type { StarLightSceneApi } from '@/3d/scenes/StarLightScene';
+import { StarLightScene } from '@/3d/scenes/StarLightScene';
 import { SolarDistancePanel } from '@/3d/scenes/SolarDistancePanel';
 import { SolarSizeChallenge } from '@/3d/scenes/SolarSizeChallenge';
 import type { SurfaceLighting } from '@/3d/scenes/dayNightMarkers';
 import type { MoonPhaseId } from '@/3d/utils/moonPhase';
 import type { StarsSceneMode } from '@/content/bodies/stars';
+import type { StarLightSceneMode } from '@/content/bodies/stellarLight';
 import type { PlanetId } from '@/content/bodies/solarSystem';
 import { SOLAR_SYSTEM_PLANETS } from '@/content/bodies/solarSystem';
 import { getQuizById } from '@/content/quizzes';
@@ -87,6 +90,7 @@ function challengeFromStep(step: MissionStep): {
   challengeOrbitFall: boolean;
   challengeNorthernSummer: boolean;
   challengeObservatory: boolean;
+  challengePrism: boolean;
   challengeOrbit: boolean;
   successFeedback: string;
   hint: string;
@@ -101,6 +105,7 @@ function challengeFromStep(step: MissionStep): {
     challengeOrbitFall: Boolean(step.challengeOrbitFall),
     challengeNorthernSummer: Boolean(step.challengeNorthernSummer),
     challengeObservatory: Boolean(step.challengeObservatory),
+    challengePrism: Boolean(step.challengePrism),
     challengeOrbit: Boolean(step.challengeOrbit),
     successFeedback: step.successFeedback ?? 'Oui, c’est ça !',
     hint: step.hint ?? 'Pas tout à fait — réessaie sans te presser.',
@@ -116,6 +121,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const isOrbits = mission.sceneId === 'orbits';
   const isSeasons = mission.sceneId === 'seasons';
   const isStars = mission.sceneId === 'stars';
+  const isStellarLight = mission.sceneId === 'stellar-light';
   const [tipOpen, setTipOpen] = useState(true);
   const [isMobileGame, setIsMobileGame] = useState(false);
   const [mobileGuideOverride, setMobileGuideOverride] = useState<{
@@ -135,6 +141,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const [seasonsApi, setSeasonsApi] = useState<SeasonsSceneApi | null>(null);
   const [starFilmPlaying, setStarFilmPlaying] = useState(false);
   const [starsApi, setStarsApi] = useState<StarsSceneApi | null>(null);
+  const [starLightApi, setStarLightApi] = useState<StarLightSceneApi | null>(null);
   const [recentering, setRecentering] = useState(false);
   const [feedback, setFeedback] = useState<StepFeedback | null>(null);
   const [glossaryOpen, setGlossaryOpen] = useState(false);
@@ -241,6 +248,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     challengeOrbitFall,
     challengeNorthernSummer,
     challengeObservatory,
+    challengePrism,
     challengeOrbit,
     successFeedback,
     hint,
@@ -250,6 +258,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     isOrbits ||
     isSeasons ||
     isStars ||
+    isStellarLight ||
     (isSolarSystem && step.id !== 'm05-scale' && step.id !== 'm05-distances');
   const visibleFeedback = feedback?.stepId === step.id ? feedback : null;
   const mobileGuideExpanded =
@@ -263,23 +272,25 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const nextMission = nextMissionId ? getCatalogEntry(nextMissionId) : undefined;
   const reward = getRewardById(mission.rewardIds[0] ?? '');
 
-  const cameraApi = isStars
-    ? starsApi?.camera
-    : isSeasons
-      ? seasonsApi?.camera
-      : showOrbitFall
-        ? orbitFallApi?.camera
-        : isOrbits
-          ? orbitsApi?.camera
-          : isSolarSystem
-            ? solarApi?.camera
-            : isEclipses
-              ? eclipsesApi?.camera
-              : isMoonPhases
-                ? moonPhasesApi?.camera
-                : isDayNight
-                  ? dayNightApi?.camera
-                  : earthApi?.camera;
+  const cameraApi = isStellarLight
+    ? starLightApi?.camera
+    : isStars
+      ? starsApi?.camera
+      : isSeasons
+        ? seasonsApi?.camera
+        : showOrbitFall
+          ? orbitFallApi?.camera
+          : isOrbits
+            ? orbitsApi?.camera
+            : isSolarSystem
+              ? solarApi?.camera
+              : isEclipses
+                ? eclipsesApi?.camera
+                : isMoonPhases
+                  ? moonPhasesApi?.camera
+                  : isDayNight
+                    ? dayNightApi?.camera
+                    : earthApi?.camera;
 
   const openGlossary = useCallback((focusId?: string) => {
     setGlossaryFocusId(focusId ?? null);
@@ -330,7 +341,8 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
       isSolarSystem ||
       isOrbits ||
       isSeasons ||
-      isStars
+      isStars ||
+      isStellarLight
     )
       return;
 
@@ -366,6 +378,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     isOrbits,
     isSeasons,
     isStars,
+    isStellarLight,
     mission.steps,
     stepIndex,
     showMarkers,
@@ -480,6 +493,22 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     if (!observatoryStep) starsApi.setMode(mode);
   }, [starsApi, isStars, challengeActive, challengeObservatory, step.kind, step.id]);
 
+  useEffect(() => {
+    if (!starLightApi || !isStellarLight) return;
+    const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
+    const prismStep = !cinematic && step.kind === 'challenge' && challengePrism;
+    starLightApi.setChallengeEnabled(prismStep);
+
+    let mode: StarLightSceneMode = 'explore';
+    if (step.id === 'm09-intro') mode = 'intro';
+    else if (step.id === 'm09-color') mode = 'color';
+    else if (step.id === 'm09-spectrum') mode = 'spectrum';
+    else if (step.id === 'm09-lab') mode = 'lab';
+    else if (step.id === 'm09-compare') mode = 'compare';
+    else if (step.id === 'm09-challenge') mode = 'challenge';
+    if (!prismStep) starLightApi.setMode(mode);
+  }, [starLightApi, isStellarLight, challengeActive, challengePrism, step.kind, step.id]);
+
   const onEarthApi = useCallback((api: EarthSceneApi) => {
     setEarthApi(api);
   }, []);
@@ -514,6 +543,10 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
 
   const onStarsApi = useCallback((api: StarsSceneApi) => {
     setStarsApi(api);
+  }, []);
+
+  const onStarLightApi = useCallback((api: StarLightSceneApi) => {
+    setStarLightApi(api);
   }, []);
 
   const onMarkerPick = useCallback(
@@ -640,6 +673,19 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     setFeedback({ stepId: ctx.stepId, text: hintText || ctx.hint, wrong: true });
   }, []);
 
+  const onPrismSuccess = useCallback(() => {
+    const ctx = pickCtxRef.current;
+    if (ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
+    setFeedback({ stepId: ctx.stepId, text: ctx.successFeedback, wrong: false });
+    markChallengeSolved();
+  }, [markChallengeSolved]);
+
+  const onPrismMiss = useCallback((hintText: string) => {
+    const ctx = pickCtxRef.current;
+    if (ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
+    setFeedback({ stepId: ctx.stepId, text: hintText || ctx.hint, wrong: true });
+  }, []);
+
   const onSizeChallengeSuccess = useCallback(() => {
     const ctx = pickCtxRef.current;
     if (ctx.stepId !== 'm05-scale' || ctx.challengeSolved) return;
@@ -734,41 +780,43 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
 
   const challengeHint = challengeOrbit
     ? 'Glisse à gauche ou à droite pour faire avancer la Terre sur l’anneau autour du Soleil.'
-    : challengeObservatory
-      ? 'Cadre chaque étoile : si elle déborde, éloigne le télescope ; si elle paraît trop petite, rapproche-le.'
-      : challengeNorthernSummer
-        ? 'Glisse la Terre (ou utilise Été N) pour que le nord soit penché vers le Soleil.'
-        : challengeOrbitFall
-          ? 'Règle le curseur, lance, observe, puis ajuste — sans zones colorées toutes faites.'
-          : challengeOrbitRace
-            ? 'Touche la planète qui finit un tour en premier (la plus rapide).'
-            : challengePlanetOrder
-              ? 'Touche Mercure, puis Vénus, Terre, Mars, Jupiter, Saturne, Uranus, Neptune.'
-              : targetEclipse
-                ? targetEclipse === 'solar'
-                  ? 'Glisse pour mettre la Lune entre la Terre et le Soleil (alignement).'
-                  : 'Glisse pour mettre la Lune derrière la Terre, dans son ombre.'
-                : targetPhase
-                  ? targetPhase === 'full'
-                    ? 'Glisse pour mettre la Lune à l’opposé du Soleil (pleine Lune dans la vue Terre).'
-                    : targetPhase === 'crescent'
-                      ? 'Glisse pour rapprocher la Lune du Soleil, sans la coller dessus (croissant).'
-                      : targetPhase === 'new'
-                        ? 'Glisse pour mettre la Lune presque entre la Terre et le Soleil.'
-                        : targetPhase === 'quarter'
-                          ? 'Glisse jusqu’à un quartier (Lune à angle droit avec le Soleil).'
-                          : 'Glisse jusqu’à une Lune gibbeuse (presque pleine).'
-                  : targetLighting
-                    ? targetLighting === 'day'
-                      ? 'Glisse pour tourner la Terre jusqu’à ce que le Guide soit dans la lumière.'
-                      : 'Glisse pour mettre le Guide dans l’ombre (côté sombre).'
-                    : targetMarkerId === 'equator'
-                      ? 'Clique sur la bande jaune au milieu du globe.'
-                      : targetMarkerId === 'north-pole'
-                        ? 'Clique sur le point orange en haut (pôle Nord).'
-                        : targetMarkerId === 'south-pole'
-                          ? 'Clique sur le point orange en bas (pôle Sud).'
-                          : 'Touche la bonne zone sur le globe.';
+    : challengePrism
+      ? 'Règle le curseur, compare à la carte cible, puis valide. Trop rouge → chauffe ; trop bleue → refroidis.'
+      : challengeObservatory
+        ? 'Cadre chaque étoile : si elle déborde, éloigne le télescope ; si elle paraît trop petite, rapproche-le.'
+        : challengeNorthernSummer
+          ? 'Glisse la Terre (ou utilise Été N) pour que le nord soit penché vers le Soleil.'
+          : challengeOrbitFall
+            ? 'Règle le curseur, lance, observe, puis ajuste — sans zones colorées toutes faites.'
+            : challengeOrbitRace
+              ? 'Touche la planète qui finit un tour en premier (la plus rapide).'
+              : challengePlanetOrder
+                ? 'Touche Mercure, puis Vénus, Terre, Mars, Jupiter, Saturne, Uranus, Neptune.'
+                : targetEclipse
+                  ? targetEclipse === 'solar'
+                    ? 'Glisse pour mettre la Lune entre la Terre et le Soleil (alignement).'
+                    : 'Glisse pour mettre la Lune derrière la Terre, dans son ombre.'
+                  : targetPhase
+                    ? targetPhase === 'full'
+                      ? 'Glisse pour mettre la Lune à l’opposé du Soleil (pleine Lune dans la vue Terre).'
+                      : targetPhase === 'crescent'
+                        ? 'Glisse pour rapprocher la Lune du Soleil, sans la coller dessus (croissant).'
+                        : targetPhase === 'new'
+                          ? 'Glisse pour mettre la Lune presque entre la Terre et le Soleil.'
+                          : targetPhase === 'quarter'
+                            ? 'Glisse jusqu’à un quartier (Lune à angle droit avec le Soleil).'
+                            : 'Glisse jusqu’à une Lune gibbeuse (presque pleine).'
+                    : targetLighting
+                      ? targetLighting === 'day'
+                        ? 'Glisse pour tourner la Terre jusqu’à ce que le Guide soit dans la lumière.'
+                        : 'Glisse pour mettre le Guide dans l’ombre (côté sombre).'
+                      : targetMarkerId === 'equator'
+                        ? 'Clique sur la bande jaune au milieu du globe.'
+                        : targetMarkerId === 'north-pole'
+                          ? 'Clique sur le point orange en haut (pôle Nord).'
+                          : targetMarkerId === 'south-pole'
+                            ? 'Clique sur le point orange en bas (pôle Sud).'
+                            : 'Touche la bonne zone sur le globe.';
 
   return (
     <div
@@ -783,7 +831,15 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
       ].join(' ')}
     >
       <div className={styles.sceneArea}>
-        {isStars ? (
+        {isStellarLight ? (
+          <StarLightScene
+            className={styles.viewport}
+            fill
+            onSceneApi={onStarLightApi}
+            onPrismSuccess={onPrismSuccess}
+            onPrismMiss={onPrismMiss}
+          />
+        ) : isStars ? (
           <StarsScene
             className={styles.viewport}
             fill

@@ -6,6 +6,7 @@ import { REWARD_SOLAR_SYSTEM } from '@/content/missions/mission-05';
 import { REWARD_ORBITS } from '@/content/missions/mission-06';
 import { REWARD_SEASONS } from '@/content/missions/mission-07';
 import { REWARD_STARS } from '@/content/missions/mission-08';
+import { REWARD_STELLAR_LIGHT } from '@/content/missions/mission-09';
 import type { Reward } from '@/types/progress';
 
 /** Registre des récompenses (badges de connaissance). */
@@ -18,6 +19,7 @@ export const REWARD_CATALOG: Reward[] = [
   REWARD_ORBITS,
   REWARD_SEASONS,
   REWARD_STARS,
+  REWARD_STELLAR_LIGHT,
 ];
 
 export function getRewardById(id: string): Reward | undefined {

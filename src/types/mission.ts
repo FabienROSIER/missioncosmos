@@ -36,6 +36,8 @@ export interface MissionStep {
   challengeNorthernSummer?: boolean;
   /** Défi observatoire : album de photos à cadrage constant (Mission 08). */
   challengeObservatory?: boolean;
+  /** Défi laboratoire du prisme : trois réglages de température (Mission 09). */
+  challengePrism?: boolean;
   /** Défi orbite Terre autour du Soleil (Mission 01). */
   challengeOrbit?: boolean;
   successFeedback?: string;

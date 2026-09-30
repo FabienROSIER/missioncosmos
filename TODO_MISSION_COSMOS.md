@@ -579,12 +579,13 @@ Objectifs : forme, rotation, pôles, équateur, repères fondamentaux.
 
 ## Mission 09 — La lumière des étoiles
 
-- [ ] Couleur et température.
-- [ ] Spectre simplifié.
-- [ ] Interaction température → couleur.
-- [ ] Expliquer que « rouge » et « bleu » ont un sens physique.
-- [ ] Introduire éventuellement spectroscopie.
-- [ ] Défi d'association.
+- [x] Couleur et température.
+- [x] Spectre simplifié.
+- [x] Interaction température → couleur.
+- [x] Expliquer que « rouge » et « bleu » ont un sens physique.
+- [x] Introduire éventuellement spectroscopie.
+- [x] Défi d'association.
+- [x] Défi « Commandes du prisme » : 3 réglages (Proxima / Soleil / Sirius) avec une mécanique unique — notes dans `docs/pedagogy/mission-09-stellar-light.md`.
 
 ## Mission 10 — Notre galaxie
 
@@ -990,15 +991,15 @@ Les décisions importantes doivent avoir une ADR dans `/docs/decisions/` et êtr
 
 # État global du projet
 
-**Statut : MISSION 08 FAITE — prêt pour Mission 09 (La lumière des étoiles)**
+**Statut : MISSION 09 FAITE — prêt pour Mission 10 (Notre galaxie)**
 
 Phase actuelle : **Phase 8 — Missions pédagogiques**
 
-Carte / catalogue : **13 missions** branchées sur **8 zones** (alignement mix C). Scènes jouables : M01–M08 ; M09–M13 catalogue + TODO.
+Carte / catalogue : **13 missions** branchées sur **8 zones** (alignement mix C). Scènes jouables : M01–M09 ; M10–M13 catalogue + TODO.
 
-Sous-phases : Mission 01 · Mission 02 · Mission 03 · Mission 04 · Mission 05 · Mission 06 · Mission 07 · Mission 08 terminées.
+Sous-phases : Mission 01 · Mission 02 · Mission 03 · Mission 04 · Mission 05 · Mission 06 · Mission 07 · Mission 08 · Mission 09 terminées.
 
-Prochaine action : **Mission 09 — La lumière des étoiles** _(après validation propriétaire)_.
+Prochaine action : **Mission 10 — Notre galaxie** _(après validation propriétaire — asset gate Voie lactée)_.
 
 ### Notes découvertes
 
@@ -1012,4 +1013,5 @@ Prochaine action : **Mission 09 — La lumière des étoiles** _(après validati
 - Mission 06 (2026-09-28) : scène dédiée Soleil + Mercure/Terre/Jupiter ; anneaux d’orbite ; Pause/Normal/Rapide ; fiches période ; défi « plus rapide » ; défi chute perpétuelle (curseur continu ~16 % de bande, indices directionnels) ; gravité simplifiée ; notice cercles ≠ ellipses exactes.
 - Mission 07 (2026-09-28) : Soleil + Terre inclinée sur orbite ; axe coloré ; rayons ; labels N/S ; curseur d’inclinaison 0–35° ; boutons saisons ; défi « été au nord » ; quiz anti-mythe « plus proche du Soleil ».
 - Mission 08 (2026-09-29) : scène procédurale `stars` ; Proxima / Soleil / Sirius / Bételgeuse ; modes tailles (log), couleurs, taille apparente ; défi photo à mécanique unique (3 cadrages, rail de distance, album) ; max 3 astres détaillés ; notes `docs/pedagogy/mission-08-stars.md`.
+- Mission 09 (2026-09-30) : laboratoire du prisme `stellar-light` ; température → couleur + spectre corps noir simplifié (Wien / Planck relatif) ; défi 3 commandes Proxima / Soleil / Sirius ; glossaire spectre / spectroscope / kelvin ; notes `docs/pedagogy/mission-09-stellar-light.md`.
 - Musique (2026-09-28) : AST-040/041 issus de **KSP1** — documentés dans `docs/ASSETS.md`, état **Temporaire** (propriétaire Squad/Take-Two). Remplacer avant toute publication.

@@ -48,6 +48,7 @@ type SurfaceBeaconHandle = {
   root: TransformNode;
   meshes: AbstractMesh[];
   setLayerMask: (mask: number) => void;
+  setVisibility: (visibility: number) => void;
   dispose: () => void;
 };
 
@@ -156,6 +157,9 @@ function createSurfaceBeacon(
     setLayerMask: (mask) => {
       for (const mesh of meshes) mesh.layerMask = mask;
     },
+    setVisibility: (visibility) => {
+      for (const mesh of meshes) mesh.visibility = visibility;
+    },
     dispose: () => {
       if (observer) scene.onBeforeRenderObservable.remove(observer);
       for (const mesh of meshes) mesh.dispose();
@@ -229,6 +233,19 @@ function orientOnSurface(
 }
 
 /**
+ * Fondu d’occlusion autour du limbe :
+ * - pleinement visible côté caméra ;
+ * - transition douce pendant le passage derrière le bord ;
+ * - invisible seulement une fois nettement derrière la Terre.
+ */
+export function companionOcclusionOpacity(viewDot: number): number {
+  const fadeStart = 0.1;
+  const hiddenAt = -0.2;
+  const linear = Math.min(1, Math.max(0, (viewDot - hiddenAt) / (fadeStart - hiddenAt)));
+  return linear * linear * (3 - 2 * linear);
+}
+
+/**
  * Compagnon 3D collé à la Terre — remplace le repère maison (M02)
  * ou marque le point de vue PiP (M03/M04).
  */
@@ -245,6 +262,9 @@ export async function createCompanionSurfaceMarker(
 
   const loaded: LoadedCompanion = await loadCompanion(scene, height);
   const pivot = loaded.pivot;
+  const baseMeshVisibility = new Map(
+    loaded.meshes.map((mesh) => [mesh, mesh.visibility] as const),
+  );
   pivot.parent = earthPivot;
   pivot.rotationQuaternion = Quaternion.Identity();
   pivot.metadata = { markerId: 'companion' };
@@ -288,12 +308,18 @@ export async function createCompanionSurfaceMarker(
   };
 
   let missionVisible = true;
-  let frontFacing = true;
+  let occlusionOpacity = 1;
 
   const applyEnabled = () => {
-    const enabled = missionVisible && frontFacing;
+    const enabled = missionVisible && occlusionOpacity > 0.001;
     pivot.setEnabled(enabled);
     beacon.root.setEnabled(enabled);
+    if (enabled) {
+      for (const mesh of loaded.meshes) {
+        mesh.visibility = (baseMeshVisibility.get(mesh) ?? 1) * occlusionOpacity;
+      }
+      beacon.setVisibility(occlusionOpacity);
+    }
   };
 
   if (reduced) {
@@ -409,14 +435,13 @@ export async function createCompanionSurfaceMarker(
       const toCam = cameraWorldPos.subtract(center);
       const toComp = companionWorldPos().subtract(center);
       if (toCam.lengthSquared() < 1e-8 || toComp.lengthSquared() < 1e-8) {
-        frontFacing = true;
+        occlusionOpacity = 1;
         applyEnabled();
         return;
       }
       toCam.normalize();
       toComp.normalize();
-      // > 0 = hémisphère face caméra ; marge pour rester visible près du limbe
-      frontFacing = Vector3.Dot(toCam, toComp) > 0.05;
+      occlusionOpacity = companionOcclusionOpacity(Vector3.Dot(toCam, toComp));
       applyEnabled();
     },
     dispose: () => {

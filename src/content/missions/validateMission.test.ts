@@ -5,6 +5,7 @@ import { MISSION_05 } from '@/content/missions/mission-05';
 import { MISSION_06 } from '@/content/missions/mission-06';
 import { MISSION_07 } from '@/content/missions/mission-07';
 import { MISSION_08 } from '@/content/missions/mission-08';
+import { MISSION_09 } from '@/content/missions/mission-09';
 import { validateMission } from '@/content/missions/validateMission';
 
 describe('validateMission', () => {
@@ -36,6 +37,12 @@ describe('validateMission', () => {
     expect(validateMission(MISSION_08)).toEqual([]);
     expect(MISSION_08.steps.some((s) => s.challengeObservatory)).toBe(true);
     expect(MISSION_08.sceneId).toBe('stars');
+  });
+
+  it('valide Mission 09', () => {
+    expect(validateMission(MISSION_09)).toEqual([]);
+    expect(MISSION_09.steps.some((s) => s.challengePrism)).toBe(true);
+    expect(MISSION_09.sceneId).toBe('stellar-light');
   });
 
   it('signale les champs manquants', () => {

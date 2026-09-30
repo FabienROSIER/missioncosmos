@@ -1,6 +1,9 @@
 import { Vector3 } from '@babylonjs/core';
 import { describe, expect, it } from 'vitest';
-import { surfaceOrientationQuaternion } from '@/3d/scenes/companionSurfaceMarker';
+import {
+  companionOcclusionOpacity,
+  surfaceOrientationQuaternion,
+} from '@/3d/scenes/companionSurfaceMarker';
 
 const rotate = (vector: Vector3, outward: Vector3, look: Vector3) => {
   const result = Vector3.Zero();
@@ -35,5 +38,24 @@ describe('surfaceOrientationQuaternion', () => {
     expect(Vector3.Dot(y, z)).toBeCloseTo(0, 6);
     expect(Vector3.Dot(z, x)).toBeCloseTo(0, 6);
     expect(Vector3.Dot(Vector3.Cross(x, y), z)).toBeGreaterThan(0.9999);
+  });
+});
+
+describe('companionOcclusionOpacity', () => {
+  it('reste visible face caméra et disparaît derrière la Terre', () => {
+    expect(companionOcclusionOpacity(1)).toBe(1);
+    expect(companionOcclusionOpacity(0.1)).toBe(1);
+    expect(companionOcclusionOpacity(-0.2)).toBe(0);
+    expect(companionOcclusionOpacity(-1)).toBe(0);
+  });
+
+  it('effectue un fondu progressif au passage du limbe', () => {
+    const frontEdge = companionOcclusionOpacity(0.05);
+    const limb = companionOcclusionOpacity(0);
+    const behindEdge = companionOcclusionOpacity(-0.1);
+
+    expect(frontEdge).toBeGreaterThan(limb);
+    expect(limb).toBeGreaterThan(behindEdge);
+    expect(behindEdge).toBeGreaterThan(0);
   });
 });
