@@ -42,9 +42,7 @@ import {
   type CompanionSurfaceMarkerHandle,
 } from '@/3d/scenes/companionSurfaceMarker';
 import { attachHouseViewPip, EARTH_MAIN_LAYER } from '@/3d/scenes/houseViewPip';
-import {
-  frameDayNightOverview,
-} from '@/3d/utils/cameraFraming';
+import { frameDayNightOverview } from '@/3d/utils/cameraFraming';
 import { createSpaceBackground } from '@/3d/utils/imageSpaceBackground';
 import { EARTH_BODY, SUN_BODY } from '@/content/bodies/catalog';
 import { COMPANION_TEMP_NAME } from '@/content/companion';
@@ -95,6 +93,7 @@ export function DayNightScene({
 }: DayNightSceneProps) {
   const [label, setLabel] = useState<LabelState | null>(null);
   const [pipLighting, setPipLighting] = useState<PipSkyPhase>('day');
+  const [pipExpanded, setPipExpanded] = useState(false);
   const companionRef = useRef<CompanionSurfaceMarkerHandle | null>(null);
   const pipFrameRef = useRef<HTMLDivElement | null>(null);
   const onLightingSuccessRef = useRef(onLightingSuccess);
@@ -349,7 +348,11 @@ export function DayNightScene({
         onSceneReady={onSceneReady}
         loadingMessage="Approche Soleil et Terre…"
       />
-      <div ref={pipFrameRef} className={styles.housePip} aria-hidden="true">
+      <div
+        ref={pipFrameRef}
+        className={`${styles.housePip} ${pipExpanded ? styles.housePipExpanded : ''}`}
+        aria-label={`Vue avec ${COMPANION_TEMP_NAME}`}
+      >
         <div className={styles.housePipChrome}>
           <div className={styles.pipChromeTop}>
             <p className={styles.housePipLabel}>Avec {COMPANION_TEMP_NAME}</p>
@@ -366,6 +369,18 @@ export function DayNightScene({
             </p>
           </div>
         </div>
+        <button
+          type="button"
+          className={styles.pipExpandButton}
+          aria-label={
+            pipExpanded ? 'Réduire la vue avec le Guide' : 'Agrandir la vue avec le Guide'
+          }
+          aria-pressed={pipExpanded}
+          onPointerDown={(event) => event.stopPropagation()}
+          onClick={() => setPipExpanded((expanded) => !expanded)}
+        >
+          {pipExpanded ? '↙' : '↗'}
+        </button>
       </div>
       {label ? (
         <CelestialLabel

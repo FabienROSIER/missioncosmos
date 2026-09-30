@@ -21,25 +21,19 @@ export function captureViewport(camera: ArcRotateCamera): CameraViewportSnapshot
   };
 }
 
-export function restoreViewport(
-  camera: ArcRotateCamera,
-  viewport: CameraViewportSnapshot,
-): void {
+export function restoreViewport(camera: ArcRotateCamera, viewport: CameraViewportSnapshot): void {
   camera.viewport.x = viewport.x;
   camera.viewport.y = viewport.y;
   camera.viewport.width = viewport.width;
   camera.viewport.height = viewport.height;
-  camera.targetScreenOffset.set(
-    viewport.targetScreenOffsetX,
-    viewport.targetScreenOffsetY,
-  );
+  camera.targetScreenOffset.set(viewport.targetScreenOffsetX, viewport.targetScreenOffsetY);
 }
 
 /**
  * Synchronise le cadre HTML avec la caméra PiP.
  *
- * En paysage mobile, le cadre est à droite et la caméra principale est limitée
- * à la zone située avant le PiP : les deux vues sont côte à côte, sans overlay.
+ * Sur mobile, le PiP flotte au-dessus de la scène. La caméra principale garde
+ * donc tout le canvas, quelle que soit l’orientation ou la taille du PiP.
  */
 export function syncPipViewportLayout(
   mainCamera: ArcRotateCamera,
@@ -63,43 +57,13 @@ export function syncPipViewportLayout(
   pipCamera.viewport.height = Math.max(0.05, Math.min(1 - pipCamera.viewport.y, h));
 
   const mobileLayout = window.matchMedia(MOBILE_GAME_QUERY).matches;
-  const landscape = window.matchMedia('(orientation: landscape)').matches;
-  const splitLandscape = mobileLayout && landscape;
 
-  if (mobileLayout && !landscape) {
-    pipCamera.fovMode = Camera.FOVMODE_VERTICAL_FIXED;
-    restoreViewport(mainCamera, defaultMainViewport);
-    // Bandeau PiP en haut ; la caméra principale commence sous celui-ci.
-    const gutterPx = 8;
-    const availableHeight = canvasRect.bottom - frameRect.bottom - gutterPx;
-    mainCamera.viewport.x = 0;
-    mainCamera.viewport.y = 0;
-    mainCamera.viewport.width = 1;
-    mainCamera.viewport.height = Math.max(
-      0.45,
-      Math.min(1, availableHeight / canvasRect.height),
-    );
-    return;
-  }
-
-  if (!splitLandscape) {
+  if (mobileLayout) {
     pipCamera.fovMode = Camera.FOVMODE_VERTICAL_FIXED;
     restoreViewport(mainCamera, defaultMainViewport);
     return;
   }
 
-  // Colonne haute et étroite : préserver le champ horizontal et révéler plus
-  // de ciel verticalement. La perspective change, pas les proportions.
-  pipCamera.fovMode = Camera.FOVMODE_HORIZONTAL_FIXED;
-
-  const gutterPx = 8;
-  const availableWidth = frameRect.left - canvasRect.left - gutterPx;
-  mainCamera.viewport.x = 0;
-  mainCamera.viewport.y = 0;
-  mainCamera.viewport.width = Math.max(0.35, Math.min(1, availableWidth / canvasRect.width));
-  mainCamera.viewport.height = 1;
-  mainCamera.targetScreenOffset.set(
-    defaultMainViewport.targetScreenOffsetX,
-    defaultMainViewport.targetScreenOffsetY,
-  );
+  pipCamera.fovMode = Camera.FOVMODE_VERTICAL_FIXED;
+  restoreViewport(mainCamera, defaultMainViewport);
 }

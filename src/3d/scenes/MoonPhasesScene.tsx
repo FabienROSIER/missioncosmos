@@ -1,10 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  ArcRotateCamera,
-  Color3,
-} from '@babylonjs/core';
+import { ArcRotateCamera, Color3 } from '@babylonjs/core';
 import type { BabylonSceneContext } from '@/3d/core/BabylonCanvas';
 import { BabylonCanvas } from '@/3d/core/BabylonCanvas';
 import type { MissionCameraApi } from '@/3d/controls/missionCamera';
@@ -83,6 +80,7 @@ export function MoonPhasesScene({
   onPhaseSuccess,
 }: MoonPhasesSceneProps) {
   const [pipPhase, setPipPhase] = useState<MoonPhaseId>('quarter');
+  const [pipExpanded, setPipExpanded] = useState(false);
   const pipFrameRef = useRef<HTMLDivElement | null>(null);
   const onPhaseSuccessRef = useRef(onPhaseSuccess);
   const onSceneApiRef = useRef(onSceneApi);
@@ -354,7 +352,11 @@ export function MoonPhasesScene({
         onSceneReady={onSceneReady}
         loadingMessage="Approche Soleil, Terre et Lune…"
       />
-      <div ref={pipFrameRef} className={styles.earthPip} aria-hidden="true">
+      <div
+        ref={pipFrameRef}
+        className={`${styles.earthPip} ${pipExpanded ? styles.earthPipExpanded : ''}`}
+        aria-label={`Vue avec ${COMPANION_TEMP_NAME}`}
+      >
         <div className={styles.earthPipChrome}>
           <div className={styles.pipChromeTop}>
             <p className={styles.earthPipLabel}>Avec {COMPANION_TEMP_NAME}</p>
@@ -366,6 +368,18 @@ export function MoonPhasesScene({
             </p>
           </div>
         </div>
+        <button
+          type="button"
+          className={styles.pipExpandButton}
+          aria-label={
+            pipExpanded ? 'Réduire la vue avec le Guide' : 'Agrandir la vue avec le Guide'
+          }
+          aria-pressed={pipExpanded}
+          onPointerDown={(event) => event.stopPropagation()}
+          onClick={() => setPipExpanded((expanded) => !expanded)}
+        >
+          {pipExpanded ? '↙' : '↗'}
+        </button>
       </div>
     </div>
   );

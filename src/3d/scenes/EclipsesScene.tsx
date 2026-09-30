@@ -26,17 +26,10 @@ import {
   startPerfMonitor,
 } from '@/3d/performance';
 import { createEclipseShadows } from '@/3d/scenes/eclipseShadows';
-import {
-  createEclipseSurfaceEffects,
-  eclipseAmount,
-} from '@/3d/scenes/eclipseSurfaceEffects';
+import { createEclipseSurfaceEffects, eclipseAmount } from '@/3d/scenes/eclipseSurfaceEffects';
 import { attachEclipseEarthPip } from '@/3d/scenes/eclipseEarthPip';
 import { createCompanionSurfaceMarker } from '@/3d/scenes/companionSurfaceMarker';
-import {
-  EARTH_MAIN_LAYER,
-  HOUSE_MESH_LAYER,
-  MAIN_CAMERA_LAYER,
-} from '@/3d/scenes/houseViewPip';
+import { EARTH_MAIN_LAYER, HOUSE_MESH_LAYER, MAIN_CAMERA_LAYER } from '@/3d/scenes/houseViewPip';
 import { attachMoonOrbitDrag, createOrbitGuide } from '@/3d/scenes/moonOrbitDrag';
 import { frameMoonPhasesOverview } from '@/3d/utils/cameraFraming';
 import {
@@ -88,6 +81,7 @@ export function EclipsesScene({
   onEclipseSuccess,
 }: EclipsesSceneProps) {
   const [pipKind, setPipKind] = useState<EclipseKind>('none');
+  const [pipExpanded, setPipExpanded] = useState(false);
   const pipFrameRef = useRef<HTMLDivElement | null>(null);
   const onEclipseSuccessRef = useRef(onEclipseSuccess);
   const onSceneApiRef = useRef(onSceneApi);
@@ -391,7 +385,11 @@ export function EclipsesScene({
         onSceneReady={onSceneReady}
         loadingMessage="Approche Soleil, Terre et Lune…"
       />
-      <div ref={pipFrameRef} className={styles.earthPip} aria-hidden="true">
+      <div
+        ref={pipFrameRef}
+        className={`${styles.earthPip} ${pipExpanded ? styles.earthPipExpanded : ''}`}
+        aria-label={`Vue avec ${COMPANION_TEMP_NAME}`}
+      >
         <div className={styles.earthPipChrome}>
           <div className={styles.pipChromeTop}>
             <p className={styles.earthPipLabel}>Avec {COMPANION_TEMP_NAME}</p>
@@ -404,6 +402,18 @@ export function EclipsesScene({
             <span className={styles.safetyCompact}>Soleil : filtre obligatoire</span>
           </p>
         </div>
+        <button
+          type="button"
+          className={styles.pipExpandButton}
+          aria-label={
+            pipExpanded ? 'Réduire la vue avec le Guide' : 'Agrandir la vue avec le Guide'
+          }
+          aria-pressed={pipExpanded}
+          onPointerDown={(event) => event.stopPropagation()}
+          onClick={() => setPipExpanded((expanded) => !expanded)}
+        >
+          {pipExpanded ? '↙' : '↗'}
+        </button>
       </div>
     </div>
   );

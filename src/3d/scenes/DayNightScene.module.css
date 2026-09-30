@@ -100,6 +100,10 @@
   border-color: rgba(126, 214, 223, 0.35);
 }
 
+.pipExpandButton {
+  display: none;
+}
+
 @media (min-width: 900px) {
   .housePip {
     width: min(52vw, 24.7rem);
@@ -136,11 +140,13 @@
   .housePip {
     top: 0.5rem;
     bottom: auto;
-    left: 0.5rem;
-    width: min(46vw, 12rem);
+    right: 0.5rem;
+    left: auto;
+    width: min(36vw, 9rem);
     height: auto;
     max-height: none;
     aspect-ratio: 16 / 10;
+    transition: width var(--motion-base) var(--ease-out);
   }
 
   .housePipChrome {
@@ -169,35 +175,66 @@
   .housePipBadge {
     padding: 0.08rem 0.28rem;
   }
+
+  .pipExpandButton {
+    position: absolute;
+    right: 0.25rem;
+    bottom: 0.25rem;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid rgba(245, 247, 251, 0.5);
+    border-radius: var(--radius-pill);
+    background: rgba(7, 11, 22, 0.78);
+    color: var(--color-star);
+    font: inherit;
+    font-size: 1.1rem;
+    font-weight: 800;
+    pointer-events: auto;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+  }
 }
 
-/* Paysage mobile : PiP dans une colonne caméra dédiée, à côté de la vue principale. */
+/* Paysage mobile : PiP flottant, sans réduire le viewport principal. */
 @media (orientation: landscape) and (max-width: 899px),
   (orientation: landscape) and (pointer: coarse) and (max-width: 1180px) and (max-height: 600px) {
   .housePip {
     top: 0.5rem;
     right: 0.5rem;
-    bottom: 0.5rem;
+    bottom: auto;
     left: auto;
-    width: min(31vw, 11rem);
+    width: min(22vw, 10rem);
     height: auto;
     max-height: none;
-    aspect-ratio: auto;
+    aspect-ratio: 16 / 10;
     transform: none;
+  }
+
+  .housePip.housePipExpanded {
+    width: min(42vw, 18rem);
   }
 }
 
-/* Portrait mobile : bandeau PiP dédié sous l’en-tête, sans recouvrir la vue principale. */
+/* Portrait mobile : PiP flottant et agrandissable. */
 @media (orientation: portrait) and (max-width: 899px),
   (orientation: portrait) and (pointer: coarse) and (max-width: 1180px) and (max-height: 600px) {
   .housePip {
-    top: 0.35rem;
+    top: 0.5rem;
     right: 0.5rem;
     bottom: auto;
-    left: 0.5rem;
-    width: auto;
-    height: 5.5rem;
+    left: auto;
+    width: min(36vw, 9rem);
+    height: auto;
     max-height: none;
-    aspect-ratio: auto;
+    aspect-ratio: 16 / 10;
+  }
+
+  .housePip.housePipExpanded {
+    width: min(76vw, 18rem);
   }
 }

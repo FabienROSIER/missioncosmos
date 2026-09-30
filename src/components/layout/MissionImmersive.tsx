@@ -65,6 +65,18 @@ type StepFeedback = {
   wrong: boolean;
 };
 
+function mobileGuideStartsExpanded(step: MissionStep): boolean {
+  return (
+    step.kind === 'explain' ||
+    step.kind === 'quiz' ||
+    step.kind === 'reward' ||
+    step.kind === 'complete' ||
+    step.id === 'm05-scale' ||
+    step.id === 'm05-distances' ||
+    step.id === 'm06-fall'
+  );
+}
+
 function challengeFromStep(step: MissionStep): {
   targetMarkerId: EarthMarkerId | undefined;
   targetLighting: SurfaceLighting | undefined;
@@ -105,6 +117,12 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const isSeasons = mission.sceneId === 'seasons';
   const isStars = mission.sceneId === 'stars';
   const [tipOpen, setTipOpen] = useState(true);
+  const [isMobileGame, setIsMobileGame] = useState(false);
+  const [mobileGuideOverride, setMobileGuideOverride] = useState<{
+    stepId: string;
+    expanded: boolean;
+    challengeSolved: boolean;
+  } | null>(null);
   const [mobilePanel, setMobilePanel] = useState<'mission' | 'controls'>('mission');
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
   const [earthApi, setEarthApi] = useState<EarthSceneApi | null>(null);
@@ -143,15 +161,15 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   } = useMissionSequence(mission);
 
   useEffect(() => {
-    if (
-      step.id === 'm05-scale' ||
-      step.id === 'm05-distances' ||
-      step.id === 'm06-fall' ||
-      step.kind === 'quiz'
-    ) {
-      setTipOpen(true);
-    }
-  }, [step.id, step.kind]);
+    const media = window.matchMedia(MOBILE_GAME_QUERY);
+    const update = () => {
+      setIsMobileGame(media.matches);
+      if (media.matches) setTipOpen(true);
+    };
+    update();
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
 
   useEffect(() => {
     if (!isSolarSystem) return;
@@ -213,6 +231,11 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     isStars ||
     (isSolarSystem && step.id !== 'm05-scale' && step.id !== 'm05-distances');
   const visibleFeedback = feedback?.stepId === step.id ? feedback : null;
+  const mobileGuideExpanded =
+    mobileGuideOverride?.stepId === step.id &&
+    mobileGuideOverride.challengeSolved === challengeSolved
+      ? mobileGuideOverride.expanded
+      : challengeSolved || mobileGuideStartsExpanded(step);
   const quiz = step.quizId ? getQuizById(step.quizId) : undefined;
   const glossaryEntries = getGlossaryEntries(mission.glossaryIds ?? []);
   const nextMissionId = getCatalogEntry(mission.id)?.unlocksNextId;
@@ -632,12 +655,31 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
 
   const selectMobilePanel = (panel: 'mission' | 'controls') => {
     setMobilePanel(panel);
+    if (panel === 'controls') {
+      setMobileGuideOverride({ stepId: step.id, expanded: true, challengeSolved });
+    } else {
+      setMobileGuideOverride(null);
+    }
     bottomBarRef.current?.scrollTo({ top: 0 });
+  };
+
+  const toggleGuide = () => {
+    if (isMobileGame) {
+      setTipOpen(true);
+      setMobileGuideOverride({
+        stepId: step.id,
+        expanded: !mobileGuideExpanded,
+        challengeSolved,
+      });
+      return;
+    }
+    setTipOpen((open) => !open);
   };
 
   const onContinue = () => {
     setMobilePanel('mission');
-    if (window.matchMedia(MOBILE_GAME_QUERY).matches) setTipOpen(true);
+    setMobileGuideOverride(null);
+    setTipOpen(true);
     setFeedback(null);
     setQuizMood('none');
     goNext();
@@ -645,7 +687,8 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
 
   const onRestart = () => {
     setMobilePanel('mission');
-    if (window.matchMedia(MOBILE_GAME_QUERY).matches) setTipOpen(true);
+    setMobileGuideOverride(null);
+    setTipOpen(true);
     setFeedback(null);
     setQuizMood('none');
     completionSavedRef.current = false;
@@ -713,7 +756,9 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
         styles.stage,
         starFilmPlaying ? styles.starFilmStage : '',
         isSolarSystem ? styles.solarStage : '',
+        hasSceneControls ? styles.hasSceneControls : '',
         mobilePanel === 'controls' && hasSceneControls ? styles.showControls : '',
+        isMobileGame ? (mobileGuideExpanded ? styles.guideExpanded : styles.guideCompact) : '',
       ].join(' ')}
     >
       <div className={styles.sceneArea}>
@@ -900,14 +945,20 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
             onTouchStart={(event) => event.stopPropagation()}
           >
             <div className={styles.tipHeader}>
-              <Companion pose={companionCue.pose} size="sm" priority variant={companionVariant} />
+              <Companion
+                pose={companionCue.pose}
+                size="sm"
+                priority
+                variant={companionVariant}
+                className={styles.tipCompanion}
+              />
               <button
                 type="button"
                 className={styles.tipToggle}
-                aria-expanded={tipOpen}
-                onClick={() => setTipOpen((open) => !open)}
+                aria-expanded={isMobileGame ? mobileGuideExpanded : tipOpen}
+                onClick={toggleGuide}
               >
-                {step.title} {tipOpen ? '▾' : '▸'}
+                {step.title} {(isMobileGame ? mobileGuideExpanded : tipOpen) ? '▾' : '▸'}
               </button>
             </div>
             {companionCue.line && companionFeedback === 'none' && !challengeSolved ? (
