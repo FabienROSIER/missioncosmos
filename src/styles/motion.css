@@ -1,0 +1,153 @@
+/* A small shared motion budget. Animate opacity/translate/scale, never layout or blur. */
+:root {
+  --ui-enter: ui-fade-in;
+  --ui-distance: 0px;
+  --ui-hover-lift: 0px;
+  --ui-press-scale: 1;
+  --ui-stagger: 0ms;
+  --ui-backdrop-filter: none;
+  --ui-page-enter: ui-fade-in;
+  --ui-reward-enter: ui-fade-in;
+}
+
+:root[data-ui-motion='minimal'] {
+  --motion-fast: 80ms;
+  --motion-base: 120ms;
+  --motion-slow: 160ms;
+}
+
+:root[data-ui-motion='standard'] {
+  --motion-fast: 120ms;
+  --motion-base: 200ms;
+  --motion-slow: 280ms;
+  --ui-enter: ui-panel-in;
+  --ui-distance: 5px;
+  --ui-hover-lift: -1px;
+  --ui-press-scale: 0.985;
+  --ui-reward-enter: ui-panel-in;
+}
+
+:root[data-ui-motion='full'] {
+  --motion-fast: 140ms;
+  --motion-base: 240ms;
+  --motion-slow: 340ms;
+  --ui-enter: ui-panel-in;
+  --ui-distance: 8px;
+  --ui-hover-lift: -2px;
+  --ui-press-scale: 0.98;
+  --ui-stagger: 35ms;
+  --ui-backdrop-filter: blur(8px);
+  --ui-reward-enter: ui-reward-in;
+}
+
+:root[data-ui-motion='none'] {
+  --motion-fast: 0ms;
+  --motion-base: 0ms;
+  --motion-slow: 0ms;
+  --ui-enter: none;
+  --ui-reward-enter: none;
+  --ui-page-enter: none;
+}
+
+/* Low specificity lets component styles keep their color and layout choices. */
+:where(button, a[href], [role='button']) {
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out),
+    opacity var(--motion-fast) var(--ease-out),
+    translate var(--motion-fast) var(--ease-out),
+    scale var(--motion-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :where(button, a[href], [role='button']):not(:disabled, [aria-disabled='true']):hover {
+    translate: 0 var(--ui-hover-lift);
+  }
+}
+
+:where(button, a[href], [role='button']):not(:disabled, [aria-disabled='true']):active {
+  translate: 0 0;
+  scale: var(--ui-press-scale);
+}
+
+/* Inline terms and wide panel toggles stay still so reading is comfortable. */
+:where([data-motion='inline'], [data-motion='stationary']) {
+  translate: none !important;
+  scale: none !important;
+}
+
+:where(input, select, textarea) {
+  transition:
+    border-color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out),
+    opacity var(--motion-fast) var(--ease-out);
+  accent-color: var(--color-nebula-soft);
+}
+
+/* Stagger is capped at four items; content is present and usable from the start. */
+.ui-stagger > :nth-child(2) {
+  animation-delay: var(--ui-stagger);
+}
+.ui-stagger > :nth-child(3) {
+  animation-delay: calc(var(--ui-stagger) * 2);
+}
+.ui-stagger > :nth-child(n + 4) {
+  animation-delay: calc(var(--ui-stagger) * 3);
+}
+
+[data-ui-panel] {
+  animation: var(--ui-enter) var(--motion-base) var(--ease-out);
+}
+
+@keyframes ui-fade-in {
+  from {
+    opacity: 0.6;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ui-panel-in {
+  from {
+    opacity: 0.6;
+    translate: 0 var(--ui-distance);
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes ui-reward-in {
+  from {
+    opacity: 0.6;
+    translate: 0 8px;
+    scale: 0.98;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+  }
+}
+
+/* Static feedback remains visible; decorative animation sleeps in background tabs. */
+html[data-ui-visibility='hidden'] *,
+html[data-ui-visibility='hidden'] *::before,
+html[data-ui-visibility='hidden'] *::after {
+  animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:root[data-ui-motion] {
+    --ui-enter: none;
+    --ui-page-enter: none;
+    --ui-reward-enter: none;
+    --ui-distance: 0px;
+    --ui-hover-lift: 0px;
+    --ui-press-scale: 1;
+    --ui-stagger: 0ms;
+  }
+}

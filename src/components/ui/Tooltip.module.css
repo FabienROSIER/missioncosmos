@@ -18,13 +18,17 @@
   line-height: var(--leading-normal);
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--motion-fast) var(--ease-out);
+  translate: 0 var(--ui-distance);
+  transition:
+    opacity var(--motion-fast) var(--ease-out),
+    translate var(--motion-fast) var(--ease-out);
   z-index: 20;
 }
 
 .wrap:hover .tip,
 .wrap:focus-within .tip {
   opacity: 1;
+  translate: 0 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

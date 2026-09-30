@@ -197,7 +197,7 @@
   width: 2.7rem;
   height: 3.2rem;
   transform: translateX(-50%);
-  transition: left 140ms ease-out;
+  /* The telescope follows the drag directly, without layout animation or input lag. */
 }
 
 .profileTube {
@@ -444,12 +444,16 @@
   inset: 0;
   background: white;
   pointer-events: none;
-  animation: photo-flash 420ms ease-out forwards;
+  opacity: 0;
+}
+
+:global(html[data-ui-motion='full']) .photoFlash {
+  animation: photo-flash 240ms ease-out forwards;
 }
 
 @keyframes photo-flash {
   from {
-    opacity: 0.82;
+    opacity: 0.25;
   }
 
   to {
@@ -471,17 +475,7 @@
   font-size: 0.72rem;
   font-weight: 800;
   pointer-events: none;
-  animation: pulse 1.4s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 8px rgba(244, 201, 95, 0.25);
-  }
-  50% {
-    box-shadow: 0 0 18px rgba(244, 201, 95, 0.55);
-  }
+  animation: var(--ui-enter) var(--motion-base) var(--ease-out);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -489,8 +483,8 @@
     animation: none;
   }
 
-  .photoFlash {
-    animation-duration: 80ms;
+  :global(html[data-ui-motion]) .photoFlash {
+    animation: none;
   }
 }
 

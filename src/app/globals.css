@@ -1,5 +1,6 @@
 @import '../styles/tokens.css';
 @import '../styles/buttons.css';
+@import '../styles/motion.css';
 
 /* Shell jeu natif : pas de scroll document */
 html {

@@ -21,6 +21,8 @@
     border-color var(--motion-fast) var(--ease-out),
     color var(--motion-fast) var(--ease-out),
     transform var(--motion-fast) var(--ease-out),
+    translate var(--motion-fast) var(--ease-out),
+    scale var(--motion-fast) var(--ease-out),
     opacity var(--motion-fast) var(--ease-out);
 }
 
@@ -30,7 +32,7 @@
 }
 
 .btn:active:not(:disabled) {
-  transform: scale(0.98);
+  scale: var(--ui-press-scale);
 }
 
 .btn:disabled,

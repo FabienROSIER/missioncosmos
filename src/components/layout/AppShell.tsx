@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { StarfieldBackground } from '@/components/layout/StarfieldBackground';
+import { AppNavigation } from '@/components/layout/AppNavigation';
 import styles from './AppShell.module.css';
 
 type AppShellProps = {
@@ -10,14 +11,6 @@ type AppShellProps = {
   /** Fond spatial UI (ignoré en mission immersive 3D) */
   sky?: 'starfield' | 'nebula' | 'milky-way' | false;
 };
-
-const NAV = [
-  { href: '/', label: 'Accueil' },
-  { href: '/missions', label: 'Carte' },
-  { href: '/collection', label: 'Collection' },
-  { href: '/profil', label: 'Profil' },
-  { href: '/settings', label: 'Réglages' },
-] as const;
 
 export function AppShell({
   children,
@@ -44,15 +37,7 @@ export function AppShell({
         </header>
       ) : null}
       <div className={contentClass}>{children}</div>
-      {showNav && !immersive ? (
-        <nav className={styles.nav} aria-label="Navigation principale">
-          {NAV.map((item) => (
-            <Link key={item.href} href={item.href} className={styles.navLink}>
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-      ) : null}
+      {showNav && !immersive ? <AppNavigation /> : null}
     </div>
   );
 }

@@ -67,7 +67,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`${spaceGrotesk.variable} ${nunito.variable}`}>
+    <html
+      lang="fr"
+      className={`${spaceGrotesk.variable} ${nunito.variable}`}
+      data-ui-quality="low"
+      data-ui-motion="minimal"
+    >
       <body>
         <div className="app-root">
           <AppProviders>{children}</AppProviders>

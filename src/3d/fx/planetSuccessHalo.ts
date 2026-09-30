@@ -9,7 +9,7 @@ import {
   Vector3,
   type Scene,
 } from '@babylonjs/core';
-import { prefersReducedMotion } from '@/lib/motion';
+import { getUiMotionSnapshot } from '@/lib/uiMotion';
 
 /** Rayon UV du trou (bord planète) — le glow commence juste après. */
 const HALO_HOLE_UV = 0.34;
@@ -47,12 +47,8 @@ function getSoftHaloTexture(scene: Scene): DynamicTexture {
  * Anneau billboard hors globe, expand + fade — respect reduced-motion.
  * À utiliser systématiquement pour valider une planète touchée correctement.
  */
-export function playPlanetSuccessHalo(
-  scene: Scene,
-  position: Vector3,
-  planetRadius: number,
-): void {
-  if (prefersReducedMotion()) return;
+export function playPlanetSuccessHalo(scene: Scene, position: Vector3, planetRadius: number): void {
+  if (getUiMotionSnapshot() !== 'full') return;
 
   const startScale = Math.max(planetRadius / HALO_HOLE_UV, 0.2);
   const endScale = Math.max(startScale * 2.4, planetRadius * 6);

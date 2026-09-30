@@ -87,7 +87,11 @@
 }
 
 .nodePulse .nodeDot {
-  animation: unlockPulse 1.2s ease-out 2;
+  animation: none;
+}
+
+:global(html[data-ui-motion='full']) .nodePulse .nodeDot {
+  animation: unlockPulse 900ms var(--ease-out) 2;
 }
 
 @keyframes unlockPulse {
@@ -96,7 +100,7 @@
   }
   50% {
     transform: scale(1.2);
-    box-shadow: 0 0 0 6px rgba(244, 201, 95, 0.3);
+    opacity: 0.65;
   }
   100% {
     transform: scale(1);
@@ -104,8 +108,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .nodePulse .nodeDot {
-    animation: none;
+  :global(html[data-ui-motion]) .nodePulse .nodeDot {
+    animation: none !important;
   }
 }
 
@@ -124,6 +128,7 @@
 
 .previewHeader {
   flex-shrink: 0;
+  animation: var(--ui-enter) var(--motion-base) var(--ease-out);
 }
 
 .previewTitle {
@@ -159,6 +164,7 @@
 
 .missionItem {
   min-height: 0;
+  animation: var(--ui-enter) var(--motion-base) var(--ease-out) backwards;
 }
 
 @media (min-width: 700px) {

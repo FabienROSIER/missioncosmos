@@ -59,7 +59,8 @@ export function MissionQuiz({ quiz, onSolved, onMoodChange, compact = false }: M
   const choiceState = (choiceId: string) => {
     if (!selectedId) return 'idle' as const;
     if (choiceId === selectedId && choiceId === question.correctChoiceId) return 'correct' as const;
-    if (choiceId === selectedId && choiceId !== question.correctChoiceId) return 'incorrect' as const;
+    if (choiceId === selectedId && choiceId !== question.correctChoiceId)
+      return 'incorrect' as const;
     if (questionOk && choiceId === question.correctChoiceId) return 'correct' as const;
     return 'idle' as const;
   };
@@ -69,8 +70,10 @@ export function MissionQuiz({ quiz, onSolved, onMoodChange, compact = false }: M
       <p className={styles.progress}>
         Question {questionIndex + 1} / {quiz.questions.length}
       </p>
-      <p className={styles.prompt}>{question.prompt}</p>
-      <div className={styles.choices} role="group" aria-label={quiz.title}>
+      <p key={question.id} className={styles.prompt}>
+        {question.prompt}
+      </p>
+      <div className={`${styles.choices} ui-stagger`} role="group" aria-label={quiz.title}>
         {shuffledChoices.map((choice) => (
           <QuizChoice
             key={`${question.id}-${choice.id}`}
@@ -82,7 +85,7 @@ export function MissionQuiz({ quiz, onSolved, onMoodChange, compact = false }: M
         ))}
       </div>
       {selectedId ? (
-        <p className={isCorrect ? styles.ok : styles.hint} role="status">
+        <p key={selectedId} className={isCorrect ? styles.ok : styles.hint} role="status">
           {isCorrect ? question.explainCorrect : question.explainWrong}
         </p>
       ) : null}

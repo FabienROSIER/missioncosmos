@@ -8,36 +8,36 @@ Espace **lisible et accueillant** : aventure spatiale moderne, colorée, jamais 
 
 ### Principale (ambiance)
 
-| Token | Hex | Usage |
-|---|---|---|
-| `--color-space-950` | `#070B16` | Fond profond |
-| `--color-space-900` | `#0B1220` | Fond app |
-| `--color-space-800` | `#152238` | Surfaces |
-| `--color-space-700` | `#1E3352` | Surfaces élevées / hover |
-| `--color-star` | `#F5F7FB` | Texte principal |
-| `--color-star-muted` | `#B7C0D4` | Texte secondaire |
-| `--color-nebula` | `#3DB8C5` | Accent primaire (télescope / UI) |
-| `--color-nebula-soft` | `#7ED6DF` | Accent clair |
-| `--color-solar` | `#F4C95F` | CTA / récompenses / focus chaleureux |
+| Token                 | Hex       | Usage                                |
+| --------------------- | --------- | ------------------------------------ |
+| `--color-space-950`   | `#070B16` | Fond profond                         |
+| `--color-space-900`   | `#0B1220` | Fond app                             |
+| `--color-space-800`   | `#152238` | Surfaces                             |
+| `--color-space-700`   | `#1E3352` | Surfaces élevées / hover             |
+| `--color-star`        | `#F5F7FB` | Texte principal                      |
+| `--color-star-muted`  | `#B7C0D4` | Texte secondaire                     |
+| `--color-nebula`      | `#3DB8C5` | Accent primaire (télescope / UI)     |
+| `--color-nebula-soft` | `#7ED6DF` | Accent clair                         |
+| `--color-solar`       | `#F4C95F` | CTA / récompenses / focus chaleureux |
 
 ### Fonctionnelle
 
-| Token | Hex | Usage |
-|---|---|---|
-| `--color-success` | `#5FCF8A` | Réussite |
-| `--color-warning` | `#F0A202` | Attention douce |
-| `--color-danger` | `#E85D5D` | Erreur (jamais punitive) |
-| `--color-info` | `#5BA0E0` | Indice / info |
-| `--color-focus` | `#7ED6DF` | Anneau focus clavier |
+| Token             | Hex       | Usage                    |
+| ----------------- | --------- | ------------------------ |
+| `--color-success` | `#5FCF8A` | Réussite                 |
+| `--color-warning` | `#F0A202` | Attention douce          |
+| `--color-danger`  | `#E85D5D` | Erreur (jamais punitive) |
+| `--color-info`    | `#5BA0E0` | Indice / info            |
+| `--color-focus`   | `#7ED6DF` | Anneau focus clavier     |
 
 Contraste texte principal / fond : élevé (cible WCAG AA+ sur UI critique).
 
 ## Typographie
 
-| Rôle | Fonte | Usage |
-|---|---|---|
-| Marque / titres | **Space Grotesk** | Logo-texte, H1–H2 |
-| Corps / UI | **Nunito** | Phrases enfants, boutons, labels |
+| Rôle            | Fonte             | Usage                            |
+| --------------- | ----------------- | -------------------------------- |
+| Marque / titres | **Space Grotesk** | Logo-texte, H1–H2                |
+| Corps / UI      | **Nunito**        | Phrases enfants, boutons, labels |
 
 Tailles fluides (`clamp`). Corps min ~16px mobile. Interligne confortable (1.4–1.5).
 
@@ -56,16 +56,25 @@ Tailles fluides (`clamp`). Corps min ~16px mobile. Interligne confortable (1.4�
 
 ## Motion
 
-- Durées : `--motion-fast` 120ms · `--motion-base` 220ms · `--motion-slow` 400ms
+- Durées adaptées à la qualité : 80–140 ms pour les interactions, 120–240 ms pour
+  les panneaux, 160–340 ms pour les récompenses (voir `styles/motion.css`).
 - Easing : `cubic-bezier(0.22, 1, 0.36, 1)`
 - Respecter `prefers-reduced-motion: reduce` (désactiver mouvements non essentiels)
+- Survol réservé à la souris ; pression au clic ou au toucher. Les mots du
+  glossaire et les boutons de consigne ne bougent pas pour préserver la lecture.
+- Pas de mouvement du fond spatial ni de mise en scène prolongée. Décalage des
+  listes limité à 105 ms et réservé à la qualité élevée.
+- La navigation montre la destination active avec une surface douce et un petit
+  trait ; le focus clavier reste indépendant et visible.
+- Les profils et effets activés sont décrits dans `PERFORMANCE.md` et dans le menu
+  Réglages de l’application.
 
 ## ASSET GATE — identité (décisions 2026-09-26)
 
-| Besoin | Décision |
-|---|---|
-| Logo graphique immédiat | **Non** — wordmark typographique « Mission Cosmos » suffit pour les fondations |
-| Favicon / icône PWA | **Utile bientôt** — pas bloquant pour 2.1 ; brief ci-dessous quand tu veux générer |
+| Besoin                  | Décision                                                                           |
+| ----------------------- | ---------------------------------------------------------------------------------- |
+| Logo graphique immédiat | **Non** — wordmark typographique « Mission Cosmos » suffit pour les fondations     |
+| Favicon / icône PWA     | **Utile bientôt** — pas bloquant pour 2.1 ; brief ci-dessous quand tu veux générer |
 
 ### Brief favicon / icône (quand demandé)
 

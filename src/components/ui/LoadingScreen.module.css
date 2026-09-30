@@ -18,7 +18,8 @@
   border-radius: 50%;
   border: 3px solid rgba(245, 247, 251, 0.15);
   border-top-color: var(--color-nebula-soft);
-  animation: spin var(--motion-slow) linear infinite;
+  /* Loading feedback is functional, and stays slow even on the lightest profile. */
+  animation: spin 900ms linear infinite;
 }
 
 .brand {

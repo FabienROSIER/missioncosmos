@@ -19,6 +19,10 @@
   overflow: hidden;
 }
 
+.fill > * {
+  animation: var(--ui-enter) var(--motion-base) var(--ease-out);
+}
+
 .section {
   flex-shrink: 0;
 }

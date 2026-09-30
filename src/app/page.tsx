@@ -10,7 +10,7 @@ export default function HomePage() {
   return (
     <SplashGate>
       <AppShell sky="nebula">
-        <div className={styles.hero}>
+        <div className={`${styles.hero} ui-stagger`}>
           <Image
             src={LOGO_SRC}
             alt="Mission Cosmos"

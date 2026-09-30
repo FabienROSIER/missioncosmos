@@ -3,12 +3,17 @@ export type GraphicsQualityLevel = (typeof GRAPHICS_QUALITY_LEVELS)[number];
 
 export type ResolvedGraphicsQuality = 'low' | 'medium' | 'high';
 
-const STORAGE_KEY = 'mc:graphics-quality';
+export const GRAPHICS_QUALITY_STORAGE_KEY = 'mc:graphics-quality';
+export const GRAPHICS_QUALITY_CHANGE_EVENT = 'mc:graphics-quality-change';
+
+// Keep the selection usable for this session when storage is unavailable.
+let sessionQuality: GraphicsQualityLevel | undefined;
 
 export function getStoredGraphicsQuality(): GraphicsQualityLevel {
   if (typeof window === 'undefined') return 'auto';
+  if (sessionQuality !== undefined) return sessionQuality;
   try {
-    const value = localStorage.getItem(STORAGE_KEY);
+    const value = localStorage.getItem(GRAPHICS_QUALITY_STORAGE_KEY);
     if (value === 'auto' || value === 'low' || value === 'medium' || value === 'high') {
       return value;
     }
@@ -19,11 +24,29 @@ export function getStoredGraphicsQuality(): GraphicsQualityLevel {
 }
 
 export function setStoredGraphicsQuality(level: GraphicsQualityLevel): void {
+  if (typeof window === 'undefined') return;
+  sessionQuality = level;
   try {
-    localStorage.setItem(STORAGE_KEY, level);
+    localStorage.setItem(GRAPHICS_QUALITY_STORAGE_KEY, level);
   } catch {
     /* ignore */
   }
+  window.dispatchEvent(new Event(GRAPHICS_QUALITY_CHANGE_EVENT));
+}
+
+export function subscribeGraphicsQuality(onChange: () => void): () => void {
+  if (typeof window === 'undefined') return () => undefined;
+  const onStorage = (event: StorageEvent) => {
+    if (event.key !== null && event.key !== GRAPHICS_QUALITY_STORAGE_KEY) return;
+    sessionQuality = undefined;
+    onChange();
+  };
+  window.addEventListener(GRAPHICS_QUALITY_CHANGE_EVENT, onChange);
+  window.addEventListener('storage', onStorage);
+  return () => {
+    window.removeEventListener(GRAPHICS_QUALITY_CHANGE_EVENT, onChange);
+    window.removeEventListener('storage', onStorage);
+  };
 }
 
 /**

@@ -25,7 +25,7 @@ export function ProgressBar({ value, max = 100, label = 'Progression' }: Progres
         aria-valuenow={Math.min(value, safeMax)}
         aria-label={label}
       >
-        <div className={styles.fill} style={{ width: `${percent}%` }} />
+        <div className={styles.fill} style={{ transform: `scaleX(${ratio})` }} />
       </div>
     </div>
   );

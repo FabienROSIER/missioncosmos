@@ -28,18 +28,7 @@
 }
 
 .celebrate {
-  animation: rewardReveal 0.5s ease-out;
-}
-
-@keyframes rewardReveal {
-  from {
-    opacity: 0;
-    transform: translateY(10px) scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  animation: var(--ui-reward-enter) var(--motion-slow) var(--ease-out);
 }
 
 @media (prefers-reduced-motion: reduce) {

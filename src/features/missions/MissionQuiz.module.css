@@ -37,6 +37,7 @@
 }
 
 .prompt {
+  animation: var(--ui-enter) var(--motion-base) var(--ease-out);
   margin: 0;
   color: var(--color-star);
   font-size: var(--text-sm);
@@ -55,7 +56,16 @@
   gap: var(--space-2);
 }
 
+.choices > button {
+  animation: var(--ui-enter) var(--motion-base) var(--ease-out) backwards;
+}
+
+.choices > button[aria-pressed='true'] {
+  animation: var(--ui-reward-enter) var(--motion-base) var(--ease-out);
+}
+
 .ok {
+  animation: var(--ui-enter) var(--motion-base) var(--ease-out);
   margin: 0;
   color: var(--color-solar);
   font-size: var(--text-sm);
@@ -63,6 +73,7 @@
 }
 
 .hint {
+  animation: var(--ui-enter) var(--motion-base) var(--ease-out);
   margin: 0;
   color: var(--color-nebula-soft);
   font-size: var(--text-sm);

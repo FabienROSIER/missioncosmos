@@ -532,15 +532,17 @@ export function StarsScene({
 
     // Soft pulse on glow (reduced motion = skip)
     let pulseT = 0;
-    const pulseObs = prefersReducedMotion()
-      ? null
-      : scene.onBeforeRenderObservable.add(() => {
-          pulseT += engine.getDeltaTime() * 0.001;
-          const a = 0.7 + 0.035 * Math.sin(pulseT * 0.8);
-          stars.forEach((star) => {
-            if (star.root.isEnabled()) star.glowMat.alpha = a;
+    const pulseObs =
+      quality !== 'high' || prefersReducedMotion()
+        ? null
+        : scene.onBeforeRenderObservable.add(() => {
+            if (document.documentElement.dataset.uiMotion !== 'full' || document.hidden) return;
+            pulseT += engine.getDeltaTime() * 0.001;
+            const a = 0.7 + 0.035 * Math.sin(pulseT * 0.8);
+            stars.forEach((star) => {
+              if (star.root.isEnabled()) star.glowMat.alpha = a;
+            });
           });
-        });
 
     return () => {
       perf.dispose();

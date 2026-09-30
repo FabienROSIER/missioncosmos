@@ -53,6 +53,8 @@
   padding-bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
   min-height: 0;
   overflow: hidden;
+  /* Opacity only: do not turn this into a containing block for fixed UI. */
+  animation: var(--ui-page-enter) var(--motion-base) var(--ease-out);
 }
 
 .contentImmersive {
@@ -79,15 +81,16 @@
   bottom: 0;
   z-index: 30;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: var(--space-1);
   padding: var(--space-2) var(--space-2) calc(var(--space-2) + env(safe-area-inset-bottom, 0px));
   background: rgba(11, 18, 32, 0.96);
   border-top: 1px solid var(--color-border);
-  backdrop-filter: blur(10px);
+  backdrop-filter: var(--ui-backdrop-filter);
 }
 
 .navLink {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -98,6 +101,32 @@
   color: var(--color-star-muted);
   text-align: center;
   padding: var(--space-2);
+}
+
+.navLink::after {
+  content: '';
+  position: absolute;
+  bottom: 5px;
+  left: calc(50% - 10px);
+  width: 20px;
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--color-nebula-soft);
+  opacity: 0;
+  scale: 0.6 1;
+  transition:
+    opacity var(--motion-base) var(--ease-out),
+    scale var(--motion-base) var(--ease-out);
+}
+
+.navLink[aria-current='page'] {
+  color: var(--color-star);
+  background: rgba(61, 184, 197, 0.14);
+}
+
+.navLink[aria-current='page']::after {
+  opacity: 1;
+  scale: 1;
 }
 
 .navLink:hover,
@@ -119,7 +148,7 @@
     bottom: auto;
     order: -1;
     flex-shrink: 0;
-    grid-template-columns: repeat(4, max-content);
+    grid-template-columns: repeat(5, max-content);
     justify-content: center;
     gap: var(--space-3);
     padding: var(--space-3) var(--space-5);

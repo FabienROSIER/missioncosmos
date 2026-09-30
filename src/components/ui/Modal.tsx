@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useSyncExternalStore, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/Button';
 import styles from './Modal.module.css';
 
@@ -12,36 +13,46 @@ type ModalProps = {
   closeLabel?: string;
 };
 
-/** Sheet/modal mobile-first — fermeture clavier Escape. */
-export function Modal({
-  open,
-  title,
-  children,
-  onClose,
-  closeLabel = 'Fermer',
-}: ModalProps) {
+const subscribeMounted = () => () => undefined;
+const getMounted = () => true;
+const getServerMounted = () => false;
+
+/** Native dialog keeps focus inside and restores it on close; CSS handles presence. */
+export function Modal({ open, title, children, onClose, closeLabel = 'Fermer' }: ModalProps) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
+  const mounted = useSyncExternalStore(subscribeMounted, getMounted, getServerMounted);
+
   useEffect(() => {
-    if (!open) return;
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    if (open && !dialog.open) dialog.showModal();
+    else if (!open && dialog.open) dialog.close();
+    return () => {
+      if (dialog.open) dialog.close();
     };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [open, onClose]);
+  }, [open, mounted]);
 
-  if (!open) return null;
+  // The portal avoids clipping or moving the dialog with animated parent panels.
+  if (!mounted) return null;
 
-  return (
-    <div className={styles.backdrop} role="presentation" onClick={onClose}>
-      <div
-        className={styles.sheet}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="mc-modal-title"
-        onClick={(event) => event.stopPropagation()}
-      >
+  return createPortal(
+    <dialog
+      ref={dialogRef}
+      className={styles.backdrop}
+      aria-modal="true"
+      aria-labelledby={titleId}
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
+      }}
+      onClick={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
+      <div className={styles.sheet}>
         <div className={styles.header}>
-          <h2 id="mc-modal-title" className={styles.title}>
+          <h2 id={titleId} className={styles.title}>
             {title}
           </h2>
           <Button variant="ghost" onClick={onClose} aria-label={closeLabel}>
@@ -50,6 +61,7 @@ export function Modal({
         </div>
         <div className={styles.body}>{children}</div>
       </div>
-    </div>
+    </dialog>,
+    document.body,
   );
 }

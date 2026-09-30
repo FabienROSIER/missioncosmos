@@ -142,6 +142,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const [quizMood, setQuizMood] = useState<CompanionFeedbackMood>('none');
   const stageRef = useRef<HTMLDivElement>(null);
   const topBarRef = useRef<HTMLElement>(null);
+  const menuToggleRef = useRef<HTMLButtonElement>(null);
   const bottomBarRef = useRef<HTMLDivElement>(null);
   const tipCardRef = useRef<HTMLDivElement>(null);
   const completionSavedRef = useRef(false);
@@ -170,6 +171,26 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     media.addEventListener('change', update);
     return () => media.removeEventListener('change', update);
   }, []);
+
+  useEffect(() => {
+    if (!headerMenuOpen) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      setHeaderMenuOpen(false);
+      menuToggleRef.current?.focus();
+    };
+    const onOutsidePointer = (event: PointerEvent) => {
+      if (event.target instanceof Node && !topBarRef.current?.contains(event.target)) {
+        setHeaderMenuOpen(false);
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('pointerdown', onOutsidePointer);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('pointerdown', onOutsidePointer);
+    };
+  }, [headerMenuOpen]);
 
   useEffect(() => {
     if (!isSolarSystem) return;
@@ -849,8 +870,11 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
         <h1 className={styles.title}>{mission.title}</h1>
         <button
           type="button"
+          ref={menuToggleRef}
           className={styles.menuToggle}
-          aria-label="Ouvrir les actions de la mission"
+          aria-label={
+            headerMenuOpen ? 'Fermer les actions de la mission' : 'Ouvrir les actions de la mission'
+          }
           aria-expanded={headerMenuOpen}
           aria-controls="mission-header-actions"
           onClick={() => setHeaderMenuOpen((open) => !open)}
@@ -955,6 +979,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
               <button
                 type="button"
                 className={styles.tipToggle}
+                data-motion="stationary"
                 aria-expanded={isMobileGame ? mobileGuideExpanded : tipOpen}
                 onClick={toggleGuide}
               >
@@ -967,7 +992,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
             {tipOpen ? (
               <>
                 {step.id !== 'm05-scale' && step.id !== 'm05-distances' ? (
-                  <p className={styles.tipBody}>
+                  <p key={step.id} className={styles.tipBody}>
                     <RichMissionText
                       text={step.body}
                       entries={glossaryEntries}
@@ -1000,7 +1025,11 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                   />
                 ) : null}
                 {visibleFeedback ? (
-                  <p className={visibleFeedback.wrong ? styles.hint : styles.success} role="status">
+                  <p
+                    key={visibleFeedback.text}
+                    className={visibleFeedback.wrong ? styles.hint : styles.success}
+                    role="status"
+                  >
                     {visibleFeedback.text}
                   </p>
                 ) : null}

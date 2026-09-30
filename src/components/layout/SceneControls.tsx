@@ -18,7 +18,7 @@ export function SceneControls(props: HTMLAttributes<HTMLDivElement>) {
     return () => media.removeEventListener('change', update);
   }, []);
 
-  const controls = <div {...props} />;
+  const controls = <div data-ui-panel {...props} />;
   return target
     ? createPortal(<div className={styles.mobileControls}>{controls}</div>, target)
     : controls;

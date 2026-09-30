@@ -5,7 +5,11 @@
   filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.35));
   pointer-events: none;
   user-select: none;
-  animation: companionFloat 4.5s ease-in-out infinite;
+  animation: none;
+}
+
+:global(html[data-ui-motion='full']) .root {
+  animation: companionFloat 5.5s ease-in-out infinite;
 }
 
 @keyframes companionFloat {
@@ -19,15 +23,14 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .root {
-    animation: none;
+  :global(html[data-ui-motion]) .root {
+    animation: none !important;
   }
 }
 
 /** Variante débloquée Mission 01 — teinte chaude, pas de nouvel asset. */
 .explorer {
-  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.35))
-    sepia(0.25) saturate(1.15) hue-rotate(-8deg);
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.35)) sepia(0.25) saturate(1.15) hue-rotate(-8deg);
 }
 
 .img {

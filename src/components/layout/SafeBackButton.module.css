@@ -12,7 +12,7 @@
   font-size: var(--text-sm);
   font-weight: 800;
   cursor: pointer;
-  backdrop-filter: blur(8px);
+  backdrop-filter: var(--ui-backdrop-filter);
   white-space: nowrap;
 }
 

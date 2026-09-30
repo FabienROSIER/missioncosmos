@@ -19,6 +19,13 @@
   margin: 0 0 var(--space-2);
 }
 
+.motionHelp {
+  margin-top: var(--space-2);
+  color: var(--color-nebula-soft);
+  font-size: var(--text-xs);
+  line-height: var(--leading-normal);
+}
+
 .row {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

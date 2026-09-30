@@ -14,13 +14,18 @@
   cursor: pointer;
   transition:
     border-color var(--motion-base) var(--ease-out),
-    transform var(--motion-base) var(--ease-out);
+    translate var(--motion-base) var(--ease-out),
+    scale var(--motion-fast) var(--ease-out);
 }
 
-.interactive:hover {
-  border-color: var(--color-nebula);
+@media (hover: hover) and (pointer: fine) {
+  .interactive:hover {
+    border-color: var(--color-nebula);
+    translate: 0 var(--ui-hover-lift);
+  }
 }
 
 .interactive:active {
-  transform: scale(0.99);
+  translate: 0 0;
+  scale: var(--ui-press-scale);
 }

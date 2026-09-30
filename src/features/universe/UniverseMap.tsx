@@ -2,11 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { MissionCard } from '@/components/ui/MissionCard';
-import {
-  UNIVERSE_ZONES,
-  getMissionsForZone,
-  type UniverseZoneId,
-} from '@/content/universe';
+import { UNIVERSE_ZONES, getMissionsForZone, type UniverseZoneId } from '@/content/universe';
 import {
   getZoneStatus,
   pickInitialZoneId,
@@ -130,7 +126,7 @@ export function UniverseMap({
       </div>
 
       <section className={styles.preview} aria-live="polite">
-        <header className={styles.previewHeader}>
+        <header key={selectedId} className={styles.previewHeader}>
           <h2 className={styles.previewTitle}>{selectedZone.title}</h2>
           <p className={styles.previewBlurb}>{selectedZone.blurb}</p>
         </header>
@@ -138,13 +134,11 @@ export function UniverseMap({
         {selectedStatus === 'locked' ? (
           <p className={styles.previewEmpty}>Termine d&apos;abord la zone précédente.</p>
         ) : selectedStatus === 'coming-soon' ? (
-          <p className={styles.previewEmpty}>
-            Zone découverte — missions bientôt disponibles.
-          </p>
+          <p className={styles.previewEmpty}>Zone découverte — missions bientôt disponibles.</p>
         ) : missions.length === 0 ? (
           <p className={styles.previewEmpty}>Pas encore de mission ici.</p>
         ) : (
-          <ul className={styles.missionList}>
+          <ul className={`${styles.missionList} ui-stagger`}>
             {missions.map((mission) => {
               const unlocked = isMissionUnlocked(mission.id);
               const completed = isMissionCompleted(mission.id);

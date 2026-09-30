@@ -13,7 +13,8 @@
   transition:
     background-color var(--motion-fast) var(--ease-out),
     border-color var(--motion-fast) var(--ease-out),
-    transform var(--motion-fast) var(--ease-out);
+    translate var(--motion-fast) var(--ease-out),
+    scale var(--motion-fast) var(--ease-out);
 }
 
 .root:hover:not(:disabled) {
@@ -22,7 +23,7 @@
 }
 
 .root:active:not(:disabled) {
-  transform: scale(0.96);
+  scale: var(--ui-press-scale);
 }
 
 .root:disabled {

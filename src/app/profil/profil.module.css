@@ -37,6 +37,7 @@
 }
 
 .card {
+  animation: var(--ui-enter) var(--motion-base) var(--ease-out);
   display: flex;
   flex: 1;
   flex-direction: column;

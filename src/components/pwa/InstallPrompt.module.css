@@ -1,4 +1,5 @@
 .bar {
+  animation: var(--ui-enter) var(--motion-base) var(--ease-out);
   position: fixed;
   z-index: 40;
   left: max(0.75rem, env(safe-area-inset-left));

@@ -33,7 +33,7 @@
   color: var(--color-star);
   font-size: var(--text-md);
   line-height: var(--leading-normal);
-  backdrop-filter: blur(8px);
+  backdrop-filter: var(--ui-backdrop-filter);
 }
 
 @media (orientation: landscape) and (max-height: 500px) {
