@@ -238,11 +238,40 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     id: 'spectre',
     term: 'Spectre',
     definition:
-      'La lumière d’une étoile étalée en couleurs, comme un arc-en-ciel. Une zone brille souvent plus fort.',
+      'Les couleurs d’une lumière, étalées les unes à côté des autres, comme un arc-en-ciel.',
     enrichedDefinition:
-      'Dans le jeu, c’est une maquette simplifiée (corps noir) : pas de raies d’absorption. Le pic se déplace avec la température.',
+      'Le prisme révèle les couleurs déjà présentes dans la lumière blanche du Soleil : il ne les fabrique pas.',
     unlockRewardId: 'reward-stellar-light',
     aliases: ['spectre', 'spectres', 'arc-en-ciel', 'bande'],
+  },
+  {
+    id: 'prisme',
+    term: 'Prisme',
+    definition: 'Un morceau de verre qui peut séparer les couleurs de la lumière blanche.',
+    enrichedDefinition:
+      'Les différentes couleurs sont déviées différemment par le verre. Elles sortent séparées, en arc-en-ciel.',
+    unlockRewardId: 'reward-stellar-light',
+    aliases: ['prisme', 'prismes'],
+  },
+  {
+    id: 'lumiere-blanche',
+    term: 'Lumière blanche',
+    definition:
+      'Une lumière qui nous paraît blanche. Celle du Soleil contient toutes les couleurs de l’arc-en-ciel.',
+    enrichedDefinition:
+      'On peut aussi obtenir du blanc en ajoutant les lumières rouge, verte et bleue. Ce mélange paraît blanc à nos yeux.',
+    unlockRewardId: 'reward-stellar-light',
+    aliases: ['lumière blanche'],
+  },
+  {
+    id: 'melange-lumieres',
+    term: 'Mélange de lumières',
+    definition:
+      'Quand plusieurs lumières éclairent le même endroit, elles s’ajoutent : rouge + vert font du jaune.',
+    enrichedDefinition:
+      'Rouge + bleu font du rose (magenta), vert + bleu font du cyan, et les trois ensemble donnent du blanc. La peinture se mélange autrement.',
+    unlockRewardId: 'reward-stellar-light',
+    aliases: ['mélanges de lumières', 'mélange de lumières', 'projecteurs'],
   },
   {
     id: 'spectroscope',

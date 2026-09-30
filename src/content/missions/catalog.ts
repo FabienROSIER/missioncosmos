@@ -59,8 +59,8 @@ export const MISSION_CATALOG: MissionCatalogEntry[] = [
   },
   {
     id: 'mission-09',
-    title: 'La lumière des étoiles',
-    objective: 'Relier couleur et température de la lumière stellaire.',
+    title: 'Le secret des couleurs',
+    objective: 'Révéler l’arc-en-ciel et jouer avec les mélanges de lumières.',
     unlocksNextId: 'mission-10',
   },
   {

@@ -27,6 +27,8 @@ type BabylonCanvasProps = {
   fill?: boolean;
   /** Phone framing margin; leaves the desktop projection unchanged. */
   mobileFovScale?: number;
+  /** Optional horizontal framing floor for wide experiments on portrait desktops. */
+  minHorizontalFov?: number;
 };
 
 /**
@@ -40,10 +42,12 @@ export function BabylonCanvas({
   loadingMessage = 'Chargement de la scène…',
   fill = false,
   mobileFovScale = 1.4,
+  minHorizontalFov = 0,
 }: BabylonCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const onSceneReadyRef = useRef<SceneReadyHandler | undefined>(onSceneReady);
   const mobileFovScaleRef = useRef(mobileFovScale);
+  const minHorizontalFovRef = useRef(minHorizontalFov);
   const resizeRef = useRef<(() => void) | null>(null);
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -54,8 +58,9 @@ export function BabylonCanvas({
 
   useEffect(() => {
     mobileFovScaleRef.current = mobileFovScale;
+    minHorizontalFovRef.current = minHorizontalFov;
     resizeRef.current?.();
-  }, [mobileFovScale]);
+  }, [mobileFovScale, minHorizontalFov]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -75,14 +80,17 @@ export function BabylonCanvas({
       engine?.resize();
       if (!mainCamera) return;
       // Fit the smaller game area without changing camera targets, zoom gestures or PiP cameras.
-      const aspect = canvas.clientWidth / Math.max(1, canvas.clientHeight);
-      mainCamera.fov = mobileLayout.matches
-        ? 2 *
-          Math.atan(
-            Math.tan(0.8 / 2) *
-              Math.max(mobileFovScaleRef.current, mobileFovScaleRef.current / aspect),
-          )
-        : 0.8;
+      const aspect = Math.max(0.1, canvas.clientWidth / Math.max(1, canvas.clientHeight));
+      const framingMargin = mobileLayout.matches ? mobileFovScaleRef.current : 1;
+      // A reserved guide can make the canvas narrow even on a large portrait screen.
+      // Preserve the horizontal view from the actual canvas dimensions, not the window.
+      mainCamera.fov = 2 * Math.atan(Math.tan(0.8 / 2) * framingMargin * Math.max(1, 1 / aspect));
+      if (minHorizontalFovRef.current > 0) {
+        mainCamera.fov = Math.max(
+          mainCamera.fov,
+          2 * Math.atan(Math.tan(minHorizontalFovRef.current / 2) / Math.max(aspect, 0.1)),
+        );
+      }
     };
     const onResponsiveLayoutChange = () => {
       onResize();

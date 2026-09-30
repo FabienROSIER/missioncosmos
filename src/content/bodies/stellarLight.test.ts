@@ -1,80 +1,88 @@
 import { describe, expect, it } from 'vitest';
 import {
-  PRISM_TARGETS,
-  PRISM_TARGET_TEMP_K,
-  TEMP_MAX_K,
-  TEMP_MIN_K,
-  isPrismMatch,
-  peakWavelengthNm,
-  prismHint,
-  prismProgress,
-  sampleSpectrumCurve,
-  temperatureToRgb,
-  thermalBand,
+  LIGHT_CHANNELS,
+  MIX_TARGETS,
+  lightHint,
+  lightProgress,
+  lightRecipe,
+  lightsOff,
+  mixedLight,
+  type LightColourId,
 } from './stellarLight';
+import { MISSION_09 } from '@/content/missions/mission-09';
 
-describe('stellarLight learning', () => {
-  it('ordonne les cibles du froid au chaud', () => {
-    expect(PRISM_TARGETS).toEqual(['proxima', 'sun', 'sirius']);
-    expect(PRISM_TARGET_TEMP_K.proxima).toBeLessThan(PRISM_TARGET_TEMP_K.sun);
-    expect(PRISM_TARGET_TEMP_K.sun).toBeLessThan(PRISM_TARGET_TEMP_K.sirius);
+describe('colour-light experiments', () => {
+  it.each([
+    [false, false, false, 'dark'],
+    [true, false, false, 'red'],
+    [false, true, false, 'green'],
+    [false, false, true, 'blue'],
+    [true, true, false, 'yellow'],
+    [true, false, true, 'magenta'],
+    [false, true, true, 'cyan'],
+    [true, true, true, 'white'],
+  ] as const)('mixes lights %s %s %s into %s', (red, green, blue, colour) => {
+    expect(mixedLight({ red, green, blue })).toBe(colour);
   });
 
-  it('classe les bandes thermiques', () => {
-    expect(thermalBand(3000)).toBe('cold');
-    expect(thermalBand(5800)).toBe('medium');
-    expect(thermalBand(9900)).toBe('hot');
+  it('all challenge and experiment targets can be reached with the three switches', () => {
+    const targets: LightColourId[] = [...MIX_TARGETS];
+    targets.forEach((target) => expect(mixedLight(lightRecipe(target))).toBe(target));
   });
 
-  it('déplace le pic de Wien avec la température', () => {
-    const cold = peakWavelengthNm(3000);
-    const hot = peakWavelengthNm(9900);
-    expect(cold).toBeGreaterThan(hot);
-    expect(cold).toBeGreaterThan(700);
-    expect(hot).toBeLessThan(400);
+  it('does not reveal recipes on the first miss, then gives an actionable hint', () => {
+    expect(lightHint(lightsOff(), 'yellow', 1)).toContain('Essaie');
+    expect(lightHint(lightsOff(), 'yellow', 2)).toContain('Ajoute');
+    expect(lightHint({ red: true, green: true, blue: true }, 'yellow', 2)).toContain('Éteins');
+    expect(lightHint(lightRecipe('yellow'), 'yellow', 0)).toContain('valider');
   });
 
-  it('rend une étoile froide plus rouge qu’une étoile chaude', () => {
-    const cold = temperatureToRgb(3000);
-    const hot = temperatureToRgb(9900);
-    expect(cold.r).toBeGreaterThan(cold.b);
-    expect(hot.b).toBeGreaterThan(cold.b);
-    expect(hot.b / Math.max(hot.r, 0.01)).toBeGreaterThan(cold.b / Math.max(cold.r, 0.01));
+  it('each later hint brings every wrong combination closer to its target', () => {
+    for (const target of [...MIX_TARGETS, 'cyan'] as const) {
+      const recipe = lightRecipe(target);
+      for (let mask = 0; mask < 8; mask++) {
+        const lights = {
+          red: Boolean(mask & 4),
+          green: Boolean(mask & 2),
+          blue: Boolean(mask & 1),
+        };
+        if (mixedLight(lights) === target) continue;
+        const hint = lightHint(lights, target, 2);
+        const channel = LIGHT_CHANNELS.find((id) =>
+          hint.includes({ red: 'rouge', green: 'vert', blue: 'bleu' }[id]),
+        )!;
+        expect(channel).toBeDefined();
+        expect(lights[channel]).not.toBe(recipe[channel]);
+        expect(hint.startsWith(recipe[channel] ? 'Ajoute' : 'Éteins')).toBe(true);
+      }
+    }
   });
 
-  it('normalise une courbe spectrale visible', () => {
-    const curve = sampleSpectrumCurve(5800, 32);
-    expect(curve.length).toBe(32);
-    expect(Math.max(...curve.map((p) => p.intensity))).toBeCloseTo(1, 5);
-    expect(curve[0]!.wavelengthNm).toBe(380);
-    expect(curve.at(-1)!.wavelengthNm).toBe(750);
-  });
-
-  it('valide les cibles avec tolérance pédagogique', () => {
-    expect(isPrismMatch(PRISM_TARGET_TEMP_K.sun, 'sun')).toBe(true);
-    expect(isPrismMatch(PRISM_TARGET_TEMP_K.sun + 200, 'sun')).toBe(true);
-    expect(isPrismMatch(PRISM_TARGET_TEMP_K.sun + 2000, 'sun')).toBe(false);
-  });
-
-  it('donne un indice directionnel', () => {
-    expect(prismHint(8000, 'sun')).toContain('refroidis');
-    expect(prismHint(4000, 'sun')).toContain('chauffe');
-    expect(prismHint(PRISM_TARGET_TEMP_K.sun, 'sun')).toContain('prête');
-  });
-
-  it('compte la jauge 0/3', () => {
-    expect(prismProgress([])).toEqual({ done: 0, total: 3, complete: false });
-    expect(prismProgress(['proxima'])).toEqual({ done: 1, total: 3, complete: false });
-    expect(prismProgress(['proxima', 'sun', 'sirius'])).toEqual({
-      done: 3,
-      total: 3,
-      complete: true,
+  it('counts only requested colours and never counts a duplicated success twice', () => {
+    expect(lightProgress(['yellow', 'yellow', 'red'], MIX_TARGETS)).toEqual({
+      done: 1,
+      total: 4,
+      complete: false,
     });
-    expect(prismProgress(['proxima', 'proxima']).done).toBe(1);
+    expect(lightProgress(MIX_TARGETS, MIX_TARGETS).complete).toBe(true);
+    expect(lightProgress([], []).complete).toBe(false);
   });
 
-  it('reste dans la plage du laboratoire', () => {
-    expect(TEMP_MIN_K).toBeLessThan(PRISM_TARGET_TEMP_K.proxima);
-    expect(TEMP_MAX_K).toBeGreaterThan(PRISM_TARGET_TEMP_K.sirius);
+  it('uses independent switch states when resetting an experiment', () => {
+    const a = lightsOff();
+    a.red = true;
+    expect(lightsOff().red).toBe(false);
+  });
+
+  it('has one mixing challenge, with each colour once, while retaining save IDs', () => {
+    expect(MISSION_09.id).toBe('mission-09');
+    expect(MISSION_09.rewardIds).toContain('reward-stellar-light');
+    const gated = MISSION_09.steps.filter((step) => step.requiresSuccess);
+    expect(gated.map((step) => step.id)).toEqual(['m09-color', 'm09-challenge']);
+    expect(gated.every((step) => step.challengePrism)).toBe(true);
+    expect(MISSION_09.steps.some((step) => step.id === 'm09-quiz')).toBe(false);
+    expect(MIX_TARGETS).toEqual(['yellow', 'magenta', 'cyan', 'white']);
+    expect(new Set(MIX_TARGETS).size).toBe(MIX_TARGETS.length);
+    expect(MISSION_09.steps.filter((step) => step.kind === 'quiz')).toHaveLength(0);
   });
 });

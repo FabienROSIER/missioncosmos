@@ -5,8 +5,8 @@
 
 export const COMPANION_LINES = {
   welcome: 'On explore ensemble. Prends ton temps.',
-  tryChallenge: 'Touche la bonne zone sur le globe.',
-  quizThink: 'Lis bien, puis choisis.',
+  tryChallenge: 'À toi d’essayer. Prends ton temps !',
+  quizThink: 'Observe bien, puis essaie.',
   softRetry: 'Pas grave — regarde encore une fois.',
   softSuccess: 'Bien vu !',
   missionDone: 'Tu as terminé cette mission.',

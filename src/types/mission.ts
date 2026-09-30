@@ -14,6 +14,8 @@ export interface MissionStep {
   /** Titre court (UI). Clé stable `id` pour futures traductions. */
   title: string;
   body: string;
+  /** Short, authored reminder shown while the full guide is folded. */
+  guideReminder?: string;
   /** Label du bouton continuer (défaut : Continuer). */
   ctaLabel?: string;
   /** Si true, le joueur doit réussir une action (pick/quiz) avant de continuer. */
@@ -36,7 +38,7 @@ export interface MissionStep {
   challengeNorthernSummer?: boolean;
   /** Défi observatoire : album de photos à cadrage constant (Mission 08). */
   challengeObservatory?: boolean;
-  /** Défi laboratoire du prisme : trois réglages de température (Mission 09). */
+  /** Expérience guidée du laboratoire : prisme ou mélange de lumières (Mission 09). */
   challengePrism?: boolean;
   /** Défi orbite Terre autour du Soleil (Mission 01). */
   challengeOrbit?: boolean;

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Companion } from '@/components/game/Companion';
 import { SafeBackButton } from '@/components/layout/SafeBackButton';
+import { SceneControlsTarget } from '@/components/layout/SceneControls';
 import { RewardPanel } from '@/components/ui/RewardPanel';
 import type { EarthMarkerId, EarthSceneApi } from '@/3d/scenes/EarthPreviewScene';
 import { EarthPreviewScene } from '@/3d/scenes/EarthPreviewScene';
@@ -42,10 +43,11 @@ import { RichMissionText } from '@/features/glossary/RichMissionText';
 import { resolveCompanionCue, type CompanionFeedbackMood } from '@/features/companion';
 import { MissionQuiz } from '@/features/missions/MissionQuiz';
 import { useMissionSequence } from '@/features/missions/useMissionSequence';
+import { splitGuideText } from '@/features/missions/guideText';
 import { completeMission } from '@/features/progression/saveStore';
 import { useLocalSave } from '@/features/progression/useLocalSave';
 import type { Mission, MissionStep } from '@/types/mission';
-import { MOBILE_GAME_QUERY } from '@/lib/mobileLayout';
+import { getUiMotionSnapshot } from '@/lib/uiMotion';
 import styles from './MissionImmersive.module.css';
 
 type MissionImmersiveProps = {
@@ -67,18 +69,6 @@ type StepFeedback = {
   text: string;
   wrong: boolean;
 };
-
-function mobileGuideStartsExpanded(step: MissionStep): boolean {
-  return (
-    step.kind === 'explain' ||
-    step.kind === 'quiz' ||
-    step.kind === 'reward' ||
-    step.kind === 'complete' ||
-    step.id === 'm05-scale' ||
-    step.id === 'm05-distances' ||
-    step.id === 'm06-fall'
-  );
-}
 
 function challengeFromStep(step: MissionStep): {
   targetMarkerId: EarthMarkerId | undefined;
@@ -122,14 +112,15 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const isSeasons = mission.sceneId === 'seasons';
   const isStars = mission.sceneId === 'stars';
   const isStellarLight = mission.sceneId === 'stellar-light';
-  const [tipOpen, setTipOpen] = useState(true);
-  const [isMobileGame, setIsMobileGame] = useState(false);
-  const [mobileGuideOverride, setMobileGuideOverride] = useState<{
+  const [guideOverride, setGuideOverride] = useState<{
     stepId: string;
     expanded: boolean;
     challengeSolved: boolean;
   } | null>(null);
-  const [mobilePanel, setMobilePanel] = useState<'mission' | 'controls'>('mission');
+  const [guidePage, setGuidePage] = useState<{ stepId: string; index: number } | null>(null);
+  const [guideLeaving, setGuideLeaving] = useState(false);
+  const [controlsTarget, setControlsTarget] = useState<HTMLDivElement | null>(null);
+  const continueTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
   const [earthApi, setEarthApi] = useState<EarthSceneApi | null>(null);
   const [dayNightApi, setDayNightApi] = useState<DayNightSceneApi | null>(null);
@@ -147,11 +138,13 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const [glossaryOpen, setGlossaryOpen] = useState(false);
   const [glossaryFocusId, setGlossaryFocusId] = useState<string | null>(null);
   const [quizMood, setQuizMood] = useState<CompanionFeedbackMood>('none');
-  const stageRef = useRef<HTMLDivElement>(null);
   const topBarRef = useRef<HTMLElement>(null);
   const menuToggleRef = useRef<HTMLButtonElement>(null);
   const bottomBarRef = useRef<HTMLDivElement>(null);
-  const tipCardRef = useRef<HTMLDivElement>(null);
+  const companionButtonRef = useRef<HTMLButtonElement>(null);
+  const guideTitleRef = useRef<HTMLButtonElement>(null);
+  const guidePanelRef = useRef<HTMLDivElement>(null);
+  const continueFocusRef = useRef(false);
   const completionSavedRef = useRef(false);
 
   const {
@@ -169,14 +162,9 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   } = useMissionSequence(mission);
 
   useEffect(() => {
-    const media = window.matchMedia(MOBILE_GAME_QUERY);
-    const update = () => {
-      setIsMobileGame(media.matches);
-      if (media.matches) setTipOpen(true);
+    return () => {
+      if (continueTimerRef.current !== null) clearTimeout(continueTimerRef.current);
     };
-    update();
-    media.addEventListener('change', update);
-    return () => media.removeEventListener('change', update);
   }, []);
 
   useEffect(() => {
@@ -200,29 +188,10 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   }, [headerMenuOpen]);
 
   useEffect(() => {
-    if (!isSolarSystem) return;
-    const measure = () => {
-      const tipH = tipCardRef.current?.getBoundingClientRect().height;
-      const barH = bottomBarRef.current?.getBoundingClientRect().height;
-      // Hauteur utile du tip (pas la barre étirée), plafonnée pour le dock M05.
-      const bottomClearance = Math.min(tipH ?? barH ?? 200, Math.round(window.innerHeight * 0.42));
-      stageRef.current?.style.setProperty(
-        '--mission-top-clearance',
-        `${topBarRef.current?.getBoundingClientRect().height ?? 64}px`,
-      );
-      stageRef.current?.style.setProperty('--mission-bottom-clearance', `${bottomClearance}px`);
-    };
-    const observer = new ResizeObserver(measure);
-    if (topBarRef.current) observer.observe(topBarRef.current);
-    if (tipCardRef.current) observer.observe(tipCardRef.current);
-    else if (bottomBarRef.current) observer.observe(bottomBarRef.current);
-    measure();
-    return () => observer.disconnect();
-  }, [isSolarSystem, step.id, tipOpen]);
-
-  useEffect(() => {
-    if (window.matchMedia(MOBILE_GAME_QUERY).matches) {
-      bottomBarRef.current?.scrollTo({ top: 0 });
+    bottomBarRef.current?.scrollTo({ top: 0 });
+    if (continueFocusRef.current) {
+      (guideTitleRef.current ?? guidePanelRef.current)?.focus({ preventScroll: true });
+      continueFocusRef.current = false;
     }
   }, [step.id]);
 
@@ -258,14 +227,27 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     isOrbits ||
     isSeasons ||
     isStars ||
-    isStellarLight ||
+    (isStellarLight && !['m09-intro', 'm09-explain', 'm09-reward'].includes(step.id)) ||
     (isSolarSystem && step.id !== 'm05-scale' && step.id !== 'm05-distances');
   const visibleFeedback = feedback?.stepId === step.id ? feedback : null;
-  const mobileGuideExpanded =
-    mobileGuideOverride?.stepId === step.id &&
-    mobileGuideOverride.challengeSolved === challengeSolved
-      ? mobileGuideOverride.expanded
-      : challengeSolved || mobileGuideStartsExpanded(step);
+  const interactivePanel =
+    step.kind === 'quiz' || step.id === 'm05-scale' || step.id === 'm05-distances';
+  const guideCanFold = !interactivePanel && step.kind !== 'reward' && step.kind !== 'complete';
+  const guideExpanded =
+    !guideCanFold ||
+    (guideOverride?.stepId === step.id && guideOverride.challengeSolved === challengeSolved
+      ? guideOverride.expanded
+      : true);
+  const guideMessages = splitGuideText(step.body);
+  const guideMessageIndex = guidePage?.stepId === step.id ? guidePage.index : 0;
+  const hasMoreGuideText = !challengeSolved && guideMessageIndex < guideMessages.length - 1;
+  const showPlayButton =
+    guideExpanded &&
+    !hasMoreGuideText &&
+    guideCanFold &&
+    !challengeSolved &&
+    (step.kind === 'challenge' || step.kind === 'manipulate' || step.kind === 'observe');
+  const showSceneControls = hasSceneControls && step.kind !== 'quiz' && step.kind !== 'reward';
   const quiz = step.quizId ? getQuizById(step.quizId) : undefined;
   const glossaryEntries = getGlossaryEntries(mission.glossaryIds ?? []);
   const nextMissionId = getCatalogEntry(mission.id)?.unlocksNextId;
@@ -495,19 +477,15 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
 
   useEffect(() => {
     if (!starLightApi || !isStellarLight) return;
-    const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
-    const prismStep = !cinematic && step.kind === 'challenge' && challengePrism;
-    starLightApi.setChallengeEnabled(prismStep);
-
     let mode: StarLightSceneMode = 'explore';
     if (step.id === 'm09-intro') mode = 'intro';
-    else if (step.id === 'm09-color') mode = 'color';
-    else if (step.id === 'm09-spectrum') mode = 'spectrum';
-    else if (step.id === 'm09-lab') mode = 'lab';
-    else if (step.id === 'm09-compare') mode = 'compare';
+    else if (step.id === 'm09-color') mode = 'place';
+    else if (step.id === 'm09-spectrum') mode = 'rainbow';
+    else if (step.id === 'm09-lab' || step.id === 'm09-compare') mode = 'mix';
     else if (step.id === 'm09-challenge') mode = 'challenge';
-    if (!prismStep) starLightApi.setMode(mode);
-  }, [starLightApi, isStellarLight, challengeActive, challengePrism, step.kind, step.id]);
+    else if (step.id === 'm09-explain' || step.id === 'm09-reward') mode = 'review';
+    starLightApi.setMode(mode);
+  }, [starLightApi, isStellarLight, step.id]);
 
   const onEarthApi = useCallback((api: EarthSceneApi) => {
     setEarthApi(api);
@@ -675,14 +653,18 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
 
   const onPrismSuccess = useCallback(() => {
     const ctx = pickCtxRef.current;
-    if (ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
+    if (!['m09-color', 'm09-challenge'].includes(ctx.stepId) || ctx.challengeSolved) return;
     setFeedback({ stepId: ctx.stepId, text: ctx.successFeedback, wrong: false });
     markChallengeSolved();
   }, [markChallengeSolved]);
 
-  const onPrismMiss = useCallback((hintText: string) => {
+  const onPrismMiss = useCallback((hintText: string | null) => {
     const ctx = pickCtxRef.current;
-    if (ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
+    if (!['m09-color', 'm09-challenge'].includes(ctx.stepId) || ctx.challengeSolved) return;
+    if (hintText === null) {
+      setFeedback(null);
+      return;
+    }
     setFeedback({ stepId: ctx.stepId, text: hintText || ctx.hint, wrong: true });
   }, []);
 
@@ -720,42 +702,38 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     }
   };
 
-  const selectMobilePanel = (panel: 'mission' | 'controls') => {
-    setMobilePanel(panel);
-    if (panel === 'controls') {
-      setMobileGuideOverride({ stepId: step.id, expanded: true, challengeSolved });
-    } else {
-      setMobileGuideOverride(null);
-    }
-    bottomBarRef.current?.scrollTo({ top: 0 });
-  };
-
   const toggleGuide = () => {
-    if (isMobileGame) {
-      setTipOpen(true);
-      setMobileGuideOverride({
-        stepId: step.id,
-        expanded: !mobileGuideExpanded,
-        challengeSolved,
-      });
-      return;
-    }
-    setTipOpen((open) => !open);
+    if (!guideCanFold) return;
+    setGuideOverride({ stepId: step.id, expanded: !guideExpanded, challengeSolved });
   };
 
   const onContinue = () => {
-    setMobilePanel('mission');
-    setMobileGuideOverride(null);
-    setTipOpen(true);
-    setFeedback(null);
-    setQuizMood('none');
-    goNext();
+    if (!canAdvance || continueTimerRef.current !== null) return;
+    const advance = () => {
+      continueFocusRef.current = true;
+      continueTimerRef.current = null;
+      setGuideLeaving(false);
+      setGuideOverride(null);
+      setGuidePage(null);
+      setFeedback(null);
+      setQuizMood('none');
+      goNext();
+    };
+    const duration = { none: 0, minimal: 80, standard: 120, full: 140 }[getUiMotionSnapshot()];
+    if (!duration) {
+      advance();
+      return;
+    }
+    setGuideLeaving(true);
+    continueTimerRef.current = setTimeout(advance, duration);
   };
 
   const onRestart = () => {
-    setMobilePanel('mission');
-    setMobileGuideOverride(null);
-    setTipOpen(true);
+    if (continueTimerRef.current !== null) clearTimeout(continueTimerRef.current);
+    continueTimerRef.current = null;
+    setGuideLeaving(false);
+    setGuideOverride(null);
+    setGuidePage(null);
     setFeedback(null);
     setQuizMood('none');
     completionSavedRef.current = false;
@@ -781,7 +759,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const challengeHint = challengeOrbit
     ? 'Glisse à gauche ou à droite pour faire avancer la Terre sur l’anneau autour du Soleil.'
     : challengePrism
-      ? 'Règle le curseur, compare à la carte cible, puis valide. Trop rouge → chauffe ; trop bleue → refroidis.'
+      ? (step.hint ?? 'Allume ou éteins les lumières, observe l’écran, puis valide ton mélange.')
       : challengeObservatory
         ? 'Cadre chaque étoile : si elle déborde, éloigne le télescope ; si elle paraît trop petite, rapproche-le.'
         : challengeNorthernSummer
@@ -819,267 +797,321 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                             : 'Touche la bonne zone sur le globe.';
 
   return (
-    <div
-      ref={stageRef}
-      className={[
-        styles.stage,
-        starFilmPlaying ? styles.starFilmStage : '',
-        isSolarSystem ? styles.solarStage : '',
-        hasSceneControls ? styles.hasSceneControls : '',
-        mobilePanel === 'controls' && hasSceneControls ? styles.showControls : '',
-        isMobileGame ? (mobileGuideExpanded ? styles.guideExpanded : styles.guideCompact) : '',
-      ].join(' ')}
-    >
-      <div className={styles.sceneArea}>
-        {isStellarLight ? (
-          <StarLightScene
-            className={styles.viewport}
-            fill
-            onSceneApi={onStarLightApi}
-            onPrismSuccess={onPrismSuccess}
-            onPrismMiss={onPrismMiss}
-          />
-        ) : isStars ? (
-          <StarsScene
-            className={styles.viewport}
-            fill
-            onSceneApi={onStarsApi}
-            onCinematicPlaying={setStarFilmPlaying}
-            onObservatorySuccess={onObservatorySuccess}
-            onObservatoryMiss={onObservatoryMiss}
-          />
-        ) : isSeasons ? (
-          <SeasonsScene
-            className={styles.viewport}
-            fill
-            onSceneApi={onSeasonsApi}
-            onSummerSuccess={onSummerSuccess}
-            onSummerExit={onSummerExit}
-          />
-        ) : showOrbitFall ? (
-          <OrbitFallScene
-            className={styles.viewport}
-            fill
-            onSceneApi={onOrbitFallApi}
-            onFallSuccess={onFallSuccess}
-          />
-        ) : isOrbits ? (
-          <OrbitsScene
-            className={styles.viewport}
-            fill
-            onSceneApi={onOrbitsApi}
-            onRaceSuccess={onRaceSuccess}
-            onRaceMiss={onRaceMiss}
-          />
-        ) : isSolarSystem ? (
-          <SolarSystemScene
-            className={styles.viewport}
-            fill
-            onSceneApi={onSolarApi}
-            onOrderSuccess={onOrderSuccess}
-            onOrderMiss={onOrderMiss}
-          />
-        ) : isEclipses ? (
-          <EclipsesScene
-            className={styles.viewport}
-            fill
-            onSceneApi={onEclipsesApi}
-            onEclipseSuccess={onEclipseSuccess}
-          />
-        ) : isMoonPhases ? (
-          <MoonPhasesScene
-            className={styles.viewport}
-            fill
-            onSceneApi={onMoonPhasesApi}
-            onPhaseSuccess={onPhaseSuccess}
-          />
-        ) : isDayNight ? (
-          <DayNightScene
-            className={styles.viewport}
-            fill
-            houseVisible={showMarkers}
-            onSceneApi={onDayNightApi}
-            onLightingSuccess={onLightingSuccess}
-          />
-        ) : (
-          <EarthPreviewScene
-            className={styles.viewport}
-            fill
-            markersVisible={showMarkers}
-            onSceneApi={onEarthApi}
-            onMarkerPick={onMarkerPick}
-            onSignificantOrbit={onSignificantOrbit}
-            onOrbitChallengeSuccess={onOrbitChallengeSuccess}
-          />
-        )}
+    <SceneControlsTarget.Provider value={controlsTarget}>
+      <div
+        className={[
+          styles.stage,
+          starFilmPlaying ? styles.starFilmStage : '',
+          guideLeaving ? styles.guideLeaving : '',
+        ].join(' ')}
+        data-guide-expanded={guideExpanded}
+      >
+        <div className={styles.sceneArea}>
+          {isStellarLight ? (
+            <StarLightScene
+              className={styles.viewport}
+              fill
+              onSceneApi={onStarLightApi}
+              onPrismSuccess={onPrismSuccess}
+              onPrismMiss={onPrismMiss}
+            />
+          ) : isStars ? (
+            <StarsScene
+              className={styles.viewport}
+              fill
+              onSceneApi={onStarsApi}
+              onCinematicPlaying={setStarFilmPlaying}
+              onObservatorySuccess={onObservatorySuccess}
+              onObservatoryMiss={onObservatoryMiss}
+            />
+          ) : isSeasons ? (
+            <SeasonsScene
+              className={styles.viewport}
+              fill
+              onSceneApi={onSeasonsApi}
+              onSummerSuccess={onSummerSuccess}
+              onSummerExit={onSummerExit}
+            />
+          ) : showOrbitFall ? (
+            <OrbitFallScene
+              className={styles.viewport}
+              fill
+              onSceneApi={onOrbitFallApi}
+              onFallSuccess={onFallSuccess}
+            />
+          ) : isOrbits ? (
+            <OrbitsScene
+              className={styles.viewport}
+              fill
+              onSceneApi={onOrbitsApi}
+              onRaceSuccess={onRaceSuccess}
+              onRaceMiss={onRaceMiss}
+            />
+          ) : isSolarSystem ? (
+            <SolarSystemScene
+              className={styles.viewport}
+              fill
+              onSceneApi={onSolarApi}
+              onOrderSuccess={onOrderSuccess}
+              onOrderMiss={onOrderMiss}
+            />
+          ) : isEclipses ? (
+            <EclipsesScene
+              className={styles.viewport}
+              fill
+              onSceneApi={onEclipsesApi}
+              onEclipseSuccess={onEclipseSuccess}
+            />
+          ) : isMoonPhases ? (
+            <MoonPhasesScene
+              className={styles.viewport}
+              fill
+              onSceneApi={onMoonPhasesApi}
+              onPhaseSuccess={onPhaseSuccess}
+            />
+          ) : isDayNight ? (
+            <DayNightScene
+              className={styles.viewport}
+              fill
+              houseVisible={showMarkers}
+              onSceneApi={onDayNightApi}
+              onLightingSuccess={onLightingSuccess}
+            />
+          ) : (
+            <EarthPreviewScene
+              className={styles.viewport}
+              fill
+              markersVisible={showMarkers}
+              onSceneApi={onEarthApi}
+              onMarkerPick={onMarkerPick}
+              onSignificantOrbit={onSignificantOrbit}
+              onOrbitChallengeSuccess={onOrbitChallengeSuccess}
+            />
+          )}
 
-        {/* Schéma 2D hors bulle (ex. défi distances) */}
-        <div
-          id="mission-schema-root"
-          className={styles.schemaRoot}
-          onPointerDown={(event) => event.stopPropagation()}
-        />
-      </div>
-
-      <header ref={topBarRef} className={styles.topBar}>
-        <SafeBackButton fallbackHref="/missions" label="Quitter" compact preferFallback />
-        <h1 className={styles.title}>{mission.title}</h1>
-        <button
-          type="button"
-          ref={menuToggleRef}
-          className={styles.menuToggle}
-          aria-label={
-            headerMenuOpen ? 'Fermer les actions de la mission' : 'Ouvrir les actions de la mission'
-          }
-          aria-expanded={headerMenuOpen}
-          aria-controls="mission-header-actions"
-          onClick={() => setHeaderMenuOpen((open) => !open)}
-        >
-          {headerMenuOpen ? '×' : '☰'}
-        </button>
-        <div
-          id="mission-header-actions"
-          className={`${styles.topActions} ${headerMenuOpen ? styles.topActionsOpen : ''}`}
-        >
-          <button
-            type="button"
-            className={styles.ghostBtn}
-            onClick={() => {
-              setHeaderMenuOpen(false);
-              openGlossary();
-            }}
-          >
-            Mots
-          </button>
-          <button
-            type="button"
-            className={styles.ghostBtn}
-            onClick={() => {
-              setHeaderMenuOpen(false);
-              onRestart();
-            }}
-          >
-            Recommencer
-          </button>
-          <button
-            type="button"
-            className={styles.recenter}
-            onClick={() => {
-              setHeaderMenuOpen(false);
-              void onRecenter();
-            }}
-            disabled={!cameraApi || recentering}
-          >
-            Recentrer
-          </button>
-        </div>
-      </header>
-
-      <div ref={bottomBarRef} className={styles.bottomBar}>
-        {hasSceneControls ? (
-          <div className={styles.mobilePanelNav} role="group" aria-label="Panneau de mission">
-            <button
-              type="button"
-              aria-pressed={mobilePanel === 'mission'}
-              onClick={() => selectMobilePanel('mission')}
-            >
-              Consigne {challengeSolved ? '✓' : ''}
-            </button>
-            <button
-              type="button"
-              aria-pressed={mobilePanel === 'controls'}
-              onClick={() => selectMobilePanel('controls')}
-            >
-              Commandes
-            </button>
-          </div>
-        ) : null}
-        <div id="mission-controls-root" className={styles.controlsSlot} />
-        {mission.notToScaleNotice ? (
-          <p className={styles.notice} role="note">
-            {mission.notToScaleNotice}
-          </p>
-        ) : null}
-
-        {resumeAvailable ? (
-          <div className={styles.resumeBanner} role="status">
-            <p className={styles.resumeText}>Tu reprends là où tu t&apos;étais arrêté.</p>
-            <button type="button" className={styles.resumeDismiss} onClick={dismissResumeBanner}>
-              OK
-            </button>
-          </div>
-        ) : null}
-
-        {step.kind === 'reward' && reward ? (
-          <div ref={tipCardRef} className={styles.tipCard}>
-            <RewardPanel title={reward.title} description={reward.description} celebrate />
-            <button type="button" className={styles.cta} onClick={onContinue}>
-              {step.ctaLabel ?? 'Continuer'}
-            </button>
-          </div>
-        ) : (
+          {/* Schéma 2D hors bulle (ex. défi distances) */}
           <div
-            ref={tipCardRef}
-            className={styles.tipCard}
+            id="mission-schema-root"
+            className={styles.schemaRoot}
             onPointerDown={(event) => event.stopPropagation()}
-            onTouchStart={(event) => event.stopPropagation()}
+          />
+        </div>
+
+        <header ref={topBarRef} className={styles.topBar}>
+          <SafeBackButton fallbackHref="/missions" label="Quitter" compact preferFallback />
+          <h1 className={styles.title}>{mission.title}</h1>
+          <button
+            type="button"
+            ref={menuToggleRef}
+            className={styles.menuToggle}
+            aria-label={
+              headerMenuOpen
+                ? 'Fermer les actions de la mission'
+                : 'Ouvrir les actions de la mission'
+            }
+            aria-expanded={headerMenuOpen}
+            aria-controls="mission-header-actions"
+            onClick={() => setHeaderMenuOpen((open) => !open)}
           >
-            <div className={styles.tipHeader}>
+            {headerMenuOpen ? '×' : '☰'}
+          </button>
+          <div
+            id="mission-header-actions"
+            className={`${styles.topActions} ${headerMenuOpen ? styles.topActionsOpen : ''}`}
+          >
+            <button
+              type="button"
+              className={styles.ghostBtn}
+              onClick={() => {
+                setHeaderMenuOpen(false);
+                openGlossary();
+              }}
+            >
+              Mots
+            </button>
+            <button
+              type="button"
+              className={styles.ghostBtn}
+              onClick={() => {
+                setHeaderMenuOpen(false);
+                onRestart();
+              }}
+            >
+              Recommencer
+            </button>
+            <button
+              type="button"
+              className={styles.recenter}
+              onClick={() => {
+                setHeaderMenuOpen(false);
+                void onRecenter();
+              }}
+              disabled={!cameraApi || recentering}
+            >
+              Recentrer
+            </button>
+            {mission.notToScaleNotice ? (
+              <details className={styles.sceneNotice}>
+                <summary>La maquette</summary>
+                <p role="note">{mission.notToScaleNotice}</p>
+              </details>
+            ) : null}
+          </div>
+        </header>
+
+        <div ref={bottomBarRef} className={styles.bottomBar}>
+          {resumeAvailable ? (
+            <div className={styles.resumeBanner} role="status">
+              <p className={styles.resumeText}>Tu reprends là où tu t&apos;étais arrêté.</p>
+              <button type="button" className={styles.resumeDismiss} onClick={dismissResumeBanner}>
+                OK
+              </button>
+            </div>
+          ) : null}
+
+          <div
+            className={styles.guideRow}
+            data-interactive={
+              step.kind === 'quiz' || step.id === 'm05-scale' || step.id === 'm05-distances'
+            }
+            inert={guideLeaving || starFilmPlaying}
+          >
+            <button
+              ref={companionButtonRef}
+              type="button"
+              className={styles.companionButton}
+              data-motion="stationary"
+              disabled={!guideCanFold}
+              aria-label={
+                !guideCanFold
+                  ? 'Compagnon guide'
+                  : guideExpanded
+                    ? 'Réduire la consigne'
+                    : 'Relire la consigne'
+              }
+              aria-expanded={guideExpanded}
+              aria-controls={guideCanFold ? 'mission-guide-details' : undefined}
+              onClick={toggleGuide}
+            >
               <Companion
                 pose={companionCue.pose}
-                size="sm"
+                size="md"
                 priority
                 variant={companionVariant}
                 className={styles.tipCompanion}
               />
-              <button
-                type="button"
-                className={styles.tipToggle}
-                data-motion="stationary"
-                aria-expanded={isMobileGame ? mobileGuideExpanded : tipOpen}
-                onClick={toggleGuide}
+              <span>{guideCanFold ? (guideExpanded ? 'Réduire' : 'Relire') : 'Guide'}</span>
+            </button>
+            {step.kind === 'reward' && reward ? (
+              <div
+                key={step.id}
+                ref={guidePanelRef}
+                tabIndex={-1}
+                role="region"
+                aria-label={step.title}
+                className={styles.tipCard}
               >
-                {step.title} {(isMobileGame ? mobileGuideExpanded : tipOpen) ? '▾' : '▸'}
-              </button>
-            </div>
-            {companionCue.line && companionFeedback === 'none' && !challengeSolved ? (
-              <p className={styles.companionLine}>{companionCue.line}</p>
-            ) : null}
-            {tipOpen ? (
-              <>
-                {step.id !== 'm05-scale' && step.id !== 'm05-distances' ? (
-                  <p key={step.id} className={styles.tipBody}>
-                    <RichMissionText
-                      text={step.body}
-                      entries={glossaryEntries}
-                      onOpenTerm={(id) => openGlossary(id)}
+                <RewardPanel title={reward.title} description={reward.description} celebrate />
+                <button type="button" className={styles.cta} onClick={onContinue}>
+                  {step.ctaLabel ?? 'Continuer'}
+                </button>
+              </div>
+            ) : (
+              <div
+                key={step.id}
+                ref={guidePanelRef}
+                tabIndex={-1}
+                role="region"
+                aria-label={`Consigne : ${step.title}`}
+                className={styles.tipCard}
+                onPointerDown={(event) => event.stopPropagation()}
+                onTouchStart={(event) => event.stopPropagation()}
+              >
+                <div className={styles.tipHeader}>
+                  {guideCanFold ? (
+                    <button
+                      ref={guideTitleRef}
+                      type="button"
+                      className={styles.tipToggle}
+                      data-motion="stationary"
+                      aria-expanded={guideExpanded}
+                      aria-controls="mission-guide-details"
+                      onClick={toggleGuide}
+                    >
+                      <span>
+                        {guideExpanded
+                          ? step.title
+                          : (step.guideReminder ?? (challengeActive ? challengeHint : step.title))}
+                      </span>
+                      <span className={styles.toggleLabel}>{guideExpanded ? '−' : '+'}</span>
+                    </button>
+                  ) : (
+                    <h2 className={styles.tipTitle}>{step.title}</h2>
+                  )}
+                </div>
+                <div
+                  id="mission-guide-details"
+                  className={styles.guideDetails}
+                  hidden={!guideExpanded}
+                  inert={!guideExpanded}
+                >
+                  {step.id !== 'm05-scale' &&
+                  step.id !== 'm05-distances' &&
+                  !(step.kind === 'challenge' && challengeSolved) ? (
+                    <p
+                      key={`${step.id}-${guideMessageIndex}`}
+                      className={styles.tipBody}
+                      aria-live="polite"
+                      aria-atomic="true"
+                    >
+                      <RichMissionText
+                        text={guideMessages[guideMessageIndex] ?? step.body}
+                        entries={glossaryEntries}
+                        onOpenTerm={(id) => openGlossary(id)}
+                      />
+                    </p>
+                  ) : null}
+                  {guideMessages.length > 1 && !challengeSolved ? (
+                    <div className={styles.messageNav}>
+                      <button
+                        type="button"
+                        className={styles.readBack}
+                        disabled={guideMessageIndex === 0}
+                        onClick={() =>
+                          setGuidePage({ stepId: step.id, index: guideMessageIndex - 1 })
+                        }
+                      >
+                        ← Précédent
+                      </button>
+                      <span>
+                        Message {guideMessageIndex + 1}/{guideMessages.length}
+                      </span>
+                    </div>
+                  ) : null}
+                  {step.kind === 'quiz' && quiz ? (
+                    <MissionQuiz
+                      quiz={quiz}
+                      onSolved={markChallengeSolved}
+                      onMoodChange={setQuizMood}
+                      compact={isSolarSystem || isOrbits || isSeasons}
                     />
-                  </p>
-                ) : null}
-                {challengeActive ? <p className={styles.hint}>{challengeHint}</p> : null}
-                {step.kind === 'quiz' && quiz ? (
-                  <MissionQuiz
-                    quiz={quiz}
-                    onSolved={markChallengeSolved}
-                    onMoodChange={setQuizMood}
-                    compact={isSolarSystem || isOrbits || isSeasons}
-                  />
-                ) : null}
-                {step.id === 'm05-scale' ? (
-                  <SolarSizeChallenge
-                    onChange={(group, hidden) => {
-                      if (group) solarApi?.setComparisonGroup(group);
-                      solarApi?.setHideComparison(hidden);
-                    }}
-                    onComplete={onSizeChallengeSuccess}
-                  />
-                ) : null}
-                {step.id === 'm05-distances' ? (
-                  <SolarDistancePanel
-                    onComplete={onDistanceChallengeSuccess}
-                    schemaPortalId="mission-schema-root"
-                  />
-                ) : null}
+                  ) : null}
+                  {step.id === 'm05-scale' ? (
+                    <SolarSizeChallenge
+                      onChange={(group, hidden) => {
+                        if (group) solarApi?.setComparisonGroup(group);
+                        solarApi?.setHideComparison(hidden);
+                      }}
+                      onComplete={onSizeChallengeSuccess}
+                    />
+                  ) : null}
+                  {step.id === 'm05-distances' ? (
+                    <SolarDistancePanel
+                      onComplete={onDistanceChallengeSuccess}
+                      schemaPortalId="mission-schema-root"
+                    />
+                  ) : null}
+                </div>
                 {visibleFeedback ? (
                   <p
                     key={visibleFeedback.text}
@@ -1089,7 +1121,32 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                     {visibleFeedback.text}
                   </p>
                 ) : null}
-                {canAdvance &&
+                {hasMoreGuideText ? (
+                  <button
+                    type="button"
+                    className={styles.cta}
+                    onClick={() => {
+                      setGuidePage({ stepId: step.id, index: guideMessageIndex + 1 });
+                      setGuideOverride({ stepId: step.id, expanded: true, challengeSolved });
+                    }}
+                  >
+                    Suivant →
+                  </button>
+                ) : showPlayButton ? (
+                  <button
+                    type="button"
+                    className={styles.cta}
+                    onClick={() => {
+                      toggleGuide();
+                      companionButtonRef.current?.focus({ preventScroll: true });
+                    }}
+                  >
+                    À toi de jouer
+                  </button>
+                ) : null}
+                {!hasMoreGuideText &&
+                !showPlayButton &&
+                canAdvance &&
                 !isComplete &&
                 step.kind !== 'quiz' &&
                 step.id !== 'm05-scale' &&
@@ -1122,19 +1179,31 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                     </button>
                   </>
                 ) : null}
-              </>
-            ) : null}
+              </div>
+            )}
           </div>
-        )}
-      </div>
+          <section
+            className={styles.commandDock}
+            aria-label="Commandes de la scène"
+            hidden={!showSceneControls || starFilmPlaying}
+            inert={!showSceneControls || starFilmPlaying || guideLeaving}
+          >
+            <div
+              id="mission-controls-root"
+              ref={setControlsTarget}
+              className={styles.controlsSlot}
+            />
+          </section>
+        </div>
 
-      <GlossaryPanel
-        open={glossaryOpen}
-        entries={glossaryEntries}
-        focusId={glossaryFocusId}
-        earnedRewardIds={earnedRewardIds}
-        onClose={closeGlossary}
-      />
-    </div>
+        <GlossaryPanel
+          open={glossaryOpen}
+          entries={glossaryEntries}
+          focusId={glossaryFocusId}
+          earnedRewardIds={earnedRewardIds}
+          onClose={closeGlossary}
+        />
+      </div>
+    </SceneControlsTarget.Provider>
   );
 }

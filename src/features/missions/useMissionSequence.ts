@@ -54,6 +54,10 @@ export function useMissionSequence(mission: Mission) {
   const resumeAvailable = !bannerDismissed && savedIndex > 0 && liveIndex === null;
 
   useEffect(() => {
+    // Hydration first renders the server's step 0. Wait for the saved client snapshot
+    // before persisting, otherwise a reload overwrites the step the player reached.
+    if (liveIndex === null && getSavedStepIndex(mission.id, mission.steps.length) !== stepIndex)
+      return;
     if (step.kind === 'complete') {
       clearMissionSession(mission.id);
       emitSessionChange();
@@ -61,7 +65,7 @@ export function useMissionSequence(mission: Mission) {
     }
     saveMissionSession(mission.id, stepIndex);
     emitSessionChange();
-  }, [mission.id, step.kind, stepIndex]);
+  }, [mission.id, mission.steps.length, liveIndex, step.kind, stepIndex]);
 
   const markChallengeSolved = useCallback(() => {
     setChallengeSolved(true);
