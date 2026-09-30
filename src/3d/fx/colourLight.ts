@@ -68,6 +68,25 @@ export function luminousMaterial(
   return mat;
 }
 
+/** Low/medium performance freezes materials: refresh changed uniforms only on interaction. */
+export function updateLightMaterial(
+  material: StandardMaterial,
+  state: { alpha?: number; colour?: Color3 },
+) {
+  let changed = false;
+  if (state.alpha !== undefined && state.alpha !== material.alpha) {
+    material.alpha = state.alpha;
+    changed = true;
+  }
+  if (state.colour && !material.emissiveColor.equals(state.colour)) {
+    material.emissiveColor.copyFrom(state.colour);
+    changed = true;
+  }
+  // Force the next bind to upload uniforms even if Babylon has frozen the material.
+  // Shader variants stay the same and are reused; no per-frame invalidation is needed.
+  if (changed) material.markDirty(true);
+}
+
 /** Two crossed soft ribbons stay visible when the camera moves. Geometry is built once. */
 export function createLightBeam(
   scene: Scene,

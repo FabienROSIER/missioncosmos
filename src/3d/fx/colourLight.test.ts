@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { Color3, NullEngine, Scene, Vector3 } from '@babylonjs/core';
-import { createLightBeam } from './colourLight';
+import { Color3, FreeCamera, NullEngine, Scene, StandardMaterial, Vector3 } from '@babylonjs/core';
+import { applyScenePerformancePriority } from '@/3d/performance/optimizeMeshes';
+import { createLightBeam, updateLightMaterial } from './colourLight';
 
 const engines: NullEngine[] = [];
 afterEach(() => engines.splice(0).forEach((engine) => engine.dispose()));
@@ -70,4 +71,39 @@ describe('light-beam rendering safety', () => {
     );
     expect(root.getChildMeshes()).toHaveLength(0);
   });
+
+  it.each(['low', 'medium', 'high'] as const)(
+    'refreshes cached beam opacity and screen colour in %s quality',
+    async (quality) => {
+      const scene = setup();
+      applyScenePerformancePriority(scene, quality);
+      new FreeCamera('camera', new Vector3(0, 0, -10), scene);
+      const root = createLightBeam(
+        scene,
+        'interactive',
+        Vector3.Zero(),
+        new Vector3(3, 0, 0),
+        Color3.Red(),
+        undefined,
+        quality,
+      );
+      await scene.whenReadyAsync();
+      scene.render();
+      const meshes = root.getChildMeshes();
+      const material = meshes[0]!.material as StandardMaterial;
+      expect(material.isFrozen).toBe(quality !== 'high');
+
+      updateLightMaterial(material, { alpha: 0.035, colour: Color3.Green() });
+      expect(material.alpha).toBe(0.035);
+      expect(material.emissiveColor.equals(Color3.Green())).toBe(true);
+      // Every ribbon sharing this material must upload the new uniforms at its next bind.
+      for (const mesh of meshes.filter((mesh) => mesh.material === material)) {
+        expect(mesh.subMeshes![0]!._drawWrapper._forceRebindOnNextCall).toBe(true);
+      }
+      scene.render();
+      expect(material.isFrozen).toBe(quality !== 'high');
+      expect(scene.meshes).toHaveLength(quality === 'high' ? 3 : 2);
+      scene.dispose();
+    },
+  );
 });

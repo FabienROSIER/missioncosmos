@@ -24,7 +24,12 @@ import {
   createMissionCameraApi,
   type MissionCameraApi,
 } from '@/3d/controls/missionCamera';
-import { createLightBeam, createLightMasks, luminousMaterial } from '@/3d/fx/colourLight';
+import {
+  createLightBeam,
+  createLightMasks,
+  luminousMaterial,
+  updateLightMaterial,
+} from '@/3d/fx/colourLight';
 import { resolveGraphicsQuality, setupSceneLighting } from '@/3d/materials';
 import { applyScenePerformancePriority, startPerfMonitor } from '@/3d/performance';
 import { createSpaceBackground } from '@/3d/utils/imageSpaceBackground';
@@ -455,38 +460,43 @@ export function StarLightScene({
       projectorBeams.forEach((beam, index) => {
         const on = localLights[LIGHT_CHANNELS[index]!];
         beam.setEnabled(on);
-        (projectors[index]!.material as StandardMaterial).alpha = on ? 1 : 0.18;
+        updateLightMaterial(projectors[index]!.material as StandardMaterial, {
+          alpha: on ? 1 : 0.18,
+        });
       });
       const result = mixedLight(localLights);
       spot.setEnabled(result !== 'dark');
-      spotMat.emissiveColor = tint(LIGHT_COLOURS[result].rgb);
+      updateLightMaterial(spotMat, { colour: tint(LIGHT_COLOURS[result].rgb) });
       setLights({ ...localLights });
     };
     const applyOptics = () => {
       whiteOut.setEnabled(!localPlaced);
       whiteImpact.setEnabled(!localPlaced);
-      spectrumMat.emissiveColor = localPlaced
-        ? new Color3(0.015, 0.025, 0.04)
-        : new Color3(0.06, 0.075, 0.095);
+      updateLightMaterial(spectrumMat, {
+        colour: localPlaced ? new Color3(0.015, 0.025, 0.04) : new Color3(0.06, 0.075, 0.095),
+      });
       ring.setEnabled(!localPlaced && localMode === 'place');
       fan.forEach((beam, index) => {
         beam.setEnabled(localPlaced);
         const highlighted = localBand === null || localBand === index;
         beam.getChildMeshes().forEach((mesh) => {
           const mat = mesh.material as StandardMaterial;
-          mat.alpha = highlighted
-            ? mat.name.endsWith('-core')
-              ? 0.8
-              : quality === 'low'
-                ? 0.65
-                : 0.55
-            : 0.09;
+          updateLightMaterial(mat, {
+            alpha: highlighted
+              ? mat.name.endsWith('-core')
+                ? 0.8
+                : quality === 'low'
+                  ? 0.65
+                  : 0.55
+              : 0.035,
+          });
         });
       });
       bands.forEach((stripe, index) => {
         stripe.setEnabled(localPlaced);
-        (stripe.material as StandardMaterial).alpha =
-          localBand === null || localBand === index ? 0.85 : 0.2;
+        updateLightMaterial(stripe.material as StandardMaterial, {
+          alpha: localBand === null || localBand === index ? 0.85 : 0.06,
+        });
       });
       prismRoot.position.copyFrom(localPlaced ? destination : new Vector3(-0.55, -0.7, -0.7));
       setPlaced(localPlaced);
