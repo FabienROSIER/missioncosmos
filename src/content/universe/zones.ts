@@ -48,7 +48,7 @@ export const UNIVERSE_ZONES: UniverseZone[] = [
     id: 'stars',
     title: 'Étoiles',
     blurb: 'Soleil et autres soleils.',
-    missionIds: ['mission-08', 'mission-09'],
+    missionIds: ['mission-08', 'mission-09', 'mission-constellations'],
   },
   {
     id: 'milky-way',

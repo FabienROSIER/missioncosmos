@@ -1,0 +1,562 @@
+{
+  "cassiopeia": {
+    "photometry": [
+      {
+        "catalogId": "HIP 746",
+        "magnitude": 2.28
+      },
+      {
+        "catalogId": "HIP 3179",
+        "magnitude": 2.24
+      },
+      {
+        "catalogId": "HIP 4427",
+        "magnitude": 2.15
+      },
+      {
+        "catalogId": "HIP 6686",
+        "magnitude": 2.66
+      },
+      {
+        "catalogId": "HIP 8886",
+        "magnitude": 3.35
+      }
+    ],
+    "neighbors": [
+      {
+        "name": "Achird",
+        "catalogId": "HIP 3821",
+        "ra": 12.2739,
+        "dec": 57.815187,
+        "magnitude": 3.46
+      },
+      {
+        "name": "Fulu",
+        "catalogId": "HIP 2920",
+        "ra": 9.24282,
+        "dec": 53.896909,
+        "magnitude": 3.69
+      },
+      {
+        "name": "15Kap Cas",
+        "catalogId": "HIP 2599",
+        "ra": 8.249955,
+        "dec": 62.931783,
+        "magnitude": 4.17
+      },
+      {
+        "name": "33The Cas",
+        "catalogId": "HIP 5542",
+        "ra": 17.775255,
+        "dec": 55.149901,
+        "magnitude": 4.34
+      },
+      {
+        "name": "36Psi Cas",
+        "catalogId": "HIP 6692",
+        "ra": 21.48312,
+        "dec": 68.130012,
+        "magnitude": 4.72
+      },
+      {
+        "name": "19Xi  Cas",
+        "catalogId": "HIP 3300",
+        "ra": 10.516215,
+        "dec": 50.512526,
+        "magnitude": 4.8
+      },
+      {
+        "name": "34Phi Cas",
+        "catalogId": "HIP 6242",
+        "ra": 20.020485,
+        "dec": 58.231611,
+        "magnitude": 4.95
+      },
+      {
+        "name": "46Ome Cas",
+        "catalogId": "HIP 9009",
+        "ra": 29.000055,
+        "dec": 68.685242,
+        "magnitude": 4.97
+      },
+      {
+        "name": "4    Per",
+        "catalogId": "HIP 9505",
+        "ra": 30.575385,
+        "dec": 54.487541,
+        "magnitude": 4.99
+      },
+      {
+        "name": "31    Cas",
+        "catalogId": "HIP 5518",
+        "ra": 17.663685,
+        "dec": 68.778621,
+        "magnitude": 5.32
+      }
+    ]
+  },
+  "ursa-major": {
+    "photometry": [
+      {
+        "catalogId": "HIP 54061",
+        "magnitude": 1.81
+      },
+      {
+        "catalogId": "HIP 53910",
+        "magnitude": 2.34
+      },
+      {
+        "catalogId": "HIP 58001",
+        "magnitude": 2.41
+      },
+      {
+        "catalogId": "HIP 59774",
+        "magnitude": 3.32
+      },
+      {
+        "catalogId": "HIP 62956",
+        "magnitude": 1.76
+      },
+      {
+        "catalogId": "HIP 65378",
+        "magnitude": 2.23
+      },
+      {
+        "catalogId": "HIP 67301",
+        "magnitude": 1.85
+      },
+      {
+        "catalogId": "HIP 41704",
+        "magnitude": 3.35
+      },
+      {
+        "catalogId": "HIP 48319",
+        "magnitude": 3.78
+      },
+      {
+        "catalogId": "HIP 46853",
+        "magnitude": 3.17
+      },
+      {
+        "catalogId": "HIP 44127",
+        "magnitude": 3.12
+      },
+      {
+        "catalogId": "HIP 44471",
+        "magnitude": 3.57
+      },
+      {
+        "catalogId": "HIP 54539",
+        "magnitude": 3
+      },
+      {
+        "catalogId": "HIP 50372",
+        "magnitude": 3.45
+      },
+      {
+        "catalogId": "HIP 50801",
+        "magnitude": 3.06
+      },
+      {
+        "catalogId": "HIP 57399",
+        "magnitude": 3.69
+      },
+      {
+        "catalogId": "HIP 55219",
+        "magnitude": 3.49
+      },
+      {
+        "catalogId": "HR 4375",
+        "magnitude": 4.33
+      }
+    ],
+    "neighbors": [
+      {
+        "name": "Kochab",
+        "catalogId": "HIP 72607",
+        "ra": 222.676575,
+        "dec": 74.155505,
+        "magnitude": 2.07
+      },
+      {
+        "name": "Cor Caroli",
+        "catalogId": "HIP 63125",
+        "ra": 194.007105,
+        "dec": 38.31838,
+        "magnitude": 2.89
+      },
+      {
+        "name": "Adhafera",
+        "catalogId": "HIP 50335",
+        "ra": 154.172565,
+        "dec": 23.417311,
+        "magnitude": 3.43
+      },
+      {
+        "name": "23    UMa",
+        "catalogId": "HIP 46733",
+        "ra": 142.881795,
+        "dec": 63.061861,
+        "magnitude": 3.65
+      },
+      {
+        "name": "Thuban",
+        "catalogId": "HIP 68756",
+        "ra": 211.097475,
+        "dec": 64.37585,
+        "magnitude": 3.67
+      },
+      {
+        "name": "Praecipua",
+        "catalogId": "HIP 53229",
+        "ra": 163.32789,
+        "dec": 34.214871,
+        "magnitude": 3.79
+      },
+      {
+        "name": "Giausar",
+        "catalogId": "HIP 56211",
+        "ra": 172.851105,
+        "dec": 69.331076,
+        "magnitude": 3.82
+      },
+      {
+        "name": "5Kap Dra",
+        "catalogId": "HIP 61281",
+        "ra": 188.37087,
+        "dec": 69.788238,
+        "magnitude": 3.85
+      },
+      {
+        "name": "31Bet LMi",
+        "catalogId": "HIP 51233",
+        "ra": 156.970905,
+        "dec": 36.707212,
+        "magnitude": 4.2
+      },
+      {
+        "name": "Chara",
+        "catalogId": "HIP 61317",
+        "ra": 188.436165,
+        "dec": 41.35748,
+        "magnitude": 4.24
+      }
+    ]
+  },
+  "cygnus": {
+    "photometry": [
+      {
+        "catalogId": "HIP 102098",
+        "magnitude": 1.25
+      },
+      {
+        "catalogId": "HIP 100453",
+        "magnitude": 2.23
+      },
+      {
+        "catalogId": "HIP 95947",
+        "magnitude": 3.05
+      },
+      {
+        "catalogId": "HIP 97165",
+        "magnitude": 2.86
+      },
+      {
+        "catalogId": "HIP 102488",
+        "magnitude": 2.48
+      },
+      {
+        "catalogId": "HIP 104732",
+        "magnitude": 3.21
+      },
+      {
+        "catalogId": "HIP 95853",
+        "magnitude": 3.76
+      }
+    ],
+    "neighbors": [
+      {
+        "name": "Sulafat",
+        "catalogId": "HIP 93194",
+        "ra": 284.735925,
+        "dec": 32.689557,
+        "magnitude": 3.25
+      },
+      {
+        "name": "12Gam Sge",
+        "catalogId": "HIP 98337",
+        "ra": 299.689275,
+        "dec": 19.492148,
+        "magnitude": 3.51
+      },
+      {
+        "name": "62Xi  Cyg",
+        "catalogId": "HIP 104060",
+        "ra": 316.23276,
+        "dec": 43.927852,
+        "magnitude": 3.72
+      },
+      {
+        "name": "65Tau Cyg",
+        "catalogId": "HIP 104887",
+        "ra": 318.697755,
+        "dec": 38.045317,
+        "magnitude": 3.74
+      },
+      {
+        "name": "31    Cyg",
+        "catalogId": "HIP 99675",
+        "ra": 303.40794,
+        "dec": 46.741329,
+        "magnitude": 3.8
+      },
+      {
+        "name": "21Eta Cyg",
+        "catalogId": "HIP 98110",
+        "ra": 299.07657,
+        "dec": 35.083424,
+        "magnitude": 3.89
+      },
+      {
+        "name": "58Nu  Cyg",
+        "catalogId": "HIP 103413",
+        "ra": 314.293395,
+        "dec": 41.167136,
+        "magnitude": 3.94
+      },
+      {
+        "name": "41    Cyg",
+        "catalogId": "HIP 101076",
+        "ra": 307.34889,
+        "dec": 30.368555,
+        "magnitude": 4.01
+      },
+      {
+        "name": "52    Cyg",
+        "catalogId": "HIP 102453",
+        "ra": 311.415645,
+        "dec": 30.719715,
+        "magnitude": 4.22
+      },
+      {
+        "name": "12Del2Lyr",
+        "catalogId": "HIP 92791",
+        "ra": 283.62618,
+        "dec": 36.898613,
+        "magnitude": 4.22
+      }
+    ]
+  },
+  "orion": {
+    "photometry": [
+      {
+        "catalogId": "HIP 26727",
+        "magnitude": 1.74
+      },
+      {
+        "catalogId": "HIP 26311",
+        "magnitude": 1.69
+      },
+      {
+        "catalogId": "HIP 25930",
+        "magnitude": 2.25
+      },
+      {
+        "catalogId": "HIP 27989",
+        "magnitude": 0.45
+      },
+      {
+        "catalogId": "HIP 25336",
+        "magnitude": 1.64
+      },
+      {
+        "catalogId": "HIP 24436",
+        "magnitude": 0.18
+      },
+      {
+        "catalogId": "HIP 27366",
+        "magnitude": 2.07
+      }
+    ],
+    "neighbors": [
+      {
+        "name": "Hatysa",
+        "catalogId": "HIP 26241",
+        "ra": 83.858265,
+        "dec": -5.909901,
+        "magnitude": 2.75
+      },
+      {
+        "name": "Cursa",
+        "catalogId": "HIP 23875",
+        "ra": 76.962435,
+        "dec": -5.086446,
+        "magnitude": 2.78
+      },
+      {
+        "name": "Tabit",
+        "catalogId": "HIP 22449",
+        "ra": 72.460035,
+        "dec": 6.961276,
+        "magnitude": 3.19
+      },
+      {
+        "name": "28Eta Ori",
+        "catalogId": "HIP 25281",
+        "ra": 81.119235,
+        "dec": -2.397146,
+        "magnitude": 3.35
+      },
+      {
+        "name": "Meissa",
+        "catalogId": "HIP 26207",
+        "ra": 83.784495,
+        "dec": 9.934158,
+        "magnitude": 3.39
+      },
+      {
+        "name": "8Pi 5Ori",
+        "catalogId": "HIP 22797",
+        "ra": 73.562895,
+        "dec": 2.440672,
+        "magnitude": 3.71
+      },
+      {
+        "name": "5Gam Mon",
+        "catalogId": "HIP 29651",
+        "ra": 93.71388,
+        "dec": -6.274776,
+        "magnitude": 3.99
+      },
+      {
+        "name": "61Mu  Ori",
+        "catalogId": "HIP 28614",
+        "ra": 90.59583,
+        "dec": 9.647276,
+        "magnitude": 4.12
+      },
+      {
+        "name": "29    Ori",
+        "catalogId": "HIP 25247",
+        "ra": 80.986785,
+        "dec": -7.808065,
+        "magnitude": 4.13
+      },
+      {
+        "name": "2Pi 2Ori",
+        "catalogId": "HIP 22509",
+        "ra": 72.65301,
+        "dec": 8.900176,
+        "magnitude": 4.35
+      }
+    ]
+  },
+  "aquila": {
+    "photometry": [
+      {
+        "catalogId": "HIP 97278",
+        "magnitude": 2.72
+      },
+      {
+        "catalogId": "HIP 97649",
+        "magnitude": 0.76
+      },
+      {
+        "catalogId": "HIP 98036",
+        "magnitude": 3.71
+      },
+      {
+        "catalogId": "HIP 93747",
+        "magnitude": 2.99
+      },
+      {
+        "catalogId": "HIP 95501",
+        "magnitude": 3.36
+      },
+      {
+        "catalogId": "HIP 97804",
+        "magnitude": 3.87
+      },
+      {
+        "catalogId": "HIP 99473",
+        "magnitude": 3.24
+      },
+      {
+        "catalogId": "HIP 93805",
+        "magnitude": 3.43
+      }
+    ],
+    "neighbors": [
+      {
+        "name": "41Iot Aql",
+        "catalogId": "HIP 96468",
+        "ra": 294.18033,
+        "dec": -1.286601,
+        "magnitude": 4.36
+      },
+      {
+        "name": "38Mu  Aql",
+        "catalogId": "HIP 96229",
+        "ra": 293.522295,
+        "dec": 7.378941,
+        "magnitude": 4.45
+      },
+      {
+        "name": "Alya",
+        "catalogId": "HIP 92946",
+        "ra": 284.054925,
+        "dec": 4.203595,
+        "magnitude": 4.62
+      },
+      {
+        "name": "32Nu  Aql",
+        "catalogId": "HIP 95585",
+        "ra": 291.629535,
+        "dec": 0.33857,
+        "magnitude": 4.64
+      },
+      {
+        "name": "Eta Sct",
+        "catalogId": "HIP 93026",
+        "ra": 284.265285,
+        "dec": -5.846314,
+        "magnitude": 4.83
+      },
+      {
+        "name": "39Kap Aql",
+        "catalogId": "HIP 96483",
+        "ra": 294.222705,
+        "dec": -7.027477,
+        "magnitude": 4.93
+      },
+      {
+        "name": "67Rho Aql",
+        "catalogId": "HIP 99742",
+        "ra": 303.569235,
+        "dec": 15.197609,
+        "magnitude": 4.94
+      },
+      {
+        "name": "26    Aql",
+        "catalogId": "HIP 95066",
+        "ra": 290.137095,
+        "dec": -5.415766,
+        "magnitude": 4.98
+      },
+      {
+        "name": "18    Aql",
+        "catalogId": "HIP 93867",
+        "ra": 286.744185,
+        "dec": 11.071228,
+        "magnitude": 5.07
+      },
+      {
+        "name": "21    Aql",
+        "catalogId": "HIP 94477",
+        "ra": 288.427935,
+        "dec": 2.293707,
+        "magnitude": 5.14
+      }
+    ]
+  }
+}

@@ -61,6 +61,12 @@ export const MISSION_CATALOG: MissionCatalogEntry[] = [
     id: 'mission-09',
     title: 'Le secret des couleurs',
     objective: 'Révéler l’arc-en-ciel et jouer avec les mélanges de lumières.',
+    unlocksNextId: 'mission-constellations',
+  },
+  {
+    id: 'mission-constellations',
+    title: 'Les dessins du ciel',
+    objective: 'Retrouver les constellations et découvrir leur profondeur en voyageant en 3D.',
     unlocksNextId: 'mission-10',
   },
   {

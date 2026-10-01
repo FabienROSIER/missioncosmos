@@ -26,6 +26,7 @@ import type { StarsSceneApi } from '@/3d/scenes/StarsScene';
 import { StarsScene } from '@/3d/scenes/StarsScene';
 import type { StarLightSceneApi } from '@/3d/scenes/StarLightScene';
 import { StarLightScene } from '@/3d/scenes/StarLightScene';
+import { ConstellationsScene } from '@/3d/scenes/ConstellationsScene';
 import { SolarDistancePanel } from '@/3d/scenes/SolarDistancePanel';
 import { SolarSizeChallenge } from '@/3d/scenes/SolarSizeChallenge';
 import type { SurfaceLighting } from '@/3d/scenes/dayNightMarkers';
@@ -112,6 +113,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const isSeasons = mission.sceneId === 'seasons';
   const isStars = mission.sceneId === 'stars';
   const isStellarLight = mission.sceneId === 'stellar-light';
+  const isConstellations = mission.sceneId === 'constellations';
   const [guideOverride, setGuideOverride] = useState<{
     stepId: string;
     expanded: boolean;
@@ -144,6 +146,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const companionButtonRef = useRef<HTMLButtonElement>(null);
   const guideTitleRef = useRef<HTMLButtonElement>(null);
   const guidePanelRef = useRef<HTMLDivElement>(null);
+  const quizPanelRef = useRef<HTMLElement>(null);
   const continueFocusRef = useRef(false);
   const completionSavedRef = useRef(false);
 
@@ -190,10 +193,13 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   useEffect(() => {
     bottomBarRef.current?.scrollTo({ top: 0 });
     if (continueFocusRef.current) {
-      (guideTitleRef.current ?? guidePanelRef.current)?.focus({ preventScroll: true });
+      (step.kind === 'quiz'
+        ? quizPanelRef.current
+        : (guideTitleRef.current ?? guidePanelRef.current)
+      )?.focus({ preventScroll: true });
       continueFocusRef.current = false;
     }
-  }, [step.id]);
+  }, [step.id, step.kind]);
 
   const { earnedRewardIds, companionVariant } = useLocalSave();
 
@@ -224,6 +230,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   } = challengeFromStep(step);
   const showOrbitFall = isOrbits && step.id === 'm06-fall';
   const hasSceneControls =
+    (isConstellations && !['mc-intro', 'mc-reward', 'mc-understand'].includes(step.id)) ||
     isOrbits ||
     isSeasons ||
     isStars ||
@@ -801,13 +808,22 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
       <div
         className={[
           styles.stage,
+          step.kind === 'quiz' ? styles.quizStage : '',
           starFilmPlaying ? styles.starFilmStage : '',
           guideLeaving ? styles.guideLeaving : '',
         ].join(' ')}
         data-guide-expanded={guideExpanded}
       >
         <div className={styles.sceneArea}>
-          {isStellarLight ? (
+          {isConstellations ? (
+            <ConstellationsScene
+              key={step.id}
+              className={styles.viewport}
+              stepId={step.id}
+              onSuccess={onObservatorySuccess}
+              onSkipBonus={onContinue}
+            />
+          ) : isStellarLight ? (
             <StarLightScene
               className={styles.viewport}
               fill
@@ -959,7 +975,31 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
           </div>
         </header>
 
-        <div ref={bottomBarRef} className={styles.bottomBar}>
+        {step.kind === 'quiz' && quiz ? (
+          <section
+            ref={quizPanelRef}
+            tabIndex={-1}
+            aria-label={quiz.title}
+            className={styles.quizArea}
+            data-mission-quiz
+          >
+            <MissionQuiz
+              key={step.id}
+              quiz={quiz}
+              onSolved={markChallengeSolved}
+              onMoodChange={setQuizMood}
+              immersive
+              companionVariant={companionVariant}
+              onContinue={onContinue}
+            />
+          </section>
+        ) : null}
+        <div
+          ref={bottomBarRef}
+          className={styles.bottomBar}
+          hidden={step.kind === 'quiz'}
+          inert={step.kind === 'quiz'}
+        >
           {resumeAvailable ? (
             <div className={styles.resumeBanner} role="status">
               <p className={styles.resumeText}>Tu reprends là où tu t&apos;étais arrêté.</p>
@@ -1087,14 +1127,6 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                         Message {guideMessageIndex + 1}/{guideMessages.length}
                       </span>
                     </div>
-                  ) : null}
-                  {step.kind === 'quiz' && quiz ? (
-                    <MissionQuiz
-                      quiz={quiz}
-                      onSolved={markChallengeSolved}
-                      onMoodChange={setQuizMood}
-                      compact={isSolarSystem || isOrbits || isSeasons}
-                    />
                   ) : null}
                   {step.id === 'm05-scale' ? (
                     <SolarSizeChallenge

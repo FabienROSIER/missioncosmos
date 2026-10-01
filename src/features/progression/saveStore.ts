@@ -1,9 +1,5 @@
 import { SAVE_SCHEMA_VERSION } from '@/lib/constants';
-import {
-  createEmptyProgress,
-  createEmptySave,
-  type LocalSave,
-} from '@/features/progression/types';
+import { createEmptyProgress, createEmptySave, type LocalSave } from '@/features/progression/types';
 import type { ChildProfile } from '@/types/profile';
 import type { Progress } from '@/types/progress';
 
@@ -77,6 +73,15 @@ export function getSaveSnapshot(): LocalSave {
     for (const profile of parsed.profiles) {
       if (!parsed.progressByProfile[profile.id]) {
         parsed.progressByProfile[profile.id] = createEmptyProgress(profile.id);
+      }
+      // Add the new mission for returning players without relocking old missions
+      // or changing any earned badges and existing mission IDs.
+      const progress = parsed.progressByProfile[profile.id]!;
+      if (
+        progress.completedMissionIds.includes('mission-09') &&
+        !progress.unlockedMissionIds.includes('mission-constellations')
+      ) {
+        progress.unlockedMissionIds = [...progress.unlockedMissionIds, 'mission-constellations'];
       }
     }
     cachedSave = parsed;

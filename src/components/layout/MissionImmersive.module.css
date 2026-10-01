@@ -522,6 +522,62 @@
 .stage.starFilmStage {
   grid-template-columns: minmax(0, 1fr);
 }
+
+.stage.quizStage {
+  grid-template-columns: minmax(0, 1fr) minmax(30rem, 0.95fr);
+  grid-template-rows: auto minmax(0, 1fr);
+}
+.bottomBar[hidden] {
+  display: none;
+}
+.quizArea {
+  grid-column: 2;
+  grid-row: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  min-width: 0;
+  padding: clamp(1rem, 3vw, 3rem);
+  background: radial-gradient(ellipse at 40% 50%, #11243b, #070b16 85%);
+  outline: none;
+}
+@media (max-width: 899px) and (orientation: portrait) {
+  .stage.quizStage {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(100px, 0.45fr) minmax(0, 1fr);
+  }
+  .quizArea {
+    grid-column: 1;
+    grid-row: 3;
+    padding: 0.75rem max(1rem, env(safe-area-inset-right)) max(0.75rem, env(safe-area-inset-bottom))
+      max(1rem, env(safe-area-inset-left));
+  }
+}
+@media (max-width: 899px) and (orientation: portrait) and (max-height: 700px) {
+  .stage.quizStage {
+    grid-template-rows: auto minmax(90px, 0.3fr) minmax(0, 1fr);
+  }
+  .quizArea {
+    padding-block: 0.5rem;
+  }
+}
+@media (orientation: landscape) and (max-width: 1180px) {
+  .stage.quizStage {
+    grid-template-columns: minmax(0, 0.65fr) minmax(0, 1fr);
+  }
+  .quizArea {
+    padding: 0.65rem 1rem;
+  }
+}
+@media (orientation: landscape) and (max-height: 420px) and (max-width: 899px) {
+  .stage.quizStage {
+    grid-template-columns: minmax(0, 0.3fr) minmax(0, 1fr);
+  }
+  .quizArea {
+    padding: 0.5rem 0.75rem;
+  }
+}
 .starFilmStage .bottomBar {
   display: none;
 }

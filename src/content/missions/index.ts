@@ -7,6 +7,7 @@ import { MISSION_06 } from '@/content/missions/mission-06';
 import { MISSION_07 } from '@/content/missions/mission-07';
 import { MISSION_08 } from '@/content/missions/mission-08';
 import { MISSION_09 } from '@/content/missions/mission-09';
+import { MISSION_CONSTELLATIONS } from '@/content/missions/mission-constellations';
 import type { Mission } from '@/types/mission';
 
 const BY_ID: Record<string, Mission> = {
@@ -19,6 +20,7 @@ const BY_ID: Record<string, Mission> = {
   [MISSION_07.id]: MISSION_07,
   [MISSION_08.id]: MISSION_08,
   [MISSION_09.id]: MISSION_09,
+  [MISSION_CONSTELLATIONS.id]: MISSION_CONSTELLATIONS,
 };
 
 export function getMissionById(id: string): Mission | undefined {
@@ -39,6 +41,7 @@ export {
   MISSION_07,
   MISSION_08,
   MISSION_09,
+  MISSION_CONSTELLATIONS,
 };
 export { REWARD_EARTH_EXPLORER } from '@/content/missions/mission-01';
 export { REWARD_DAY_NIGHT } from '@/content/missions/mission-02';

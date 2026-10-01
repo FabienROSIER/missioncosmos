@@ -52,4 +52,24 @@ describe('saveStore', () => {
     expect(progress.unlockedMissionIds).toContain('mission-02');
     expect(progress.earnedRewardIds).toContain('reward-earth-explorer');
   });
+
+  it('opens constellations for old saves without relocking later missions or losing badges', () => {
+    const id = newProfileId();
+    upsertProfile({
+      id,
+      displayName: 'Luna',
+      avatarId: 'moon',
+      createdAt: new Date().toISOString(),
+    });
+    completeMission('mission-09', ['reward-stellar-light'], 'mission-10');
+    // Force a fresh storage snapshot, as on a browser reload.
+    const oldSave = JSON.parse(store.get('mc:save')!);
+    oldSave.updatedAt = '2026-09-30T00:00:00.000Z';
+    store.set('mc:save', JSON.stringify(oldSave));
+    const progress = loadSave().progressByProfile[id]!;
+    expect(progress.unlockedMissionIds).toContain('mission-constellations');
+    expect(progress.unlockedMissionIds).toContain('mission-10');
+    expect(progress.completedMissionIds).toContain('mission-09');
+    expect(progress.earnedRewardIds).toContain('reward-stellar-light');
+  });
 });

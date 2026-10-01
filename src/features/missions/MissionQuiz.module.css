@@ -98,14 +98,150 @@
   cursor: pointer;
 }
 
+/* The mission quiz has its own space, beside the live scene rather than in a bubble. */
+.root.immersive {
+  width: min(100%, 40rem);
+  margin: 0;
+  gap: clamp(0.65rem, 1.5vh, 1rem);
+}
+.questionHeader,
+.questionText {
+  display: contents;
+}
+.immersive .questionHeader {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
+}
+.immersive .questionText {
+  display: grid;
+  gap: 0.5rem;
+}
+.immersive .quizCompanion {
+  width: 104px;
+  height: 104px;
+}
+.immersive .progress {
+  color: #62dce9;
+  letter-spacing: 0.04em;
+  font-size: 0.75rem;
+}
+.immersive .prompt {
+  font-size: clamp(1.2rem, 2vw, 1.8rem);
+  line-height: 1.25;
+  outline: none;
+}
+.immersive .choices {
+  gap: 0.65rem;
+}
+.immersive .choices > button {
+  min-height: 48px;
+  padding: 0.65rem 1rem;
+  border-width: 1px;
+  border-radius: 0.7rem;
+  font-size: 1rem;
+  line-height: 1.35;
+  text-align: center;
+  justify-content: center;
+  background: #152238;
+}
+.immersive .choices > button:disabled {
+  opacity: 1;
+  border-color: var(--color-success);
+  background: rgba(95, 207, 138, 0.14);
+}
+.immersive .ok,
+.immersive .hint {
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+.immersive .next {
+  margin-top: 0;
+  border-radius: 0.7rem;
+  background: #f4c95f;
+  color: #0b1220;
+}
+@media (max-width: 899px) {
+  .immersive .questionHeader {
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 0.65rem;
+  }
+  .immersive .quizCompanion {
+    width: 72px;
+    height: 72px;
+  }
+  .root.immersive {
+    gap: 0.6rem;
+  }
+  .immersive .prompt {
+    font-size: 1.2rem;
+    line-height: 1.25;
+  }
+  .immersive .choices > button {
+    padding: 0.45rem 0.65rem;
+    font-size: 0.9rem;
+  }
+  .immersive .ok,
+  .immersive .hint {
+    font-size: 0.85rem;
+  }
+}
+@media (max-height: 700px) and (max-width: 899px), (max-height: 500px) {
+  .immersive .questionHeader {
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 0.5rem;
+  }
+  .immersive .questionText {
+    gap: 0.3rem;
+  }
+  .immersive .quizCompanion {
+    width: 56px;
+    height: 56px;
+  }
+  .root.immersive {
+    gap: 0.4rem;
+  }
+  .immersive .progress {
+    font-size: 0.7rem;
+  }
+  .immersive .prompt {
+    font-size: 1.05rem;
+  }
+  .immersive .choices {
+    gap: 0.4rem;
+  }
+  .immersive .choices > button {
+    min-height: 44px;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.85rem;
+  }
+  .immersive .ok,
+  .immersive .hint {
+    font-size: 0.8rem;
+    line-height: 1.3;
+  }
+  .immersive .next {
+    min-height: 44px;
+  }
+}
+@media (orientation: landscape) and (max-height: 420px) and (max-width: 899px) {
+  .immersive .choices {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .immersive .choices > button:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+
 @media (max-width: 899px), (pointer: coarse) and (max-width: 1180px) and (max-height: 600px) {
-  .root .prompt {
+  .root:not(.immersive) .prompt {
     font-size: 0.9rem;
     line-height: 1.45;
   }
-  .root .progress,
-  .root .ok,
-  .root .hint {
+  .root:not(.immersive) .progress,
+  .root:not(.immersive) .ok,
+  .root:not(.immersive) .hint {
     font-size: 0.8rem;
     line-height: 1.4;
   }

@@ -928,7 +928,7 @@ Possibilités futures :
 
 Ces fonctionnalités ne doivent pas bloquer la version principale mais l'architecture doit éviter de les rendre impossibles.
 
-- [ ] Constellations.
+- [x] Constellations — mission « Les dessins du ciel », illustrations et voyage 3D (voir `docs/pedagogy/mission-constellations.md`).
 - [ ] Observation du ciel.
 - [ ] Télescopes et fonctionnement optique.
 - [ ] Astronautique.

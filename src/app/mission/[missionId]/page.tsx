@@ -20,6 +20,7 @@ const PLAYABLE_SCENES = new Set([
   'seasons',
   'stars',
   'stellar-light',
+  'constellations',
 ]);
 
 /** Export statique : une page HTML par mission du catalogue. */
