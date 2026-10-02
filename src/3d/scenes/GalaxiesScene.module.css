@@ -1,0 +1,206 @@
+.wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #070b16;
+  color: #f5f7fb;
+}
+.canvas {
+  width: 100%;
+  height: 100%;
+}
+.title {
+  position: absolute;
+  top: 0.6rem;
+  inset-inline: 0.5rem;
+  display: grid;
+  gap: 0.2rem;
+  text-align: center;
+  pointer-events: none;
+}
+.title span,
+.eyebrow {
+  color: #62dce9;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  font-weight: 800;
+}
+.title strong {
+  font-size: clamp(1rem, 2vw, 1.5rem);
+}
+.title small {
+  color: #b7c0d4;
+  font-size: 0.75rem;
+}
+.controls {
+  display: grid;
+  gap: 0.5rem;
+  color: #e6f0fa;
+}
+.controls button {
+  min-height: 46px;
+  border: 1px solid #486078;
+  border-radius: 0.7rem;
+  padding: 0.5rem;
+  color: #f5f7fb;
+  background: #152238;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.controls button:focus-visible {
+  outline: 3px solid #f4c95f;
+  outline-offset: 2px;
+}
+.controls button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.controls button[aria-pressed='true'] {
+  border-color: #62dce9;
+  background: #1c3a46;
+}
+.controls p {
+  margin: 0;
+  font-size: 0.85rem;
+}
+.controls small {
+  color: #b7c0d4;
+  font-size: 0.72rem;
+}
+.buttons {
+  display: flex;
+  gap: 0.4rem;
+}
+.buttons > button {
+  flex: 1;
+  min-width: 0;
+}
+.families {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.buttons[hidden],
+.controls button[hidden] {
+  display: none;
+}
+.error {
+  color: #ffac96;
+}
+.correct {
+  color: #90efb0;
+}
+.zoomMap {
+  position: absolute;
+  inset: 3rem 0.7rem 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+  pointer-events: none;
+}
+.levels {
+  display: flex;
+  gap: 0.8rem;
+  width: min(100%, 48rem);
+}
+.level {
+  flex: 1;
+  display: grid;
+  justify-items: center;
+  gap: 0.4rem;
+  padding: 1rem 0.5rem;
+  border: 1px dashed #486078;
+  border-radius: 1rem;
+  background: #101b2dd9;
+  transition:
+    border-color 300ms,
+    background 300ms;
+}
+.level[data-placed='true'] {
+  border: 1px solid #90efb0;
+  background: #173b3cdd;
+}
+.symbol {
+  display: grid;
+  place-items: center;
+  width: clamp(2rem, 6vw, 4rem);
+  height: clamp(2rem, 6vw, 4rem);
+  font-size: clamp(2rem, 6vw, 4rem);
+  opacity: 0.18;
+}
+.level[data-placed='true'] .symbol {
+  opacity: 1;
+  animation: reveal 400ms ease-out;
+}
+.symbol[data-level='sun'] {
+  color: #f4c95f;
+}
+.symbol[data-level='system'] {
+  color: #62dce9;
+}
+.symbol[data-level='galaxy'] {
+  color: #e2dcff;
+}
+.level strong {
+  font-size: clamp(0.75rem, 1.6vw, 1rem);
+}
+.level small,
+.zoomMap p {
+  color: #b7c0d4;
+  font-size: 0.75rem;
+}
+@keyframes reveal {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@media (max-width: 480px) {
+  .levels {
+    gap: 0.35rem;
+  }
+  .level {
+    padding: 0.6rem 0.25rem;
+  }
+  .level small {
+    font-size: 0.65rem;
+  }
+  .zoomMap {
+    gap: 0.5rem;
+  }
+}
+@media (max-height: 450px) {
+  .zoomMap {
+    inset-block: 1.5rem 0.2rem;
+    gap: 0.3rem;
+  }
+  .level {
+    padding: 0.3rem;
+    gap: 0.1rem;
+  }
+  .zoomMap p {
+    margin: 0;
+    font-size: 0.65rem;
+  }
+  .symbol {
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 1.8rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .level {
+    transition: none;
+  }
+  .level[data-placed='true'] .symbol {
+    animation: none;
+  }
+}

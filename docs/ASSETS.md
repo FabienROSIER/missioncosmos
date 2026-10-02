@@ -163,9 +163,21 @@ Catalogue code : `src/content/audio/musicCatalog.ts`. Lecteur : `src/features/au
 
 ## Sources des visuels générés
 
+### Mission 12 — schémas vectoriels des distances
+
+Schémas SVG originaux du projet, aucun nouvel asset tiers. Fond image AST-021 existant réutilisé. Symboles de galaxies et gradients générés dans le composant ; représentations artistiques explicitement sans proportions physiques. Décision : `docs/decisions/006-cosmic-distance-diagrams.md`.
+
+### Mission 11 — maquettes de galaxies générées par le code
+
+Les nuages d’étoiles et halos 3D des familles spirale, elliptique et irrégulière sont des géométries et shaders du projet, sans nouveau média tiers. La spirale réutilise la maquette de M10 ; les autres volumes sont créés dans `createGalaxySpecimen.ts`. Fond image AST-021 v2 réutilisé avec sa provenance existante. Aucune photographie de galaxie n’est importée. Représentations artistiques, sans données cartographiques ; choix et limites documentés dans `docs/decisions/005-galaxy-families-learning-models.md`.
+
 Compagnon AST-003 : originaux PNG et prompts dans `docs/asset-sources/companion/`. Fonds AST-020 à AST-022 : originaux PNG et prompts dans `docs/asset-sources/backgrounds/`. Génération par outil ImageGen intégré à la demande du propriétaire ; aucun asset tiers utilisé comme référence de mascotte. Manifest séparé dans chaque dossier runtime. Voir `COMPANION_ASSETS.md` et `SPACE_BACKGROUNDS.md` pour usages et limites. Les images sont livrées ; leur branchement aux écrans reste à effectuer.
 
 
 ### Fond image fin pour la mission 01 — AST-021 v2
 
 `public/assets/textures/backgrounds/ast-021-space-starfield-fine-v2.webp` : ImageGen, étoiles fines et brume bleutée discrète, WebP sans perte, résolution native 1672 × 941. Branché dans `EarthPreviewScene` via `imageSpaceBackground.ts`, en remplacement des points 3D ; voûte sphérique centrée sur la caméra, image répétée pour conserver des étoiles fines, orientation fixe dans le monde. Le fond défile lors des rotations de caméra. Texture émissive à 0,8, sans couleur additive avec conversion sRGB correcte pour éviter la surexposition. Anciennes images conservées pour les menus.
+
+### Mission 12 — Modèles réutilisés
+
+Les schémas SVG initiaux ont été remplacés par les modèles célestes texturés existants, le nuage galactique et les halos 3D M10/M11. Les petits spécimens du champ observable réutilisent ces géométries et shaders. Fond AST-021 existant. Aucun nouvel asset tiers. Voir ADR-006 pour les facteurs de rendu et les limites pédagogiques.

@@ -6,6 +6,80 @@ import type { GlossaryEntry } from '@/types/glossary';
  */
 export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
   {
+    id: 'unite-astronomique',
+    term: 'Unité astronomique',
+    definition:
+      'Une unité de distance correspondant à la distance moyenne entre la Terre et le Soleil.',
+    enrichedDefinition:
+      'On écrit UA. Une UA vaut environ 150 millions de kilomètres. Cette unité est pratique pour comparer les distances des planètes au Soleil.',
+    unlockRewardId: 'reward-distances',
+    aliases: ['unité astronomique', 'UA'],
+  },
+  {
+    id: 'annee-lumiere',
+    term: 'Année-lumière',
+    definition: 'La distance parcourue par la lumière en un an.',
+    enrichedDefinition:
+      'Une année-lumière vaut environ 9 460 milliards de kilomètres. C’est une distance, pas un âge ou un temps de voyage en vaisseau.',
+    unlockRewardId: 'reward-distances',
+    aliases: ['année-lumière', 'années-lumière'],
+  },
+  {
+    id: 'univers-observable',
+    term: 'Univers observable',
+    definition: 'La région de l’Univers dont la lumière peut nous parvenir.',
+    enrichedDefinition:
+      'Sa limite dépend de ce que nous pouvons observer, pas d’un mur ou du bord de tout l’Univers. L’expansion de l’espace explique que son diamètre actuel soit bien plus grand que 13,8 milliards d’années-lumière.',
+    unlockRewardId: 'reward-distances',
+    aliases: ['Univers observable', 'univers observable'],
+  },
+  {
+    id: 'galaxie-spirale-barree',
+    term: 'Galaxie spirale barrée',
+    definition: 'Une galaxie spirale avec une barre d’étoiles qui traverse son centre.',
+    enrichedDefinition:
+      'Ses principaux bras partent des extrémités de la barre. C’est une forme de galaxie spirale, pas une famille indépendante.',
+    unlockRewardId: 'reward-galaxies',
+    aliases: ['spirale barrée', 'spirales barrées', 'galaxie spirale barrée'],
+  },
+  {
+    id: 'andromede',
+    term: 'Andromède',
+    definition: 'Une grande galaxie spirale voisine de la Voie lactée, très loin de nous.',
+    enrichedDefinition:
+      'Sa lumière met environ 2,5 millions d’années pour nous atteindre. C’est notre plus proche grande galaxie voisine ; certaines petites galaxies sont plus proches.',
+    unlockRewardId: 'reward-galaxies',
+    aliases: ['Andromède', 'Andromede'],
+  },
+  {
+    id: 'galaxie-spirale',
+    term: 'Galaxie spirale',
+    definition: 'Une galaxie dont le disque possède des bras qui s’enroulent autour du centre.',
+    enrichedDefinition:
+      'La Voie lactée et Andromède sont des galaxies spirales. Vue de profil, leur disque paraît très aplati.',
+    unlockRewardId: 'reward-galaxies',
+    aliases: ['galaxie spirale', 'galaxies spirales'],
+  },
+  {
+    id: 'galaxie-elliptique',
+    term: 'Galaxie elliptique',
+    definition: 'Une galaxie arrondie ou allongée, sans bras en spirale.',
+    enrichedDefinition:
+      'Ce n’est pas une boule pleine : ses nombreuses étoiles sont réparties dans un volume.',
+    unlockRewardId: 'reward-galaxies',
+    aliases: ['galaxie elliptique', 'galaxies elliptiques'],
+  },
+  {
+    id: 'galaxie-irreguliere',
+    term: 'Galaxie irrégulière',
+    definition:
+      'Une galaxie qui n’a pas de forme bien organisée, comme une spirale ou une ellipse.',
+    enrichedDefinition:
+      'Même sans forme régulière, c’est un immense ensemble d’étoiles, de gaz et de poussière rassemblés par la gravité.',
+    unlockRewardId: 'reward-galaxies',
+    aliases: ['galaxie irrégulière', 'galaxies irrégulières'],
+  },
+  {
     id: 'galaxie',
     term: 'Galaxie',
     definition: 'Un immense ensemble d’étoiles, de gaz et de poussière, rassemblés par la gravité.',

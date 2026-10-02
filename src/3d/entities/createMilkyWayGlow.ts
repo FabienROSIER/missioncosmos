@@ -1,13 +1,27 @@
-import { Constants, MeshBuilder, ShaderMaterial, type Scene, type Vector3 } from '@babylonjs/core';
+import {
+  Constants,
+  MeshBuilder,
+  ShaderMaterial,
+  type Scene,
+  type Vector3,
+  type TransformNode,
+} from '@babylonjs/core';
 
 /** Diffuse 3D disk, analytic bulge/bar and bounded integration of the spiral arms. */
-export function createMilkyWayGlow(scene: Scene, armSamples: 12 | 20 = 20) {
+export function createMilkyWayGlow(
+  scene: Scene,
+  armSamples: 12 | 20 = 20,
+  parent?: TransformNode,
+  options: { barred?: boolean; intensity?: number; softEdge?: boolean } = {},
+) {
+  const barred = options.barred === true;
   const mesh = MeshBuilder.CreateBox(
     'galactic-diffuse-light',
     { width: 40, height: 8, depth: 40 },
     scene,
   );
   mesh.isPickable = false;
+  if (parent) mesh.parent = parent;
   const material = new ShaderMaterial(
     'galactic-volume-light',
     scene,
@@ -31,13 +45,13 @@ export function createMilkyWayGlow(scene: Scene, armSamples: 12 | 20 = 20) {
       }
       float spiralLight(vec3 p) {
         float radius = length(p.xz);
-        float phase = atan(p.z,p.x)-2.6*log(max(radius,0.6)/2.4);
-        float arms = exp(2.5*(cos(4.0*phase)-1.0));
+        float phase = atan(p.z,p.x)-2.6*log(max(radius,${barred ? '5.2' : '0.6'})/${barred ? '5.2' : '2.4'});
+        float arms = exp(2.5*(cos(${barred ? '2.0' : '4.0'}*phase)-1.0));
         float filaments = 0.82+0.18*sin(radius*1.9+sin(4.0*phase)*1.7);
         float dust = 1.0-0.35*exp(9.0*(cos(4.0*phase+0.8)-1.0));
         float height = 0.2+0.08*radius/16.0;
         return 0.68*arms*filaments*dust*exp(-radius/9.0-p.y*p.y/(height*height)) *
-          smoothstep(1.3,2.5,radius)*(1.0-smoothstep(12.5,16.0,radius));
+          smoothstep(${barred ? '4.8,5.6' : '1.3,2.5'},radius)*(1.0-smoothstep(12.5,16.0,radius));
       }
       void main() {
         vec3 ray = normalize(surface-eye);
@@ -60,10 +74,11 @@ export function createMilkyWayGlow(scene: Scene, armSamples: 12 | 20 = 20) {
           vec3 p = eye+ray*(armNear+(float(i)+0.5)*stride);
           disk += spiralLight(p)*stride;
         }
-        float bulge = 0.18 * integratedGlow(eye,ray,vec3(2.6,1.05,1.9),nearT,farT);
-        float bar = 0.12 * integratedGlow(eye,ray,vec3(4.8,0.6,1.6),nearT,farT);
+        float bulge = ${barred ? '0.14' : '0.18'} * integratedGlow(eye,ray,vec3(${barred ? '1.5,0.8,1.3' : '2.6,1.05,1.9'}),nearT,farT);
+        float bar = ${options.barred === false ? '0.0' : barred ? '0.34' : '0.12'} * integratedGlow(eye,ray,vec3(${barred ? '5.0,0.42,0.7' : '4.8,0.6,1.6'}),nearT,farT);
         float density = disk+bulge+bar;
         vec3 light = (disk*vec3(0.48,0.63,0.85)+(bulge+bar)*vec3(1.0,0.83,0.65))/max(density,0.00001);
+        ${options.softEdge ? 'float planeT = abs(ray.y)>0.0001 ? -eye.y/ray.y : 0.0; vec3 intercept = eye+ray*planeT; density *= 1.0-smoothstep(12.0,19.0,length(intercept.xz));' : ''}
         gl_FragColor = vec4(light, opacity*(1.0-exp(-density)));
       }`,
     },
@@ -84,7 +99,7 @@ export function createMilkyWayGlow(scene: Scene, armSamples: 12 | 20 = 20) {
     update(eye: Vector3, opacity: number) {
       mesh.setEnabled(opacity > 0);
       material.setVector3('eye', eye);
-      material.setFloat('opacity', opacity);
+      material.setFloat('opacity', opacity * (options.intensity ?? 1));
     },
     dispose() {
       mesh.dispose();

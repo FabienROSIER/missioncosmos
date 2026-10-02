@@ -607,31 +607,41 @@ _2026-10-02 : voyage automatique de 8 s, disque/bras artistiques/centre épaissi
 
 Objectifs : d’autres galaxies que la nôtre ; idée d’« îles d’étoiles » ; Andromède comme exemple proche.
 
-- [ ] Distinguer Voie lactée vs autres galaxies.
-- [ ] Introduire Andromède (voisine, très loin).
-- [ ] Types simplifiés (spirale / elliptique / irrégulière) sans jargon excessif.
-- [ ] Comparaison d’échelle visuelle (galaxie vs système solaire).
-- [ ] Défi pédagogique (association ou ordre).
-- [ ] Éviter de présenter les galaxies comme des « soleils géants ».
+- [x] Distinguer Voie lactée vs autres galaxies.
+- [x] Introduire Andromède (voisine, très loin).
+- [x] Types simplifiés (spirale non barrée / spirale barrée / elliptique / irrégulière) sans jargon excessif.
+- [x] Comparaison d’échelle visuelle (galaxie vs système solaire). _(Cartes de niveaux d’inclusion, proportions explicitement non respectées.)_
+- [x] Défi pédagogique (association ou ordre). _(Album de quatre formes, dont deux variantes de spirales, + zoom Soleil / Système solaire / Voie lactée ; positions des réponses mélangées.)_
+- [x] Éviter de présenter les galaxies comme des « soleils géants ».
+
+_2026-10-02 : mission 11 jouable, maquettes 3D avec halos volumétriques, vues face/profil animées, deux défis, quiz commun avec robot, badge et déblocage de M12. Parcours complet avec erreurs, reprise et recommencement vérifiés. Quiz et feedback sans scroll sur 390×844, 320×568, 844×390 et 568×320 ; préférence de réduction des animations vérifiée. 149 tests passent, TypeScript / lint ciblé / build réussis. Sources et limites : `docs/pedagogy/mission-11-galaxies.md`. Les étapes d’observation ne célèbrent pas de faux défi._
 
 ### ASSET GATE — galaxies
 
-- [ ] choisir représentation (illustration, skybox, modèle simplifié).
-- [ ] licence documentée avant intégration définitive.
+_Ajustement complémentaire demandé : le sélecteur des quatre maquettes, dont la spirale barrée générique, est aussi disponible dans la découverte et l’exploration après la mission. Les représentations actuelles des galaxies nommées restent conservées._
+
+_Correction de périmètre demandée : maquettes précédentes rétablies pour Andromède et la Voie lactée, halo renforcé conservé. La maquette spirale barrée apparaît uniquement dans le défi de l’album (quatre fiches), comme exemple générique ; quiz et exploration libre restent sur les trois familles. La simplification visuelle ne signifie pas que la Voie lactée serait scientifiquement non barrée._
+
+_Ajustement : halos renforcés sur les quatre maquettes ; spirales barrées ajoutées à l’exploration, aux quatre fiches de l’album, au quiz et au glossaire. Barre centrale et départ des bras cohérents. Parcours complet et quatre formats mobiles vérifiés, y compris les retours du quiz sans scroll ; test de la géométrie de la barre ajouté._
+
+- [x] choisir représentation (illustration, skybox, modèle simplifié). _(Nuages de points et halos 3D générés par le code, fond AST-021 existant.)_
+- [x] licence documentée avant intégration définitive. _(Code original du projet, aucun nouveau média tiers ; ADR-005 et `docs/ASSETS.md`.)_
 
 ## Mission 12 — Les distances dans l'Univers
 
-- [ ] Terre → Lune.
-- [ ] Terre → Soleil.
-- [ ] Système solaire.
-- [ ] étoile proche.
-- [ ] Voie lactée.
-- [ ] galaxies proches.
-- [ ] Univers observable.
-- [ ] Animation de changement d'échelle.
-- [ ] Introduire UA et année-lumière progressivement.
-- [ ] Signaler les compressions d'échelle.
-- [ ] Défi d'ordre de grandeur.
+- [x] Terre → Lune.
+- [x] Terre → Soleil.
+- [x] Système solaire. _(Repère Soleil–Neptune ; le système continue au-delà.)_
+- [x] étoile proche. _(Proxima du Centaure.)_
+- [x] Voie lactée. _(Diamètre du disque étoilé explicitement distingué d’une distance.)_
+- [x] galaxies proches. _(Andromède.)_
+- [x] Univers observable. _(Diamètre actuel estimé ; horizon observable distinct du bord de l’Univers.)_
+- [x] Animation de changement d'échelle. _(Voyage de sept schémas avec changements de vue, Pause / Reprendre / Passer.)_
+- [x] Introduire UA et année-lumière progressivement.
+- [x] Signaler les compressions d'échelle.
+- [x] Défi d'ordre de grandeur. _(Destinations classées, puis trois messages lumineux reçus ou non reçus ; aucun calibrage chiffré.)_
+
+_Mission 12 révisée après retour utilisateur : une seule phase de voyage manuel avant le premier défi, modèles 3D texturés du jeu, recul continu et couches de voisinage superposées, Voie lactée cadrée entière, Voie lactée et Andromède ensemble, puis 24–48 galaxies espacées. Règle numérique remplacée par les messages du ciel, trois trajets à observer sans calcul. Deux défis, quiz commun avec robot, badge et déblocage M13. 154 tests passent ; parcours complet avec erreurs, transitions, quiz et récompense vérifié sur ordinateur et mobile simulé. Sources et limites dans `docs/pedagogy/mission-12-distances.md` ; représentation et provenance dans ADR-006. Vérification sur appareil mobile physique encore à faire._
 
 ## Mission 13 — Les trous noirs
 
@@ -994,15 +1004,15 @@ Les décisions importantes doivent avoir une ADR dans `/docs/decisions/` et êtr
 
 # État global du projet
 
-**Statut : MISSION 10 FAITE — prêt pour Mission 11 (Les galaxies)**
+**Statut : MISSION 12 FAITE — prêt pour Mission 13 (Les trous noirs)**
 
 Phase actuelle : **Phase 8 — Missions pédagogiques**
 
-Carte / catalogue : **13 missions principales + mission Constellations** branchées sur **8 zones**. Scènes jouables : M01–M10 et Constellations ; M11–M13 catalogue + TODO.
+Carte / catalogue : **13 missions principales + mission Constellations** branchées sur **8 zones**. Scènes jouables : M01–M12 et Constellations ; M13 catalogue + TODO.
 
-Sous-phases : Mission 01 · Mission 02 · Mission 03 · Mission 04 · Mission 05 · Mission 06 · Mission 07 · Mission 08 · Mission 09 · Constellations · Mission 10 terminées.
+Sous-phases : Mission 01 · Mission 02 · Mission 03 · Mission 04 · Mission 05 · Mission 06 · Mission 07 · Mission 08 · Mission 09 · Constellations · Mission 10 · Mission 11 · Mission 12 terminées.
 
-Prochaine action : **Mission 11 — Les galaxies** _(commencer par la définition technique de son asset gate)_.
+Prochaine action : **Mission 13 — Les trous noirs**, après validation de la mission 12 par le propriétaire.
 
 ### Notes découvertes
 

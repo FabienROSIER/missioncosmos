@@ -29,6 +29,8 @@ import type { StarLightSceneApi } from '@/3d/scenes/StarLightScene';
 import { StarLightScene } from '@/3d/scenes/StarLightScene';
 import { ConstellationsScene } from '@/3d/scenes/ConstellationsScene';
 import { MilkyWayScene } from '@/3d/scenes/MilkyWayScene';
+import { GalaxiesScene } from '@/3d/scenes/GalaxiesScene';
+import { CosmicDistancesScene } from '@/3d/scenes/CosmicDistancesScene';
 import { SolarDistancePanel } from '@/3d/scenes/SolarDistancePanel';
 import { SolarSizeChallenge } from '@/3d/scenes/SolarSizeChallenge';
 import type { SurfaceLighting } from '@/3d/scenes/dayNightMarkers';
@@ -118,6 +120,8 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const isStellarLight = mission.sceneId === 'stellar-light';
   const isConstellations = mission.sceneId === 'constellations';
   const isMilkyWay = mission.sceneId === 'milky-way';
+  const isGalaxies = mission.sceneId === 'galaxies';
+  const isCosmicDistances = mission.sceneId === 'cosmic-distances';
   const [guideOverride, setGuideOverride] = useState<{
     stepId: string;
     expanded: boolean;
@@ -234,6 +238,8 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   } = challengeFromStep(step);
   const showOrbitFall = isOrbits && step.id === 'm06-fall';
   const hasSceneControls =
+    isCosmicDistances ||
+    isGalaxies ||
     isMilkyWay ||
     (isConstellations && !['mc-intro', 'mc-reward', 'mc-understand'].includes(step.id)) ||
     isOrbits ||
@@ -664,6 +670,11 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     setFeedback({ stepId: ctx.stepId, text: hintText || ctx.hint, wrong: true });
   }, []);
 
+  const onClearObservatoryFeedback = useCallback(() => {
+    const stepId = pickCtxRef.current.stepId;
+    setFeedback((current) => (current?.stepId === stepId ? null : current));
+  }, []);
+
   const onPrismSuccess = useCallback(() => {
     const ctx = pickCtxRef.current;
     if (!['m09-color', 'm09-challenge'].includes(ctx.stepId) || ctx.challengeSolved) return;
@@ -823,7 +834,23 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
         data-guide-expanded={guideExpanded}
       >
         <div className={styles.sceneArea}>
-          {isMilkyWay ? (
+          {isCosmicDistances ? (
+            <CosmicDistancesScene
+              className={styles.viewport}
+              stepId={step.id}
+              onSuccess={onObservatorySuccess}
+              onMiss={onObservatoryMiss}
+              onClearFeedback={onClearObservatoryFeedback}
+            />
+          ) : isGalaxies ? (
+            <GalaxiesScene
+              className={styles.viewport}
+              stepId={step.id}
+              onSuccess={onObservatorySuccess}
+              onMiss={onObservatoryMiss}
+              onClearFeedback={onClearObservatoryFeedback}
+            />
+          ) : isMilkyWay ? (
             <MilkyWayScene
               className={styles.viewport}
               stepId={step.id}

@@ -1,0 +1,174 @@
+.wrap {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background-color: #06111d;
+  background-size: cover;
+  color: #eff7ff;
+}
+.canvas {
+  position: absolute;
+  inset: 0;
+}
+.signalLabels {
+  position: absolute;
+  inset: auto 8% 30%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  pointer-events: none;
+}
+.galaxyLabels {
+  position: absolute;
+  inset: auto 24% 32%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #d7e8f4;
+  pointer-events: none;
+}
+.title {
+  position: absolute;
+  top: 0.65rem;
+  inset-inline: 0.7rem;
+  text-align: center;
+  display: grid;
+  gap: 0.25rem;
+  pointer-events: none;
+  text-shadow: 0 2px 8px #000;
+}
+.title span {
+  color: #62dce9;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  font-weight: 800;
+}
+.title strong {
+  font-size: clamp(1rem, 2vw, 1.6rem);
+}
+.title small {
+  color: #b7cadd;
+  font-size: 0.75rem;
+}
+.title b {
+  color: #f4c95f;
+  font-size: clamp(0.8rem, 1.7vw, 1.1rem);
+}
+.schema {
+  position: absolute;
+  inset: 6.5rem 0.5rem 5.5rem;
+  width: calc(100% - 1rem);
+  height: calc(100% - 12rem);
+  min-height: 30px;
+}
+.caption {
+  position: absolute;
+  bottom: 0.6rem;
+  inset-inline: 1rem;
+  margin: 0;
+  text-align: center;
+  font-size: clamp(0.7rem, 1.4vw, 0.9rem);
+  color: #c5d9ea;
+}
+.controls {
+  display: grid;
+  gap: 0.5rem;
+  color: #e6f0fa;
+}
+.controls button,
+.controls select {
+  min-height: 48px;
+  padding: 0.5rem;
+  border-radius: 0.7rem;
+  border: 1px solid #486078;
+  background: #152238;
+  color: #f5f7fb;
+  font: inherit;
+  font-weight: 700;
+}
+.controls select {
+  width: 100%;
+}
+.controls label {
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+}
+.controls input {
+  width: 100%;
+  accent-color: #7ed6df;
+}
+.controls progress {
+  width: 100%;
+  accent-color: #7ed6df;
+}
+.controls button {
+  cursor: pointer;
+}
+.controls button:disabled {
+  opacity: 0.5;
+}
+.controls button:focus-visible,
+.controls select:focus-visible,
+.controls input:focus-visible {
+  outline: 3px solid #f4c95f;
+  outline-offset: 2px;
+}
+.controls p {
+  margin: 0;
+  font-size: 0.8rem;
+}
+.controls small {
+  font-size: 0.72rem;
+  color: #b7cadd;
+}
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.buttons button {
+  flex: 1 1 40%;
+}
+.buttons button[hidden] {
+  display: none;
+}
+.reveal {
+  animation: widen 800ms ease-out;
+  transform-origin: 400px 225px;
+}
+.arrived {
+  animation: widen 350ms ease-out;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes widen {
+  from {
+    opacity: 0;
+    transform: scale(0.65);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (max-height: 700px) {
+  .schema {
+    inset-block: 5.4rem 4rem;
+    height: calc(100% - 9.4rem);
+  }
+  .title {
+    gap: 0.1rem;
+  }
+  .caption {
+    font-size: 0.68rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .arrived {
+    animation: none;
+  }
+}

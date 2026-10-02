@@ -1,0 +1,97 @@
+.wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  color: #eff7ff;
+}
+.canvas {
+  position: absolute;
+  inset: 0;
+}
+.title {
+  position: absolute;
+  inset: 0.8rem 0.7rem auto;
+  display: grid;
+  gap: 0.3rem;
+  text-align: center;
+  pointer-events: none;
+  text-shadow: 0 2px 8px #000;
+}
+.title small {
+  color: #62dce9;
+  font-weight: 800;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+}
+.title strong {
+  font-size: clamp(1rem, 2vw, 1.6rem);
+}
+.label {
+  position: absolute;
+  transform: translate(-50%, 0);
+  visibility: hidden;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 50%;
+  border: 1px solid #7bacc3;
+  background: #142339e8;
+  color: #eff7ff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.label[aria-pressed='true'] {
+  background: #246d77;
+  border: 2px solid #89e0e9;
+}
+.label:disabled {
+  cursor: default;
+}
+.label:focus-visible,
+.controls button:focus-visible {
+  outline: 3px solid #f4c95f;
+  outline-offset: 2px;
+}
+.caption {
+  position: absolute;
+  inset: auto 0.8rem 0.7rem;
+  text-align: center;
+  margin: 0;
+  font-size: 0.72rem;
+  color: #c5d9ea;
+  pointer-events: none;
+}
+.controls {
+  display: grid;
+  gap: 0.5rem;
+  color: #e6f0fa;
+}
+.controls button {
+  min-height: 48px;
+  border: 1px solid #486078;
+  background: #152238;
+  color: #f5f7fb;
+  border-radius: 0.7rem;
+  padding: 0.5rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.controls button:disabled {
+  opacity: 0.5;
+}
+.controls p {
+  margin: 0;
+  font-size: 0.8rem;
+}
+.controls small {
+  font-size: 0.75rem;
+}
+.row {
+  display: flex;
+  gap: 0.4rem;
+}
+.row button {
+  flex: 1;
+}
