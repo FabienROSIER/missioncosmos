@@ -109,6 +109,14 @@
   opacity: 0.55;
   cursor: default;
 }
+.controls button.found,
+.controls button.found:disabled {
+  opacity: 1;
+  cursor: default;
+  border-color: #1f8a4d;
+  background: #5fcf8a;
+  color: #071018;
+}
 .controls button[aria-pressed='true'] {
   border-color: #7ed6df;
   background: #173a47;
@@ -181,6 +189,10 @@
   text-align: center;
   pointer-events: none;
 }
+.referenceFound {
+  border-color: #5fcf8a;
+  box-shadow: 0 0 0 3px rgba(95, 207, 138, 0.45);
+}
 .reference svg {
   display: block;
   width: 100%;
@@ -202,6 +214,14 @@
 .filmCaption strong {
   color: #7ed6df;
   font-size: 0.95rem;
+}
+.filmCaptionFound {
+  border-color: #5fcf8a;
+  background: #0c2418f2;
+  animation: foundPulse 700ms ease-out 2;
+}
+.filmCaptionFound strong {
+  color: #8ee7b0;
 }
 .filmCaption p {
   margin: 0.25rem 0 0;
@@ -244,6 +264,14 @@
   margin: 0;
   line-height: 1.5;
 }
+@keyframes foundPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(95, 207, 138, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 0 14px rgba(95, 207, 138, 0);
+  }
+}
 @keyframes reveal {
   from {
     opacity: 0;
@@ -274,7 +302,8 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .illustration {
+  .illustration,
+  .filmCaptionFound {
     animation: none;
   }
 }

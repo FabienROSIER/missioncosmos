@@ -226,6 +226,43 @@
   }
 }
 @media (orientation: landscape) and (max-height: 420px) and (max-width: 899px) {
+  .immersive[data-quiz-feedback='correct'] .questionHeader {
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+  .immersive[data-quiz-feedback='correct'] .quizCompanion {
+    width: 32px;
+    height: 32px;
+  }
+  .immersive[data-quiz-feedback='correct'] .prompt {
+    font-size: 0.9rem;
+  }
+  .root.immersive[data-quiz-feedback='wrong'] {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+  .immersive[data-quiz-feedback='wrong'] .questionHeader {
+    grid-column: 1;
+    grid-row: 1;
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+  .immersive[data-quiz-feedback='wrong'] .quizCompanion {
+    width: 32px;
+    height: 32px;
+  }
+  .immersive[data-quiz-feedback='wrong'] .prompt {
+    font-size: 0.9rem;
+  }
+  .immersive[data-quiz-feedback='wrong'] .choices {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    grid-template-columns: 1fr;
+  }
+  .immersive[data-quiz-feedback='wrong'] .hint {
+    grid-column: 1;
+    grid-row: 2;
+    margin: 0;
+  }
   .immersive .choices {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

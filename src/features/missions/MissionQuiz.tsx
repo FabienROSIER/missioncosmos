@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { QuizChoice } from '@/components/ui/QuizChoice';
+import { SuccessCelebration } from '@/components/ui/SuccessCelebration';
 import { Companion, type CompanionVariant } from '@/components/game/Companion';
 import type { CompanionFeedbackMood } from '@/features/companion';
 import type { Quiz } from '@/types/quiz';
@@ -91,6 +92,7 @@ export function MissionQuiz({
         .filter(Boolean)
         .join(' ')}
       data-quiz-question={question.id}
+      data-quiz-feedback={selectedId ? (isCorrect ? 'correct' : 'wrong') : 'none'}
     >
       <div className={styles.questionHeader}>
         {immersive ? (
@@ -118,22 +120,32 @@ export function MissionQuiz({
           )}
         </div>
       </div>
-      <div className={`${styles.choices} ui-stagger`} role="group" aria-label={quiz.title}>
-        {shuffledChoices
-          .filter((choice) => !immersive || !questionOk || choice.id === selectedId)
-          .map((choice) => (
-            <QuizChoice
-              key={`${question.id}-${choice.id}`}
-              label={choice.label}
-              state={choiceState(choice.id)}
-              disabled={questionOk}
-              onSelect={() => onSelect(choice.id)}
-            />
-          ))}
-      </div>
-      {selectedId ? (
-        <p key={selectedId} className={isCorrect ? styles.ok : styles.hint} role="status">
-          {isCorrect ? question.explainCorrect : question.explainWrong}
+      {!immersive || !questionOk ? (
+        <div className={`${styles.choices} ui-stagger`} role="group" aria-label={quiz.title}>
+          {shuffledChoices
+            .filter((choice) => !immersive || !questionOk || choice.id === selectedId)
+            .map((choice) => (
+              <QuizChoice
+                key={`${question.id}-${choice.id}`}
+                label={choice.label}
+                state={choiceState(choice.id)}
+                disabled={questionOk}
+                onSelect={() => onSelect(choice.id)}
+              />
+            ))}
+        </div>
+      ) : null}
+      {selectedId && isCorrect ? (
+        <SuccessCelebration
+          key={question.id}
+          inline
+          compact={compact}
+          title={isLast ? 'Quiz réussi !' : 'Bonne réponse !'}
+          message={question.explainCorrect}
+        />
+      ) : selectedId ? (
+        <p key={selectedId} className={styles.hint} role="status">
+          {question.explainWrong}
         </p>
       ) : null}
       {questionOk && !isLast ? (

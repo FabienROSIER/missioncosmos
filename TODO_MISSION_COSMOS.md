@@ -589,17 +589,19 @@ Objectifs : forme, rotation, pôles, équateur, repères fondamentaux.
 
 ## Mission 10 — Notre galaxie
 
-- [ ] Représentation 3D simplifiée de la Voie lactée.
-- [ ] Position approximative du Soleil.
-- [ ] Passage Système solaire → galaxie.
-- [ ] Expliquer étoile vs système solaire vs galaxie.
-- [ ] Rotation/exploration.
-- [ ] Défi de localisation conceptuelle.
+- [x] Représentation 3D simplifiée de la Voie lactée.
+- [x] Position approximative du Soleil.
+- [x] Passage Système solaire → galaxie.
+- [x] Expliquer étoile vs système solaire vs galaxie.
+- [x] Rotation/exploration.
+- [x] Défi de localisation conceptuelle.
+
+_2026-10-02 : voyage automatique de 8 s, disque/bras artistiques/centre épaissi, vues face/profil, rotation et zoom, trois repères avec indices. Quiz commun sans scroll avec robot, badge et déblocage de M11. Parcours complet, reprise, replay et réduction des animations vérifiés ; six formats navigateur testés. Notes et sources : `docs/pedagogy/mission-10-milky-way.md`._
 
 ### ASSET GATE — Voie lactée
 
-- [ ] déterminer si texture, skybox, particules ou modèle est préférable.
-- [ ] demander l'asset seulement après définition technique précise.
+- [x] déterminer si texture, skybox, particules ou modèle est préférable. _(Maquette en points 3D ; fond image AST-021 conservé. ADR-004.)_
+- [x] demander l'asset seulement après définition technique précise. _(Aucun nouvel asset externe requis pour cette maquette pédagogique ; décision documentée dans `docs/decisions/004-milky-way-learning-model.md`.)_
 
 ## Mission 11 — Les galaxies
 
@@ -979,6 +981,7 @@ Les décisions importantes doivent avoir une ADR dans `/docs/decisions/` et êtr
 
 | Date       | Décision                                                                                                                  | ADR                                              |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| 2026-10-02 | Mission 10 : maquette pédagogique en points 3D, fond AST-021 réutilisé, aucun nouvel asset externe requis | `docs/decisions/004-milky-way-learning-model.md` |
 | 2026-09-28 | Carte 8 zones alignée sur 13 missions (mix C) ; suppression zone Voisinage ; M11 Galaxies ; Distances→12 ; Trous noirs→13 | —                                                |
 | 2026-09-26 | Next.js + React + TypeScript comme socle web                                                                              | `docs/decisions/001-stack-initiale.md`           |
 | 2026-09-26 | Babylon.js (`@babylonjs/core`) comme moteur 3D                                                                            | `docs/decisions/001-stack-initiale.md`           |
@@ -991,15 +994,15 @@ Les décisions importantes doivent avoir une ADR dans `/docs/decisions/` et êtr
 
 # État global du projet
 
-**Statut : MISSION 09 FAITE — prêt pour Mission 10 (Notre galaxie)**
+**Statut : MISSION 10 FAITE — prêt pour Mission 11 (Les galaxies)**
 
 Phase actuelle : **Phase 8 — Missions pédagogiques**
 
-Carte / catalogue : **13 missions** branchées sur **8 zones** (alignement mix C). Scènes jouables : M01–M09 ; M10–M13 catalogue + TODO.
+Carte / catalogue : **13 missions principales + mission Constellations** branchées sur **8 zones**. Scènes jouables : M01–M10 et Constellations ; M11–M13 catalogue + TODO.
 
-Sous-phases : Mission 01 · Mission 02 · Mission 03 · Mission 04 · Mission 05 · Mission 06 · Mission 07 · Mission 08 · Mission 09 terminées.
+Sous-phases : Mission 01 · Mission 02 · Mission 03 · Mission 04 · Mission 05 · Mission 06 · Mission 07 · Mission 08 · Mission 09 · Constellations · Mission 10 terminées.
 
-Prochaine action : **Mission 10 — Notre galaxie** _(après validation propriétaire — asset gate Voie lactée)_.
+Prochaine action : **Mission 11 — Les galaxies** _(commencer par la définition technique de son asset gate)_.
 
 ### Notes découvertes
 

@@ -8,6 +8,7 @@ import { REWARD_SEASONS } from '@/content/missions/mission-07';
 import { REWARD_STARS } from '@/content/missions/mission-08';
 import { REWARD_STELLAR_LIGHT } from '@/content/missions/mission-09';
 import { REWARD_CONSTELLATIONS } from '@/content/missions/mission-constellations';
+import { REWARD_MILKY_WAY } from '@/content/missions/mission-10';
 import type { Reward } from '@/types/progress';
 
 /** Registre des récompenses (badges de connaissance). */
@@ -22,6 +23,7 @@ export const REWARD_CATALOG: Reward[] = [
   REWARD_STARS,
   REWARD_STELLAR_LIGHT,
   REWARD_CONSTELLATIONS,
+  REWARD_MILKY_WAY,
 ];
 
 export function getRewardById(id: string): Reward | undefined {

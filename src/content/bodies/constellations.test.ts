@@ -176,6 +176,7 @@ describe('constellations and perspective', () => {
       'mc-perspective',
       'mc-film',
       'mc-understand',
+      'mc-quiz',
     ]) {
       expect(MISSION_CONSTELLATIONS.steps.find((s) => s.id === id)?.requiresSuccess).toBe(true);
     }

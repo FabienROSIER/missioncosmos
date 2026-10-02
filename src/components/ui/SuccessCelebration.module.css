@@ -1,0 +1,127 @@
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: grid;
+  place-items: center;
+  padding: 0.75rem;
+  pointer-events: none;
+  container-type: size;
+}
+.card {
+  box-sizing: border-box;
+  width: min(23rem, 100%);
+  padding: 1.2rem;
+  border: 2px solid #90efb0;
+  border-radius: 1.1rem;
+  background: rgba(12, 35, 39, 0.96);
+  box-shadow: 0 0 35px #70e99d44;
+  color: #f5f7fb;
+  text-align: center;
+  animation: successAppear 350ms ease-out;
+}
+.check {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto 0.6rem;
+  border-radius: 50%;
+  background: #90efb0;
+  color: #102c22;
+  font-size: 2rem;
+  font-weight: 900;
+}
+.card strong {
+  color: #90efb0;
+  font-size: clamp(1.3rem, 3vw, 1.7rem);
+}
+.card p {
+  margin: 0.6rem 0 0;
+  line-height: 1.4;
+}
+.inline .card {
+  width: 100%;
+  padding: 0.75rem;
+}
+.inline .check {
+  width: 2rem;
+  height: 2rem;
+  font-size: 1.4rem;
+  margin-bottom: 0.35rem;
+}
+.inline strong {
+  font-size: 1.1rem;
+}
+.inline p {
+  font-size: 0.9rem;
+  margin-top: 0.35rem;
+}
+.compact .check {
+  width: 1.6rem;
+  height: 1.6rem;
+  font-size: 1.1rem;
+}
+.compact {
+  padding: 0.5rem;
+}
+.compact strong {
+  font-size: 0.9rem;
+}
+.compact p {
+  font-size: 0.75rem;
+}
+@container (max-height: 240px) {
+  .card {
+    padding: 0.6rem;
+  }
+  .check {
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 1.25rem;
+    margin-bottom: 0.25rem;
+  }
+  .card strong {
+    font-size: 1rem;
+  }
+  .card p {
+    margin-top: 0.25rem;
+    font-size: 0.8rem;
+  }
+}
+@keyframes successAppear {
+  from {
+    opacity: 0;
+    scale: 0.9;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+@media (max-height: 700px) {
+  .inline .card {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: 0.25rem 0.5rem;
+    padding: 0.6rem;
+    text-align: left;
+  }
+  .inline .check {
+    grid-row: 1 / 3;
+    margin: 0;
+  }
+  .inline strong {
+    font-size: 1rem;
+  }
+  .inline p {
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.3;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    animation: none;
+  }
+}

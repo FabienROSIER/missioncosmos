@@ -20,6 +20,8 @@ export interface MissionStep {
   ctaLabel?: string;
   /** Si true, le joueur doit réussir une action (pick/quiz) avant de continuer. */
   requiresSuccess?: boolean;
+  /** Guided discoveries can gate progression without being a challenge to celebrate. */
+  completionMode?: 'challenge' | 'discovery';
   /** Cible 3D pour un défi de picking (ex. equator, north-pole). */
   targetMarkerId?: string;
   /** Défi jour/nuit : le repère doit être côté jour ou nuit. */

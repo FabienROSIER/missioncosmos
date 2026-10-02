@@ -1,0 +1,61 @@
+import { assertValidMission } from './validateMission';
+import type { Mission } from '@/types/mission';
+import type { Reward } from '@/types/progress';
+
+export const REWARD_GALAXIES: Reward = {
+  id: 'reward-galaxies', title: 'Explorateur des galaxies', kind: 'badge',
+  description: 'Tu reconnais plusieurs familles de galaxies et tu sais que notre galaxie n’est pas seule.',
+};
+
+export const MISSION_11: Mission = assertValidMission({
+  id: 'mission-11', locale: 'fr', title: 'Les galaxies', difficulty: 'easy',
+  prerequisites: ['mission-10'], sceneId: 'galaxies', allowedInteractions: ['rotate', 'zoom', 'pick'],
+  introQuestion: 'Notre galaxie est-elle seule dans l’Univers ?',
+  learningObjectives: [
+    'Distinguer la Voie lactée des autres galaxies.',
+    'Découvrir Andromède, une galaxie spirale voisine, très éloignée.',
+    'Reconnaître les formes spirale, elliptique et irrégulière.',
+    'Comparer une étoile, un système planétaire et une galaxie.',
+  ],
+  activities: [{ id: 'galaxy-album', title: 'Des îles d’étoiles',
+    description: 'Observe les galaxies en trois dimensions et complète l’album du robot.', sceneId: 'galaxies' }],
+  steps: [
+    { id: 'm11-intro', kind: 'intro', title: 'Au-delà de notre maison',
+      body: 'Nous habitons la Voie lactée. Mais elle n’est pas seule : l’Univers contient énormément d’autres galaxies. Ce sont comme des îles d’étoiles, avec aussi du gaz et de la poussière !',
+      ctaLabel: 'Rencontrer Andromède' },
+    { id: 'm11-neighbour', kind: 'manipulate', title: 'Bonjour, Andromède !',
+      body: 'Compare la Voie lactée et Andromède. Toutes deux ont des bras en spirale. Andromède est notre plus proche grande galaxie voisine, mais sa lumière met environ 2,5 millions d’années pour nous atteindre !',
+      guideReminder: 'Compare les deux galaxies et tourne leurs maquettes.', ctaLabel: 'Découvrir les familles' },
+    { id: 'm11-families', kind: 'manipulate', title: 'Trois familles de formes',
+      body: 'Une spirale a des bras qui s’enroulent dans un disque. Une elliptique est un ensemble d’étoiles arrondi ou allongé, sans bras. Une irrégulière n’a pas de forme bien organisée. Explore les trois maquettes !',
+      guideReminder: 'Observe les bras, le volume et les formes des trois familles.', ctaLabel: 'Compléter mon album' },
+    { id: 'm11-album', kind: 'challenge', requiresSuccess: true, title: 'Les fiches mélangées',
+      body: 'Le robot a perdu les étiquettes de son album ! Observe chaque galaxie, tourne-la si besoin, puis retrouve sa famille. Il y a trois fiches à réparer. Attention : vue de profil, une spirale peut cacher ses bras !',
+      guideReminder: 'Tourne la galaxie et retrouve sa famille pour réparer les trois fiches.',
+      hint: 'Cherche des bras enroulés, une forme arrondie sans bras ou un ensemble désorganisé.',
+      successFeedback: 'Album réparé ! Tu reconnais les galaxies spirales, elliptiques et irrégulières.',
+      ctaLabel: 'Comparer les échelles' },
+    { id: 'm11-scale', kind: 'challenge', requiresSuccess: true, title: 'Du petit au gigantesque',
+      body: 'Prépare les trois niveaux du zoom du robot. Touche d’abord le plus petit ensemble, puis les deux autres dans l’ordre : le Soleil, notre Système solaire et la Voie lactée. Pense à ce qui est contenu dans quoi !',
+      guideReminder: 'Construis le zoom du plus petit au plus grand.',
+      hint: 'Les planètes entourent le Soleil. Notre Système solaire appartient à la Voie lactée.',
+      successFeedback: 'Zoom prêt ! Une étoile fait partie d’un système, qui est une toute petite partie d’une galaxie.',
+      ctaLabel: 'Des galaxies, pas des soleils géants' },
+    { id: 'm11-explain', kind: 'explain', title: 'Chaque galaxie a ses étoiles',
+      body: 'La lumière d’une galaxie vient de ses nombreuses étoiles : ce n’est pas un Soleil géant ! Notre Soleil appartient à la Voie lactée. Andromède est une autre galaxie, avec ses propres étoiles. Les couleurs et les distances de nos maquettes sont simplifiées.',
+      ctaLabel: 'Répondre au robot' },
+    { id: 'm11-quiz', kind: 'quiz', title: 'Ton album de galaxies',
+      body: 'Le robot aimerait vérifier ce que vous avez découvert ensemble.', quizId: 'quiz-mission-11', requiresSuccess: true },
+    { id: 'm11-reward', kind: 'reward', title: 'Explorateur des galaxies',
+      body: 'Ton album est prêt : tu sais maintenant que notre galaxie n’est pas seule !', ctaLabel: 'Terminer' },
+    { id: 'm11-complete', kind: 'complete', title: 'Continue ton exploration',
+      body: 'Compare librement les trois familles. La prochaine mission t’aidera à mesurer les immenses distances de l’Univers.' },
+  ],
+  challenge: { id: 'galaxy-families', prompt: 'Répare les trois fiches de l’album des galaxies.', successFeedback: 'Les trois familles ont retrouvé leurs étiquettes !' },
+  finalExplanation: 'La Voie lactée et Andromède sont deux galaxies différentes. Une galaxie est un immense ensemble d’étoiles, de gaz et de poussière rassemblés par la gravité.',
+  quizId: 'quiz-mission-11', rewardIds: ['reward-galaxies'],
+  glossaryIds: ['galaxie', 'voie-lactee', 'andromede', 'galaxie-spirale', 'galaxie-elliptique', 'galaxie-irreguliere'],
+  assets: [],
+  notToScaleNotice: 'Maquettes artistiques générées par le jeu. Formes, couleurs et tailles simplifiées ; les vues ne sont pas une carte du ciel. Le zoom compare des niveaux, sans respecter leurs proportions réelles.',
+  funFacts: ['Andromède se trouve à environ 2,5 millions d’années-lumière de nous. Des galaxies plus petites sont encore plus proches.'],
+});

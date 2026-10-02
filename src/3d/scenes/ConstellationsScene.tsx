@@ -70,7 +70,7 @@ function SkyGlyph({
 export function ConstellationsScene({ className, stepId, onSuccess, onSkipBonus }: Props) {
   const artworkId = useId().replace(/:/g, '');
   const free = stepId === 'mc-complete';
-  const intro = stepId === 'mc-intro' || stepId === 'mc-reward';
+  const intro = stepId === 'mc-intro' || stepId === 'mc-reward' || stepId === 'mc-quiz';
   const [exploring, setExploring] = useState<ConstellationId>('cassiopeia');
   const [found, setFound] = useState<number[]>([]);
   const [showArt, setShowArt] = useState(true);

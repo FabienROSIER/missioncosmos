@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { Badge } from '@/components/ui/Badge';
+import { SuccessCelebration } from '@/components/ui/SuccessCelebration';
 import styles from './RewardPanel.module.css';
 
 type RewardPanelProps = {
@@ -21,18 +22,18 @@ export function RewardPanel({
 }: RewardPanelProps) {
   return (
     <aside
-      className={[
-        styles.root,
-        celebrate ? styles.celebrate : '',
-        compact ? styles.compact : '',
-      ]
-        .filter(Boolean)
-        .join(' ')}
+      className={[styles.root, compact ? styles.compact : ''].filter(Boolean).join(' ')}
       aria-live="polite"
     >
       <Badge tone="solar">Récompense</Badge>
-      <h2 className={styles.title}>{title}</h2>
-      <p className={styles.description}>{description}</p>
+      {celebrate ? (
+        <SuccessCelebration inline compact={compact} title={title} message={description} />
+      ) : (
+        <>
+          <h2 className={styles.title}>{title}</h2>
+          <p className={styles.description}>{description}</p>
+        </>
+      )}
       {children}
     </aside>
   );

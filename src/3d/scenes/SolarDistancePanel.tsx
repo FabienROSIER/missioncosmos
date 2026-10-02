@@ -1,4 +1,5 @@
 'use client';
+import { SuccessCelebration } from '@/components/ui/SuccessCelebration';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { SOLAR_SYSTEM_PLANETS } from '@/content/bodies/solarSystem';
@@ -35,11 +36,10 @@ export function SolarDistancePanel({ onComplete, schemaPortalId }: SolarDistance
   const lastRound = round === deck.length - 1;
 
   useEffect(() => {
-    if (!schemaPortalId) {
-      setSchemaHost(null);
-      return;
-    }
-    setSchemaHost(document.getElementById(schemaPortalId));
+    const timer = setTimeout(() => {
+      setSchemaHost(schemaPortalId ? document.getElementById(schemaPortalId) : null);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [schemaPortalId]);
 
   const rail =
@@ -59,7 +59,10 @@ export function SolarDistancePanel({ onComplete, schemaPortalId }: SolarDistance
   return (
     <>
       {rail}
-      <div className={`${quizStyles.root} ${quizStyles.compact}`} aria-label="Mini-jeu des distances">
+      <div
+        className={`${quizStyles.root} ${quizStyles.compact}`}
+        aria-label="Mini-jeu des distances"
+      >
         <p className={quizStyles.progress}>
           {complete
             ? `Mission accomplie · ${deck.length} / ${deck.length}`
@@ -67,7 +70,9 @@ export function SolarDistancePanel({ onComplete, schemaPortalId }: SolarDistance
         </p>
 
         {complete ? (
-          <p className={quizStyles.ok}>Bravo ! Entre les planètes, il y a surtout beaucoup de vide.</p>
+          <p className={quizStyles.ok}>
+            Bravo ! Entre les planètes, il y a surtout beaucoup de vide.
+          </p>
         ) : (
           <>
             <div className={styles.flightTargetRow}>
@@ -78,50 +83,61 @@ export function SolarDistancePanel({ onComplete, schemaPortalId }: SolarDistance
               />
               <p className={quizStyles.prompt}>{flight.hint}</p>
             </div>
-            <div className={styles.planetChoiceGrid} role="group" aria-label="Choisir un repère">
-              {order.map((originalIndex, displayIndex) => {
-                const planetId = nearestPlanetId(flight.choices[originalIndex]!);
-                const name = SOLAR_SYSTEM_PLANETS[planetId].nameFr;
-                const selected = choice === originalIndex;
-                const revealed = choice !== null;
-                const num = displayIndex + 1;
-                return (
-                  <button
-                    key={`${round}-${originalIndex}`}
-                    type="button"
-                    className={
-                      selected
-                        ? solved
-                          ? styles.planetChoiceCorrect
-                          : styles.planetChoiceActive
-                        : styles.planetChoice
-                    }
-                    disabled={solved}
-                    aria-pressed={selected}
-                    aria-label={revealed ? `Repère ${num} : ${name}` : `Repère ${num}`}
-                    onClick={() => setChoice(originalIndex)}
-                  >
-                    <span
-                      className={revealed ? styles.planetChoiceThumb : styles.planetChoiceMarker}
-                      style={
-                        revealed
-                          ? { backgroundImage: `url(${celestialPortraitUrl(planetId)})` }
-                          : undefined
+            {!solved ? (
+              <div className={styles.planetChoiceGrid} role="group" aria-label="Choisir un repère">
+                {order.map((originalIndex, displayIndex) => {
+                  const planetId = nearestPlanetId(flight.choices[originalIndex]!);
+                  const name = SOLAR_SYSTEM_PLANETS[planetId].nameFr;
+                  const selected = choice === originalIndex;
+                  const revealed = choice !== null;
+                  const num = displayIndex + 1;
+                  return (
+                    <button
+                      key={`${round}-${originalIndex}`}
+                      type="button"
+                      className={
+                        selected
+                          ? solved
+                            ? styles.planetChoiceCorrect
+                            : styles.planetChoiceActive
+                          : styles.planetChoice
                       }
-                      aria-hidden
-                    />
-                    <span className={styles.planetChoiceLabel}>
-                      {revealed ? `${num}. ${name}` : `${num}.`}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-            {choice !== null && (
-              <p className={solved ? quizStyles.ok : quizStyles.hint} role="status">
-                {solved ? flight.discovery : 'Pas tout à fait — réessaie !'}
+                      disabled={solved}
+                      aria-pressed={selected}
+                      aria-label={revealed ? `Repère ${num} : ${name}` : `Repère ${num}`}
+                      onClick={() => setChoice(originalIndex)}
+                    >
+                      <span
+                        className={revealed ? styles.planetChoiceThumb : styles.planetChoiceMarker}
+                        style={
+                          revealed
+                            ? { backgroundImage: `url(${celestialPortraitUrl(planetId)})` }
+                            : undefined
+                        }
+                        aria-hidden
+                      />
+                      <span className={styles.planetChoiceLabel}>
+                        {revealed ? `${num}. ${name}` : `${num}.`}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : null}
+            {solved ? (
+              <SuccessCelebration
+                key={round}
+                inline={!schemaPortalId}
+                compact={!schemaPortalId}
+                portalId={schemaPortalId}
+                title="Bonne réponse !"
+                message={flight.discovery}
+              />
+            ) : choice !== null ? (
+              <p className={quizStyles.hint} role="status">
+                Pas tout à fait — réessaie !
               </p>
-            )}
+            ) : null}
             {solved && (
               <button
                 type="button"

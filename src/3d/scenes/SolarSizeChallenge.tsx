@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { QuizChoice } from '@/components/ui/QuizChoice';
+import { SuccessCelebration } from '@/components/ui/SuccessCelebration';
 import { SIZE_RIDDLES } from '@/content/bodies/solarLearningGames';
 import type { ComparisonGroup } from '@/content/bodies/solarSystem';
 import styles from '@/features/missions/MissionQuiz.module.css';
@@ -18,7 +19,9 @@ export function SolarSizeChallenge({
   const [complete, setComplete] = useState(false);
   const [order, setOrder] = useState(() => shuffledIndices(SIZE_RIDDLES[0]!.choices.length));
   const onChangeRef = useRef(onChange);
-  onChangeRef.current = onChange;
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
 
   useEffect(() => {
     onChangeRef.current(SIZE_RIDDLES[0]!.group, false, true);
@@ -44,31 +47,40 @@ export function SolarSizeChallenge({
         Question {round + 1} / {total}
       </p>
       <p className={styles.prompt}>{question.question}</p>
-      <div className={styles.choices}>
-        {order.map((originalIndex) => {
-          const label = question.choices[originalIndex]!;
-          let state: 'idle' | 'correct' | 'incorrect' = 'idle';
-          if (answer === originalIndex) state = correct ? 'correct' : 'incorrect';
-          else if (correct && originalIndex === question.correct) state = 'correct';
-          return (
-            <QuizChoice
-              key={`${round}-${originalIndex}-${label}`}
-              label={label}
-              state={state}
-              disabled={correct}
-              onSelect={() => {
-                setAnswer(originalIndex);
-                onChange(question.group, false, true);
-              }}
-            />
-          );
-        })}
-      </div>
-      {answer !== null && (
-        <p className={correct ? styles.ok : styles.hint} role="status">
-          {correct ? question.explanation : 'Regarde la comparaison, puis réessaie.'}
+      {!correct ? (
+        <div className={styles.choices}>
+          {order.map((originalIndex) => {
+            const label = question.choices[originalIndex]!;
+            let state: 'idle' | 'correct' | 'incorrect' = 'idle';
+            if (answer === originalIndex) state = correct ? 'correct' : 'incorrect';
+            else if (correct && originalIndex === question.correct) state = 'correct';
+            return (
+              <QuizChoice
+                key={`${round}-${originalIndex}-${label}`}
+                label={label}
+                state={state}
+                disabled={correct}
+                onSelect={() => {
+                  setAnswer(originalIndex);
+                  onChange(question.group, false, true);
+                }}
+              />
+            );
+          })}
+        </div>
+      ) : null}
+      {correct ? (
+        <SuccessCelebration
+          key={round}
+          portalId="mission-schema-root"
+          title="Bonne réponse !"
+          message={question.explanation}
+        />
+      ) : answer !== null ? (
+        <p className={styles.hint} role="status">
+          Regarde la comparaison, puis réessaie.
         </p>
-      )}
+      ) : null}
       {correct && (
         <button
           type="button"

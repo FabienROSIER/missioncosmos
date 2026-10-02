@@ -240,7 +240,10 @@ export function ConstellationVoyage({ mode, onSuccess }: Props) {
         onSceneReady={onSceneReady}
         loadingMessage="Préparation du voyage entre les étoiles…"
       />
-      <div className={styles.reference} aria-label="Carte du Cygne depuis la Terre">
+      <div
+        className={`${styles.reference} ${done && mode === 'perspective' ? styles.referenceFound : ''}`}
+        aria-label="Carte du Cygne depuis la Terre"
+      >
         <span>Depuis la Terre</span>
         <svg viewBox="0 0 1000 1000" aria-hidden="true">
           {getConstellation('cygnus').edges.map(([a, b]) => (
@@ -269,12 +272,23 @@ export function ConstellationVoyage({ mode, onSuccess }: Props) {
           />
         </div>
       )}
-      <div className={styles.filmCaption} aria-live="polite">
-        <strong>{mode === 'film' ? chapter.title : 'Le vaisseau change de place'}</strong>
+      <div
+        className={`${styles.filmCaption} ${done && mode === 'perspective' ? styles.filmCaptionFound : ''}`}
+        aria-live="polite"
+      >
+        <strong>
+          {mode === 'film'
+            ? chapter.title
+            : done
+              ? 'Point de vue retrouvé'
+              : 'Le vaisseau change de place'}
+        </strong>
         <p>
           {mode === 'film'
             ? chapter.text
-            : 'Les sept étoiles sont fixes. Retrouve leur dessin depuis notre point de départ.'}
+            : done
+              ? 'La croix est revenue. Les étoiles n’ont pas bougé.'
+              : 'Les sept étoiles sont fixes. Retrouve leur dessin depuis notre point de départ.'}
         </p>
       </div>
       <SceneControls className={styles.controls}>
@@ -295,8 +309,12 @@ export function ConstellationVoyage({ mode, onSuccess }: Props) {
               disabled={!ready || done}
               onChange={(event) => setOffset(Number(event.target.value))}
             />
-            <button onClick={verify} disabled={!ready || done}>
-              Vérifier mon point de vue
+            <button
+              className={done ? styles.found : undefined}
+              onClick={verify}
+              disabled={!ready || done}
+            >
+              {done ? '✓ Point de vue retrouvé' : 'Vérifier mon point de vue'}
             </button>
             <p role="status">
               {message || 'Fais glisser le curseur ou utilise les flèches du clavier.'}

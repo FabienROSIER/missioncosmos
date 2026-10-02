@@ -18,6 +18,8 @@ export type SceneLightingHandle = {
 };
 
 export type SceneLightingOptions = {
+  /** Disable edge enhancement for tiny luminous point sprites. */
+  sharpenEnabled?: boolean;
   /** Remplissage ambiant (défaut selon qualité). Baisser pour missions jour/nuit. */
   hemiIntensity?: number;
   sunIntensity?: number;
@@ -44,14 +46,12 @@ export function setupSceneLighting(
   }
 
   const hemi = new HemisphericLight('hemi', new Vector3(0.15, 1, 0.25), scene);
-  hemi.intensity =
-    options.hemiIntensity ?? (quality === 'low' ? 0.28 : 0.32);
+  hemi.intensity = options.hemiIntensity ?? (quality === 'low' ? 0.28 : 0.32);
   hemi.diffuse = options.hemiDiffuse?.clone() ?? new Color3(0.55, 0.62, 0.75);
   hemi.groundColor = options.hemiGround?.clone() ?? new Color3(0.02, 0.03, 0.06);
 
   const sunLight = new DirectionalLight('sun', MISSION_SUN_DIRECTION.clone(), scene);
-  sunLight.intensity =
-    options.sunIntensity ?? (quality === 'low' ? 1.05 : 1.2);
+  sunLight.intensity = options.sunIntensity ?? (quality === 'low' ? 1.05 : 1.2);
   sunLight.diffuse = new Color3(1, 0.97, 0.92);
   sunLight.specular = new Color3(0.4, 0.4, 0.35);
 
@@ -62,7 +62,7 @@ export function setupSceneLighting(
     pipeline.fxaaEnabled = true;
     pipeline.bloomEnabled = false;
     pipeline.samples = quality === 'high' ? 4 : quality === 'medium' ? 2 : 1;
-    pipeline.sharpenEnabled = quality !== 'low';
+    pipeline.sharpenEnabled = options.sharpenEnabled ?? quality !== 'low';
     if (pipeline.sharpenEnabled) {
       pipeline.sharpen.edgeAmount = quality === 'high' ? 0.16 : 0.1;
     }

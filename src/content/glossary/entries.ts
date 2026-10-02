@@ -6,6 +6,24 @@ import type { GlossaryEntry } from '@/types/glossary';
  */
 export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
   {
+    id: 'galaxie',
+    term: 'Galaxie',
+    definition: 'Un immense ensemble d’étoiles, de gaz et de poussière, rassemblés par la gravité.',
+    enrichedDefinition:
+      'Une galaxie contient de nombreux systèmes planétaires. Certaines ont des bras en spirale, d’autres ont des formes différentes.',
+    unlockRewardId: 'reward-milky-way',
+    aliases: ['galaxie', 'galaxies'],
+  },
+  {
+    id: 'voie-lactee',
+    term: 'Voie lactée',
+    definition: 'Le nom de notre galaxie. Le Soleil et ses planètes en font partie.',
+    enrichedDefinition:
+      'Le Soleil se trouve dans le disque, dans le petit bras d’Orion, loin du centre de la galaxie. Depuis la Terre, nous voyons la Voie lactée de l’intérieur.',
+    unlockRewardId: 'reward-milky-way',
+    aliases: ['Voie lactée', 'voie lactée'],
+  },
+  {
     id: 'sphere',
     term: 'Sphère',
     definition:

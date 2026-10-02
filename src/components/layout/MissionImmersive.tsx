@@ -6,6 +6,7 @@ import { Companion } from '@/components/game/Companion';
 import { SafeBackButton } from '@/components/layout/SafeBackButton';
 import { SceneControlsTarget } from '@/components/layout/SceneControls';
 import { RewardPanel } from '@/components/ui/RewardPanel';
+import { SuccessCelebration } from '@/components/ui/SuccessCelebration';
 import type { EarthMarkerId, EarthSceneApi } from '@/3d/scenes/EarthPreviewScene';
 import { EarthPreviewScene } from '@/3d/scenes/EarthPreviewScene';
 import type { DayNightSceneApi } from '@/3d/scenes/DayNightScene';
@@ -27,6 +28,7 @@ import { StarsScene } from '@/3d/scenes/StarsScene';
 import type { StarLightSceneApi } from '@/3d/scenes/StarLightScene';
 import { StarLightScene } from '@/3d/scenes/StarLightScene';
 import { ConstellationsScene } from '@/3d/scenes/ConstellationsScene';
+import { MilkyWayScene } from '@/3d/scenes/MilkyWayScene';
 import { SolarDistancePanel } from '@/3d/scenes/SolarDistancePanel';
 import { SolarSizeChallenge } from '@/3d/scenes/SolarSizeChallenge';
 import type { SurfaceLighting } from '@/3d/scenes/dayNightMarkers';
@@ -45,6 +47,7 @@ import { resolveCompanionCue, type CompanionFeedbackMood } from '@/features/comp
 import { MissionQuiz } from '@/features/missions/MissionQuiz';
 import { useMissionSequence } from '@/features/missions/useMissionSequence';
 import { splitGuideText } from '@/features/missions/guideText';
+import { isCelebratedChallenge } from '@/features/missions/challengeCelebration';
 import { completeMission } from '@/features/progression/saveStore';
 import { useLocalSave } from '@/features/progression/useLocalSave';
 import type { Mission, MissionStep } from '@/types/mission';
@@ -114,6 +117,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const isStars = mission.sceneId === 'stars';
   const isStellarLight = mission.sceneId === 'stellar-light';
   const isConstellations = mission.sceneId === 'constellations';
+  const isMilkyWay = mission.sceneId === 'milky-way';
   const [guideOverride, setGuideOverride] = useState<{
     stepId: string;
     expanded: boolean;
@@ -230,6 +234,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   } = challengeFromStep(step);
   const showOrbitFall = isOrbits && step.id === 'm06-fall';
   const hasSceneControls =
+    isMilkyWay ||
     (isConstellations && !['mc-intro', 'mc-reward', 'mc-understand'].includes(step.id)) ||
     isOrbits ||
     isSeasons ||
@@ -237,6 +242,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     (isStellarLight && !['m09-intro', 'm09-explain', 'm09-reward'].includes(step.id)) ||
     (isSolarSystem && step.id !== 'm05-scale' && step.id !== 'm05-distances');
   const visibleFeedback = feedback?.stepId === step.id ? feedback : null;
+  const celebratedChallenge = isCelebratedChallenge(step);
   const interactivePanel =
     step.kind === 'quiz' || step.id === 'm05-scale' || step.id === 'm05-distances';
   const guideCanFold = !interactivePanel && step.kind !== 'reward' && step.kind !== 'complete';
@@ -750,14 +756,16 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const companionFeedback: CompanionFeedbackMood = visibleFeedback
     ? visibleFeedback.wrong
       ? 'wrong'
-      : 'success'
+      : celebratedChallenge
+        ? 'success'
+        : 'none'
     : step.kind === 'quiz'
       ? quizMood
       : 'none';
 
   const companionCue = resolveCompanionCue({
-    stepKind: step.kind,
-    challengeSolved,
+    stepKind: step.completionMode === 'discovery' ? 'observe' : step.kind,
+    challengeSolved: challengeSolved && (celebratedChallenge || step.kind === 'quiz'),
     feedback: companionFeedback,
     isComplete,
     funFact: step.kind === 'explain' && mission.funFacts?.[0] ? mission.funFacts[0] : undefined,
@@ -815,7 +823,14 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
         data-guide-expanded={guideExpanded}
       >
         <div className={styles.sceneArea}>
-          {isConstellations ? (
+          {isMilkyWay ? (
+            <MilkyWayScene
+              className={styles.viewport}
+              stepId={step.id}
+              onSuccess={onObservatorySuccess}
+              onMiss={onObservatoryMiss}
+            />
+          ) : isConstellations ? (
             <ConstellationsScene
               key={step.id}
               className={styles.viewport}
@@ -911,6 +926,9 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
             className={styles.schemaRoot}
             onPointerDown={(event) => event.stopPropagation()}
           />
+          {challengeSolved && celebratedChallenge ? (
+            <SuccessCelebration key={step.id} message={successFeedback} />
+          ) : null}
         </div>
 
         <header ref={topBarRef} className={styles.topBar}>
@@ -1147,7 +1165,13 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                 {visibleFeedback ? (
                   <p
                     key={visibleFeedback.text}
-                    className={visibleFeedback.wrong ? styles.hint : styles.success}
+                    className={
+                      visibleFeedback.wrong
+                        ? styles.hint
+                        : celebratedChallenge
+                          ? styles.success
+                          : styles.tipBody
+                    }
                     role="status"
                   >
                     {visibleFeedback.text}

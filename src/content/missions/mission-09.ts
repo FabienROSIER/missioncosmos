@@ -44,6 +44,7 @@ export const MISSION_09: Mission = assertValidMission({
     {
       id: 'm09-color',
       kind: 'challenge',
+      completionMode: 'discovery',
       title: 'Place le prisme',
       guideReminder: 'Place le prisme dans le faisceau blanc.',
       body: 'Ce triangle de verre est un prisme. Touche-le, ou appuie sur « Placer le prisme », pour le mettre dans le faisceau blanc.',

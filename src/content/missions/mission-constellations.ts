@@ -21,6 +21,7 @@ export const MISSION_CONSTELLATIONS = assertValidMission({
     'Reconnaître quatre dessins de constellations.',
     'Distinguer les étoiles réelles des figures imaginées.',
     'Comprendre que le dessin dépend du point de vue et masque la profondeur.',
+    'Savoir que des peuples anciens ont imaginé les constellations pour se repérer, suivre les saisons et raconter des histoires.',
   ],
   introQuestion: 'Les étoiles dessinent-elles vraiment des animaux dans l’espace ?',
   activities: [
@@ -72,6 +73,7 @@ export const MISSION_CONSTELLATIONS = assertValidMission({
     {
       id: 'mc-film',
       kind: 'challenge',
+      completionMode: 'discovery',
       title: 'Le voyage du Cygne',
       body: 'Observe le voyage : le vaisseau découvre le ciel de côté, puis revient à notre point de départ. Le film démarre tout seul. Tu peux le mettre en pause, le passer ou le revoir.',
       guideReminder:
@@ -88,7 +90,15 @@ export const MISSION_CONSTELLATIONS = assertValidMission({
       requiresSuccess: true,
       successFeedback:
         'Exactement ! Les étoiles sont restées à leur place. Nous les avons regardées depuis un autre endroit.',
-      ctaLabel: 'Recevoir mon badge',
+      ctaLabel: 'Petit quiz',
+    },
+    {
+      id: 'mc-quiz',
+      kind: 'quiz',
+      title: 'D’où viennent les constellations ?',
+      body: 'Une question sur ceux qui ont imaginé ces dessins, et pourquoi.',
+      requiresSuccess: true,
+      quizId: 'quiz-mission-constellations',
     },
     {
       id: 'mc-reward',
@@ -113,6 +123,7 @@ export const MISSION_CONSTELLATIONS = assertValidMission({
   finalExplanation:
     'Les étoiles sont réelles ; les traits et les personnages sont imaginés. Les étoiles sont à différentes distances et leur dessin apparent dépend de notre point de vue.',
   rewardIds: [REWARD_CONSTELLATIONS.id],
+  quizId: 'quiz-mission-constellations',
   assets: [],
   notToScaleNotice:
     'Carte simplifiée. Voyage imaginaire en 3D : profondeurs de démonstration, pas distances réelles.',
