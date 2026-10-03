@@ -6,7 +6,8 @@ import type { Reward } from '@/types/progress';
 export const REWARD_EARTH_EXPLORER: Reward = {
   id: 'reward-earth-explorer',
   title: 'Explorateur de la Terre',
-  description: 'Tu connais la forme de la Terre, l’équateur, les pôles… et son orbite autour du Soleil.',
+  description:
+    'Tu connais la forme de la Terre, l’équateur, les pôles… et son orbite autour du Soleil.',
   kind: 'badge',
 };
 
@@ -26,7 +27,7 @@ export const MISSION_01: Mission = assertValidMission({
     'Repérer l’équateur et les pôles Nord / Sud.',
     'Découvrir que la Terre tourne autour du Soleil sur une orbite.',
   ],
-  introQuestion: 'La Terre ressemble-t-elle à une assiette plate, ou à une boule ?',
+  introQuestion: 'Sauras-tu préparer notre carte de navigation avant le grand voyage ?',
   sceneId: 'earth-preview',
   allowedInteractions: ['rotate', 'zoom', 'pick'],
   activities: [
@@ -41,57 +42,63 @@ export const MISSION_01: Mission = assertValidMission({
     {
       id: 'm01-intro',
       kind: 'intro',
-      title: 'Une question',
-      body: 'La Terre : assiette plate, ou boule ? Tourne le globe avec ton doigt (pince pour zoomer). Tu verras tous les côtés.',
-      ctaLabel: 'C’est une boule !',
+      title: 'Le départ de l’expédition',
+      body: 'Avant de partir vers les étoiles, préparons notre carte de navigation ! Retrouve trois repères sur notre planète, puis accompagne-la pendant une année autour du Soleil. Commence par tourner autour du globe : que découvres-tu sur sa forme ?',
+      ctaLabel: 'Préparer la carte',
     },
     {
       id: 'm01-challenge-equator',
       kind: 'challenge',
-      title: 'Défi : équateur',
-      body: 'Des repères apparaissent. Touche le cercle jaune : l’équateur, au milieu de la Terre.',
+      title: 'Repère 1 · Les deux moitiés',
+      body: 'La première balise doit séparer la moitié nord et la moitié sud de la Terre. Quel repère choisirais-tu ? Touche-le sur le globe ou choisis sa description. Ce grand cercle imaginaire s’appelle l’équateur.',
       requiresSuccess: true,
       targetMarkerId: 'equator',
+      guideReminder: 'Retrouve le cercle qui sépare les moitiés nord et sud.',
       successFeedback:
-        'Oui ! L’équateur coupe la Terre en deux. C’est le cercle le plus long autour de la planète.',
+        'Première balise enregistrée ! L’équateur partage la Terre en deux hémisphères : nord et sud. Ce repère est imaginaire : il n’y a pas de trait jaune sur la vraie Terre.',
       hint: 'Cherche la bande jaune au milieu, pas les points orange.',
     },
     {
       id: 'm01-challenge-north',
       kind: 'challenge',
-      title: 'Défi : pôle Nord',
-      body: 'Les points orange sont les pôles (bouts de l’axe). Touche le pôle Nord, en haut.',
+      title: 'Repère 2 · Cap au nord',
+      body: 'Notre carte a maintenant un milieu. Retrouve son extrémité nord ! Les pointillés montrent l’axe imaginaire autour duquel la Terre tourne. Où placerais-tu la balise du pôle Nord ?',
       requiresSuccess: true,
       targetMarkerId: 'north-pole',
-      successFeedback: 'Bravo ! C’est le pôle Nord.',
+      guideReminder: 'Retrouve l’extrémité nord de l’axe.',
+      successFeedback:
+        'Deuxième balise enregistrée ! Le pôle Nord est une extrémité de l’axe de rotation. La Terre tourne autour de cet axe.',
       hint: 'Regarde tout en haut du globe, le point orange.',
     },
     {
       id: 'm01-challenge-south',
       kind: 'challenge',
-      title: 'Défi : pôle Sud',
-      body: 'Maintenant touche le pôle Sud (le point orange en bas).',
+      title: 'Repère 3 · L’autre bout du monde',
+      body: 'Dernière balise : retrouve le pôle opposé au pôle Nord, à l’autre bout de l’axe. Tourne autour de la Terre si tu ne le vois pas. Où est le pôle Sud ?',
       requiresSuccess: true,
       targetMarkerId: 'south-pole',
-      successFeedback: 'Parfait ! C’est le pôle Sud.',
+      guideReminder: 'Retrouve le pôle opposé au pôle Nord.',
+      successFeedback:
+        'Nos trois repères sont enregistrés ! Équateur, pôle Nord, pôle Sud : notre carte est prête. Passons maintenant au voyage autour du Soleil.',
       hint: 'Tourne un peu le globe si besoin. Vise le point orange en bas.',
     },
     {
       id: 'm01-challenge-orbit',
       kind: 'challenge',
-      title: 'Défi : orbite',
-      body: 'Voici le Soleil ! La Terre ne reste pas au même endroit : elle avance tout autour de lui. Glisse pour la faire bouger sur le cercle jaune. Ce chemin s’appelle une orbite.',
+      title: 'Le voyage d’une année',
+      body: 'La Terre voyage autour du Soleil sur une orbite. Fais-lui accomplir un tour entier pour terminer notre carte ! Glisse sur la scène ou utilise le bouton Avancer. Observe le trajet vert et le compteur : combien de jours faut-il pour revenir au départ ?',
       requiresSuccess: true,
       challengeOrbit: true,
+      guideReminder: 'Fais un tour entier du Soleil pour compléter la carte.',
       successFeedback:
-        'Bravo ! Une orbite, c’est comme une piste autour du Soleil. La Terre roule dessus sans s’arrêter. Un tour complet dure environ une année.',
-      hint: 'Glisse à gauche ou à droite : la Terre doit suivre le cercle autour du Soleil.',
+        'Voyage accompli ! Un tour du Soleil dure environ 365 jours : une année. Notre carte de navigation est complète. Le cercle dessiné montre le trajet : ce n’est pas un rail dans l’espace.',
+      hint: 'Continue dans le même sens jusqu’à retrouver le départ. Tu peux aussi utiliser Avancer sur l’orbite.',
     },
     {
       id: 'm01-explain',
       kind: 'explain',
       title: 'Deux mouvements',
-      body: 'La Terre fait deux choses en même temps : 1) elle tourne sur elle-même (comme une toupie) — ça fait le jour et la nuit ; 2) elle avance autour du Soleil sur son orbite — un grand tour, c’est une année. Le Soleil reste au milieu ; la Terre bouge autour. (Ici, tailles et distances sont une maquette.)',
+      body: 'Ta carte raconte deux mouvements différents. La Terre tourne sur elle-même en environ 24 heures : c’est l’alternance du jour et de la nuit. Elle fait aussi le tour du Soleil en environ 365 jours : c’est une année. Ici, le temps est accéléré et les tailles et distances sont celles d’une maquette.',
       ctaLabel: 'Petit quiz',
     },
     {
@@ -106,7 +113,7 @@ export const MISSION_01: Mission = assertValidMission({
       id: 'm01-reward',
       kind: 'reward',
       title: 'Récompense',
-      body: 'Tu as gagné le badge Explorateur de la Terre. Tu le retrouveras dans ta collection.',
+      body: 'Trois repères retrouvés et une année parcourue : ta carte de navigation est prête ! Tu as gagné le badge Explorateur de la Terre. Retrouve-le dans ta collection.',
       ctaLabel: 'Terminer',
     },
     {
@@ -125,7 +132,7 @@ export const MISSION_01: Mission = assertValidMission({
     targetMarkerId: 'equator',
   },
   finalExplanation:
-    'La Terre est presque ronde. L’équateur est le grand cercle au milieu ; les pôles sont les bouts de l’axe. Et la Terre avance aussi autour du Soleil sur une orbite — comme sur une piste : un grand tour ≈ une année.',
+    'La Terre est presque ronde. L’équateur est le grand cercle au milieu ; les pôles sont les bouts de l’axe. Et la Terre avance aussi autour du Soleil sur une orbite — un grand tour dure environ une année. Les lignes de la maquette sont des repères imaginaires.',
   rewardIds: [REWARD_EARTH_EXPLORER.id],
   funFacts: [
     'Deux mouvements : tourner sur soi ≈ 24 h (jour/nuit) ; un tour d’orbite autour du Soleil ≈ 365 jours (une année).',

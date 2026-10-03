@@ -1028,3 +1028,13 @@ Prochaine action : **Mission 13 — Les trous noirs**, après validation de la m
 - Mission 08 (2026-09-29) : scène procédurale `stars` ; Proxima / Soleil / Sirius / Bételgeuse ; modes tailles (log), couleurs, taille apparente ; défi photo à mécanique unique (3 cadrages, rail de distance, album) ; max 3 astres détaillés ; notes `docs/pedagogy/mission-08-stars.md`.
 - Mission 09 (2026-09-30) : laboratoire du prisme `stellar-light` ; température → couleur + spectre corps noir simplifié (Wien / Planck relatif) ; défi 3 commandes Proxima / Soleil / Sirius ; glossaire spectre / spectroscope / kelvin ; notes `docs/pedagogy/mission-09-stellar-light.md`.
 - Musique (2026-09-28) : AST-040/041 issus de **KSP1** — documentés dans `docs/ASSETS.md`, état **Temporaire** (propriétaire Squad/Take-Two). Remplacer avant toute publication.
+
+
+## Révision ciblée — Notre Terre (3 octobre 2026)
+
+- [x] Comparer les mécaniques, enjeux et dispositifs visuels du catalogue ; diagnostic dans `docs/pedagogy/mission-01-earth.md`.
+- [x] Donner à la mission 01 un objectif de carte à compléter et une progression visible.
+- [x] Améliorer cadrage, atmosphère, repères et suivi du voyage orbital.
+- [x] Exiger une révolution complète ; conserver le trajet pendant la relecture.
+- [x] Vérifier le parcours principal sur ordinateur et portrait mobile, les tests et la compilation.
+- [ ] Recette tactile sur appareil physique (le contrôle actuel utilise le navigateur redimensionné).

@@ -241,6 +241,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   } = challengeFromStep(step);
   const showOrbitFall = isOrbits && step.id === 'm06-fall';
   const hasSceneControls =
+    mission.sceneId === 'earth-preview' ||
     isCosmicDistances ||
     isGalaxies ||
     isMilkyWay ||
@@ -384,7 +385,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     if (earthOrbitView) {
       earthApi.setMarkerHighlight(null);
     } else if (challengeActive || (step.kind === 'challenge' && challengeSolved)) {
-      earthApi.setMarkerHighlight(targetMarkerId ?? null);
+      earthApi.setMarkerHighlight(challengeSolved ? targetMarkerId ?? null : null);
     } else if (step.id.includes('pole')) {
       earthApi.setMarkerHighlight('north-pole');
     } else if (step.kind === 'observe' || step.id.includes('equator')) {
@@ -1057,6 +1058,9 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
               />
             ) : (
               <EarthPreviewScene
+                stepId={step.id}
+                interactionAllowed={sceneInteractionAllowed}
+                challengeSolved={challengeSolved}
                 className={styles.viewport}
                 fill
                 markersVisible={showMarkers}

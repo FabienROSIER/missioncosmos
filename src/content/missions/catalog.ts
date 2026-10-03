@@ -12,7 +12,7 @@ export const MISSION_CATALOG: MissionCatalogEntry[] = [
   {
     id: 'mission-01',
     title: 'Notre Terre',
-    objective: 'Découvrir la forme de la Terre, l’équateur et les pôles.',
+    objective: 'Préparer ta carte de la Terre et accomplir le voyage d’une année.',
     unlocksNextId: 'mission-02',
   },
   {

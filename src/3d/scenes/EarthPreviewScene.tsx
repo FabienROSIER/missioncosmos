@@ -3,6 +3,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ArcRotateCamera,
+  Color3,
+  FresnelParameters,
+  StandardMaterial,
   Vector3,
   type Camera,
   type DirectionalLight,
@@ -51,6 +54,12 @@ import { createSpaceBackground } from '@/3d/utils/imageSpaceBackground';
 import { EARTH_BODY, SUN_BODY } from '@/content/bodies/catalog';
 import { MISSION_STARFIELD_SRC } from '@/lib/assets/paths';
 import { logger } from '@/lib/logger';
+import { SceneControls } from '@/components/layout/SceneControls';
+import {
+  EARTH_BEACONS,
+  earthYearProgress,
+  isEarthRecordComplete,
+} from '@/content/bodies/earthNavigation';
 import styles from './EarthPreviewScene.module.css';
 
 export type { EarthMarkerId };
@@ -69,6 +78,9 @@ export type EarthSceneApi = {
 };
 
 type EarthPreviewSceneProps = {
+  stepId?: string;
+  interactionAllowed?: boolean;
+  challengeSolved?: boolean;
   className?: string;
   fill?: boolean;
   onSceneApi?: (api: EarthSceneApi) => void;
@@ -96,6 +108,9 @@ const ORBIT_BETA_THRESHOLD = 0.35;
 const ORBIT_RADIUS_RATIO = 0.12;
 
 export function EarthPreviewScene({
+  stepId = 'm01-intro',
+  interactionAllowed = false,
+  challengeSolved = false,
   className,
   fill = false,
   onSceneApi,
@@ -105,6 +120,13 @@ export function EarthPreviewScene({
   markersVisible = false,
 }: EarthPreviewSceneProps) {
   const [orbitView, setOrbitView] = useState(false);
+  const [yearProgress, setYearProgress] = useState(0);
+  const [ready, setReady] = useState(false);
+  const controlsRef = useRef<{
+    advance: () => void;
+    look: () => void;
+    pick: (id: EarthMarkerId) => void;
+  } | null>(null);
   const [label, setLabel] = useState<LabelState | null>(null);
   const [sunLabel, setSunLabel] = useState<LabelState | null>(null);
   const markersRef = useRef<EarthMarkersHandle | null>(null);
@@ -113,6 +135,14 @@ export function EarthPreviewScene({
   const onOrbitChallengeSuccessRef = useRef(onOrbitChallengeSuccess);
   const onSceneApiRef = useRef(onSceneApi);
   const markersVisibleRef = useRef(markersVisible);
+
+  useEffect(() => {
+    markersRef.current?.setRecorded(
+      EARTH_BEACONS.filter((beacon) =>
+        isEarthRecordComplete(beacon.stepId, stepId, challengeSolved),
+      ).map((beacon) => beacon.id),
+    );
+  }, [stepId, challengeSolved, ready]);
 
   useEffect(() => {
     onMarkerPickRef.current = onMarkerPick;
@@ -142,7 +172,7 @@ export function EarthPreviewScene({
     engine.setHardwareScalingLevel(1 / dpr);
     applyScenePerformancePriority(scene, quality);
 
-    const lighting = setupSceneLighting(scene, quality);
+    const lighting = setupSceneLighting(scene, quality, { hemiIntensity: 0.23, contrast: 1.12 });
     const background = createSpaceBackground(scene, MISSION_STARFIELD_SRC, {
       level: quality === 'low' ? 0.7 : 0.8,
       segments: quality === 'low' ? 24 : 48,
@@ -158,7 +188,16 @@ export function EarthPreviewScene({
     const atmosphere = createSimpleAtmosphere(scene, earth.pivot, {
       quality,
       scale: 1.04,
+      alpha: 0.01,
     });
+    if (atmosphere.mesh.material instanceof StandardMaterial) {
+      const rim = new FresnelParameters();
+      rim.leftColor = Color3.Black();
+      rim.rightColor = new Color3(0.5, 0.5, 0.5);
+      rim.power = 3;
+      atmosphere.mesh.material.opacityFresnelParameters = rim;
+      atmosphere.mesh.material.backFaceCulling = true;
+    }
 
     const markers = createEarthMarkers(
       scene,
@@ -283,6 +322,8 @@ export function EarthPreviewScene({
       orbitViewEnabled = true;
       orbitSuccessSent = false;
       earthOrbitAngle = 0;
+      setYearProgress(0);
+      orbitGuide.setProgress(0);
       sunOrbitDrag?.resetAccumulated();
 
       markers.setVisible(false);
@@ -330,38 +371,59 @@ export function EarthPreviewScene({
     if (camera instanceof ArcRotateCamera) {
       cameraApi = setupPlanetMissionCamera(camera, earth.pivot, earth.meshes, {
         margin: 1.55,
-        startFactor: 2.8,
+        startFactor: 1.45,
         sunDirection: MISSION_SUN_DIRECTION,
       });
       camera.upperRadiusLimit = Math.min(camera.upperRadiusLimit ?? 20, 50);
       globeHome = captureCameraHome(camera);
 
-      sunOrbitDrag = attachEarthSunOrbitDrag(scene, camera, (delta) => {
-        if (!orbitViewEnabled) return;
+      const advanceOrbit = (delta: number) => {
+        if (!orbitViewEnabled || !orbitChallengeEnabled || orbitSuccessSent) return;
         earthOrbitAngle += delta;
+        setYearProgress(earthYearProgress(earthOrbitAngle));
+        orbitGuide.setProgress(earthOrbitAngle);
         applyEarthOnOrbit();
         refreshLabels();
         if (
           orbitChallengeEnabled &&
           !orbitSuccessSent &&
-          sunOrbitDrag &&
-          sunOrbitDrag.getAccumulatedAbs() >= EARTH_SUN_ORBIT_SUCCESS_RAD
+          Math.abs(earthOrbitAngle) >= EARTH_SUN_ORBIT_SUCCESS_RAD - 1e-8
         ) {
           orbitSuccessSent = true;
-          sunOrbitDrag.setEnabled(false);
+          sunOrbitDrag?.setEnabled(false);
           onOrbitChallengeSuccessRef.current?.();
         }
-      });
+      };
+      sunOrbitDrag = attachEarthSunOrbitDrag(scene, camera, advanceOrbit);
       sunOrbitDrag.setEnabled(false);
+      let pickEnabled = false;
+      controlsRef.current = {
+        advance: () => advanceOrbit(Math.PI / 6),
+        look: () => {
+          camera.alpha += Math.PI / 3;
+        },
+        pick: (id) => {
+          if (pickEnabled) onMarkerPickRef.current?.(id);
+        },
+      };
+      setReady(true);
 
       onSceneApiRef.current?.({
-        camera: cameraApi,
+        camera: {
+          ...cameraApi,
+          recenter: async () => {
+            if (orbitViewEnabled)
+              frameEarthSunOrbitOverview(camera, sun.pivot.position, EARTH_SUN_ORBIT_RADIUS);
+            else await cameraApi?.recenter();
+          },
+        },
         setMarkersVisible: (visible) => {
           markersVisibleRef.current = visible;
           if (!orbitViewEnabled) markers.setVisible(visible);
         },
         setMarkerHighlight: (id) => markers.setHighlight(id),
         setChallengePickEnabled: (enabled) => {
+          pickEnabled = enabled;
           markers.setSurfacePickEnabled(enabled);
         },
         setOrbitDetectEnabled: (enabled) => {
@@ -375,8 +437,6 @@ export function EarthPreviewScene({
         },
         setOrbitChallengeEnabled: (enabled) => {
           if (enabled && !orbitChallengeEnabled) {
-            orbitSuccessSent = false;
-            sunOrbitDrag?.resetAccumulated();
             if (!orbitViewEnabled) enterOrbitView();
           }
           orbitChallengeEnabled = enabled;
@@ -397,6 +457,7 @@ export function EarthPreviewScene({
 
     return () => {
       stopOrbitDetect();
+      controlsRef.current = null;
       sunOrbitDrag?.dispose();
       setLabel(null);
       setSunLabel(null);
@@ -422,6 +483,102 @@ export function EarthPreviewScene({
         mobileFovScale={orbitView ? 1.4 : 0.8}
         loadingMessage="Approche de la Terre…"
       />
+      {ready ? (
+        <div className={styles.heading} aria-hidden="true">
+          <span>EXPÉDITION 01 · NOTRE PLANÈTE</span>
+          <strong>{orbitView ? 'Le voyage d’une année' : 'Une maison à explorer'}</strong>
+        </div>
+      ) : null}
+      {ready && ['m01-explain', 'm01-reward', 'm01-complete'].includes(stepId) ? (
+        <div className={styles.summary}>
+          <span className={styles.eyebrow}>EXPÉDITION ACCOMPLIE</span>
+          <strong>Ta carte de navigation est complète</strong>
+          <div className={styles.records}>
+            {EARTH_BEACONS.map((beacon) => (
+              <span key={beacon.id} data-done="true">
+                ✓ {beacon.name}
+              </span>
+            ))}
+            <span data-done="true">✓ Une année autour du Soleil</span>
+          </div>
+        </div>
+      ) : null}
+      {ready && interactionAllowed ? (
+        <SceneControls className={styles.hud} aria-label="Carte de navigation terrestre">
+          <p className={styles.eyebrow}>CARTE DE NAVIGATION</p>
+          <div className={styles.records}>
+            {EARTH_BEACONS.map((beacon) => {
+              const done = isEarthRecordComplete(beacon.stepId, stepId, challengeSolved);
+              return (
+                <span key={beacon.id} data-done={done}>
+                  {done ? '✓' : '○'} {done ? beacon.name : `Repère ${beacon.letter}`}
+                </span>
+              );
+            })}
+          </div>
+          {orbitView ? (
+            <>
+              <p className={styles.title}>Ramène la Terre à son point de départ</p>
+              <div className={styles.yearReadout}>
+                <strong>{Math.round(yearProgress * 365)}</strong>
+                <span>
+                  jours environ
+                  <br />
+                  sur une année
+                </span>
+              </div>
+              <progress
+                className={styles.progress}
+                max={1}
+                value={yearProgress}
+                aria-label="Tour du Soleil accompli"
+              />
+              <div className={styles.milestones}>
+                <span>Départ</span>
+                <span>½ tour</span>
+                <span>1 année</span>
+              </div>
+              <button type="button" onClick={() => controlsRef.current?.advance()}>
+                Avancer sur l’orbite →
+              </button>
+              <p className={styles.note}>
+                Ou glisse sur la scène. Le trait vert suit ton voyage. Revenir en arrière fait
+                reculer le compteur.
+              </p>
+            </>
+          ) : stepId === 'm01-intro' ? (
+            <>
+              <p className={styles.title}>Observe notre planète sous un autre angle.</p>
+              <button type="button" onClick={() => controlsRef.current?.look()}>
+                Tourner autour de la Terre ↻
+              </button>
+            </>
+          ) : (
+            <>
+              <p className={styles.title}>Quel repère correspond à ta recherche ?</p>
+              <div className={styles.choices}>
+                {EARTH_BEACONS.map((beacon) => (
+                  <button
+                    type="button"
+                    key={beacon.id}
+                    onClick={() => controlsRef.current?.pick(beacon.id)}
+                  >
+                    <b>{beacon.letter}</b>
+                    <span>
+                      {beacon.letter === 'A'
+                        ? 'Bout nord de l’axe'
+                        : beacon.letter === 'B'
+                          ? 'Cercle au milieu'
+                          : 'Bout sud de l’axe'}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              <p className={styles.note}>Tu peux aussi toucher directement les repères du globe.</p>
+            </>
+          )}
+        </SceneControls>
+      ) : null}
       {label ? (
         <CelestialLabel
           scene={label.scene}

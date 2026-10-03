@@ -18,6 +18,7 @@ export type EarthMarkersHandle = {
   onPick: Observable<EarthMarkerId>;
   setVisible: (visible: boolean) => void;
   setHighlight: (id: EarthMarkerId | null) => void;
+  setRecorded: (ids: EarthMarkerId[]) => void;
   /** Active le mode défi : clic sur la surface Terre près de la cible compte. */
   setSurfacePickEnabled: (enabled: boolean) => void;
   dispose: () => void;
@@ -37,9 +38,9 @@ export function createEarthMarkers(
   const meshes: AbstractMesh[] = [];
   let surfacePickEnabled = false;
 
-  const north = MeshBuilder.CreateDisc(
+  const north = MeshBuilder.CreateSphere(
     'marker-north-pole',
-    { radius: radius * 0.048, tessellation: 28 },
+    { diameter: radius * 0.12, segments: 16 },
     scene,
   );
   north.parent = parent;
@@ -47,9 +48,9 @@ export function createEarthMarkers(
   north.position = new Vector3(0, radius * 1.018, 0);
   north.metadata = { markerId: 'north-pole' satisfies EarthMarkerId };
 
-  const south = MeshBuilder.CreateDisc(
+  const south = MeshBuilder.CreateSphere(
     'marker-south-pole',
-    { radius: radius * 0.048, tessellation: 28 },
+    { diameter: radius * 0.12, segments: 16 },
     scene,
   );
   south.parent = parent;
@@ -59,11 +60,82 @@ export function createEarthMarkers(
 
   const equator = createEquatorRing(scene, parent, radius);
 
+  // A fine cartographic grid makes the globe's volume readable from every side.
+  const gridPaths: Vector3[][] = [];
+  for (const latitude of [-Math.PI / 6, Math.PI / 6]) {
+    gridPaths.push(
+      Array.from({ length: 73 }, (_, i) => {
+        const a = (i / 72) * Math.PI * 2;
+        return new Vector3(
+          Math.cos(a) * Math.cos(latitude),
+          Math.sin(latitude),
+          Math.sin(a) * Math.cos(latitude),
+        ).scale(radius * 1.008);
+      }),
+    );
+  }
+  for (let meridian = 0; meridian < 6; meridian++) {
+    const longitude = (meridian / 6) * Math.PI;
+    gridPaths.push(
+      Array.from({ length: 73 }, (_, i) => {
+        const a = (i / 72) * Math.PI * 2;
+        return new Vector3(
+          Math.cos(a) * Math.cos(longitude),
+          Math.sin(a),
+          Math.cos(a) * Math.sin(longitude),
+        ).scale(radius * 1.008);
+      }),
+    );
+  }
+  const grid = MeshBuilder.CreateLineSystem('earth-survey-grid', { lines: gridPaths }, scene);
+  grid.parent = parent;
+  grid.color = new Color3(0.4, 0.8, 0.95);
+  grid.alpha = 0.22;
+  grid.isPickable = false;
+  const axis = MeshBuilder.CreateDashedLines(
+    'earth-rotation-axis',
+    {
+      points: [new Vector3(0, -radius * 1.4, 0), new Vector3(0, radius * 1.4, 0)],
+      dashNb: 28,
+      dashSize: 2,
+      gapSize: 1,
+    },
+    scene,
+  );
+  axis.parent = parent;
+  axis.color = new Color3(0.6, 0.85, 1);
+  axis.isPickable = false;
+
   const poleMat = makeEmissiveMat(scene, 'pole-mat', new Color3(1, 0.58, 0.28), 0.72);
   const equatorMat = makeEmissiveMat(scene, 'equator-mat', new Color3(1, 0.78, 0.32), 0.55);
   const highlightPoleMat = makeEmissiveMat(scene, 'pole-hl-mat', new Color3(1, 0.82, 0.4), 0.95);
-  const highlightEquatorMat = makeEmissiveMat(scene, 'equator-hl-mat', new Color3(1, 0.9, 0.45), 0.9);
+  const highlightEquatorMat = makeEmissiveMat(
+    scene,
+    'equator-hl-mat',
+    new Color3(1, 0.9, 0.45),
+    0.9,
+  );
 
+  const recordedMat = makeEmissiveMat(scene, 'earth-recorded-mat', new Color3(0.3, 1, 0.78), 0.85);
+  let highlighted: EarthMarkerId | null = null;
+  let recorded = new Set<EarthMarkerId>();
+  const refreshMaterials = () => {
+    north.material = recorded.has('north-pole')
+      ? recordedMat
+      : highlighted === 'north-pole'
+        ? highlightPoleMat
+        : poleMat;
+    south.material = recorded.has('south-pole')
+      ? recordedMat
+      : highlighted === 'south-pole'
+        ? highlightPoleMat
+        : poleMat;
+    equator.material = recorded.has('equator')
+      ? recordedMat
+      : highlighted === 'equator'
+        ? highlightEquatorMat
+        : equatorMat;
+  };
   north.material = poleMat;
   south.material = poleMat;
   equator.material = equatorMat;
@@ -77,6 +149,7 @@ export function createEarthMarkers(
 
   const pickObserver = scene.onPointerObservable.add((info) => {
     if (info.type !== PointerEventTypes.POINTERPICK) return;
+    if (!surfacePickEnabled) return;
 
     const directId = info.pickInfo?.pickedMesh?.metadata?.markerId as EarthMarkerId | undefined;
     if (directId) {
@@ -84,15 +157,11 @@ export function createEarthMarkers(
       return;
     }
 
-    if (!surfacePickEnabled) return;
-
     const picked = info.pickInfo?.pickedMesh;
     const point = info.pickInfo?.pickedPoint;
     if (!picked || !point) return;
 
-    const onGlobe = globeMeshes.some(
-      (mesh) => mesh === picked || picked.isDescendantOf(parent),
-    );
+    const onGlobe = globeMeshes.some((mesh) => mesh === picked || picked.isDescendantOf(parent));
     if (!onGlobe || meshes.includes(picked)) return;
 
     const region = classifyGlobeHit(parent, point, radius);
@@ -102,12 +171,13 @@ export function createEarthMarkers(
   return {
     onPick,
     setVisible: (visible) => {
+      grid.setEnabled(visible);
+      axis.setEnabled(visible);
       for (const mesh of meshes) mesh.setEnabled(visible);
     },
     setHighlight: (id) => {
-      north.material = id === 'north-pole' ? highlightPoleMat : poleMat;
-      south.material = id === 'south-pole' ? highlightPoleMat : poleMat;
-      equator.material = id === 'equator' ? highlightEquatorMat : equatorMat;
+      highlighted = id;
+      refreshMaterials();
       scalePulse(north as Mesh, id === 'north-pole');
       scalePulse(south as Mesh, id === 'south-pole');
       equator.scaling.setAll(id === 'equator' ? 1.06 : 1);
@@ -115,7 +185,13 @@ export function createEarthMarkers(
     setSurfacePickEnabled: (enabled) => {
       surfacePickEnabled = enabled;
     },
+    setRecorded: (ids) => {
+      recorded = new Set(ids);
+      refreshMaterials();
+    },
     dispose: () => {
+      grid.dispose();
+      axis.dispose();
       scene.onPointerObservable.remove(pickObserver);
       onPick.clear();
       for (const mesh of meshes) mesh.dispose(false, true);
@@ -123,6 +199,7 @@ export function createEarthMarkers(
       equatorMat.dispose();
       highlightPoleMat.dispose();
       highlightEquatorMat.dispose();
+      recordedMat.dispose();
     },
   };
 }
@@ -172,12 +249,7 @@ export function classifyGlobeHit(
   return null;
 }
 
-function makeEmissiveMat(
-  scene: Scene,
-  name: string,
-  color: Color3,
-  alpha = 1,
-): StandardMaterial {
+function makeEmissiveMat(scene: Scene, name: string, color: Color3, alpha = 1): StandardMaterial {
   const mat = new StandardMaterial(name, scene);
   mat.disableLighting = true;
   mat.emissiveColor = color;
