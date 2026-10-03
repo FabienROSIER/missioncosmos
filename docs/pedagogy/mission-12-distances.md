@@ -4,13 +4,13 @@ Sept repères : Terre–Lune, Terre–Soleil, Soleil–Neptune, voisinage–Prox
 
 Le voyage est manuel : boutons Plus loin/Plus près et sélecteur des sept repères. Il n’avance pas automatiquement ; les transitions restent animées. Les planètes texturées et galaxies réutilisent les modèles des missions précédentes. Le recul et la réduction des groupes sont continus ; les voisins entrent en scène avant la disparition du groupe précédent. La Voie lactée est cadrée entière, le repère suivant montre les deux galaxies ensemble, puis 24 à 48 petits spécimens espacés en profondeur. Une seule occurrence au début : introduction statique, voyage manuel, puis premier défi directement après avoir atteint l’Univers observable. L’exploration libre finale conserve aussi ces commandes.
 
-Deux défis : classer quatre destinations par éloignement, puis identifier trois messages lumineux reçus ou non reçus au moment de l’observation. Les sources et l’ordre sont mélangés ; toutes les lumières suivent la même vitesse. Aucun calcul demandé. Une erreur ne fait pas avancer. Le trajet peut être revu et la réussite de chaque défi utilise la validation commune. Le film de découverte n’affiche pas de victoire.
+Deux défis : classer quatre destinations par éloignement, puis observer trois flashs partis en même temps de galaxies situées à 1, 2 et 4 millions d’années-lumière. Les distances de la maquette restent proportionnelles 1:2:4 ; tous les flashs avancent à la même vitesse accélérée. Une frise indique le temps écoulé depuis l’émission. Après les réceptions, une question unique demande quelle galaxie nous voyons dans le passé le plus lointain. Aucun calcul demandé. Une erreur ne fait pas avancer et donne un indice. Le film de découverte n’affiche pas de victoire.
 
-Quiz avec le robot, badge Navigateur cosmique et déblocage M13 conservés.
+Quiz avec le robot (dont une question sur Andromède vue dans le passé), badge Navigateur cosmique et déblocage M13 conservés.
 
 ## Limites pédagogiques
 
-Astres agrandis, immenses sauts de distance comprimés et temps accéléré. Les facteurs de rendu ne sont pas des distances physiques et ne modélisent pas l’expansion. Les galaxies du dernier champ sont des spécimens artistiques, pas une carte observée. Le jeu des signaux montre les sources pour expliquer la lumière ; une source représentée dont la lumière ne nous est pas parvenue reste invisible depuis la Terre au moment considéré. Un seul message ne constitue pas un modèle complet de l’horizon cosmologique. L’horizon n’est pas un mur ni la fin de l’Univers. Son diamètre actuel tient compte de l’expansion.
+Astres agrandis, immenses sauts de distance comprimés et temps accéléré. Les facteurs de rendu ne sont pas des distances physiques et ne modélisent pas l’expansion. Les galaxies du dernier champ sont des spécimens artistiques, pas une carte observée. Le défi des messagers de lumière accélère des millions d’années en quelques secondes pour rester lisible ; ce n’est pas la vitesse réelle de la lumière. L’horizon n’est pas un mur ni la fin de l’Univers. Son diamètre actuel tient compte de l’expansion.
 
 L’année-lumière est une distance, pas un temps de trajet en vaisseau. Neptune ne marque pas la fin du Système solaire.
 

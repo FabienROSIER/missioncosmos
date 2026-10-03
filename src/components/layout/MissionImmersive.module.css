@@ -23,6 +23,15 @@
   --mission-bottom-clearance: 0px;
 }
 
+.sceneInteractionLayer {
+  position: absolute;
+  inset: 0;
+}
+
+.sceneInteractionLayer[data-scene-interaction='locked'] {
+  pointer-events: none;
+}
+
 .viewport {
   position: absolute;
   inset: 0;

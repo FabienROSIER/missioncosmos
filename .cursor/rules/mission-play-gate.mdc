@@ -1,0 +1,47 @@
+---
+description: Verrouillage Guide → À toi de jouer → commandes (pas de pré-manipulation)
+globs: "**/MissionImmersive.*,**/features/missions/**/*,**/content/missions/**/*.ts,**/3d/scenes/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# Gate manipulation — Guide avant commandes
+
+Schéma obligatoire pour toute étape `observe` / `manipulate` / `challenge` :
+
+1. Guide ouvert → expliquer (pagination « Suivant » si besoin)
+2. Dernier message → bouton **À toi de jouer**
+3. Après clic → guide replié, commandes visibles, scène interactive
+4. **Relire** → reverrouille scène + masque le dock ; bouton devient **Reprendre**
+
+Source de vérité : `src/features/missions/manipulationGate.ts` (`isPlayGatedStep`, `canInteractWithScene`). Orchestration : `MissionImmersive`.
+
+## Règles
+
+- Ne jamais rendre le dock / HUD scène utilisable tant que `canInteractWithScene` est faux.
+- Brancher pick, drag, défis et callbacks succès sur `sceneInteractionAllowed` (pas seulement sur `challengeActive`).
+- « À toi de jouer » = acquitter le jeu (`playStarted`) + replier le guide — pas seulement un décor.
+- Ne pas inventer un second système de gate par scène.
+
+## Exceptions documentées uniquement
+
+- `m01-intro` : tourner le globe fait progresser → interaction immédiate.
+- `m05-scale` / `m05-distances` : UI dans le panneau Guide (`interactivePanel`) → hors gate scène.
+- Quiz / reward / complete : pas de dock de manipulation.
+
+Toute nouvelle exception → l’ajouter dans `manipulationGate.ts` + test dans `manipulationGate.test.ts`.
+
+## À ne pas faire
+
+```typescript
+// ❌ BAD — commandes actives pendant l’explication
+orbitsApi.setRaceChallenge(challengeActive);
+showSceneControls = hasSceneControls && step.kind !== 'quiz';
+
+// ✅ GOOD
+orbitsApi.setRaceChallenge(sceneInteractionAllowed && challengeActive);
+showSceneControls = hasSceneControls && sceneInteractionAllowed;
+```
+
+- HUD scène visible / cliquable pendant le Guide ouvert
+- Réussite de défi possible avant « À toi de jouer »
+- Relire sans re-verrouiller

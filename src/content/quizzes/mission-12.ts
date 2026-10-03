@@ -39,5 +39,18 @@ export const QUIZ_MISSION_12: Quiz = {
       explainWrong:
         'Observable ne veut pas dire tout l’Univers. La limite de ce que nous pouvons observer n’est pas un mur.',
     },
+    {
+      id: 'q4-lookback',
+      prompt: 'Quand nous regardons Andromède aujourd’hui, nous la voyons…',
+      choices: [
+        { id: 'now', label: 'Exactement telle qu’elle est en ce moment' },
+        { id: 'past', label: 'Telle qu’elle était il y a environ 2,5 millions d’années' },
+      ],
+      correctChoiceId: 'past',
+      explainCorrect:
+        'Oui ! Sa lumière a mis environ 2,5 millions d’années à nous rejoindre. Regarder loin, c’est regarder dans le passé.',
+      explainWrong:
+        'La lumière d’Andromède met environ 2,5 millions d’années à nous atteindre. Nous recevons donc une ancienne image.',
+    },
   ],
 };

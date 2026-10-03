@@ -5,6 +5,7 @@ import {
   ArcRotateCamera,
   Color3,
   Constants,
+  Matrix,
   Mesh,
   MeshBuilder,
   ShaderMaterial,
@@ -37,7 +38,15 @@ import {
 } from '@/content/bodies/solarSystem';
 import { SOLAR_NEIGHBOUR_STARS, SUN_NEIGHBOURHOOD } from '@/content/bodies/milkyWay';
 import { prefersReducedMotion } from '@/lib/motion';
-import { cosmicScaleFrame } from '@/content/bodies/cosmicScale';
+import {
+  COSMIC_PROXIMA,
+  cosmicScaleFrame,
+  deepFieldGalaxies,
+  isDeepFieldFeatured,
+  moonBesideEarth,
+  scaleLevelAlongJump,
+} from '@/content/bodies/cosmicScale';
+import styles from './CosmicScaleView.module.css';
 
 /** The same textured bodies and galaxy volumes as M10/M11, in nested frames.
  * Logarithmic frame scaling compresses the immense empty distances, not the relative
@@ -47,18 +56,23 @@ export function CosmicScaleView({
   paused,
   className,
   onReady,
+  maxTransitionSeconds,
 }: {
   level: number;
   paused: boolean;
   className?: string;
   onReady: () => void;
+  /** Cap any scale jump to this duration (ordering challenge). */
+  maxTransitionSeconds?: number;
 }) {
-  const sample = useRef({ level, paused });
+  const sample = useRef({ level, paused, maxTransitionSeconds });
   const ready = useRef(onReady);
+  const sunLabelRef = useRef<HTMLSpanElement>(null);
+  const proximaLabelRef = useRef<HTMLSpanElement>(null);
   useEffect(() => {
-    sample.current = { level, paused };
+    sample.current = { level, paused, maxTransitionSeconds };
     ready.current = onReady;
-  }, [level, paused, onReady]);
+  }, [level, paused, maxTransitionSeconds, onReady]);
   const build = useCallback(async ({ scene, engine, canvas }: BabylonSceneContext) => {
     const camera = scene.activeCamera as ArcRotateCamera;
     camera.detachControl();
@@ -85,26 +99,67 @@ export function CosmicScaleView({
     andromedaFrame.position.set(9, 0, 2);
     const andromeda = createGalaxySpecimen(scene, 'spiral', low ? 1800 : 4200, low, true);
     andromeda.root.parent = andromedaFrame;
-    const remote = Array.from({ length: low ? 24 : 48 }, (_, i) => {
+    // Dense Hubble-like plate: a few detailed islands + hundreds of cheap fillers.
+    // Parent scaled by remoteArrive so the plate rushes in from off-screen (dezoom).
+    const remoteRoot = new TransformNode('distance-remote-root', scene);
+    const remoteLayout = deepFieldGalaxies(low ? 160 : 260);
+    const featuredLayout = remoteLayout.filter(isDeepFieldFeatured);
+    const speckLayout = remoteLayout.filter((item) => !isDeepFieldFeatured(item));
+    const remote = featuredLayout.map((item, i) => {
       const frame = new TransformNode(`distance-remote-frame-${i}`, scene);
-      const columns = low ? 6 : 8,
-        rows = low ? 4 : 6;
-      // Stratified, deterministic spacing: artistic specimens, not a sky map.
-      frame.position.set(
-        ((i % columns) / (columns - 1) - 0.5) * 38 + Math.sin(i * 2.7) * 0.8,
-        Math.sin(i * 1.3) * 2,
-        (Math.floor(i / columns) / (rows - 1) - 0.5) * 28 + Math.cos(i * 2.1) * 0.8,
-      );
+      frame.parent = remoteRoot;
+      frame.position.set(item.x, item.y, item.z);
+      frame.rotation.y = item.yaw;
+      frame.rotation.x = item.pitch;
+      const pointBudget = Math.round((low ? 90 : 200) * (0.55 + item.scale / 0.08));
       const specimen = createGalaxySpecimen(
         scene,
-        i % 3 === 0 ? 'elliptical' : i % 3 === 1 ? 'spiral' : 'irregular',
-        low ? 180 : 350,
+        item.family,
+        Math.max(60, Math.min(low ? 220 : 420, pointBudget)),
         low,
         true,
       );
       specimen.root.parent = frame;
-      return { frame, specimen };
+      return { frame, specimen, scale: item.scale, brightness: item.brightness };
     });
+    const speckMat = new ShaderMaterial(
+      'distance-deep-field-specks',
+      scene,
+      {
+        vertexSource: `precision highp float; attribute vec3 position; attribute vec4 color; attribute float pointSize;
+        uniform mat4 worldViewProjection; uniform float opacity; uniform float sizeScale; varying vec4 tint;
+        void main(){tint=vec4(color.rgb,color.a*opacity);gl_Position=worldViewProjection*vec4(position,1.0);gl_PointSize=max(1.0,pointSize*sizeScale);}`,
+        fragmentSource: `precision highp float; varying vec4 tint;
+        void main(){float r=length(gl_PointCoord-vec2(.5));if(r>.5)discard;
+        float soft=exp(-r*r*18.0);gl_FragColor=vec4(mix(tint.rgb,vec3(1.0),0.2*soft),tint.a*soft);}`,
+      },
+      {
+        attributes: ['position', 'color', 'pointSize'],
+        uniforms: ['worldViewProjection', 'opacity', 'sizeScale'],
+        needAlphaBlending: true,
+      },
+    );
+    speckMat.fillMode = Constants.MATERIAL_PointFillMode;
+    speckMat.alphaMode = Constants.ALPHA_ADD;
+    speckMat.disableDepthWrite = true;
+    const speckMesh = new Mesh('distance-deep-field-specks', scene);
+    const speckData = new VertexData();
+    speckData.positions = speckLayout.flatMap((g) => [g.x, g.y, g.z]);
+    speckData.colors = speckLayout.flatMap((g) => {
+      const warm = g.family === 'elliptical' ? 0.85 : g.family === 'irregular' ? 0.35 : 0.15;
+      return [0.62 + 0.38 * warm, 0.78 + 0.12 * warm, 1 - 0.28 * warm, g.brightness];
+    });
+    speckData.indices = speckLayout.map((_, i) => i);
+    speckData.applyToMesh(speckMesh);
+    speckMesh.setVerticesData(
+      'pointSize',
+      speckLayout.map((g) => 2.2 + g.scale * 140),
+      false,
+      1,
+    );
+    speckMesh.parent = remoteRoot;
+    speckMesh.material = speckMat;
+    speckMesh.isPickable = false;
     const solar = new TransformNode('distance-solar-frame', scene);
     solar.parent = galacticFrame;
     const home = new Vector3(SUN_NEIGHBOURHOOD.x, SUN_NEIGHBOURHOOD.y, SUN_NEIGHBOURHOOD.z);
@@ -193,16 +248,34 @@ export function CosmicScaleView({
     data.indices = SOLAR_NEIGHBOUR_STARS.map((_, i) => i);
     data.applyToMesh(stars);
     stars.material = light;
-    const sunPoint = new Mesh('distance-sun-point', scene);
-    sunPoint.parent = nearby;
-    const pointData = new VertexData();
-    pointData.positions = [0, 0, 0];
-    pointData.colors = [0.7, 0.82, 1, 0.6];
-    pointData.indices = [0];
-    pointData.applyToMesh(sunPoint);
-    const sunLight = light.clone('distance-sun-point-light');
-    sunPoint.material = sunLight;
+    const makePoint = (name: string, color: readonly number[]) => {
+      const mesh = new Mesh(name, scene);
+      mesh.parent = nearby;
+      const vd = new VertexData();
+      vd.positions = [0, 0, 0];
+      vd.colors = [...color];
+      vd.indices = [0];
+      vd.applyToMesh(mesh);
+      const mat = light.clone(`${name}-light`);
+      mesh.material = mat;
+      return { mesh, mat };
+    };
+    // Compact bright core + soft halo: a single oversized sprite looked dimmer than neighbours.
+    const sunHalo = makePoint('distance-sun-halo', [1, 0.92, 0.55, 0.55]);
+    const sunPoint = makePoint('distance-sun-point', [1, 1, 1, 1]);
+    const proximaPoint = new Mesh('distance-proxima-point', scene);
+    proximaPoint.parent = nearby;
+    proximaPoint.position.set(COSMIC_PROXIMA.x, COSMIC_PROXIMA.y, COSMIC_PROXIMA.z);
+    const proximaData = new VertexData();
+    proximaData.positions = [0, 0, 0];
+    proximaData.colors = [...COSMIC_PROXIMA.color];
+    proximaData.indices = [0];
+    proximaData.applyToMesh(proximaPoint);
+    const proximaLight = light.clone('distance-proxima-point-light');
+    proximaPoint.material = proximaLight;
     let current = sample.current.level;
+    let lastWanted = current;
+    let jump: { from: number; to: number; startedAt: number; duration: number } | null = null;
     const reduced = prefersReducedMotion();
     const bodyVisibility = [sun, moon, ...planets.map((p) => p.entity)].flatMap((entity) =>
       entity.meshes.map((mesh) => ({ mesh, visibility: mesh.visibility })),
@@ -213,12 +286,58 @@ export function CosmicScaleView({
         if (entity.meshes.includes(mesh)) mesh.visibility = visibility * opacity;
       });
     };
+    const placeLabel = (node: HTMLSpanElement | null, local: Vector3, visible: boolean) => {
+      if (!node) return;
+      if (!visible) {
+        node.hidden = true;
+        return;
+      }
+      nearby.computeWorldMatrix(true);
+      const world = Vector3.TransformCoordinates(local, nearby.getWorldMatrix());
+      const projected = Vector3.Project(
+        world,
+        Matrix.IdentityReadOnly,
+        scene.getTransformMatrix(),
+        camera.viewport.toGlobal(engine.getRenderWidth(), engine.getRenderHeight()),
+      );
+      const onScreen =
+        projected.z > 0 &&
+        projected.z < 1 &&
+        projected.x >= 0 &&
+        projected.y >= 0 &&
+        projected.x <= engine.getRenderWidth() &&
+        projected.y <= engine.getRenderHeight();
+      node.hidden = !onScreen;
+      if (!onScreen) return;
+      node.style.left = `${(projected.x / engine.getRenderWidth()) * canvas.clientWidth}px`;
+      node.style.top = `${(projected.y / engine.getRenderHeight()) * canvas.clientHeight}px`;
+    };
     const render = scene.onBeforeRenderObservable.add(() => {
       const dt = Math.min(engine.getDeltaTime() / 1000, 0.05);
       const wanted = sample.current.level;
-      current = reduced
-        ? wanted
-        : current + Math.sign(wanted - current) * Math.min(Math.abs(wanted - current), dt * 0.65);
+      if (wanted !== lastWanted) {
+        lastWanted = wanted;
+        const cap = sample.current.maxTransitionSeconds;
+        jump =
+          cap && Math.abs(wanted - current) > 1e-4
+            ? { from: current, to: wanted, startedAt: performance.now(), duration: cap }
+            : null;
+      }
+      if (reduced) {
+        current = wanted;
+        jump = null;
+      } else if (jump) {
+        // Timed ease-in-out: fast mid-flight, soft landing — avoids the strobe of constant speed.
+        const elapsed = (performance.now() - jump.startedAt) / 1000;
+        current = scaleLevelAlongJump(jump.from, jump.to, elapsed, jump.duration);
+        if (elapsed >= jump.duration) {
+          current = jump.to;
+          jump = null;
+        }
+      } else {
+        current =
+          current + Math.sign(wanted - current) * Math.min(Math.abs(wanted - current), dt * 0.65);
+      }
       const f = cosmicScaleFrame(current);
       galacticFrame.scaling.setAll(f.galaxyScale);
       galacticFrame.position.x = f.galaxyX;
@@ -241,35 +360,68 @@ export function CosmicScaleView({
       revealBody(sun, f.sunModelOpacity);
       revealBody(moon, f.moonModelOpacity);
       planets.forEach((p) => revealBody(p.entity, p.id === 'earth' ? 1 : f.planetModelOpacity));
-      moon.pivot.position.copyFrom(earth.entity.pivot.position).addInPlace(new Vector3(3.6, 0, 0));
+      // Keep the Moon glued to Earth (outer side) so dezoom never parks it on the Sun.
+      const earthPos = earth.entity.pivot.position;
+      const moonPos = moonBesideEarth(earthPos.x, earthPos.y, earthPos.z);
+      moon.pivot.position.set(moonPos.x, moonPos.y, moonPos.z);
       solar.computeWorldMatrix(true);
+      const lookBesideEarth = moonBesideEarth(earthPos.x, earthPos.y, earthPos.z, 0.55);
       const earthWorld = Vector3.TransformCoordinates(
-        earth.entity.pivot.position.add(new Vector3(1.8, 0, 0)),
+        new Vector3(lookBesideEarth.x, lookBesideEarth.y, lookBesideEarth.z),
         solar.getWorldMatrix(),
       );
       const homeWorld = Vector3.TransformCoordinates(home, galacticFrame.getWorldMatrix());
+      // Neighbourhood → Milky Way: shrink stars in place and pull back, don't dive into the disc.
+      camera.radius = f.cameraRadius;
       camera.setTarget(
         current < 1
           ? Vector3.Lerp(earthWorld, homeWorld, current)
           : current < 3
             ? homeWorld
-            : Vector3.Lerp(homeWorld, Vector3.Zero(), Math.min(1, current - 3)),
+            : Vector3.Lerp(homeWorld, Vector3.Zero(), f.cameraTargetMix),
       );
       camera.getViewMatrix();
       const eye = camera.globalPosition;
       galaxy.update(eye, f.galaxyOpacity);
       andromedaFrame.scaling.setAll(f.otherScale);
       andromeda.update(eye, f.otherOpacity, true);
-      remote.forEach(({ frame, specimen }) => {
-        frame.scaling.setAll(f.remoteScale);
-        specimen.update(eye, f.remoteOpacity);
+      // Spread positions via remoteRoot; divide child scale so specimen size stays constant.
+      const arrive = Math.max(f.remoteArrive, 1e-6);
+      remoteRoot.scaling.setAll(arrive);
+      remote.forEach(({ frame, specimen, scale, brightness }) => {
+        frame.scaling.setAll((f.remoteScale * scale * 18) / arrive);
+        specimen.update(eye, f.remoteOpacity * brightness);
       });
-      light.setFloat('size', 7 - Math.min(4, Math.max(0, current - 3) * 4));
+      const speckVisible = f.remoteOpacity > 0.001;
+      speckMesh.setEnabled(speckVisible);
+      speckMat.setFloat('opacity', f.remoteOpacity);
+      speckMat.setFloat('sizeScale', 0.85 + f.remoteOpacity * 0.35);
+      const neighbourVisible = f.neighbourOpacity > 0.001;
+      const starSize = 7 - Math.min(4, Math.max(0, current - 3) * 4);
+      light.setFloat('size', starSize);
       light.setFloat('opacity', f.neighbourOpacity);
-      stars.setEnabled(f.neighbourOpacity > 0.001);
-      sunPoint.setEnabled(current > 2.15);
-      sunLight.setFloat('size', 3);
-      sunLight.setFloat('opacity', f.sunOpacity);
+      stars.setEnabled(neighbourVisible);
+      const sunVisible = neighbourVisible && f.sunOpacity > 0.001;
+      sunHalo.mesh.setEnabled(sunVisible);
+      sunPoint.mesh.setEnabled(sunVisible);
+      sunHalo.mat.setFloat('size', Math.max(16, starSize + 9));
+      sunHalo.mat.setFloat(
+        'opacity',
+        Math.min(1, Math.max(f.sunOpacity, f.neighbourOpacity) * 0.85),
+      );
+      sunPoint.mat.setFloat('size', Math.max(9, starSize + 2));
+      sunPoint.mat.setFloat('opacity', 1);
+      proximaPoint.setEnabled(neighbourVisible);
+      proximaLight.setFloat('size', Math.max(8, starSize + 1));
+      proximaLight.setFloat('opacity', f.neighbourOpacity);
+      const showStarLabels =
+        neighbourVisible && f.neighbourArrive < 2.4 && current >= 2.45 && current < 3.75;
+      placeLabel(sunLabelRef.current, Vector3.Zero(), showStarLabels);
+      placeLabel(
+        proximaLabelRef.current,
+        new Vector3(COSMIC_PROXIMA.x, COSMIC_PROXIMA.y, COSMIC_PROXIMA.z),
+        showStarLabels,
+      );
       solar.setEnabled(current < 3.9);
       planets.forEach((p) =>
         p.orbit.setEnabled(
@@ -286,16 +438,26 @@ export function CosmicScaleView({
       galaxy.dispose();
       andromeda.dispose();
       remote.forEach((p) => p.specimen.dispose());
+      speckMesh.dispose();
+      speckMat.dispose();
       background.dispose();
     };
   }, []);
   return (
-    <BabylonCanvas
-      key="cosmic-scale-v5"
-      fill
-      className={className}
-      onSceneReady={build}
-      loadingMessage="Préparation du voyage cosmique…"
-    />
+    <div className={[styles.stage, className].filter(Boolean).join(' ')}>
+      <BabylonCanvas
+        key="cosmic-scale-v14"
+        fill
+        className={styles.stage}
+        onSceneReady={build}
+        loadingMessage="Préparation du voyage cosmique…"
+      />
+      <span ref={sunLabelRef} className={styles.starLabel} hidden>
+        Soleil
+      </span>
+      <span ref={proximaLabelRef} className={styles.starLabel} hidden>
+        Proxima
+      </span>
+    </div>
   );
 }

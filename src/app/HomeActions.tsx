@@ -7,23 +7,23 @@ import styles from './HomeActions.module.css';
 /** CTAs accueil selon profil local. */
 export function HomeActions() {
   const { hasProfile } = useLocalSave();
-  const primaryHref = hasProfile ? '/missions' : '/profil';
-  const primaryLabel = hasProfile ? 'Continuer' : 'Créer mon profil';
 
   return (
     <>
       <div className={styles.actions}>
-        <Link href={primaryHref} className="btn btn--primary">
-          {hasProfile ? 'Commencer' : primaryLabel}
-        </Link>
         {hasProfile ? (
-          <Link href="/missions" className="btn btn--secondary">
+          <Link href="/missions" className="btn btn--primary">
             Continuer
           </Link>
         ) : (
-          <Link href="/missions" className="btn btn--secondary">
-            Voir la carte
-          </Link>
+          <>
+            <Link href="/profil" className="btn btn--primary">
+              Créer mon profil
+            </Link>
+            <Link href="/missions" className="btn btn--secondary">
+              Voir la carte
+            </Link>
+          </>
         )}
       </div>
       <div className={styles.secondaryActions}>

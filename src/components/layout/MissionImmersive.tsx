@@ -50,6 +50,7 @@ import { MissionQuiz } from '@/features/missions/MissionQuiz';
 import { useMissionSequence } from '@/features/missions/useMissionSequence';
 import { splitGuideText } from '@/features/missions/guideText';
 import { isCelebratedChallenge } from '@/features/missions/challengeCelebration';
+import { canInteractWithScene, isPlayGatedStep } from '@/features/missions/manipulationGate';
 import { completeMission } from '@/features/progression/saveStore';
 import { useLocalSave } from '@/features/progression/useLocalSave';
 import type { Mission, MissionStep } from '@/types/mission';
@@ -64,6 +65,7 @@ type ChallengeContext = {
   stepKind: MissionStep['kind'];
   stepId: string;
   challengeSolved: boolean;
+  sceneInteractionAllowed: boolean;
   targetMarkerId: EarthMarkerId | undefined;
   challengeOrbit: boolean;
   successFeedback: string;
@@ -128,6 +130,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     challengeSolved: boolean;
   } | null>(null);
   const [guidePage, setGuidePage] = useState<{ stepId: string; index: number } | null>(null);
+  const [playStartedStepId, setPlayStartedStepId] = useState<string | null>(null);
   const [guideLeaving, setGuideLeaving] = useState(false);
   const [controlsTarget, setControlsTarget] = useState<HTMLDivElement | null>(null);
   const continueTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -260,13 +263,17 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const guideMessages = splitGuideText(step.body);
   const guideMessageIndex = guidePage?.stepId === step.id ? guidePage.index : 0;
   const hasMoreGuideText = !challengeSolved && guideMessageIndex < guideMessages.length - 1;
+  const playGatedStep = isPlayGatedStep(step);
+  const playStarted = playStartedStepId === step.id;
+  const sceneInteractionAllowed = canInteractWithScene({
+    step,
+    guideExpanded,
+    playStarted,
+    challengeSolved,
+  });
   const showPlayButton =
-    guideExpanded &&
-    !hasMoreGuideText &&
-    guideCanFold &&
-    !challengeSolved &&
-    (step.kind === 'challenge' || step.kind === 'manipulate' || step.kind === 'observe');
-  const showSceneControls = hasSceneControls && step.kind !== 'quiz' && step.kind !== 'reward';
+    guideExpanded && !hasMoreGuideText && guideCanFold && !challengeSolved && playGatedStep;
+  const showSceneControls = hasSceneControls && sceneInteractionAllowed;
   const quiz = step.quizId ? getQuizById(step.quizId) : undefined;
   const glossaryEntries = getGlossaryEntries(mission.glossaryIds ?? []);
   const nextMissionId = getCatalogEntry(mission.id)?.unlocksNextId;
@@ -315,6 +322,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     stepKind: step.kind,
     stepId: step.id,
     challengeSolved,
+    sceneInteractionAllowed,
     targetMarkerId,
     challengeOrbit,
     successFeedback,
@@ -326,12 +334,22 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
       stepKind: step.kind,
       stepId: step.id,
       challengeSolved,
+      sceneInteractionAllowed,
       targetMarkerId,
       challengeOrbit,
       successFeedback,
       hint,
     };
-  }, [step.kind, step.id, challengeSolved, targetMarkerId, challengeOrbit, successFeedback, hint]);
+  }, [
+    step.kind,
+    step.id,
+    challengeSolved,
+    sceneInteractionAllowed,
+    targetMarkerId,
+    challengeOrbit,
+    successFeedback,
+    hint,
+  ]);
 
   useEffect(() => {
     if (
@@ -351,12 +369,16 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     const earthOrbitView = orbitStepIndex >= 0 && stepIndex >= orbitStepIndex;
 
     earthApi.setOrbitViewEnabled(earthOrbitView);
-    earthApi.setOrbitChallengeEnabled(challengeActive && challengeOrbit);
+    earthApi.setOrbitChallengeEnabled(sceneInteractionAllowed && challengeActive && challengeOrbit);
     earthApi.setMarkersVisible(showMarkers && !earthOrbitView);
-    earthApi.setChallengePickEnabled(challengeActive && Boolean(targetMarkerId) && !earthOrbitView);
+    earthApi.setChallengePickEnabled(
+      sceneInteractionAllowed && challengeActive && Boolean(targetMarkerId) && !earthOrbitView,
+    );
     // Intro / manip : avance dès qu’on tourne assez le globe
     earthApi.setOrbitDetectEnabled(
-      !earthOrbitView && (step.kind === 'intro' || step.kind === 'manipulate'),
+      sceneInteractionAllowed &&
+        !earthOrbitView &&
+        (step.kind === 'intro' || step.kind === 'manipulate'),
     );
 
     if (earthOrbitView) {
@@ -387,6 +409,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     challengeSolved,
     challengeOrbit,
     targetMarkerId,
+    sceneInteractionAllowed,
     step.kind,
     step.id,
   ]);
@@ -397,43 +420,76 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
 
     dayNightApi.setHouseVisible(showMarkers);
     dayNightApi.setCinematicMode(cinematic);
-    dayNightApi.setEarthDragEnabled(!cinematic);
+    dayNightApi.setEarthDragEnabled(!cinematic && sceneInteractionAllowed);
     dayNightApi.setLightingChallenge(
-      !cinematic && challengeActive && targetLighting ? targetLighting : null,
+      !cinematic && sceneInteractionAllowed && challengeActive && targetLighting
+        ? targetLighting
+        : null,
     );
-  }, [dayNightApi, isDayNight, showMarkers, challengeActive, targetLighting, step.kind, step.id]);
+  }, [
+    dayNightApi,
+    isDayNight,
+    showMarkers,
+    challengeActive,
+    targetLighting,
+    sceneInteractionAllowed,
+    step.kind,
+    step.id,
+  ]);
 
   useEffect(() => {
     if (!moonPhasesApi || !isMoonPhases) return;
     const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
 
     moonPhasesApi.setCinematicMode(cinematic);
-    moonPhasesApi.setMoonDragEnabled(!cinematic && step.kind !== 'intro');
-    moonPhasesApi.setPhaseChallenge(
-      !cinematic && challengeActive && targetPhase ? targetPhase : null,
+    moonPhasesApi.setMoonDragEnabled(
+      !cinematic && sceneInteractionAllowed && step.kind !== 'intro',
     );
-  }, [moonPhasesApi, isMoonPhases, challengeActive, targetPhase, step.kind, step.id]);
+    moonPhasesApi.setPhaseChallenge(
+      !cinematic && sceneInteractionAllowed && challengeActive && targetPhase ? targetPhase : null,
+    );
+  }, [
+    moonPhasesApi,
+    isMoonPhases,
+    challengeActive,
+    targetPhase,
+    sceneInteractionAllowed,
+    step.kind,
+    step.id,
+  ]);
 
   useEffect(() => {
     if (!eclipsesApi || !isEclipses) return;
     const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
 
     eclipsesApi.setCinematicMode(cinematic);
-    eclipsesApi.setMoonDragEnabled(!cinematic && step.kind !== 'intro');
+    eclipsesApi.setMoonDragEnabled(!cinematic && sceneInteractionAllowed && step.kind !== 'intro');
     eclipsesApi.setEclipseChallenge(
-      !cinematic && challengeActive && targetEclipse ? targetEclipse : null,
+      !cinematic && sceneInteractionAllowed && challengeActive && targetEclipse
+        ? targetEclipse
+        : null,
     );
     // Orbite penchée à l’explication « pas chaque mois »
     eclipsesApi.setOrbitTilted(step.kind === 'explain' || step.id.includes('explain'));
-  }, [eclipsesApi, isEclipses, challengeActive, targetEclipse, step.kind, step.id]);
+  }, [
+    eclipsesApi,
+    isEclipses,
+    challengeActive,
+    targetEclipse,
+    sceneInteractionAllowed,
+    step.kind,
+    step.id,
+  ]);
 
   useEffect(() => {
     if (!solarApi || !isSolarSystem) return;
     const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
 
     solarApi.setCinematicMode(cinematic);
-    solarApi.setPickEnabled(!cinematic && step.kind !== 'intro');
-    solarApi.setOrderChallenge(!cinematic && challengeActive && challengePlanetOrder);
+    solarApi.setPickEnabled(!cinematic && sceneInteractionAllowed && step.kind !== 'intro');
+    solarApi.setOrderChallenge(
+      !cinematic && sceneInteractionAllowed && challengeActive && challengePlanetOrder,
+    );
     if (step.id === 'm05-scale') {
       solarApi.setScaleMode('sizes');
       solarApi.focusBody(null);
@@ -442,30 +498,50 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     } else {
       solarApi.setScaleMode('readable');
     }
-  }, [solarApi, isSolarSystem, challengeActive, challengePlanetOrder, step.kind, step.id]);
+  }, [
+    solarApi,
+    isSolarSystem,
+    challengeActive,
+    challengePlanetOrder,
+    sceneInteractionAllowed,
+    step.kind,
+    step.id,
+  ]);
 
   useEffect(() => {
     if (!orbitsApi || !isOrbits || showOrbitFall) return;
     const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
-    orbitsApi.setPickEnabled(!cinematic && step.kind !== 'intro');
+    orbitsApi.setPickEnabled(!cinematic && sceneInteractionAllowed && step.kind !== 'intro');
     orbitsApi.setInfoEnabled(step.id === 'm06-compare' || step.id === 'm06-challenge');
-    orbitsApi.setRaceChallenge(!cinematic && challengeActive && challengeOrbitRace);
-    if (challengeActive && challengeOrbitRace) {
+    orbitsApi.setRaceChallenge(
+      !cinematic && sceneInteractionAllowed && challengeActive && challengeOrbitRace,
+    );
+    if (sceneInteractionAllowed && challengeActive && challengeOrbitRace) {
       orbitsApi.setSpeed(1);
     } else if (step.id === 'm06-speed') {
       orbitsApi.setSpeed(4);
     } else if (step.kind === 'intro') {
       orbitsApi.setSpeed(1);
     }
-  }, [orbitsApi, isOrbits, showOrbitFall, challengeActive, challengeOrbitRace, step.kind, step.id]);
+  }, [
+    orbitsApi,
+    isOrbits,
+    showOrbitFall,
+    challengeActive,
+    challengeOrbitRace,
+    sceneInteractionAllowed,
+    step.kind,
+    step.id,
+  ]);
 
   useEffect(() => {
     if (!seasonsApi || !isSeasons) return;
     const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
-    seasonsApi.setOrbitDragEnabled(!cinematic && step.kind !== 'intro');
+    seasonsApi.setOrbitDragEnabled(!cinematic && sceneInteractionAllowed && step.kind !== 'intro');
     // Conserver le cadrage global après la réussite, jusqu’au clic sur « Continuer ».
     // Sinon la caméra revenait immédiatement à son ancienne vue et recoupait l’orbite.
-    const northernSummerStep = !cinematic && step.kind === 'challenge' && challengeNorthernSummer;
+    const northernSummerStep =
+      !cinematic && sceneInteractionAllowed && step.kind === 'challenge' && challengeNorthernSummer;
     seasonsApi.setChallengeEnabled(northernSummerStep);
     if (step.id === 'm07-tilt') {
       seasonsApi.setTiltDeg(0);
@@ -476,13 +552,22 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     ) {
       seasonsApi.setTiltDeg(23.5);
     }
-  }, [seasonsApi, isSeasons, challengeActive, challengeNorthernSummer, step.kind, step.id]);
+  }, [
+    seasonsApi,
+    isSeasons,
+    challengeActive,
+    challengeNorthernSummer,
+    sceneInteractionAllowed,
+    step.kind,
+    step.id,
+  ]);
 
   useEffect(() => {
     if (!starsApi || !isStars) return;
     const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
-    starsApi.setPickEnabled(!cinematic && step.kind !== 'intro');
-    const observatoryStep = !cinematic && step.kind === 'challenge' && challengeObservatory;
+    starsApi.setPickEnabled(!cinematic && sceneInteractionAllowed && step.kind !== 'intro');
+    const observatoryStep =
+      !cinematic && sceneInteractionAllowed && step.kind === 'challenge' && challengeObservatory;
     starsApi.setChallengeEnabled(observatoryStep);
 
     let mode: StarsSceneMode = 'explore';
@@ -492,7 +577,15 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     else if (step.id === 'm08-apparent') mode = 'apparent';
     else if (step.id === 'm08-challenge') mode = 'challenge';
     if (!observatoryStep) starsApi.setMode(mode);
-  }, [starsApi, isStars, challengeActive, challengeObservatory, step.kind, step.id]);
+  }, [
+    starsApi,
+    isStars,
+    challengeActive,
+    challengeObservatory,
+    sceneInteractionAllowed,
+    step.kind,
+    step.id,
+  ]);
 
   useEffect(() => {
     if (!starLightApi || !isStellarLight) return;
@@ -549,7 +642,8 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const onMarkerPick = useCallback(
     (id: EarthMarkerId) => {
       const ctx = pickCtxRef.current;
-      if (ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
+      if (!ctx.sceneInteractionAllowed || ctx.stepKind !== 'challenge' || ctx.challengeSolved)
+        return;
       if (!ctx.targetMarkerId) return;
 
       if (id === ctx.targetMarkerId) {
@@ -566,14 +660,20 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   );
 
   const onSignificantOrbit = useCallback(() => {
-    if (step.kind !== 'intro' && step.kind !== 'manipulate') return;
+    if (!sceneInteractionAllowed || (step.kind !== 'intro' && step.kind !== 'manipulate')) return;
     setFeedback(null);
     goNext();
-  }, [step.kind, goNext]);
+  }, [sceneInteractionAllowed, step.kind, goNext]);
 
   const onOrbitChallengeSuccess = useCallback(() => {
     const ctx = pickCtxRef.current;
-    if (ctx.stepKind !== 'challenge' || ctx.challengeSolved || !ctx.challengeOrbit) return;
+    if (
+      !ctx.sceneInteractionAllowed ||
+      ctx.stepKind !== 'challenge' ||
+      ctx.challengeSolved ||
+      !ctx.challengeOrbit
+    )
+      return;
     setFeedback({ stepId: ctx.stepId, text: ctx.successFeedback, wrong: false });
     markChallengeSolved();
   }, [markChallengeSolved]);
@@ -582,7 +682,8 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     (_lit: SurfaceLighting) => {
       void _lit;
       const ctx = pickCtxRef.current;
-      if (ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
+      if (!ctx.sceneInteractionAllowed || ctx.stepKind !== 'challenge' || ctx.challengeSolved)
+        return;
       setFeedback({ stepId: ctx.stepId, text: ctx.successFeedback, wrong: false });
       markChallengeSolved();
       dayNightApi?.setLightingChallenge(null);
@@ -594,7 +695,8 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     (_phase: MoonPhaseId) => {
       void _phase;
       const ctx = pickCtxRef.current;
-      if (ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
+      if (!ctx.sceneInteractionAllowed || ctx.stepKind !== 'challenge' || ctx.challengeSolved)
+        return;
       setFeedback({ stepId: ctx.stepId, text: ctx.successFeedback, wrong: false });
       markChallengeSolved();
       moonPhasesApi?.setPhaseChallenge(null);
@@ -606,7 +708,8 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     (_kind: EclipseTarget) => {
       void _kind;
       const ctx = pickCtxRef.current;
-      if (ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
+      if (!ctx.sceneInteractionAllowed || ctx.stepKind !== 'challenge' || ctx.challengeSolved)
+        return;
       setFeedback({ stepId: ctx.stepId, text: ctx.successFeedback, wrong: false });
       markChallengeSolved();
       eclipsesApi?.setEclipseChallenge(null);
@@ -616,7 +719,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
 
   const onOrderSuccess = useCallback(() => {
     const ctx = pickCtxRef.current;
-    if (ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
+    if (!ctx.sceneInteractionAllowed || ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
     setFeedback({ stepId: ctx.stepId, text: ctx.successFeedback, wrong: false });
     markChallengeSolved();
     solarApi?.setOrderChallenge(false);
@@ -624,7 +727,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
 
   const onRaceSuccess = useCallback(() => {
     const ctx = pickCtxRef.current;
-    if (ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
+    if (!ctx.sceneInteractionAllowed || ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
     setFeedback({ stepId: ctx.stepId, text: ctx.successFeedback, wrong: false });
     markChallengeSolved();
     orbitsApi?.setRaceChallenge(false);
@@ -632,41 +735,41 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
 
   const onRaceMiss = useCallback(() => {
     const ctx = pickCtxRef.current;
-    if (ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
+    if (!ctx.sceneInteractionAllowed || ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
     setFeedback({ stepId: ctx.stepId, text: ctx.hint, wrong: true });
   }, []);
 
   const onFallSuccess = useCallback(() => {
     const ctx = pickCtxRef.current;
-    if (ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
+    if (!ctx.sceneInteractionAllowed || ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
     setFeedback({ stepId: ctx.stepId, text: ctx.successFeedback, wrong: false });
     markChallengeSolved();
   }, [markChallengeSolved]);
 
   const onSummerSuccess = useCallback(() => {
     const ctx = pickCtxRef.current;
-    if (ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
+    if (!ctx.sceneInteractionAllowed || ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
     setFeedback({ stepId: ctx.stepId, text: ctx.successFeedback, wrong: false });
     markChallengeSolved();
   }, [markChallengeSolved]);
 
   const onSummerExit = useCallback(() => {
     const ctx = pickCtxRef.current;
-    if (ctx.stepKind !== 'challenge') return;
+    if (!ctx.sceneInteractionAllowed || ctx.stepKind !== 'challenge') return;
     setFeedback((current) => (current?.stepId === ctx.stepId ? null : current));
     resetChallengeSolved();
   }, [resetChallengeSolved]);
 
   const onObservatorySuccess = useCallback(() => {
     const ctx = pickCtxRef.current;
-    if (ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
+    if (!ctx.sceneInteractionAllowed || ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
     setFeedback({ stepId: ctx.stepId, text: ctx.successFeedback, wrong: false });
     markChallengeSolved();
   }, [markChallengeSolved]);
 
   const onObservatoryMiss = useCallback((hintText: string) => {
     const ctx = pickCtxRef.current;
-    if (ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
+    if (!ctx.sceneInteractionAllowed || ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
     setFeedback({ stepId: ctx.stepId, text: hintText || ctx.hint, wrong: true });
   }, []);
 
@@ -677,14 +780,24 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
 
   const onPrismSuccess = useCallback(() => {
     const ctx = pickCtxRef.current;
-    if (!['m09-color', 'm09-challenge'].includes(ctx.stepId) || ctx.challengeSolved) return;
+    if (
+      !ctx.sceneInteractionAllowed ||
+      !['m09-color', 'm09-challenge'].includes(ctx.stepId) ||
+      ctx.challengeSolved
+    )
+      return;
     setFeedback({ stepId: ctx.stepId, text: ctx.successFeedback, wrong: false });
     markChallengeSolved();
   }, [markChallengeSolved]);
 
   const onPrismMiss = useCallback((hintText: string | null) => {
     const ctx = pickCtxRef.current;
-    if (!['m09-color', 'm09-challenge'].includes(ctx.stepId) || ctx.challengeSolved) return;
+    if (
+      !ctx.sceneInteractionAllowed ||
+      !['m09-color', 'm09-challenge'].includes(ctx.stepId) ||
+      ctx.challengeSolved
+    )
+      return;
     if (hintText === null) {
       setFeedback(null);
       return;
@@ -708,7 +821,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
 
   const onOrderMiss = useCallback((expected: PlanetId) => {
     const ctx = pickCtxRef.current;
-    if (ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
+    if (!ctx.sceneInteractionAllowed || ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
     setFeedback({
       stepId: ctx.stepId,
       text: `Pas encore — touche ${SOLAR_SYSTEM_PLANETS[expected].nameFr}.`,
@@ -739,6 +852,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
       setGuideLeaving(false);
       setGuideOverride(null);
       setGuidePage(null);
+      setPlayStartedStepId(null);
       setFeedback(null);
       setQuizMood('none');
       goNext();
@@ -758,6 +872,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     setGuideLeaving(false);
     setGuideOverride(null);
     setGuidePage(null);
+    setPlayStartedStepId(null);
     setFeedback(null);
     setQuizMood('none');
     completionSavedRef.current = false;
@@ -834,118 +949,124 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
         data-guide-expanded={guideExpanded}
       >
         <div className={styles.sceneArea}>
-          {isCosmicDistances ? (
-            <CosmicDistancesScene
-              className={styles.viewport}
-              stepId={step.id}
-              onSuccess={onObservatorySuccess}
-              onMiss={onObservatoryMiss}
-              onClearFeedback={onClearObservatoryFeedback}
-            />
-          ) : isGalaxies ? (
-            <GalaxiesScene
-              className={styles.viewport}
-              stepId={step.id}
-              onSuccess={onObservatorySuccess}
-              onMiss={onObservatoryMiss}
-              onClearFeedback={onClearObservatoryFeedback}
-            />
-          ) : isMilkyWay ? (
-            <MilkyWayScene
-              className={styles.viewport}
-              stepId={step.id}
-              onSuccess={onObservatorySuccess}
-              onMiss={onObservatoryMiss}
-            />
-          ) : isConstellations ? (
-            <ConstellationsScene
-              key={step.id}
-              className={styles.viewport}
-              stepId={step.id}
-              onSuccess={onObservatorySuccess}
-              onSkipBonus={onContinue}
-            />
-          ) : isStellarLight ? (
-            <StarLightScene
-              className={styles.viewport}
-              fill
-              onSceneApi={onStarLightApi}
-              onPrismSuccess={onPrismSuccess}
-              onPrismMiss={onPrismMiss}
-            />
-          ) : isStars ? (
-            <StarsScene
-              className={styles.viewport}
-              fill
-              onSceneApi={onStarsApi}
-              onCinematicPlaying={setStarFilmPlaying}
-              onObservatorySuccess={onObservatorySuccess}
-              onObservatoryMiss={onObservatoryMiss}
-            />
-          ) : isSeasons ? (
-            <SeasonsScene
-              className={styles.viewport}
-              fill
-              onSceneApi={onSeasonsApi}
-              onSummerSuccess={onSummerSuccess}
-              onSummerExit={onSummerExit}
-            />
-          ) : showOrbitFall ? (
-            <OrbitFallScene
-              className={styles.viewport}
-              fill
-              onSceneApi={onOrbitFallApi}
-              onFallSuccess={onFallSuccess}
-            />
-          ) : isOrbits ? (
-            <OrbitsScene
-              className={styles.viewport}
-              fill
-              onSceneApi={onOrbitsApi}
-              onRaceSuccess={onRaceSuccess}
-              onRaceMiss={onRaceMiss}
-            />
-          ) : isSolarSystem ? (
-            <SolarSystemScene
-              className={styles.viewport}
-              fill
-              onSceneApi={onSolarApi}
-              onOrderSuccess={onOrderSuccess}
-              onOrderMiss={onOrderMiss}
-            />
-          ) : isEclipses ? (
-            <EclipsesScene
-              className={styles.viewport}
-              fill
-              onSceneApi={onEclipsesApi}
-              onEclipseSuccess={onEclipseSuccess}
-            />
-          ) : isMoonPhases ? (
-            <MoonPhasesScene
-              className={styles.viewport}
-              fill
-              onSceneApi={onMoonPhasesApi}
-              onPhaseSuccess={onPhaseSuccess}
-            />
-          ) : isDayNight ? (
-            <DayNightScene
-              className={styles.viewport}
-              fill
-              houseVisible={showMarkers}
-              onSceneApi={onDayNightApi}
-              onLightingSuccess={onLightingSuccess}
-            />
-          ) : (
-            <EarthPreviewScene
-              className={styles.viewport}
-              fill
-              markersVisible={showMarkers}
-              onSceneApi={onEarthApi}
-              onMarkerPick={onMarkerPick}
-              onSignificantOrbit={onSignificantOrbit}
-              onOrbitChallengeSuccess={onOrbitChallengeSuccess}
-            />
-          )}
+          <div
+            className={styles.sceneInteractionLayer}
+            inert={!sceneInteractionAllowed}
+            data-scene-interaction={sceneInteractionAllowed ? 'enabled' : 'locked'}
+          >
+            {isCosmicDistances ? (
+              <CosmicDistancesScene
+                className={styles.viewport}
+                stepId={step.id}
+                onSuccess={onObservatorySuccess}
+                onMiss={onObservatoryMiss}
+                onClearFeedback={onClearObservatoryFeedback}
+              />
+            ) : isGalaxies ? (
+              <GalaxiesScene
+                className={styles.viewport}
+                stepId={step.id}
+                onSuccess={onObservatorySuccess}
+                onMiss={onObservatoryMiss}
+                onClearFeedback={onClearObservatoryFeedback}
+              />
+            ) : isMilkyWay ? (
+              <MilkyWayScene
+                className={styles.viewport}
+                stepId={step.id}
+                onSuccess={onObservatorySuccess}
+                onMiss={onObservatoryMiss}
+              />
+            ) : isConstellations ? (
+              <ConstellationsScene
+                key={step.id}
+                className={styles.viewport}
+                stepId={step.id}
+                onSuccess={onObservatorySuccess}
+                onSkipBonus={onContinue}
+              />
+            ) : isStellarLight ? (
+              <StarLightScene
+                className={styles.viewport}
+                fill
+                onSceneApi={onStarLightApi}
+                onPrismSuccess={onPrismSuccess}
+                onPrismMiss={onPrismMiss}
+              />
+            ) : isStars ? (
+              <StarsScene
+                className={styles.viewport}
+                fill
+                onSceneApi={onStarsApi}
+                onCinematicPlaying={setStarFilmPlaying}
+                onObservatorySuccess={onObservatorySuccess}
+                onObservatoryMiss={onObservatoryMiss}
+              />
+            ) : isSeasons ? (
+              <SeasonsScene
+                className={styles.viewport}
+                fill
+                onSceneApi={onSeasonsApi}
+                onSummerSuccess={onSummerSuccess}
+                onSummerExit={onSummerExit}
+              />
+            ) : showOrbitFall ? (
+              <OrbitFallScene
+                className={styles.viewport}
+                fill
+                onSceneApi={onOrbitFallApi}
+                onFallSuccess={onFallSuccess}
+              />
+            ) : isOrbits ? (
+              <OrbitsScene
+                className={styles.viewport}
+                fill
+                onSceneApi={onOrbitsApi}
+                onRaceSuccess={onRaceSuccess}
+                onRaceMiss={onRaceMiss}
+              />
+            ) : isSolarSystem ? (
+              <SolarSystemScene
+                className={styles.viewport}
+                fill
+                onSceneApi={onSolarApi}
+                onOrderSuccess={onOrderSuccess}
+                onOrderMiss={onOrderMiss}
+              />
+            ) : isEclipses ? (
+              <EclipsesScene
+                className={styles.viewport}
+                fill
+                onSceneApi={onEclipsesApi}
+                onEclipseSuccess={onEclipseSuccess}
+              />
+            ) : isMoonPhases ? (
+              <MoonPhasesScene
+                className={styles.viewport}
+                fill
+                onSceneApi={onMoonPhasesApi}
+                onPhaseSuccess={onPhaseSuccess}
+              />
+            ) : isDayNight ? (
+              <DayNightScene
+                className={styles.viewport}
+                fill
+                houseVisible={showMarkers}
+                onSceneApi={onDayNightApi}
+                onLightingSuccess={onLightingSuccess}
+              />
+            ) : (
+              <EarthPreviewScene
+                className={styles.viewport}
+                fill
+                markersVisible={showMarkers}
+                onSceneApi={onEarthApi}
+                onMarkerPick={onMarkerPick}
+                onSignificantOrbit={onSignificantOrbit}
+                onOrbitChallengeSuccess={onOrbitChallengeSuccess}
+              />
+            )}
+          </div>
 
           {/* Schéma 2D hors bulle (ex. défi distances) */}
           <div
@@ -1220,11 +1341,16 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                     type="button"
                     className={styles.cta}
                     onClick={() => {
-                      toggleGuide();
+                      setPlayStartedStepId(step.id);
+                      setGuideOverride({
+                        stepId: step.id,
+                        expanded: false,
+                        challengeSolved,
+                      });
                       companionButtonRef.current?.focus({ preventScroll: true });
                     }}
                   >
-                    À toi de jouer
+                    {playStarted ? 'Reprendre' : 'À toi de jouer'}
                   </button>
                 ) : null}
                 {!hasMoreGuideText &&

@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useMemo, useSyncExternalStore } from 'react';
+import { MISSION_CATALOG } from '@/content/missions/catalog';
 import {
   getActiveProfile,
   getActiveProgress,
@@ -18,6 +19,16 @@ function getServerSnapshot() {
   return SERVER_SNAPSHOT;
 }
 
+/** % de missions terminées sur le catalogue actuel (plafonné à 100). */
+export function computeProgressPercent(completedMissionIds: readonly string[]): number {
+  const total = MISSION_CATALOG.length;
+  if (total <= 0) return 0;
+  const completed = completedMissionIds.filter((id) =>
+    MISSION_CATALOG.some((mission) => mission.id === id),
+  ).length;
+  return Math.min(100, Math.round((completed / total) * 100));
+}
+
 /** Hook lecture de la sauvegarde locale (profil + progression). */
 export function useLocalSave() {
   const save = useSyncExternalStore(subscribeSave, getSaveSnapshot, getServerSnapshot);
@@ -29,8 +40,7 @@ export function useLocalSave() {
 
   const progressPercent = useMemo(() => {
     if (!progress) return 0;
-    const total = 3; // missions catalogue v1
-    return Math.round((progress.completedMissionIds.length / total) * 100);
+    return computeProgressPercent(progress.completedMissionIds);
   }, [progress]);
 
   const isMissionUnlocked = useCallback(

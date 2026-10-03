@@ -4,7 +4,7 @@ import { SceneControls } from '@/components/layout/SceneControls';
 import { DISTANCE_STOPS, DELIVERY_TARGETS } from '@/content/bodies/cosmicDistances';
 import { shuffleArray } from '@/lib/shuffle';
 import { CosmicScaleView } from './CosmicScaleView';
-import { GalaxyNeighboursChallenge } from './GalaxyNeighboursChallenge';
+import { LightTravelChallenge } from './LightTravelChallenge';
 import styles from './CosmicDistancesScene.module.css';
 type Props = {
   className?: string;
@@ -32,6 +32,7 @@ export function CosmicDistancesScene({
       setStatus('');
       if (stepId === 'm12-intro' || journey) setIndex(0);
       if (ordering) {
+        setIndex(6);
         setDelivered([]);
         setCards(shuffleArray([...DELIVERY_TARGETS]));
       }
@@ -61,7 +62,7 @@ export function CosmicDistancesScene({
   if (stepId === 'm12-signals')
     return (
       <div className={[styles.wrap, className].filter(Boolean).join(' ')}>
-        <GalaxyNeighboursChallenge
+        <LightTravelChallenge
           onSuccess={onSuccess}
           onMiss={onMiss}
           onClearFeedback={onClearFeedback}
@@ -73,7 +74,13 @@ export function CosmicDistancesScene({
       className={[styles.wrap, className].filter(Boolean).join(' ')}
       data-distance-stop={stop.id}
     >
-      <CosmicScaleView className={styles.canvas} level={index} paused={false} onReady={() => {}} />
+      <CosmicScaleView
+        className={styles.canvas}
+        level={index}
+        paused={false}
+        maxTransitionSeconds={ordering ? 2 : undefined}
+        onReady={() => {}}
+      />
       <header className={styles.title}>
         <span>{ordering ? 'LES MESSAGES DU ROBOT' : `REPÈRE ${index + 1}/7`}</span>
         <strong>{ordering ? 'Du plus proche au plus lointain' : stop.title}</strong>

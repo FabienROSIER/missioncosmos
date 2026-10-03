@@ -19,14 +19,15 @@ export const MISSION_12: Mission = assertValidMission({
   learningObjectives: [
     'Comparer les distances de la Lune aux galaxies.',
     'Comprendre l’unité astronomique et l’année-lumière.',
-    'Distinguer une distance et un diamètre.',
+    'Comprendre que la lumière met du temps à voyager : regarder loin, c’est regarder dans le passé.',
     'Comprendre que l’Univers observable n’est pas tout l’Univers.',
   ],
   activities: [
     {
       id: 'cosmic-navigation',
       title: 'Le grand voyage',
-      description: 'Explore sept repères et retrouve les messages lumineux qui nous parviennent.',
+      description:
+        'Explore sept repères, classe les destinations, puis découvre que la lumière apporte des images du passé.',
       sceneId: 'cosmic-distances',
     },
   ],
@@ -58,25 +59,26 @@ export const MISSION_12: Mission = assertValidMission({
       guideReminder: 'Choisis la destination la plus proche parmi les cartes restantes.',
       successFeedback: 'Les envois sont prêts : Lune, Soleil, Proxima, puis Andromède !',
       hint: 'Une étoile voisine est beaucoup plus loin que le Soleil, et une autre galaxie est encore plus loin.',
-      ctaLabel: 'Chercher les vrais voisins',
+      ctaLabel: 'Voir les messagers de lumière',
     },
     {
       id: 'm12-signals',
       kind: 'challenge',
       requiresSuccess: true,
-      title: 'Les faux voisins',
-      body: 'De face, certaines galaxies semblent voisines. Mais sont-elles proches dans l’espace ? Tourne la maquette ou essaie « De côté ». Choisis les deux galaxies les plus proches, puis vérifie. Trois petites manches t’attendent !',
-      guideReminder: 'Tourne la vue, puis choisis deux galaxies proches dans l’espace.',
+      title: 'Les messagers de lumière',
+      body: 'Trois galaxies envoient un flash en même temps. Observe le voyage accéléré jusqu’à l’observatoire, puis choisis laquelle nous voyons dans le passé le plus lointain. Les distances de la maquette sont proportionnelles, pas à l’échelle réelle.',
+      guideReminder:
+        'Émets les flashs, suis la frise du temps, puis choisis la galaxie la plus lointaine.',
       successFeedback:
-        'Trois paires retrouvées ! Voisines dans une image ne veut pas toujours dire proches dans l’espace.',
-      hint: 'Regarde de côté : deux galaxies côte à côte peuvent être très séparées en profondeur.',
+        'La lumière transporte une ancienne image. Plus sa source est éloignée, plus cette image est ancienne.',
+      hint: 'Le flash le plus long à arriver vient de plus loin : son image est la plus ancienne.',
       ctaLabel: 'Ce que nous avons découvert',
     },
     {
       id: 'm12-explain',
       kind: 'explain',
-      title: 'Le ciel a de la profondeur',
-      body: 'Une image du ciel cache les distances en profondeur : deux galaxies côte à côte peuvent être éloignées dans l’espace. L’année-lumière est une unité de distance. L’Univers observable désigne la région dont la lumière peut nous parvenir ; ce n’est pas le bord de tout l’Univers.',
+      title: 'La lumière apporte le passé',
+      body: 'La lumière voyage très vite, mais l’espace est immense : elle met du temps à nous rejoindre. Regarder une galaxie lointaine, c’est recevoir une image partie il y a longtemps. L’année-lumière est une unité de distance. L’Univers observable désigne la région dont la lumière peut nous parvenir ; ce n’est pas le bord de tout l’Univers.',
       ctaLabel: 'Répondre au robot',
     },
     {
@@ -91,7 +93,7 @@ export const MISSION_12: Mission = assertValidMission({
       id: 'm12-reward',
       kind: 'reward',
       title: 'Navigateur cosmique',
-      body: 'Tu as classé les destinations et démasqué les faux voisins !',
+      body: 'Tu as classé les destinations et compris que la lumière apporte des images du passé !',
       ctaLabel: 'Terminer',
     },
     {
@@ -107,11 +109,11 @@ export const MISSION_12: Mission = assertValidMission({
     successFeedback: 'Les quatre destinations sont rangées !',
   },
   finalExplanation:
-    'L’UA et l’année-lumière sont des unités de distance. Notre voisinage, notre galaxie et les autres galaxies correspondent à des échelles très différentes.',
+    'L’UA et l’année-lumière sont des unités de distance. La lumière met du temps à voyager : plus une source est loin, plus l’image reçue est ancienne. L’Univers observable n’est pas tout l’Univers.',
   quizId: 'quiz-mission-12',
   rewardIds: ['reward-distances'],
   glossaryIds: ['unite-astronomique', 'annee-lumiere', 'univers-observable'],
   assets: [],
   notToScaleNotice:
-    'Maquette 3D pédagogique : astres agrandis, espaces et temps comprimés. Le recul comprime les immenses sauts de distance. Les diamètres sont indiqués explicitement. Neptune ne marque pas la fin du Système solaire.',
+    'Maquette 3D pédagogique : astres agrandis, espaces et temps comprimés. Le voyage de la lumière est accéléré pour rester lisible. Les diamètres sont indiqués explicitement. Neptune ne marque pas la fin du Système solaire.',
 });
