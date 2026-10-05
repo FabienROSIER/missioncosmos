@@ -385,6 +385,36 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     unlockRewardId: 'reward-stellar-light',
     aliases: ['kelvin', 'kelvins', 'K', 'température'],
   },
+  {
+    id: 'trou-noir',
+    term: 'Trou noir',
+    definition:
+      'Une région où énormément de matière est concentrée dans très peu de place. Sa gravité est extrêmement forte.',
+    enrichedDefinition:
+      'Un trou noir n’est pas un aspirateur cosmique. Assez loin, un objet peut rester en orbite autour de lui, comme autour d’un autre objet de même masse.',
+    unlockRewardId: 'reward-black-hole-detective',
+    aliases: ['trou noir', 'trous noirs'],
+  },
+  {
+    id: 'horizon-evenements',
+    term: 'Horizon des événements',
+    definition:
+      'La limite autour d’un trou noir au-delà de laquelle rien ne peut ressortir, même pas la lumière.',
+    enrichedDefinition:
+      'L’horizon n’est pas une paroi solide. Nous ne pouvons pas observer directement ce qui se passe à l’intérieur.',
+    unlockRewardId: 'reward-black-hole-detective',
+    aliases: ['horizon', 'horizon des événements', 'horizon des evenements'],
+  },
+  {
+    id: 'disque-accretion',
+    term: 'Disque d’accrétion',
+    definition:
+      'Du gaz et de la matière qui tournent autour de certains trous noirs et peuvent devenir très lumineux en chauffant.',
+    enrichedDefinition:
+      'La lumière vient de la matière située à l’extérieur du trou noir. Tous les trous noirs ne possèdent pas un disque lumineux.',
+    unlockRewardId: 'reward-black-hole-detective',
+    aliases: ['disque d’accrétion', "disque d'accrétion", 'gaz lumineux'],
+  },
 ];
 
 const BY_ID: Record<string, GlossaryEntry> = Object.fromEntries(

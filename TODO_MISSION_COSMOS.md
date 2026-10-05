@@ -654,6 +654,8 @@ _Mission 12 révisée après retour utilisateur : une seule phase de voyage manu
 - [ ] Corriger l'idée « aspirateur cosmique qui avale tout l'Univers ».
 - [ ] Ne pas prétendre simuler fidèlement la relativité si ce n'est pas le cas.
 
+_Premier lot jouable le 5 octobre 2026 : mission branchée sur le moteur commun jusqu’à l’expérience des signaux. Introduction, orbites, distinction gaz/région centrale et coupe de l’horizon sont intégrées. La suite est volontairement bloquée avant le défi orbital ; aucun badge ni achèvement prématuré n’est enregistré. Détail dans `docs/pedagogy/mission-13-black-holes.md`._
+
 ---
 
 # PHASE 9 — Mode exploration libre / CosmoLab
@@ -1004,15 +1006,15 @@ Les décisions importantes doivent avoir une ADR dans `/docs/decisions/` et êtr
 
 # État global du projet
 
-**Statut : MISSION 12 FAITE — prêt pour Mission 13 (Les trous noirs)**
+**Statut : MISSION 13 EN COURS — premier lot jouable jusqu’à l’expérience des signaux**
 
 Phase actuelle : **Phase 8 — Missions pédagogiques**
 
-Carte / catalogue : **13 missions principales + mission Constellations** branchées sur **8 zones**. Scènes jouables : M01–M12 et Constellations ; M13 catalogue + TODO.
+Carte / catalogue : **13 missions principales + mission Constellations** branchées sur **8 zones**. Scènes jouables : M01–M12, Constellations et début de M13 ; défis et fin de M13 encore à réaliser.
 
 Sous-phases : Mission 01 · Mission 02 · Mission 03 · Mission 04 · Mission 05 · Mission 06 · Mission 07 · Mission 08 · Mission 09 · Constellations · Mission 10 · Mission 11 · Mission 12 terminées.
 
-Prochaine action : **Mission 13 — Les trous noirs**, après validation de la mission 12 par le propriétaire.
+Prochaine action : **Mission 13 — défi orbital à masse centrale égale**, puis défi de détection.
 
 ### Notes découvertes
 

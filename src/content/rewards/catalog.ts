@@ -11,6 +11,7 @@ import { REWARD_CONSTELLATIONS } from '@/content/missions/mission-constellations
 import { REWARD_MILKY_WAY } from '@/content/missions/mission-10';
 import { REWARD_GALAXIES } from '@/content/missions/mission-11';
 import { REWARD_DISTANCES } from '@/content/missions/mission-12';
+import { REWARD_BLACK_HOLE_DETECTIVE } from '@/content/missions/mission-13';
 import type { Reward } from '@/types/progress';
 
 /** Registre des récompenses (badges de connaissance). */
@@ -28,6 +29,7 @@ export const REWARD_CATALOG: Reward[] = [
   REWARD_MILKY_WAY,
   REWARD_GALAXIES,
   REWARD_DISTANCES,
+  REWARD_BLACK_HOLE_DETECTIVE,
 ];
 
 export function getRewardById(id: string): Reward | undefined {

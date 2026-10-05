@@ -31,6 +31,7 @@ import { ConstellationsScene } from '@/3d/scenes/ConstellationsScene';
 import { MilkyWayScene } from '@/3d/scenes/MilkyWayScene';
 import { GalaxiesScene } from '@/3d/scenes/GalaxiesScene';
 import { CosmicDistancesScene } from '@/3d/scenes/CosmicDistancesScene';
+import { BlackHoleScene } from '@/3d/scenes/BlackHoleScene';
 import { SolarDistancePanel } from '@/3d/scenes/SolarDistancePanel';
 import { SolarSizeChallenge } from '@/3d/scenes/SolarSizeChallenge';
 import type { SurfaceLighting } from '@/3d/scenes/dayNightMarkers';
@@ -124,6 +125,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const isMilkyWay = mission.sceneId === 'milky-way';
   const isGalaxies = mission.sceneId === 'galaxies';
   const isCosmicDistances = mission.sceneId === 'cosmic-distances';
+  const isBlackHoles = mission.sceneId === 'black-holes';
   const [guideOverride, setGuideOverride] = useState<{
     stepId: string;
     expanded: boolean;
@@ -148,6 +150,10 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const [starLightApi, setStarLightApi] = useState<StarLightSceneApi | null>(null);
   const [recentering, setRecentering] = useState(false);
   const [feedback, setFeedback] = useState<StepFeedback | null>(null);
+  const [sceneInstruction, setSceneInstruction] = useState<{
+    stepId: string;
+    text: string;
+  } | null>(null);
   const [glossaryOpen, setGlossaryOpen] = useState(false);
   const [glossaryFocusId, setGlossaryFocusId] = useState<string | null>(null);
   const [quizMood, setQuizMood] = useState<CompanionFeedbackMood>('none');
@@ -243,6 +249,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   const hasSceneControls =
     mission.sceneId === 'earth-preview' ||
     isCosmicDistances ||
+    isBlackHoles ||
     isGalaxies ||
     isMilkyWay ||
     (isConstellations && !['mc-intro', 'mc-reward', 'mc-understand'].includes(step.id)) ||
@@ -779,6 +786,13 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     setFeedback((current) => (current?.stepId === stepId ? null : current));
   }, []);
 
+  const onSceneInstruction = useCallback((text: string) => {
+    setSceneInstruction({
+      stepId: pickCtxRef.current.stepId,
+      text,
+    });
+  }, []);
+
   const onPrismSuccess = useCallback(() => {
     const ctx = pickCtxRef.current;
     if (
@@ -855,6 +869,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
       setGuidePage(null);
       setPlayStartedStepId(null);
       setFeedback(null);
+      setSceneInstruction(null);
       setQuizMood('none');
       goNext();
     };
@@ -875,6 +890,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     setGuidePage(null);
     setPlayStartedStepId(null);
     setFeedback(null);
+    setSceneInstruction(null);
     setQuizMood('none');
     completionSavedRef.current = false;
     restart();
@@ -955,7 +971,16 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
             inert={!sceneInteractionAllowed}
             data-scene-interaction={sceneInteractionAllowed ? 'enabled' : 'locked'}
           >
-            {isCosmicDistances ? (
+            {isBlackHoles ? (
+              <BlackHoleScene
+                key={step.id}
+                className={styles.viewport}
+                stepId={step.id}
+                onSuccess={onObservatorySuccess}
+                onClearFeedback={onClearObservatoryFeedback}
+                onInstruction={onSceneInstruction}
+              />
+            ) : isCosmicDistances ? (
               <CosmicDistancesScene
                 className={styles.viewport}
                 stepId={step.id}
@@ -1251,7 +1276,10 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                       <span>
                         {guideExpanded
                           ? step.title
-                          : (step.guideReminder ?? (challengeActive ? challengeHint : step.title))}
+                          : (sceneInstruction?.stepId === step.id
+                              ? sceneInstruction.text
+                              : (step.guideReminder ??
+                                (challengeActive ? challengeHint : step.title)))}
                       </span>
                       <span className={styles.toggleLabel}>{guideExpanded ? '−' : '+'}</span>
                     </button>
