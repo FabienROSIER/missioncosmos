@@ -78,8 +78,11 @@ describe('colour-light experiments', () => {
     expect(MISSION_09.id).toBe('mission-09');
     expect(MISSION_09.rewardIds).toContain('reward-stellar-light');
     const gated = MISSION_09.steps.filter((step) => step.requiresSuccess);
-    expect(gated.map((step) => step.id)).toEqual(['m09-color', 'm09-challenge']);
-    expect(gated.every((step) => step.challengePrism)).toBe(true);
+    expect(gated.map((step) => step.id)).toEqual(['m09-color', 'm09-spectrum', 'm09-challenge']);
+    expect(gated.filter((step) => step.challengePrism).map((step) => step.id)).toEqual([
+      'm09-color',
+      'm09-challenge',
+    ]);
     expect(MISSION_09.steps.some((step) => step.id === 'm09-quiz')).toBe(false);
     expect(MIX_TARGETS).toEqual(['yellow', 'magenta', 'cyan', 'white']);
     expect(new Set(MIX_TARGETS).size).toBe(MIX_TARGETS.length);

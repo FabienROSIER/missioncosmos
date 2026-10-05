@@ -42,7 +42,15 @@ import {
   type CompanionSurfaceMarkerHandle,
 } from '@/3d/scenes/companionSurfaceMarker';
 import { attachHouseViewPip, EARTH_MAIN_LAYER } from '@/3d/scenes/houseViewPip';
-import { frameDayNightOverview } from '@/3d/utils/cameraFraming';
+import {
+  frameDayNightOverview,
+  keepFramingClearOfElement,
+  orientCameraForAnchor,
+  profileViewDirection,
+  sunEarthFramingSpheres,
+  watchBodiesFraming,
+  type FramingSphere,
+} from '@/3d/utils/cameraFraming';
 import { createSpaceBackground } from '@/3d/utils/imageSpaceBackground';
 import { EARTH_BODY, SUN_BODY } from '@/content/bodies/catalog';
 import { COMPANION_TEMP_NAME } from '@/content/companion';
@@ -82,7 +90,7 @@ type LabelState = {
 };
 
 const HOLD_MS = 700;
-/** Distance Soleil↔Terre (maquette) — assez loin pour ne pas coller, assez près pour rester en bord de cadre. */
+/** Distance Soleil↔Terre (maquette) — assez loin pour les séparer, assez près pour les voir ensemble. */
 const SUN_DISTANCE = 7.2;
 
 /** Scène Mission 02 — Soleil + Terre + compagnon, jour/nuit. */
@@ -193,6 +201,10 @@ export function DayNightScene({
         earth.pivot.getAbsolutePosition(),
         sun.pivot.getAbsolutePosition(),
         lighting.sunLight.direction,
+        {
+          earthRadius: EARTH_BODY.visual.visualRadius,
+          sunRadius: SUN_BODY.visual.visualRadius,
+        },
       );
 
       const lockedAlpha = camera.alpha;
@@ -204,10 +216,51 @@ export function DayNightScene({
         upperBetaLimit: lockedBeta,
         lowerAlphaLimit: lockedAlpha,
         upperAlphaLimit: lockedAlpha,
+        skipLandscapeAutoZoom: true,
       });
+
+      const dayNightSpheres = () =>
+        sunEarthFramingSpheres(
+          earth.pivot.getAbsolutePosition(),
+          sun.pivot.getAbsolutePosition(),
+          EARTH_BODY.visual.visualRadius,
+          SUN_BODY.visual.visualRadius,
+        );
+      const clearDayNightOverlay = () => {
+        keepFramingClearOfElement(camera, dayNightSpheres(), pipFrameRef.current);
+      };
+      clearDayNightOverlay();
 
       const home = captureCameraHome(camera);
       const cameraApi = createMissionCameraApi(camera, home, earth.pivot, earth.meshes);
+      const orientDayNight = (frame: FramingSphere) => {
+        const earthPos = earth.pivot.getAbsolutePosition();
+        const toSun = sun.pivot.getAbsolutePosition().subtract(earthPos);
+        if (toSun.lengthSquared() < 1e-8) return;
+        toSun.normalize();
+        orientCameraForAnchor(camera, earthPos, profileViewDirection(toSun), frame);
+      };
+      const stopFramingWatch = watchBodiesFraming(
+        camera,
+        dayNightSpheres,
+        (frame, stillAuto) => {
+          if (stillAuto) {
+            camera.lowerAlphaLimit = camera.alpha;
+            camera.upperAlphaLimit = camera.alpha;
+            camera.lowerBetaLimit = camera.beta;
+            camera.upperBetaLimit = camera.beta;
+          }
+          cameraApi.setHome?.({
+            alpha: stillAuto ? camera.alpha : lockedAlpha,
+            beta: stillAuto ? camera.beta : lockedBeta,
+            radius: stillAuto ? camera.radius : frame.radius,
+            target: frame.center,
+          });
+        },
+        undefined,
+        orientDayNight,
+        clearDayNightOverlay,
+      );
 
       drag = attachEarthDragRotation(scene, earth.pivot, camera);
 
@@ -344,6 +397,7 @@ export function DayNightScene({
       });
 
       return () => {
+        stopFramingWatch();
         setLabel(null);
         housePip?.dispose();
         if (cinematicSpinObs) {

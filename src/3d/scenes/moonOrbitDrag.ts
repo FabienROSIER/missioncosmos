@@ -21,14 +21,14 @@ export type MoonOrbitDragHandle = {
 
 /**
  * Glisser horizontalement déplace la Lune sur son orbite (caméra figée).
- * Même idée que attachEarthDragRotation (Mission 02).
+ * Inactif tant que la mission n’a pas ouvert le jeu.
  */
 export function attachMoonOrbitDrag(
   scene: Scene,
   orbit: OrbitController,
   camera: ArcRotateCamera,
 ): MoonOrbitDragHandle {
-  let enabled = true;
+  let enabled = false;
   let dragging = false;
   let lastX = 0;
   const activePointers = new Set<number>();

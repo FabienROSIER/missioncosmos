@@ -73,6 +73,8 @@ type OrbitsSceneProps = {
   onSceneApi?: (api: OrbitsSceneApi) => void;
   onRaceSuccess?: () => void;
   onRaceMiss?: () => void;
+  /** Découverte : vitesse changée ou fiche d’une planète ouverte. */
+  onExplore?: () => void;
 };
 
 type OrbitRing = {
@@ -128,6 +130,7 @@ export function OrbitsScene({
   onSceneApi,
   onRaceSuccess,
   onRaceMiss,
+  onExplore,
 }: OrbitsSceneProps) {
   const [speed, setSpeedUi] = useState<OrbitSpeedPreset>(1);
   const [raceMode, setRaceMode] = useState(false);
@@ -138,6 +141,7 @@ export function OrbitsScene({
   const onSceneApiRef = useRef(onSceneApi);
   const onRaceSuccessRef = useRef(onRaceSuccess);
   const onRaceMissRef = useRef(onRaceMiss);
+  const onExploreRef = useRef(onExplore);
 
   useEffect(() => {
     onSceneApiRef.current = onSceneApi;
@@ -148,6 +152,9 @@ export function OrbitsScene({
   useEffect(() => {
     onRaceMissRef.current = onRaceMiss;
   }, [onRaceMiss]);
+  useEffect(() => {
+    onExploreRef.current = onExplore;
+  }, [onExplore]);
 
   const applySpeed = useCallback(
     (mult: OrbitSpeedPreset) => {
@@ -300,6 +307,7 @@ export function OrbitsScene({
         for (const pid of ORBIT_COMPARE_PLANETS) {
           planetEntities.get(pid)?.setSelected(pid === id);
         }
+        onExploreRef.current?.();
       }
     };
 
@@ -333,6 +341,7 @@ export function OrbitsScene({
         const next = raceChallenge && mult > 1 ? 1 : mult;
         speedMult = next;
         setSpeedUi(next);
+        if (next !== 1) onExploreRef.current?.();
       },
       setPickEnabled: (enabled) => {
         pickEnabled = enabled;

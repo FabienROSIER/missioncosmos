@@ -52,10 +52,13 @@ export const MISSION_10: Mission = assertValidMission({
     },
     {
       id: 'm10-explore',
-      kind: 'manipulate',
+      kind: 'challenge',
+      completionMode: 'discovery',
+      requiresSuccess: true,
       title: 'Un disque d’étoiles',
-      body: 'Tourne la maquette avec le doigt. Essaie « De face » et « De profil » : tu verras un disque, des bras qui s’enroulent et un centre plus épais. Chaque point représente beaucoup d’étoiles.',
-      guideReminder: 'Observe la galaxie de face et de profil.',
+      body: 'Essaie « De face » et « De profil ». De face, tu vois un disque et des bras. De profil, le centre est plus épais. Chaque point représente beaucoup d’étoiles.',
+      guideReminder: 'Regarde la galaxie de face, puis de profil.',
+      successFeedback: 'Tu as vu le disque de face et le centre plus épais de profil.',
       ctaLabel: 'Chercher notre quartier',
     },
     {

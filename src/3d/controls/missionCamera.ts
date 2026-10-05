@@ -86,7 +86,8 @@ export function syncResponsiveCameraZoom(camera: ArcRotateCamera): void {
   const state = responsiveZoomStates.get(camera);
   if (!state) return;
 
-  const shouldBoost = isMobileGameLayout() && isLandscapeLayout();
+  const shouldBoost =
+    !camera.metadata?.skipLandscapeAutoZoom && isMobileGameLayout() && isLandscapeLayout();
   if (shouldBoost && !state.landscapeBoostApplied) {
     camera.radius = Math.max(lower, Math.min(upper, camera.radius * MOBILE_LANDSCAPE_AUTO_ZOOM_FACTOR));
     state.landscapeBoostApplied = true;
@@ -110,6 +111,8 @@ export type MissionCameraApi = {
   recenter: () => Promise<void>;
   focusOn: (node: TransformNode, meshes?: AbstractMesh[]) => Promise<void>;
   getHome: () => MissionCameraHome;
+  /** Met à jour la vue restaurée par « Recentrer » (cadrage responsive). */
+  setHome?: (home: MissionCameraHome) => void;
 };
 
 export type ConfigureMissionCameraOptions = {
@@ -124,6 +127,11 @@ export type ConfigureMissionCameraOptions = {
   /** Limites alpha optionnelles (radians). */
   lowerAlphaLimit?: number | null;
   upperAlphaLimit?: number | null;
+  /**
+   * Le cadrage a déjà la bonne distance pour l’orientation courante.
+   * Ne pas rapprocher automatiquement en paysage (ça recadre Soleil / Terre).
+   */
+  skipLandscapeAutoZoom?: boolean;
 };
 
 /**
@@ -134,6 +142,10 @@ export function configureMissionCamera(
   camera: ArcRotateCamera,
   options: ConfigureMissionCameraOptions = {},
 ): void {
+  if (options.skipLandscapeAutoZoom) {
+    camera.metadata = { ...(camera.metadata ?? {}), skipLandscapeAutoZoom: true };
+  }
+
   const allowPan = options.allowPan ?? true;
   const panningSensibility = isMobileGameLayout()
     ? MOBILE_PANNING_SENSIBILITY
@@ -281,13 +293,14 @@ export function createMissionCameraApi(
   focusMeshes: AbstractMesh[] = [],
 ): MissionCameraApi {
   const initialZoomState = responsiveZoomStates.get(camera);
-  const baseHomeRadius = initialZoomState?.landscapeBoostApplied
+  let baseHomeRadius = initialZoomState?.landscapeBoostApplied
     ? home.radius / MOBILE_LANDSCAPE_AUTO_ZOOM_FACTOR
     : home.radius;
+  const skipLandscapeZoom = Boolean(camera.metadata?.skipLandscapeAutoZoom);
   const responsiveHome = (): MissionCameraHome => ({
     ...home,
     radius:
-      isMobileGameLayout() && isLandscapeLayout()
+      !skipLandscapeZoom && isMobileGameLayout() && isLandscapeLayout()
         ? baseHomeRadius * MOBILE_LANDSCAPE_AUTO_ZOOM_FACTOR
         : baseHomeRadius,
     target: home.target.clone(),
@@ -295,6 +308,13 @@ export function createMissionCameraApi(
 
   return {
     getHome: responsiveHome,
+    setHome: (next) => {
+      home.alpha = next.alpha;
+      home.beta = next.beta;
+      home.radius = next.radius;
+      home.target.copyFrom(next.target);
+      baseHomeRadius = next.radius;
+    },
     recenter: () => animateCameraTo(camera, responsiveHome()),
     focusOn: async (node, meshes = []) => {
       const list = meshes.length > 0 ? meshes : focusMeshes;

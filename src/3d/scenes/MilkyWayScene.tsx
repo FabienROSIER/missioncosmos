@@ -96,6 +96,7 @@ export function MilkyWayScene({ className, stepId, onSuccess, onMiss }: Props) {
     endAlpha: number;
   } | null>(null);
   const labelRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const seenViews = useRef({ face: false, profile: false, stepId: '' });
   useEffect(() => {
     events.current = { onSuccess, onMiss };
   }, [onSuccess, onMiss]);
@@ -637,6 +638,16 @@ export function MilkyWayScene({ className, stepId, onSuccess, onMiss }: Props) {
       };
     }
     setRotating(false);
+    if (step.current !== 'm10-explore') return;
+    const seen = seenViews.current;
+    if (seen.stepId !== 'm10-explore') {
+      seen.stepId = 'm10-explore';
+      seen.face = false;
+      seen.profile = false;
+    }
+    if (beta < 0.4) seen.face = true;
+    if (beta > 1) seen.profile = true;
+    if (seen.face && seen.profile) succeed();
   };
   const galactic = !['m10-intro', 'm10-journey'].includes(stepId) || journey >= 0.18;
   const neighbourhood = stepId === 'm10-journey' && journey >= 0.025 && !galactic;

@@ -37,6 +37,15 @@ import {
   optimizeCelestialMeshes,
   startPerfMonitor,
 } from '@/3d/performance';
+import {
+  frameAnchoredBodies,
+  keepFramingClearOfElement,
+  measureBodiesFraming,
+  orientCameraForAnchor,
+  profileViewDirection,
+  watchBodiesFraming,
+  type FramingSphere,
+} from '@/3d/utils/cameraFraming';
 import { createSpaceBackground } from '@/3d/utils/imageSpaceBackground';
 import { EARTH_BODY, SUN_BODY } from '@/content/bodies/catalog';
 import {
@@ -66,11 +75,26 @@ type SeasonsSceneProps = {
   onSceneApi?: (api: SeasonsSceneApi) => void;
   onSummerSuccess?: () => void;
   onSummerExit?: () => void;
+  /** Découverte : déplacement sur l’orbite, ou curseur d’inclinaison. */
+  onExplore?: (kind: 'orbit' | 'tilt') => void;
 };
 
 const ORBIT_R = 5.2;
 const EARTH_R = 0.85;
 const SUN_R = 1.35;
+
+/** Soleil au centre et Terre sur toute l’orbite, pour le cadrage de départ. */
+function seasonFramingSpheres(): FramingSphere[] {
+  const earthReach = ORBIT_R + EARTH_R * 1.55;
+  return [{ center: Vector3.Zero(), radius: Math.max(SUN_R * 1.16, earthReach) }];
+}
+
+const SEASON_START_EARTH = new Vector3(
+  Math.cos(NORTH_SUMMER_ANGLE) * ORBIT_R,
+  0,
+  Math.sin(NORTH_SUMMER_ANGLE) * ORBIT_R,
+);
+const SEASON_PROFILE = profileViewDirection(SEASON_START_EARTH.scale(-1).normalize());
 
 function createOrbitRing(scene: Scene, radius: number, quality: 'low' | 'high') {
   const mesh = MeshBuilder.CreateTorus(
@@ -181,15 +205,18 @@ export function SeasonsScene({
   onSceneApi,
   onSummerSuccess,
   onSummerExit,
+  onExplore,
 }: SeasonsSceneProps) {
   const [tiltDeg, setTiltUi] = useState(EARTH_AXIAL_TILT_DEG);
   const [northLabel, setNorthLabel] = useState('Été');
   const [southLabel, setSouthLabel] = useState('Hiver');
   const [hint, setHint] = useState<string | null>(null);
   const runtimeRef = useRef<SeasonsSceneApi | null>(null);
+  const hudRef = useRef<HTMLDivElement | null>(null);
   const onSceneApiRef = useRef(onSceneApi);
   const onSummerSuccessRef = useRef(onSummerSuccess);
   const onSummerExitRef = useRef(onSummerExit);
+  const onExploreRef = useRef(onExplore);
 
   useEffect(() => {
     onSceneApiRef.current = onSceneApi;
@@ -200,6 +227,9 @@ export function SeasonsScene({
   useEffect(() => {
     onSummerExitRef.current = onSummerExit;
   }, [onSummerExit]);
+  useEffect(() => {
+    onExploreRef.current = onExplore;
+  }, [onExplore]);
 
   const onSceneReady = useCallback(async ({ engine, scene }: BabylonSceneContext) => {
     const quality = resolveGraphicsQuality();
@@ -318,21 +348,43 @@ export function SeasonsScene({
       logger.warn('SeasonsScene: caméra ArcRotate attendue');
       return;
     }
-    camera.setTarget(Vector3.Zero());
-    camera.alpha = -Math.PI / 2.2;
-    camera.beta = 0.72;
-    camera.radius = 11;
     camera.lowerRadiusLimit = 7;
     camera.upperRadiusLimit = 16;
-    camera.lowerBetaLimit = 0.4;
-    camera.upperBetaLimit = Math.PI / 2 - 0.1;
-    configureMissionCamera(camera);
+    camera.lowerBetaLimit = 0.35;
+    camera.upperBetaLimit = Math.PI / 2 - 0.08;
+    frameAnchoredBodies(camera, SEASON_START_EARTH, SEASON_PROFILE, seasonFramingSpheres());
+    configureMissionCamera(camera, {
+      skipLandscapeAutoZoom: true,
+      lowerBetaLimit: 0.35,
+      upperBetaLimit: Math.PI / 2 - 0.08,
+    });
+    const clearSeasonOverlay = () => {
+      keepFramingClearOfElement(camera, seasonFramingSpheres(), hudRef.current);
+    };
+    clearSeasonOverlay();
 
     const home = captureCameraHome(camera);
     const baseCameraApi = createMissionCameraApi(camera, home, sun.pivot, [
       ...sun.meshes,
       ...earth.meshes,
     ]);
+    const stopFramingWatch = watchBodiesFraming(
+      camera,
+      seasonFramingSpheres,
+      (frame, stillAuto) => {
+        baseCameraApi.setHome?.({
+          alpha: stillAuto ? camera.alpha : home.alpha,
+          beta: stillAuto ? camera.beta : home.beta,
+          radius: stillAuto ? camera.radius : frame.radius,
+          target: frame.center,
+        });
+      },
+      undefined,
+      (frame) => {
+        orientCameraForAnchor(camera, SEASON_START_EARTH, SEASON_PROFILE, frame);
+      },
+      clearSeasonOverlay,
+    );
 
     const canvas = engine.getRenderingCanvas();
     let cameraControlsAttached = true;
@@ -367,10 +419,11 @@ export function SeasonsScene({
         // Vue de défi avec une marge réelle autour de l’orbite, y compris sur les
         // écrans paysage peu hauts. Placée entre l’hiver et le printemps, mais
         // plus près du printemps, elle montre l’inclinaison sans regarder dans son axe.
+        const fitted = measureBodiesFraming(camera, seasonFramingSpheres());
         camera.setTarget(Vector3.Zero());
         camera.alpha = Math.PI / 24;
         camera.beta = 0.88;
-        camera.radius = 15.2;
+        camera.radius = fitted.radius;
       } else {
         setCameraControlsAttached(true);
         if (challengeCameraHome) {
@@ -453,6 +506,7 @@ export function SeasonsScene({
         const hit = ray.origin.add(ray.direction.scale(t));
         orbitAngle = Math.atan2(hit.z, hit.x);
         placeEarth();
+        onExploreRef.current?.('orbit');
         if (challenge && !challengeDone && !isNorthernSummer(orbitAngle, tilt)) {
           setHint('Pas encore — cherche où le nord se penche vers le Soleil.');
         }
@@ -496,6 +550,7 @@ export function SeasonsScene({
     const perf = startPerfMonitor(scene, { label: 'mission-07-seasons' });
 
     return () => {
+      stopFramingWatch();
       perf.dispose();
       cancelChallengeTransition?.();
       setCameraControlsAttached(false);
@@ -515,10 +570,12 @@ export function SeasonsScene({
   const setTilt = (deg: number) => {
     setTiltUi(deg);
     runtimeRef.current?.setTiltDeg(deg);
+    if (deg === 0) onExplore?.('tilt');
   };
 
   const jump = (rad: number) => {
     runtimeRef.current?.setOrbitAngle(rad);
+    onExplore?.('orbit');
   };
 
   return (
@@ -529,7 +586,7 @@ export function SeasonsScene({
         mobileFovScale={1.65}
         onSceneReady={onSceneReady}
       />
-      <SceneControls className={styles.hud}>
+      <SceneControls ref={hudRef} className={styles.hud}>
         <div className={styles.seasonRow} aria-live="polite">
           <p className={styles.seasonChip}>
             Nord : <strong>{northLabel}</strong>

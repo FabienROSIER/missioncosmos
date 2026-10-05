@@ -44,6 +44,20 @@ export function GalaxiesScene({ className, stepId, onSuccess, onMiss, onClearFee
   const isNeighbour = ['m11-intro', 'm11-neighbour'].includes(stepId);
   const current = isAlbum ? (order[round] ?? 'spiral') : isNeighbour ? 'spiral' : family;
   const camera = useRef<ArcRotateCamera | null>(null);
+  const exploreSeen = useRef({
+    home: false,
+    neighbour: false,
+    families: new Set<GalaxyFamily>(),
+    reported: false,
+  });
+  useEffect(() => {
+    exploreSeen.current = {
+      home: false,
+      neighbour: false,
+      families: new Set(),
+      reported: false,
+    };
+  }, [stepId]);
   const sample = useRef({ current, faded: isScale || stepId === 'm11-quiz', neighbour });
   const tween = useRef<{ from: number; to: number; started: number } | null>(null);
   useEffect(() => {
@@ -60,7 +74,6 @@ export function GalaxiesScene({ className, stepId, onSuccess, onMiss, onClearFee
         setNeighbour(false);
         setFamily('spiral');
       }
-      if (stepId === 'm11-neighbour') setNeighbour(true);
       if (stepId === 'm11-album') {
         setOrder(shuffleArray([...GALAXY_FAMILIES]));
         setChoiceOrder(shuffleArray([...GALAXY_FAMILIES]));
@@ -129,6 +142,26 @@ export function GalaxiesScene({ className, stepId, onSuccess, onMiss, onClearFee
     };
   }, []);
 
+  const reportExplore = () => {
+    if (exploreSeen.current.reported) return;
+    exploreSeen.current.reported = true;
+    onSuccess();
+  };
+  const markNeighbour = (showNeighbour: boolean) => {
+    setNeighbour(showNeighbour);
+    if (stepId !== 'm11-neighbour') return;
+    const seen = exploreSeen.current;
+    if (showNeighbour) seen.neighbour = true;
+    else seen.home = true;
+    if (seen.home && seen.neighbour) reportExplore();
+  };
+  const markFamily = (kind: GalaxyFamily) => {
+    setFamily(kind);
+    changeView(0.45);
+    if (stepId !== 'm11-families') return;
+    exploreSeen.current.families.add(kind);
+    if (exploreSeen.current.families.size === GALAXY_FAMILIES.length) reportExplore();
+  };
   const changeView = (beta: number) => {
     if (!camera.current) return;
     if (prefersReducedMotion()) camera.current.beta = beta;
@@ -262,10 +295,10 @@ export function GalaxiesScene({ className, stepId, onSuccess, onMiss, onClearFee
           <>
             {isNeighbour ? (
               <div className={styles.buttons}>
-                <button aria-pressed={!neighbour} onClick={() => setNeighbour(false)}>
+                <button aria-pressed={!neighbour} onClick={() => markNeighbour(false)}>
                   Voie lactée
                 </button>
-                <button aria-pressed={neighbour} onClick={() => setNeighbour(true)}>
+                <button aria-pressed={neighbour} onClick={() => markNeighbour(true)}>
                   Andromède
                 </button>
               </div>
@@ -276,10 +309,7 @@ export function GalaxiesScene({ className, stepId, onSuccess, onMiss, onClearFee
                     <button
                       key={kind}
                       aria-pressed={family === kind}
-                      onClick={() => {
-                        setFamily(kind);
-                        changeView(0.45);
-                      }}
+                      onClick={() => markFamily(kind)}
                     >
                       {kind === 'spiral' ? 'Spirale' : GALAXY_FAMILY_LABELS[kind]}
                     </button>

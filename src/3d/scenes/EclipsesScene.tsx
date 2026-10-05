@@ -31,7 +31,15 @@ import { attachEclipseEarthPip } from '@/3d/scenes/eclipseEarthPip';
 import { createCompanionSurfaceMarker } from '@/3d/scenes/companionSurfaceMarker';
 import { EARTH_MAIN_LAYER, HOUSE_MESH_LAYER, MAIN_CAMERA_LAYER } from '@/3d/scenes/houseViewPip';
 import { attachMoonOrbitDrag, createOrbitGuide } from '@/3d/scenes/moonOrbitDrag';
-import { frameMoonPhasesOverview } from '@/3d/utils/cameraFraming';
+import {
+  eclipseViewDirection,
+  frameEclipseOverview,
+  keepFramingClearOfElement,
+  orientCameraForAnchor,
+  sunEarthMoonFramingSpheres,
+  watchBodiesFraming,
+  type FramingSphere,
+} from '@/3d/utils/cameraFraming';
 import {
   classifyEclipse,
   ECLIPSE_LABELS,
@@ -52,6 +60,8 @@ export type EclipsesSceneApi = {
   camera: MissionCameraApi;
   setMoonDragEnabled: (enabled: boolean) => void;
   setEclipseChallenge: (target: EclipseTarget | null) => void;
+  /** Découverte : réussie dès que la Lune a clairement bougé sur son orbite. */
+  setMoonMoveDiscovery: (enabled: boolean) => void;
   /** Orbite penchée (étape « pas chaque mois »). */
   setOrbitTilted: (tilted: boolean) => void;
   setCinematicMode: (enabled: boolean) => void;
@@ -193,6 +203,8 @@ export function EclipsesScene({
     const camera = scene.activeCamera;
     let drag: ReturnType<typeof attachMoonOrbitDrag> | null = null;
     let challengeTarget: EclipseTarget | null = null;
+    let moveDiscovery = false;
+    let moveStartAngle: number | null = null;
     let holdAccum = 0;
     let successSent = false;
     let moonPip: ReturnType<typeof attachEclipseEarthPip> | null = null;
@@ -206,11 +218,17 @@ export function EclipsesScene({
     if (camera instanceof ArcRotateCamera) {
       camera.layerMask = MAIN_CAMERA_LAYER;
 
-      frameMoonPhasesOverview(
+      const bodyRadii = {
+        earthRadius: 0.85,
+        sunRadius: 1.75,
+        moonRadius: MOON_BODY.visual.visualRadius,
+      };
+      frameEclipseOverview(
         camera,
         earth.pivot.getAbsolutePosition(),
         sun.pivot.getAbsolutePosition(),
         MOON_ORBIT_RADIUS,
+        bodyRadii,
       );
 
       const lockedAlpha = camera.alpha;
@@ -221,10 +239,52 @@ export function EclipsesScene({
         upperBetaLimit: lockedBeta,
         lowerAlphaLimit: lockedAlpha,
         upperAlphaLimit: lockedAlpha,
+        skipLandscapeAutoZoom: true,
       });
+
+      const eclipseSpheres = () =>
+        sunEarthMoonFramingSpheres(
+          earth.pivot.getAbsolutePosition(),
+          sun.pivot.getAbsolutePosition(),
+          MOON_ORBIT_RADIUS,
+          bodyRadii.earthRadius,
+          bodyRadii.sunRadius,
+          bodyRadii.moonRadius,
+        );
+      const clearEclipseOverlay = () => {
+        keepFramingClearOfElement(camera, eclipseSpheres(), pipFrameRef.current);
+      };
+      clearEclipseOverlay();
 
       const home = captureCameraHome(camera);
       const cameraApi = createMissionCameraApi(camera, home, earth.pivot, earth.meshes);
+      const stopFramingWatch = watchBodiesFraming(
+        camera,
+        eclipseSpheres,
+        (frame, stillAuto) => {
+          if (stillAuto) {
+            camera.lowerAlphaLimit = camera.alpha;
+            camera.upperAlphaLimit = camera.alpha;
+            camera.lowerBetaLimit = camera.beta;
+            camera.upperBetaLimit = camera.beta;
+          }
+          cameraApi.setHome?.({
+            alpha: stillAuto ? camera.alpha : lockedAlpha,
+            beta: stillAuto ? camera.beta : lockedBeta,
+            radius: stillAuto ? camera.radius : frame.radius,
+            target: frame.center,
+          });
+        },
+        undefined,
+        (frame: FramingSphere) => {
+          const earthPos = earth.pivot.getAbsolutePosition();
+          const toSun = sun.pivot.getAbsolutePosition().subtract(earthPos);
+          if (toSun.lengthSquared() < 1e-8) return;
+          toSun.normalize();
+          orientCameraForAnchor(camera, earthPos, eclipseViewDirection(toSun), frame);
+        },
+        clearEclipseOverlay,
+      );
 
       drag = attachMoonOrbitDrag(scene, orbit, camera);
 
@@ -302,16 +362,27 @@ export function EclipsesScene({
           setPipKind(kind);
         }
 
-        if (!challengeTarget || successSent) return;
-        const dt = scene.getEngine().getDeltaTime();
-        if (isEclipseMatch(b.earth, b.sun, b.moon, challengeTarget)) {
-          holdAccum += dt;
-          if (holdAccum >= HOLD_MS) {
-            successSent = true;
-            onEclipseSuccessRef.current?.(challengeTarget);
+        if (successSent) return;
+        if (challengeTarget) {
+          const dt = scene.getEngine().getDeltaTime();
+          if (isEclipseMatch(b.earth, b.sun, b.moon, challengeTarget)) {
+            holdAccum += dt;
+            if (holdAccum >= HOLD_MS) {
+              successSent = true;
+              onEclipseSuccessRef.current?.(challengeTarget);
+            }
+          } else {
+            holdAccum = 0;
           }
-        } else {
-          holdAccum = 0;
+          return;
+        }
+        if (
+          moveDiscovery &&
+          moveStartAngle !== null &&
+          Math.abs(orbit.getAngle() - moveStartAngle) >= 0.45
+        ) {
+          successSent = true;
+          onEclipseSuccessRef.current?.('solar');
         }
       });
 
@@ -323,8 +394,23 @@ export function EclipsesScene({
         setEclipseChallenge: (target) => {
           challengeTarget = target;
           holdAccum = 0;
-          successSent = false;
-          if (target) shadows.setHighlight(target);
+          if (target) {
+            moveDiscovery = false;
+            successSent = false;
+            shadows.setHighlight(target);
+          }
+        },
+        setMoonMoveDiscovery: (enabled) => {
+          if (enabled === moveDiscovery) return;
+          moveDiscovery = enabled;
+          holdAccum = 0;
+          if (enabled) {
+            challengeTarget = null;
+            successSent = false;
+            moveStartAngle = orbit.getAngle();
+          } else {
+            moveStartAngle = null;
+          }
         },
         setOrbitTilted: (tilted) => {
           const i = tilted ? TILT_RAD : 0;
@@ -342,6 +428,7 @@ export function EclipsesScene({
       });
 
       return () => {
+        stopFramingWatch();
         moonPip?.dispose();
         scene.onBeforeRenderObservable.remove(syncObs);
         drag?.dispose();

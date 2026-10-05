@@ -55,6 +55,8 @@ import styles from './StarLightScene.module.css';
 export type StarLightSceneApi = {
   camera: MissionCameraApi;
   setMode: (mode: StarLightSceneMode) => void;
+  /** Découverte : une couleur du prisme, puis rouge + vert. */
+  setDiscovery: (enabled: boolean) => void;
 };
 type Props = {
   className?: string;
@@ -62,6 +64,7 @@ type Props = {
   onSceneApi?: (api: StarLightSceneApi) => void;
   onPrismSuccess?: () => void;
   onPrismMiss?: (hint: string | null) => void;
+  onDiscoveryDone?: () => void;
 };
 type Controls = {
   place: () => void;
@@ -86,6 +89,7 @@ export function StarLightScene({
   onSceneApi,
   onPrismSuccess,
   onPrismMiss,
+  onDiscoveryDone,
 }: Props) {
   const [mode, setMode] = useState<StarLightSceneMode>('intro');
   const [ready, setReady] = useState(false);
@@ -101,10 +105,10 @@ export function StarLightScene({
   });
   const [message, setMessage] = useState('');
   const controls = useRef<Controls | null>(null);
-  const callbacks = useRef({ onSceneApi, onPrismSuccess, onPrismMiss });
+  const callbacks = useRef({ onSceneApi, onPrismSuccess, onPrismMiss, onDiscoveryDone });
   useEffect(() => {
-    callbacks.current = { onSceneApi, onPrismSuccess, onPrismMiss };
-  }, [onSceneApi, onPrismSuccess, onPrismMiss]);
+    callbacks.current = { onSceneApi, onPrismSuccess, onPrismMiss, onDiscoveryDone };
+  }, [onSceneApi, onPrismSuccess, onPrismMiss, onDiscoveryDone]);
 
   const onSceneReady = useCallback(({ engine, scene }: BabylonSceneContext) => {
     const quality = resolveGraphicsQuality();
@@ -456,6 +460,7 @@ export function StarLightScene({
     let showPrism = false;
     let attempts = 0;
     let localRound: Round = { targets: MIX_TARGETS, index: 0, completed: [], done: false };
+    let discovery: 'off' | 'rainbow' | 'lights' | 'done' = 'off';
     const applyLights = () => {
       projectorBeams.forEach((beam, index) => {
         const on = localLights[LIGHT_CHANNELS[index]!];
@@ -535,6 +540,14 @@ export function StarLightScene({
     const selectBand = (index: number | null) => {
       localBand = index;
       applyOptics();
+      if (discovery !== 'rainbow' || index === null) return;
+      discovery = 'lights';
+      localMode = 'mix';
+      setMode('mix');
+      showPrism = false;
+      localLights = lightsOff();
+      applyExperiment();
+      setMessage('Allume le rouge et le vert. Éteins le bleu : ensemble, ils font du jaune.');
     };
     const toggle = (channel: LightChannel) => {
       if (showPrism || localMode === 'intro' || localMode === 'review') return;
@@ -542,6 +555,12 @@ export function StarLightScene({
       applyLights();
       setMessage('');
       callbacks.current.onPrismMiss?.(null);
+      if (discovery !== 'lights') return;
+      if (localLights.red && localLights.green && !localLights.blue) {
+        discovery = 'done';
+        setMessage('Rouge et vert ensemble font du jaune.');
+        callbacks.current.onDiscoveryDone?.();
+      }
     };
     const validate = () => {
       if (localMode !== 'challenge' || localRound.done) return;
@@ -578,8 +597,25 @@ export function StarLightScene({
     };
     const api: StarLightSceneApi = {
       camera: cameraApi,
+      setDiscovery: (enabled) => {
+        if (!enabled) {
+          if (discovery !== 'done') discovery = 'off';
+          return;
+        }
+        if (discovery !== 'off') return;
+        scene.stopAnimation(prismRoot);
+        discovery = 'rainbow';
+        localMode = 'rainbow';
+        setMode('rainbow');
+        setMessage('Touche une couleur de l’arc-en-ciel.');
+        localBand = null;
+        showPrism = true;
+        localPlaced = true;
+        applyExperiment();
+      },
       setMode: (next) => {
         if (next === localMode) return;
+        if (discovery !== 'done') discovery = 'off';
         scene.stopAnimation(prismRoot);
         localMode = next;
         setMode(next);

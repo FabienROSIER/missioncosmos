@@ -56,6 +56,8 @@ export type StarsSceneApi = {
   setMode: (mode: StarsSceneMode) => void;
   setChallengeEnabled: (enabled: boolean) => void;
   setPickEnabled: (enabled: boolean) => void;
+  /** Découverte guidée : tailles, puis couleurs, puis distance. */
+  setDiscovery: (enabled: boolean) => void;
 };
 
 type StarsSceneProps = {
@@ -65,6 +67,7 @@ type StarsSceneProps = {
   onObservatorySuccess?: () => void;
   onObservatoryMiss?: (hint: string) => void;
   onCinematicPlaying?: (playing: boolean) => void;
+  onDiscoveryDone?: () => void;
 };
 
 /** Scène Mission 08 — Soleil comme étoile, tailles, couleurs, taille apparente, défi observatoire. */
@@ -75,6 +78,7 @@ export function StarsScene({
   onObservatorySuccess,
   onObservatoryMiss,
   onCinematicPlaying,
+  onDiscoveryDone,
 }: StarsSceneProps) {
   const [mode, setModeUi] = useState<StarsSceneMode>('sun');
   const [fact, setFact] = useState<string | null>(STARS.sun.shortFact);
@@ -108,6 +112,7 @@ export function StarsScene({
   const onSceneApiRef = useRef(onSceneApi);
   const onSuccessRef = useRef(onObservatorySuccess);
   const onMissRef = useRef(onObservatoryMiss);
+  const onDiscoveryDoneRef = useRef(onDiscoveryDone);
 
   useEffect(() => {
     onSceneApiRef.current = onSceneApi;
@@ -118,6 +123,9 @@ export function StarsScene({
   useEffect(() => {
     onMissRef.current = onObservatoryMiss;
   }, [onObservatoryMiss]);
+  useEffect(() => {
+    onDiscoveryDoneRef.current = onDiscoveryDone;
+  }, [onDiscoveryDone]);
 
   useEffect(() => {
     onCinematicPlaying?.(film === 'playing' || film === 'paused');
@@ -143,6 +151,8 @@ export function StarsScene({
       segments: quality === 'low' ? 24 : 48,
     });
     let modeLocal: StarsSceneMode = 'sun';
+    let discoveryPhase: 'off' | 'sizes' | 'colors' | 'apparent' | 'done' = 'off';
+    let apparentStart = 55;
     let challenge = false;
     let challengeDone = false;
     let pickEnabled = true;
@@ -451,6 +461,20 @@ export function StarsScene({
       setPickEnabled: (enabled) => {
         pickEnabled = enabled;
       },
+      setDiscovery: (enabled) => {
+        if (enabled) {
+          if (discoveryPhase === 'off') {
+            discoveryPhase = 'sizes';
+            modeLocal = 'sizes';
+            setModeUi('sizes');
+            setShowReticle(false);
+            setFact('Touche une étoile pour comparer sa taille.');
+            applyLayout();
+          }
+          return;
+        }
+        if (discoveryPhase !== 'done') discoveryPhase = 'off';
+      },
     };
     runtimeRef.current = api;
     onSceneApiRef.current?.(api);
@@ -471,6 +495,15 @@ export function StarsScene({
             STARS[hit.id].temperatureK,
           )} (~${STARS[hit.id].temperatureK} K)`,
         );
+        if (discoveryPhase === 'colors') {
+          discoveryPhase = 'apparent';
+          apparentStart = distance;
+          modeLocal = 'apparent';
+          setModeUi('apparent');
+          setShowReticle(true);
+          applyLayout();
+          setFact('Bouge le curseur : plus c’est loin, plus l’étoile paraît petite.');
+        }
         return;
       }
 
@@ -480,6 +513,13 @@ export function StarsScene({
             STARS[hit.id].estimateNote ? ` · ${STARS[hit.id].estimateNote}` : ''
           }`,
         );
+        if (discoveryPhase === 'sizes') {
+          discoveryPhase = 'colors';
+          modeLocal = 'colors';
+          setModeUi('colors');
+          applyLayout();
+          setFact('Maintenant, touche une étoile pour voir si elle est chaude ou froide.');
+        }
       }
     });
 
@@ -496,6 +536,10 @@ export function StarsScene({
           setRoundOk(null);
         }
         applyLayout();
+        if (discoveryPhase === 'apparent' && Math.abs(distance - apparentStart) >= 2) {
+          discoveryPhase = 'done';
+          onDiscoveryDoneRef.current?.();
+        }
       },
       shiftDistance: (delta: number) => {
         if (filmVisible) return;

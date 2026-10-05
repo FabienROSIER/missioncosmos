@@ -30,7 +30,15 @@ import { attachMoonEarthPip } from '@/3d/scenes/moonEarthPip';
 import { createCompanionSurfaceMarker } from '@/3d/scenes/companionSurfaceMarker';
 import { HOUSE_MESH_LAYER, MAIN_CAMERA_LAYER } from '@/3d/scenes/houseViewPip';
 import { attachMoonOrbitDrag, createOrbitGuide } from '@/3d/scenes/moonOrbitDrag';
-import { frameMoonPhasesOverview } from '@/3d/utils/cameraFraming';
+import {
+  frameMoonPhasesOverview,
+  keepFramingClearOfElement,
+  orientCameraForAnchor,
+  profileViewDirection,
+  sunEarthMoonFramingSpheres,
+  watchBodiesFraming,
+  type FramingSphere,
+} from '@/3d/utils/cameraFraming';
 import { createSpaceBackground } from '@/3d/utils/imageSpaceBackground';
 import {
   elongationBetween,
@@ -51,6 +59,8 @@ export type MoonPhasesSceneApi = {
   setMoonDragEnabled: (enabled: boolean) => void;
   /** null = pas de défi ; sinon détecte la phase cible. */
   setPhaseChallenge: (target: MoonPhaseId | null) => void;
+  /** Découverte : réussie dès que la forme vue depuis la Terre change. */
+  setPhaseChangeDiscovery: (enabled: boolean) => void;
   /**
    * Mode ciné (quiz+) : Lune orbite seule, gestes → caméra.
    */
@@ -65,7 +75,7 @@ type MoonPhasesSceneProps = {
 };
 
 const HOLD_MS = 700;
-/** Un peu plus près pour rester visible au cadrage initial. */
+/** Assez près pour que le Soleil reste un disque lisible à côté de la Terre. */
 const SUN_DISTANCE = 6.4;
 /** Orbite lunaire maquette (non à l’échelle). */
 const MOON_ORBIT_RADIUS = 2.55;
@@ -186,6 +196,8 @@ export function MoonPhasesScene({
     const camera = scene.activeCamera;
     let drag: ReturnType<typeof attachMoonOrbitDrag> | null = null;
     let challengeTarget: MoonPhaseId | null = null;
+    let phaseChangeDiscovery = false;
+    let phaseChangeStart: MoonPhaseId | null = null;
     let holdAccum = 0;
     let successSent = false;
     let moonPip: ReturnType<typeof attachMoonEarthPip> | null = null;
@@ -204,11 +216,17 @@ export function MoonPhasesScene({
       // Visible même si le PiP n’est pas encore branché (calque compagnon)
       camera.layerMask = MAIN_CAMERA_LAYER;
 
+      const bodyRadii = {
+        earthRadius: 0.85,
+        sunRadius: 1.75,
+        moonRadius: MOON_BODY.visual.visualRadius,
+      };
       frameMoonPhasesOverview(
         camera,
         earth.pivot.getAbsolutePosition(),
         sun.pivot.getAbsolutePosition(),
         MOON_ORBIT_RADIUS,
+        bodyRadii,
       );
 
       const lockedAlpha = camera.alpha;
@@ -219,10 +237,52 @@ export function MoonPhasesScene({
         upperBetaLimit: lockedBeta,
         lowerAlphaLimit: lockedAlpha,
         upperAlphaLimit: lockedAlpha,
+        skipLandscapeAutoZoom: true,
       });
+
+      const moonSpheres = () =>
+        sunEarthMoonFramingSpheres(
+          earth.pivot.getAbsolutePosition(),
+          sun.pivot.getAbsolutePosition(),
+          MOON_ORBIT_RADIUS,
+          bodyRadii.earthRadius,
+          bodyRadii.sunRadius,
+          bodyRadii.moonRadius,
+        );
+      const clearMoonOverlay = () => {
+        keepFramingClearOfElement(camera, moonSpheres(), pipFrameRef.current);
+      };
+      clearMoonOverlay();
 
       const home = captureCameraHome(camera);
       const cameraApi = createMissionCameraApi(camera, home, earth.pivot, earth.meshes);
+      const stopFramingWatch = watchBodiesFraming(
+        camera,
+        moonSpheres,
+        (frame, stillAuto) => {
+          if (stillAuto) {
+            camera.lowerAlphaLimit = camera.alpha;
+            camera.upperAlphaLimit = camera.alpha;
+            camera.lowerBetaLimit = camera.beta;
+            camera.upperBetaLimit = camera.beta;
+          }
+          cameraApi.setHome?.({
+            alpha: stillAuto ? camera.alpha : lockedAlpha,
+            beta: stillAuto ? camera.beta : lockedBeta,
+            radius: stillAuto ? camera.radius : frame.radius,
+            target: frame.center,
+          });
+        },
+        undefined,
+        (frame: FramingSphere) => {
+          const earthPos = earth.pivot.getAbsolutePosition();
+          const toSun = sun.pivot.getAbsolutePosition().subtract(earthPos);
+          if (toSun.lengthSquared() < 1e-8) return;
+          toSun.normalize();
+          orientCameraForAnchor(camera, earthPos, profileViewDirection(toSun), frame);
+        },
+        clearMoonOverlay,
+      );
 
       drag = attachMoonOrbitDrag(scene, orbit, camera);
 
@@ -277,17 +337,25 @@ export function MoonPhasesScene({
       const checkObs = scene.onBeforeRenderObservable.add(() => {
         companion.syncLookAt(moon.pivot.getAbsolutePosition());
         companion.updateOcclusion(camera.position);
-        if (!challengeTarget || successSent) return;
+        if (successSent) return;
         const elong = readElongation();
-        const dt = scene.getEngine().getDeltaTime();
-        if (isPhaseMatch(elong, challengeTarget)) {
-          holdAccum += dt;
-          if (holdAccum >= HOLD_MS) {
-            successSent = true;
-            onPhaseSuccessRef.current?.(challengeTarget);
+        const phase = phaseFromElongation(elong);
+        if (challengeTarget) {
+          const dt = scene.getEngine().getDeltaTime();
+          if (isPhaseMatch(elong, challengeTarget)) {
+            holdAccum += dt;
+            if (holdAccum >= HOLD_MS) {
+              successSent = true;
+              onPhaseSuccessRef.current?.(challengeTarget);
+            }
+          } else {
+            holdAccum = 0;
           }
-        } else {
-          holdAccum = 0;
+          return;
+        }
+        if (phaseChangeDiscovery && phaseChangeStart && phase !== phaseChangeStart) {
+          successSent = true;
+          onPhaseSuccessRef.current?.(phase);
         }
       });
 
@@ -299,7 +367,22 @@ export function MoonPhasesScene({
         setPhaseChallenge: (target) => {
           challengeTarget = target;
           holdAccum = 0;
-          successSent = false;
+          if (target) {
+            phaseChangeDiscovery = false;
+            successSent = false;
+          }
+        },
+        setPhaseChangeDiscovery: (enabled) => {
+          if (enabled === phaseChangeDiscovery) return;
+          phaseChangeDiscovery = enabled;
+          holdAccum = 0;
+          if (enabled) {
+            challengeTarget = null;
+            successSent = false;
+            phaseChangeStart = phaseFromElongation(readElongation());
+          } else {
+            phaseChangeStart = null;
+          }
         },
         setCinematicMode,
       });
@@ -313,6 +396,7 @@ export function MoonPhasesScene({
       });
 
       return () => {
+        stopFramingWatch();
         moonPip?.dispose();
         scene.onBeforeRenderObservable.remove(checkObs);
         drag?.dispose();
