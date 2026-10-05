@@ -1,6 +1,6 @@
 # Mission 13 — Les trous noirs
 
-Statut : phase visuelle acceptée ; introduction, observation, alentours et expérience des signaux intégrés au moteur commun. Défis, quiz et progression finale à implémenter. Mis à jour le 5 octobre 2026.
+Statut : parcours intégré jusqu’à la récompense ; validation finale de l’achèvement et du mobile encore à faire. Mis à jour le 5 octobre 2026.
 
 ## Intention et contraintes retenues
 
@@ -23,7 +23,7 @@ Exigence utilisateur : s'inspirer des précédentes missions, réutiliser leurs 
 | Défi 1 / `m13-orbit` | Observer une planète éloignée de son étoile. Prédire ce qui arriverait si l'étoile était remplacée par un trou noir de même masse : orbite conservée, chute immédiate ou fuite. Lancer la comparaison. | Réussite après observation et réponse correcte. Une erreur donne un indice et permet une nouvelle prédiction. |
 | Défi 2 / `m13-detect` | Examiner trois régions candidates dans un champ d'étoiles, sans disque lumineux. Rechercher le centre commun des orbites. Sélectionner une région puis afficher les trajectoires comme indice si nécessaire. | Réussite sur la région cohérente avec les trajectoires. Ne pas accepter simplement le clic sur une forme noire visible. |
 | Explication / `m13-explain` | Revoir trois repères visuels : horizon, orbite distante et étoiles révélant un objet invisible. | Texte court, puis accès facultatif à « En savoir plus ». |
-| Quiz / `m13-quiz` | Répondre à trois questions visuelles avec le robot. | Indice explicatif et nouvel essai en cas d'erreur, fonctionnement commun aux missions. |
+| Quiz / `m13-quiz` | Répondre à quatre questions courtes avec le robot. | Indice explicatif et nouvel essai en cas d'erreur, fonctionnement commun aux missions. |
 | Récompense / `m13-reward` | Recevoir le badge « Détective de l'invisible ». | Enregistrer la réussite ; ne pas inventer une mission suivante. |
 | Exploration / `m13-complete` | Revenir aux exemples avec ou sans disque, aux signaux et à la comparaison des orbites. | Rejouer les expériences sans modifier les récompenses acquises. |
 
@@ -93,7 +93,7 @@ Comparer ces cadrages aux dernières missions avec les mêmes dimensions d'écra
 
 ### 1. Conception — ce document
 
-- [x] Définir le parcours, les deux défis, les trois questions et les retours.
+- [x] Définir le parcours, les deux défis, les quatre questions et les retours.
 - [x] Identifier les éléments existants à réutiliser et les exigences visuelles.
 - [x] Définir les limites des modèles et les vérifications attendues.
 
@@ -107,16 +107,22 @@ Comparer ces cadrages aux dernières missions avec les mêmes dimensions d'écra
 
 ### 3. Expériences et contenu
 
-- [ ] Ajouter `src/content/missions/mission-13.ts`, le quiz et les entrées de glossaire nécessaires.
-- [ ] Implémenter les signaux, la comparaison à masse égale et la détection par les orbites.
+- [x] Ajouter `src/content/missions/mission-13.ts`, le quiz et les entrées de glossaire nécessaires.
+- [x] Implémenter les signaux, la comparaison à masse égale et la détection par les orbites.
 - [ ] Séparer calculs/états pédagogiques, contenu français et rendu Babylon.
 - [ ] Conserver les découvertes sans célébration ; réserver le retour de victoire aux défis réussis.
 
-_Premier lot intégré le 5 octobre 2026 : `mission-13.ts`, récompense et trois entrées de glossaire ajoutés ; scène pilotée par `m13-intro`, `m13-observe`, `m13-surroundings` et `m13-signals`. L’enfant suit réellement l’étoile dorée avec la caméra, clique directement sur le gaz puis sur la région centrale, et teste successivement un signal extérieur et un signal intérieur. Ces trois réussites utilisent `completionMode: discovery` et n’affichent pas de célébration. Le quiz, la comparaison orbitale et la détection restent à réaliser ; les étapes correspondantes bloquent donc volontairement la suite._
+_Premier lot intégré le 5 octobre 2026 : `mission-13.ts`, récompense et trois entrées de glossaire ajoutés ; scène pilotée par `m13-intro`, `m13-observe`, `m13-surroundings` et `m13-signals`. L’enfant suit réellement l’étoile dorée avec la caméra, clique directement sur le gaz puis sur la région centrale, et teste successivement un signal extérieur et un signal intérieur. Ces trois réussites utilisent `completionMode: discovery` et n’affichent pas de célébration._
+
+_Défi orbital intégré le 5 octobre 2026 : maquette dédiée avec étoile centrale, planète texturée et orbite conservée ; trois prédictions, remplacement visuel par un trou noir de même masse, nouvel essai après erreur et réussite uniquement après observation de la bonne prédiction. La distance, la vitesse de la planète et la trajectoire restent inchangées pendant le remplacement._
+
+_Défi de détection intégré le 5 octobre 2026 : trois régions sans objet noir visible, trois mouvements stellaires par région, sélection directe A/B/C et trajectoires facultatives comme indice. La région correcte montre trois orbites partageant un même centre ; les deux autres montrent des trajectoires autour de centres différents. Une erreur explique quoi comparer et autorise un nouvel essai. Vérifié avec et sans indice sur ordinateur, puis en portrait 390×844 avec cibles tactiles de 48 px._
+
+_Quiz intégré le 5 octobre 2026 : quatre questions sur l’horizon, l’attraction à masse égale, le gaz lumineux et la détection par les orbites. Chaque erreur fournit un indice lié à une manipulation déjà réalisée. Parcours avec erreur, nouvel essai, quatre bonnes réponses et transition vers la récompense vérifié._
 
 ### 4. Intégration au parcours
 
-- [ ] Enregistrer mission, scène, quiz et récompense dans les registres existants.
+- [x] Enregistrer mission, scène, quiz et récompense dans les registres existants.
 - [ ] Vérifier le déblocage depuis M12 et l'accès depuis la zone déjà associée à M13.
 - [ ] Vérifier sauvegarde, reprise, retour à la carte, récompense unique et exploration finale.
 

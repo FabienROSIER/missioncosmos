@@ -9,6 +9,7 @@ import { QUIZ_MISSION_08 } from '@/content/quizzes/mission-08';
 import { QUIZ_MISSION_10 } from '@/content/quizzes/mission-10';
 import { QUIZ_MISSION_11 } from '@/content/quizzes/mission-11';
 import { QUIZ_MISSION_12 } from '@/content/quizzes/mission-12';
+import { QUIZ_MISSION_13 } from '@/content/quizzes/mission-13';
 import { QUIZ_MISSION_CONSTELLATIONS } from '@/content/quizzes/mission-constellations';
 import type { Quiz } from '@/types/quiz';
 
@@ -23,6 +24,7 @@ export { QUIZ_MISSION_08 } from '@/content/quizzes/mission-08';
 export { QUIZ_MISSION_10 } from '@/content/quizzes/mission-10';
 export { QUIZ_MISSION_11 } from '@/content/quizzes/mission-11';
 export { QUIZ_MISSION_12 } from '@/content/quizzes/mission-12';
+export { QUIZ_MISSION_13 } from '@/content/quizzes/mission-13';
 export { QUIZ_MISSION_CONSTELLATIONS } from '@/content/quizzes/mission-constellations';
 
 const BY_ID: Record<string, Quiz> = {
@@ -37,6 +39,7 @@ const BY_ID: Record<string, Quiz> = {
   [QUIZ_MISSION_10.id]: QUIZ_MISSION_10,
   [QUIZ_MISSION_11.id]: QUIZ_MISSION_11,
   [QUIZ_MISSION_12.id]: QUIZ_MISSION_12,
+  [QUIZ_MISSION_13.id]: QUIZ_MISSION_13,
   [QUIZ_MISSION_CONSTELLATIONS.id]: QUIZ_MISSION_CONSTELLATIONS,
 };
 

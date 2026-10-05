@@ -25,7 +25,7 @@ describe('verrouillage des manipulations de mission', () => {
 
   it('active la scène après À toi de jouer et la reverrouille pendant Relire', () => {
     for (const id of [
-      'm02-manipulate',
+      'm02-observe',
       'm05-challenge-order',
       'm06-fall',
       'm08-challenge',

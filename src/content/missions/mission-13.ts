@@ -110,7 +110,7 @@ export const MISSION_13: Mission = assertValidMission({
       id: 'm13-quiz',
       kind: 'quiz',
       title: 'Enquête sur l’invisible',
-      body: 'Le robot te pose trois questions sur l’horizon, les orbites et le gaz lumineux.',
+      body: 'Le robot te pose quatre questions sur l’horizon, les orbites et le gaz lumineux.',
       quizId: 'quiz-mission-13',
       requiresSuccess: true,
     },

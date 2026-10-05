@@ -196,6 +196,7 @@ export type EarthDragRotationHandle = {
 
 /**
  * Glisser horizontalement fait tourner la Terre (Soleil fixe).
+ * Inactif tant que la mission n’a pas ouvert le jeu.
  * Désactive temporairement la rotation caméra pendant le drag.
  */
 export function attachEarthDragRotation(
@@ -203,7 +204,7 @@ export function attachEarthDragRotation(
   earthPivot: TransformNode,
   camera: ArcRotateCamera,
 ): EarthDragRotationHandle {
-  let enabled = true;
+  let enabled = false;
   let dragging = false;
   let lastX = 0;
   const activePointers = new Set<number>();

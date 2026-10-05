@@ -21,6 +21,7 @@ precision highp float;
 varying vec3 surfacePosition;
 uniform vec3 eye;
 uniform float time;
+uniform float visualScale;
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float noise(vec2 p) {
@@ -30,11 +31,15 @@ float noise(vec2 p) {
              mix(hash(i+vec2(0.0,1.0)), hash(i+vec2(1.0)), f.x), f.y);
 }
 void main() {
-  vec3 direction = normalize(surfacePosition - eye);
-  float b = dot(eye, direction);
-  float discriminant = b*b - dot(eye, eye) + 100.0;
+  // Integrate in the model's reference space so a reduced preview keeps
+  // exactly the same proportions as the full-size opening view.
+  vec3 localEye = eye / visualScale;
+  vec3 localSurface = surfacePosition / visualScale;
+  vec3 direction = normalize(localSurface - localEye);
+  float b = dot(localEye, direction);
+  float discriminant = b*b - dot(localEye, localEye) + 100.0;
   if (discriminant < 0.0) discard;
-  vec3 p = eye + direction * max(0.0, -b-sqrt(discriminant));
+  vec3 p = localEye + direction * max(0.0, -b-sqrt(discriminant));
   vec3 light = vec3(0.0);
   float transmission = 1.0;
   float captured = 0.0;
@@ -93,7 +98,7 @@ export function createBlackHole(scene: Scene, quality: ResolvedGraphicsQuality) 
     { vertexSource, fragmentSource },
     {
       attributes: ['position'],
-      uniforms: ['world', 'worldViewProjection', 'eye', 'time'],
+      uniforms: ['world', 'worldViewProjection', 'eye', 'time', 'visualScale'],
       defines: [`#define RAY_STEPS ${steps}`, `#define STEP_SCALE ${(160 / steps).toFixed(4)}`],
       needAlphaBlending: true,
     },
@@ -101,9 +106,15 @@ export function createBlackHole(scene: Scene, quality: ResolvedGraphicsQuality) 
   material.disableDepthWrite = true;
   material.setVector3('eye', new Vector3(0, 8, -24));
   material.setFloat('time', 0);
+  material.setFloat('visualScale', 1);
   shell.material = material;
   return {
+    mesh: shell,
     setEnabled: (enabled: boolean) => shell.setEnabled(enabled),
+    setScale(scale: number) {
+      shell.scaling.setAll(scale);
+      material.setFloat('visualScale', scale);
+    },
     update(eye: Vector3, time: number) {
       material.setVector3('eye', eye);
       material.setFloat('time', time);

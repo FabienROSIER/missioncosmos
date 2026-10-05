@@ -426,14 +426,14 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     if (!dayNightApi || !isDayNight) return;
     const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
 
+    const playing = !cinematic && sceneInteractionAllowed;
     dayNightApi.setHouseVisible(showMarkers);
     dayNightApi.setCinematicMode(cinematic);
-    dayNightApi.setEarthDragEnabled(!cinematic && sceneInteractionAllowed);
+    dayNightApi.setEarthDragEnabled(playing);
     dayNightApi.setLightingChallenge(
-      !cinematic && sceneInteractionAllowed && challengeActive && targetLighting
-        ? targetLighting
-        : null,
+      playing && challengeActive && targetLighting ? targetLighting : null,
     );
+    dayNightApi.setSideChangeDiscovery(playing && challengeActive && step.id === 'm02-observe');
   }, [
     dayNightApi,
     isDayNight,
@@ -977,6 +977,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                 className={styles.viewport}
                 stepId={step.id}
                 onSuccess={onObservatorySuccess}
+                onMiss={onObservatoryMiss}
                 onClearFeedback={onClearObservatoryFeedback}
                 onInstruction={onSceneInstruction}
               />

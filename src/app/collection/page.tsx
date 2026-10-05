@@ -14,7 +14,7 @@ export default function CollectionPage() {
 
   return (
     <AppShell title="Collection" sky="milky-way">
-      <div className={styles.screen}>
+      <div className={`${styles.screen} ${styles.scroll}`}>
         {!hasProfile ? (
           <p className={styles.copy}>Crée un profil pour collectionner tes badges.</p>
         ) : (

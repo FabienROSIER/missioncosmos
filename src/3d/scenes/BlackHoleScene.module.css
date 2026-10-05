@@ -86,6 +86,79 @@
   outline: 3px solid var(--color-solar);
   outline-offset: 2px;
 }
+.predictionControls {
+  display: grid;
+  gap: 0.5rem;
+  width: min(38rem, calc(100vw - 2rem));
+}
+.predictions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.4rem;
+}
+.predictionControls .launchComparison {
+  justify-self: center;
+  min-width: min(18rem, 100%);
+  border-color: #8f7131;
+  background: #4b3b16ed;
+  color: var(--color-solar);
+  font-weight: 800;
+}
+.candidateRegions {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.candidateRegion {
+  position: absolute;
+  left: 0;
+  top: 0;
+  visibility: hidden;
+  display: grid;
+  place-content: center;
+  min-width: 56px;
+  min-height: 56px;
+  border: 2px dashed #7ed6df;
+  border-radius: 50%;
+  background: #1a3a4e99;
+  color: var(--color-star);
+  font: 800 1rem var(--font-brand);
+  cursor: pointer;
+  pointer-events: auto;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 1px #0b122066;
+}
+.candidateRegion span {
+  display: block;
+  color: var(--color-nebula-soft);
+  font: 700 0.62rem var(--font-body);
+}
+.candidateRegion[data-selected='true'] {
+  border-style: solid;
+  background: #2a5a6ee8;
+}
+.candidateRegion[data-result='correct'] {
+  border-style: solid;
+  border-color: #5dcf8a;
+  background: #1c4a32e8;
+  color: #d8ffe8;
+}
+.candidateRegion[data-result='correct'] span {
+  color: #9ee0b8;
+}
+.candidateRegion[data-result='wrong'] {
+  border-style: solid;
+  border-color: #e85d5d;
+  background: #4a1c1ce8;
+  color: #ffd0d0;
+}
+.candidateRegion[data-result='wrong'] span {
+  color: #f5a0a0;
+}
+.candidateRegion:focus-visible {
+  outline: 3px solid var(--color-solar);
+  outline-offset: 3px;
+}
 .horizonDiagram {
   position: absolute;
   inset: 5.5rem 0.75rem 3rem;
@@ -202,5 +275,17 @@
   .controls button {
     padding-inline: 0.5rem;
     font-size: 0.75rem;
+  }
+  .predictionControls {
+    width: calc(100vw - 1rem);
+  }
+  .predictions button {
+    padding-inline: 0.3rem;
+    font-size: 0.68rem;
+  }
+  .candidateRegion {
+    min-width: 48px;
+    min-height: 48px;
+    font-size: 0.85rem;
   }
 }

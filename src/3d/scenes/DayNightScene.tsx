@@ -56,6 +56,8 @@ export type DayNightSceneApi = {
   setHouseVisible: (visible: boolean) => void;
   /** null = pas de défi ; sinon détecte quand le repère est du bon côté. */
   setLightingChallenge: (target: SurfaceLighting | null) => void;
+  /** Découverte : réussie quand le Guide change de côté et y reste un moment. */
+  setSideChangeDiscovery: (enabled: boolean) => void;
   setEarthDragEnabled: (enabled: boolean) => void;
   /**
    * Mode ciné (quiz+) : Terre tourne seule, les gestes pilotent la caméra.
@@ -177,6 +179,9 @@ export function DayNightScene({
     const camera = scene.activeCamera;
     let drag: ReturnType<typeof attachEarthDragRotation> | null = null;
     let challengeTarget: SurfaceLighting | null = null;
+    let sideChangeDiscovery = false;
+    let seenDay = false;
+    let seenNight = false;
     let holdAccum = 0;
     let successSent = false;
     let housePip: ReturnType<typeof attachHouseViewPip> | null = null;
@@ -263,21 +268,32 @@ export function DayNightScene({
         }
       };
 
+      const finishLighting = (lit: SurfaceLighting) => {
+        successSent = true;
+        companion.play('cheer');
+        onLightingSuccessRef.current?.(lit);
+      };
+
       const checkObs = scene.onBeforeRenderObservable.add(() => {
         companion.updateOcclusion(camera.position);
-        if (!challengeTarget || successSent) return;
+        if (successSent) return;
         const lit = companion.getLighting();
         const dt = scene.getEngine().getDeltaTime();
-        if (lit === challengeTarget) {
-          holdAccum += dt;
-          if (holdAccum >= HOLD_MS) {
-            successSent = true;
-            companion.play('cheer');
-            onLightingSuccessRef.current?.(challengeTarget);
+        if (challengeTarget) {
+          if (lit === challengeTarget) {
+            holdAccum += dt;
+            if (holdAccum >= HOLD_MS) finishLighting(challengeTarget);
+          } else {
+            holdAccum = 0;
           }
-        } else {
-          holdAccum = 0;
+          return;
         }
+        if (!sideChangeDiscovery) return;
+        // Un tour continu repasse par le côté de départ : on retient les deux côtés,
+        // sans exiger de s’arrêter.
+        if (lit === 'day') seenDay = true;
+        if (lit === 'night') seenNight = true;
+        if (seenDay && seenNight) finishLighting(lit);
       });
 
       onSceneApiRef.current?.({
@@ -286,7 +302,24 @@ export function DayNightScene({
         setLightingChallenge: (target) => {
           challengeTarget = target;
           holdAccum = 0;
-          successSent = false;
+          if (target) {
+            sideChangeDiscovery = false;
+            successSent = false;
+          }
+        },
+        setSideChangeDiscovery: (enabled) => {
+          if (enabled === sideChangeDiscovery) return;
+          sideChangeDiscovery = enabled;
+          holdAccum = 0;
+          seenDay = false;
+          seenNight = false;
+          if (enabled) {
+            challengeTarget = null;
+            successSent = false;
+            const started = companion.getLighting();
+            seenDay = started === 'day';
+            seenNight = started === 'night';
+          }
         },
         setEarthDragEnabled: (enabled) => {
           if (!cinematicMode) drag?.setEnabled(enabled);
