@@ -1,0 +1,337 @@
+[
+  {
+    "group": "common",
+    "key": "quiz",
+    "context": "À l’entrée d’un quiz, une seule fois",
+    "steps": [],
+    "speech": "À toi de jouer ! Regarde la question et les réponses, puis choisis celle qui te semble juste. Tu peux prendre ton temps."
+  },
+  {
+    "group": "common",
+    "key": "reessayer",
+    "context": "Après une erreur, sans répéter à chaque clic",
+    "steps": [],
+    "speech": "Essaie encore ! Observe ce qui se passe, puis tente une autre idée."
+  },
+  {
+    "group": "common",
+    "key": "bravo",
+    "context": "Réussite d’une activité, réutilisable",
+    "steps": [],
+    "speech": "Bravo, tu as réussi ! Tu peux continuer ton voyage."
+  },
+  {
+    "group": "common",
+    "key": "maquette",
+    "context": "Aide sur les maquettes, à la demande",
+    "steps": [],
+    "speech": "Ceci est une maquette. Les tailles, les distances et le temps sont parfois changés pour que tu puisses tout observer."
+  },
+  {
+    "group": "mission-01",
+    "key": "reperes",
+    "context": "Équateur puis pôles ; réécoute possible aux trois défis",
+    "steps": ["m01-intro", "m01-challenge-equator", "m01-challenge-north", "m01-challenge-south"],
+    "speech": "La Terre est une boule. Trouve d’abord l’équateur : le cercle imaginaire qui sépare le nord et le sud. Puis cherche les deux pôles, aux bouts de la ligne en pointillés. Cette ligne est l’axe autour duquel la Terre tourne."
+  },
+  {
+    "group": "mission-01",
+    "key": "orbite",
+    "context": "Défi du tour du Soleil",
+    "steps": ["m01-challenge-orbit"],
+    "speech": "Fais avancer la Terre autour du Soleil en glissant sur la scène ou avec le bouton Avancer. Son chemin s’appelle une orbite. Fais un tour entier et observe le nombre de jours."
+  },
+  {
+    "group": "mission-01",
+    "key": "mouvements",
+    "context": "Bilan des deux mouvements",
+    "steps": ["m01-explain"],
+    "speech": "La Terre tourne sur elle-même en environ vingt-quatre heures : un jour et une nuit. Elle fait aussi le tour du Soleil en environ trois cent soixante-cinq jours : une année. Ce sont deux mouvements différents."
+  },
+  {
+    "group": "mission-02",
+    "key": "jour-nuit",
+    "context": "Observation puis défis jour et nuit ; même fichier",
+    "steps": [
+      "m02-intro",
+      "m02-observe",
+      "m02-challenge-day",
+      "m02-challenge-night",
+      "m02-explain"
+    ],
+    "speech": "Le Soleil éclaire un côté de la Terre : c’est le jour. L’autre côté est dans l’ombre : c’est la nuit. Tourne la Terre pour faire passer le Guide de la lumière à l’ombre. Le Soleil brille toujours, même pendant notre nuit."
+  },
+  {
+    "group": "mission-03",
+    "key": "observer",
+    "context": "Observation et recherche de la pleine Lune ou du croissant",
+    "steps": ["m03-intro", "m03-observe", "m03-challenge-full", "m03-challenge-crescent"],
+    "speech": "Fais glisser la Lune autour de la Terre. Regarde sa forme dans la petite vue avec le Guide. Cherche une Lune toute ronde, puis un fin croissant. Le Soleil éclaire toujours une moitié de la Lune."
+  },
+  {
+    "group": "mission-03",
+    "key": "phases",
+    "context": "Explication des phases",
+    "steps": ["m03-explain"],
+    "speech": "La Lune reste une boule. Selon sa position, nous voyons une plus ou moins grande partie de sa moitié éclairée. Ces formes s’appellent les phases. Elles ne viennent pas de l’ombre de la Terre."
+  },
+  {
+    "group": "mission-04",
+    "key": "securite",
+    "context": "Avant l’observation des éclipses ; message indépendant",
+    "steps": ["m04-observe"],
+    "speech": "Attention : ne regarde le vrai Soleil qu’avec une protection spéciale vérifiée par un adulte. Des lunettes de soleil ne suffisent pas."
+  },
+  {
+    "group": "mission-04",
+    "key": "aligner",
+    "context": "Observation et deux défis d’éclipse ; réécoute possible",
+    "steps": ["m04-intro", "m04-observe", "m04-challenge-solar", "m04-challenge-lunar"],
+    "speech": "Place la Lune entre la Terre et le Soleil : elle cache le Soleil, c’est une éclipse solaire. Puis place-la de l’autre côté de la Terre, dans son ombre : c’est une éclipse lunaire. Regarde la petite vue, puis relâche la Lune."
+  },
+  {
+    "group": "mission-04",
+    "key": "orbite-penchee",
+    "context": "Pourquoi il n’y a pas toujours une éclipse",
+    "steps": ["m04-explain"],
+    "speech": "Le chemin de la Lune est un peu penché. Souvent, elle passe au-dessus ou en dessous de l’ombre de la Terre. Pour une éclipse, le Soleil, la Terre et la Lune doivent être bien alignés."
+  },
+  {
+    "group": "mission-05",
+    "key": "planetes",
+    "context": "Introduction et défi de l’ordre ; aucun fichier par planète",
+    "steps": ["m05-intro", "m05-observe", "m05-challenge-order", "m05-explain"],
+    "speech": "Huit planètes tournent autour du Soleil. Touche-les de la plus proche à la plus lointaine : Mercure, Vénus, Terre, Mars, Jupiter, Saturne, Uranus, Neptune. Pluton est une planète naine : elle ne fait pas partie de ces huit planètes."
+  },
+  {
+    "group": "mission-05",
+    "key": "tailles",
+    "context": "Mini-jeu des tailles",
+    "steps": ["m05-scale"],
+    "speech": "Compare les tailles des planètes, puis réponds aux questions. Le diamètre, c’est la largeur d’une planète en passant par son centre. Les quatre planètes proches du Soleil sont rocheuses, avec un sol solide. Les quatre autres sont des géantes."
+  },
+  {
+    "group": "mission-05",
+    "key": "distances",
+    "context": "Mini-jeu des distances ; mêmes instructions pour tous les tirages",
+    "steps": ["m05-distances"],
+    "speech": "Lis l’indice du voyage, puis choisis ta destination. Les planètes sont très éloignées les unes des autres : ici, les distances sont raccourcies. Une unité astronomique correspond à la distance moyenne entre la Terre et le Soleil."
+  },
+  {
+    "group": "mission-06",
+    "key": "comparer",
+    "context": "Observer les orbites puis choisir la planète la plus rapide",
+    "steps": ["m06-intro", "m06-observe", "m06-challenge"],
+    "speech": "Les anneaux montrent les chemins des planètes autour du Soleil. Observe leurs tours avec Pause ou Rapide. Touche la planète qui finit son tour en premier. Plus une planète est proche du Soleil, moins son année dure longtemps."
+  },
+  {
+    "group": "mission-06",
+    "key": "lancer",
+    "context": "Défi du lancement du Guide",
+    "steps": ["m06-fall"],
+    "speech": "Lance le Guide autour de la Terre et règle sa vitesse. Trop lent, il tombe. Trop rapide, il s’éloigne. Essaie de trouver la vitesse qui le garde en orbite, en train de tourner autour de la Terre."
+  },
+  {
+    "group": "mission-06",
+    "key": "gravite",
+    "context": "Explication de l’orbite",
+    "steps": ["m06-explain"],
+    "speech": "La gravité, c’est l’attraction entre les objets. Le Soleil attire les planètes, mais elles avancent aussi de côté. Ces deux effets les font tourner autour de lui au lieu de tomber tout droit vers lui."
+  },
+  {
+    "group": "mission-07",
+    "key": "experimenter",
+    "context": "Observation et défi de l’été au nord",
+    "steps": ["m07-intro", "m07-observe", "m07-challenge"],
+    "speech": "La Terre est penchée. Déplace-la autour du Soleil et trouve l’été dans sa moitié nord. Puis redresse-la avec le curseur pour comparer. La vraie Terre reste penchée : le curseur sert seulement à faire une expérience."
+  },
+  {
+    "group": "mission-07",
+    "key": "saisons",
+    "context": "Explication des saisons",
+    "steps": ["m07-explain"],
+    "speech": "Quand une moitié de la Terre penche vers le Soleil, sa lumière arrive moins de travers et les journées durent plus longtemps : c’est l’été. Dans l’autre moitié, c’est l’hiver. Les saisons ne viennent pas du rapprochement de la Terre et du Soleil."
+  },
+  {
+    "group": "mission-08",
+    "key": "etoiles",
+    "context": "Introduction et comparaison des étoiles",
+    "steps": ["m08-intro", "m08-observe"],
+    "speech": "Le Soleil est une étoile ! Touche les étoiles pour comparer leurs tailles et leurs couleurs. Une étoile bleue est plus chaude en surface qu’une étoile rouge. Déplace le curseur : même une étoile géante paraît petite quand elle est très loin."
+  },
+  {
+    "group": "mission-08",
+    "key": "photos",
+    "context": "Album du télescope ; même fichier pour toutes les étoiles",
+    "steps": ["m08-challenge"],
+    "speech": "Complète l’album de l’observatoire. Pour chaque étoile, rapproche ou éloigne le télescope jusqu’à ce que son disque remplisse le cadre. Puis prends la photo."
+  },
+  {
+    "group": "mission-08",
+    "key": "taille-apparente",
+    "context": "Bilan ; aussi disponible après le film",
+    "steps": ["m08-explain"],
+    "speech": "La taille réelle d’une étoile et la place qu’elle prend dans notre ciel sont différentes. Le Soleil paraît grand parce qu’il est proche. Une étoile bien plus grande peut sembler un petit point parce qu’elle est très loin."
+  },
+  {
+    "group": "mission-09",
+    "key": "prisme",
+    "context": "Introduction et placement du prisme",
+    "steps": ["m09-intro", "m09-color"],
+    "speech": "La lumière blanche du Soleil contient plusieurs couleurs. Place le triangle de verre sur son chemin en le touchant ou avec Placer le prisme. Ce triangle s’appelle un prisme : il sépare les couleurs comme un arc-en-ciel."
+  },
+  {
+    "group": "mission-09",
+    "key": "melanger",
+    "context": "Exploration puis défi des quatre mélanges",
+    "steps": ["m09-spectrum", "m09-challenge"],
+    "speech": "Ici, tu mélanges des lumières, pas de la peinture. Allume les projecteurs pour obtenir les couleurs demandées : jaune, rose, bleu-vert, puis blanc. Valide chaque mélange. Tu peux essayer autant de fois que tu veux."
+  },
+  {
+    "group": "mission-09",
+    "key": "lumiere-blanche",
+    "context": "Bilan des mélanges",
+    "steps": ["m09-explain"],
+    "speech": "Le prisme sépare les couleurs de la lumière blanche. Les projecteurs font l’inverse : leurs lumières s’ajoutent. Ensemble, les lumières rouge, verte et bleue donnent du blanc."
+  },
+  {
+    "group": "mission-constellations",
+    "key": "atlas",
+    "context": "Introduction ; consigne commune aux dessins de l’atlas",
+    "steps": ["mc-intro"],
+    "speech": "Une constellation est un dessin que nous imaginons avec les étoiles. Compare le ciel avec la carte de ton atlas. Touche les étoiles du dessin dans l’ordre que tu veux. Leur place et leurs écarts t’aident à les retrouver."
+  },
+  {
+    "group": "mission-constellations",
+    "key": "cassiopee",
+    "context": "Défi Cassiopée",
+    "steps": ["mc-cassiopeia"],
+    "speech": "Pour Cassiopée, cherche cinq étoiles qui dessinent un double vé un peu penché. Compare avec la carte de ton atlas, puis touche les cinq étoiles."
+  },
+  {
+    "group": "mission-constellations",
+    "key": "grande-ourse",
+    "context": "Défi Grande Ourse",
+    "steps": ["mc-ursa-major"],
+    "speech": "Pour la Grande Ourse, cherche une casserole : quatre étoiles pour le récipient et trois pour le manche. Compare avec ta carte, puis touche les sept étoiles."
+  },
+  {
+    "group": "mission-constellations",
+    "key": "cygne",
+    "context": "Défi Cygne",
+    "steps": ["mc-cygnus"],
+    "speech": "Pour le Cygne, cherche une croix : une longue ligne et deux ailes de chaque côté. Compare la place des étoiles avec ta carte, puis retrouve-les dans le ciel."
+  },
+  {
+    "group": "mission-constellations",
+    "key": "orion",
+    "context": "Défi Orion",
+    "steps": ["mc-orion"],
+    "speech": "Pour Orion, repère les trois étoiles presque alignées de sa ceinture. Puis retrouve ses épaules et ses pieds grâce à la carte. Touche les étoiles pour révéler le chasseur."
+  },
+  {
+    "group": "mission-constellations",
+    "key": "point-de-vue",
+    "context": "Défi du point de vue ; explication réécoutable après le film",
+    "steps": ["mc-perspective", "mc-understand"],
+    "speech": "Déplace le vaisseau avec le curseur pour retrouver la croix de ta carte, puis vérifie ton point de vue. Les étoiles ne bougent pas. Elles sont à des distances différentes : quand nous changeons de place, leur dessin dans notre ciel change."
+  },
+  {
+    "group": "mission-10",
+    "key": "galaxie",
+    "context": "Introduction et voyage vers la Voie lactée",
+    "steps": ["m10-intro", "m10-journey", "m10-explain"],
+    "speech": "Le Soleil et ses huit planètes forment notre Système solaire. Il appartient à la Voie lactée : une galaxie avec énormément d’étoiles, du gaz et de la poussière. La gravité les rassemble. Prenons du recul pour découvrir notre galaxie !"
+  },
+  {
+    "group": "mission-10",
+    "key": "quartier",
+    "context": "Explorer la galaxie puis retrouver le quartier du Soleil",
+    "steps": ["m10-explore", "m10-locate"],
+    "speech": "Regarde la galaxie de face, puis de profil. Notre Soleil est dans le disque, dans un petit bras appelé bras d’Orion. Il n’est ni au centre, ni à l’extérieur. Touche le repère de notre quartier."
+  },
+  {
+    "group": "mission-10",
+    "key": "trajet",
+    "context": "Défi du trajet galactique",
+    "steps": ["m10-orbit"],
+    "speech": "Le Soleil voyage dans la galaxie avec toutes ses planètes. Compare les trois trajets. Choisis celui qui lui fait faire un tour autour du centre sans plonger dedans, puis lance le voyage."
+  },
+  {
+    "group": "mission-11",
+    "key": "voisines",
+    "context": "Introduction et comparaison avec Andromède",
+    "steps": ["m11-intro", "m11-neighbour", "m11-explain"],
+    "speech": "La Voie lactée n’est pas seule : il existe énormément d’autres galaxies. Andromède est notre plus proche grande voisine. Une galaxie n’est pas un Soleil géant : sa lumière vient de toutes ses étoiles."
+  },
+  {
+    "group": "mission-11",
+    "key": "formes",
+    "context": "Exploration des familles et album des quatre formes",
+    "steps": ["m11-families", "m11-album"],
+    "speech": "Observe les quatre formes pour réparer l’album. Une spirale a des bras enroulés. Une spirale barrée a aussi une barre au centre. Une elliptique est arrondie, sans bras. Une irrégulière n’a pas de forme bien organisée. Regarde les maquettes de face."
+  },
+  {
+    "group": "mission-11",
+    "key": "classer",
+    "context": "Défi des cartes du plus petit au plus grand",
+    "steps": ["m11-scale"],
+    "speech": "Classe les cartes du plus petit au plus grand. Le Soleil est dans notre Système solaire, qui est lui-même dans la Voie lactée. Pense à ce qui est contenu dans quoi, puis touche les cartes dans l’ordre."
+  },
+  {
+    "group": "mission-12",
+    "key": "voyage",
+    "context": "Introduction et parcours des sept repères",
+    "steps": ["m12-intro", "m12-journey"],
+    "speech": "Découvre les distances dans l’espace. Utilise Plus loin pour avancer et Plus près pour revenir. Observe les sept repères. Nos distances sont raccourcies pour tout montrer : dans l’espace, les étoiles et les galaxies sont bien plus loin que la Lune."
+  },
+  {
+    "group": "mission-12",
+    "key": "destinations",
+    "context": "Défi des destinations des messages lumineux",
+    "steps": ["m12-order"],
+    "speech": "Le robot prépare quatre messages lumineux depuis notre voisinage. Classe leurs destinations de la plus proche à la plus lointaine. Touche les cartes dans cet ordre pour préparer les envois."
+  },
+  {
+    "group": "mission-12",
+    "key": "signaux",
+    "context": "Expérience des trois flashs et explication",
+    "steps": ["m12-signals"],
+    "speech": "Trois galaxies envoient un flash en même temps. Observe les arrivées, puis cherche l’image la plus ancienne. La lumière met du temps à voyager : celle de la galaxie la plus lointaine arrive plus tard et nous montre un passé plus ancien."
+  },
+  {
+    "group": "mission-12",
+    "key": "annee-lumiere",
+    "context": "Bilan des distances et de l’Univers observable",
+    "steps": ["m12-explain"],
+    "speech": "Une année-lumière est une distance : le chemin parcouru par la lumière en un an. L’Univers observable est la partie de l’Univers dont la lumière peut nous arriver. Ce n’est pas le bord de tout l’Univers."
+  },
+  {
+    "group": "mission-13",
+    "key": "indices",
+    "context": "Introduction, observation de l’étoile et défi de détection",
+    "steps": ["m13-intro", "m13-observe", "m13-detect"],
+    "speech": "Un trou noir rassemble énormément de matière dans très peu de place. Observe les étoiles : elles peuvent tourner autour de lui sans tomber dedans. Pour trouver l’objet invisible, cherche la région où elles tournent autour d’un même centre."
+  },
+  {
+    "group": "mission-13",
+    "key": "disque",
+    "context": "Observation du gaz autour d’un trou noir",
+    "steps": ["m13-surroundings"],
+    "speech": "Ce disque lumineux est du gaz très chaud autour du trou noir. Ce n’est pas le trou noir lui-même. Tous les trous noirs n’ont pas un disque lumineux. Observe sa forme."
+  },
+  {
+    "group": "mission-13",
+    "key": "limite",
+    "context": "Expérience des signaux lumineux et explication de l’horizon",
+    "steps": ["m13-signals", "m13-explain"],
+    "speech": "Envoie la lumière vers l’extérieur, d’abord depuis le point dehors, puis depuis celui dedans. La limite s’appelle l’horizon des événements. Une fois à l’intérieur, même la lumière ne peut plus ressortir."
+  },
+  {
+    "group": "mission-13",
+    "key": "meme-masse",
+    "context": "Expérience de l’étoile remplacée par un trou noir",
+    "steps": ["m13-orbit"],
+    "speech": "Imagine qu’on remplace l’étoile par un trou noir de même masse, avec autant de matière. Que fera la planète qui tourne loin ? Choisis, puis vérifie. De loin, le trou noir attire autant que l’étoile : il n’aspire pas tout."
+  }
+]

@@ -14,6 +14,12 @@ Mettre en place dans **Mission Cosmos** un système centralisé permettant au pe
 
 Cette feuille de route doit être utilisée par Cursor comme **spécification de travail**.
 
+**Mise à jour du 6 octobre 2026 :** les textes écran ont été simplifiés en tenant compte du responsive et de la lecture courte. Les versions orales peuvent expliquer les mots scientifiques, sans rallonger les bulles. Le dossier des MP3 et le catalogue de production sont maintenant préparés ; le lecteur de voix reste à intégrer. Les décisions propres au dépôt sont précisées en section 31. Les exemples génériques ci-dessous ne créent pas de nouveaux défis dans le jeu.
+
+**Production optimisée pour Chatterrer : 47 MP3 au total, chacun limité à 300 caractères, espaces et ponctuation inclus.** Cette sélection remplace le précédent catalogue de 754 fichiers. Les contraintes de production de la section 31 priment sur les exemples génériques : un inventaire des textes du jeu n'est pas une liste de fichiers à enregistrer. Ne pas recréer un MP3 pour chaque question, choix, badge ou variante.
+
+**Ajout demandé : 44 MP3 de quiz facultatifs**, dans une liste séparée. Un seul fichier par question inclut ses choix ; aucun fichier par choix ou correction. Les 47 voix essentielles restent indépendantes de ce lot, soit 91 fichiers si tout est produit. La limite de 300 caractères s'applique aux deux lots.
+
 Cursor ne doit pas inventer une nouvelle architecture si le projet possède déjà un système équivalent. Il doit d'abord analyser le repo, identifier les conventions existantes, puis adapter cette spécification à la structure réelle du projet.
 
 ---
@@ -52,6 +58,7 @@ Avant toute implémentation, Cursor doit me fournir un compte rendu sous cette f
 ## Audit Mission Cosmos
 
 ### Architecture détectée
+
 - Framework :
 - Routing :
 - State management :
@@ -60,6 +67,7 @@ Avant toute implémentation, Cursor doit me fournir un compte rendu sous cette f
 - Système audio existant :
 
 ### Fichiers concernés
+
 - Robot :
 - Dialogues :
 - Missions :
@@ -68,12 +76,15 @@ Avant toute implémentation, Cursor doit me fournir un compte rendu sous cette f
 - Traductions :
 
 ### Recommandation
+
 Architecture proposée pour intégrer les dialogues et la voix sans casser l'existant.
 
 ### Fichiers à créer
+
 - ...
 
 ### Fichiers à modifier
+
 - ...
 ```
 
@@ -117,40 +128,39 @@ Créer une structure capable de gérer au minimum :
 
 ```ts
 type RobotMessageType =
-  | "intro"
-  | "instruction"
-  | "explanation"
-  | "hint"
-  | "success"
-  | "error"
-  | "transition"
-  | "outro";
+  'intro' | 'instruction' | 'explanation' | 'hint' | 'success' | 'error' | 'transition' | 'outro';
 ```
 
 ## Rôle de chaque type
 
 ### `intro`
+
 Présentation d'une mission ou d'un sujet.
 
 ### `instruction`
+
 Indique clairement ce que l'enfant doit faire.
 
 Le texte écran doit être très court.
 
 ### `explanation`
+
 Explication pédagogique.
 
 La version audio peut être plus naturelle que la version affichée.
 
 ### `hint`
+
 Indice fourni après une erreur ou une période d'inactivité.
 
 ### `success`
+
 Réaction positive après une bonne réponse.
 
 Éviter les messages trop longs.
 
 ### `error`
+
 Réaction à une mauvaise réponse.
 
 Ne pas employer de formulation punitive.
@@ -158,9 +168,11 @@ Ne pas employer de formulation punitive.
 Préférer une invitation à réessayer ou un indice.
 
 ### `transition`
+
 Permet de passer d'une étape pédagogique à la suivante.
 
 ### `outro`
+
 Conclusion d'une mission ou d'un niveau.
 
 ---
@@ -197,9 +209,11 @@ La version `speech` doit :
 
 - être naturelle à l'oral ;
 - reprendre exactement le même sens que `text` ;
-- pouvoir contenir légèrement plus de contexte ;
+- apporter des exemples et expliquer les mots scientifiques, sans charger le texte écran ;
+- rester concise : une intervention courte, ou plusieurs clips séparés à des pauses naturelles ;
 - éviter les formulations scolaires ou trop formelles ;
-- ne jamais apporter une information indispensable absente de l'interface.
+- conserver à l’écran toutes les actions, les choix et les indications de sécurité indispensables ;
+- rendre les explications nécessaires également accessibles sans son, dans le texte, le glossaire ou une aide visible. Un complément oral ne doit pas rendre le quiz impossible sans audio.
 
 Exemple :
 
@@ -245,7 +259,7 @@ Le réglage doit être persistant localement.
 Valeur par défaut recommandée :
 
 ```ts
-robotVoiceEnabled = true
+robotVoiceEnabled = true;
 ```
 
 Cursor doit toutefois vérifier les conventions déjà utilisées par l'application avant de créer une nouvelle clé.
@@ -264,8 +278,8 @@ peut être utilisé.
 
 Nom recommandé :
 
-```ts
-missionCosmos.robotVoiceEnabled
+```text
+mc:robot-voice-enabled
 ```
 
 ou convention équivalente déjà présente dans le repo.
@@ -320,7 +334,7 @@ Exemple :
 Puis plus tard :
 
 ```ts
-audio: "/audio/fr/solar-system/mars/place.mp3"
+audio: '/assets/audio/robot/fr/mission-05/mission-05.order-mars.hint.mp3';
 ```
 
 ---
@@ -403,31 +417,30 @@ Les identifiants :
 
 ---
 
-# 12. Convention des fichiers audio futurs
+# 12. Convention des fichiers audio
 
-Si des voix préenregistrées sont utilisées plus tard, utiliser exactement le même identifiant logique.
-
-Exemple :
+La convention retenue dans ce dépôt est :
 
 ```text
-public/
-  audio/
-    fr/
-      solar-system/
-        intro/
-          start.mp3
-        mars/
-          place.mp3
-          success.mp3
-          error.mp3
-          hint.mp3
+public/assets/audio/robot/fr/
+  common/
+  mission-01/
+  ...
+  mission-09/
+  mission-constellations/
+  mission-10/
+  ...
+  mission-13/
+  glossary/
 ```
 
-ou l'organisation la plus proche des conventions déjà présentes dans le projet.
+Nom de fichier : `<id-du-message>.mp3`. Un fichier contient une intervention essentielle de 300 caractères maximum, sans découpage en parties. Plusieurs étapes peuvent réutiliser le même fichier. Les associations aux IDs existants des étapes figurent dans le manifeste. Les fichiers restent en minuscules ASCII, sans espace ni accent.
 
-Cursor doit générer automatiquement la correspondance entre les IDs de dialogues et les chemins audio.
+Exemple réel : `mission-01/mission-01.reperes.mp3`.
 
-Ne pas coder manuellement un chemin audio dans chaque composant.
+Le catalogue `docs/audio/robot/manifest.fr.json` fournit la correspondance entre chaque message, son texte oral, ses clips et leur chemin. Appliquer `withBasePath` aux URLs au moment de la lecture, comme pour les musiques, afin de fonctionner sur GitHub Pages.
+
+Ne pas saisir un chemin audio différent dans chaque composant. Les sous-dossiers linguistiques permettent ensuite d’ajouter d’autres langues.
 
 ---
 
@@ -439,14 +452,7 @@ Exemple TypeScript :
 
 ```ts
 export type RobotMessageType =
-  | "intro"
-  | "instruction"
-  | "explanation"
-  | "hint"
-  | "success"
-  | "error"
-  | "transition"
-  | "outro";
+  'intro' | 'instruction' | 'explanation' | 'hint' | 'success' | 'error' | 'transition' | 'outro';
 
 export interface RobotMessage {
   id: string;
@@ -493,7 +499,7 @@ Préférer :
 ou :
 
 ```tsx
-const message = getRobotMessage("solar-system.mars.success");
+const message = getRobotMessage('solar-system.mars.success');
 ```
 
 Les contenus éditoriaux doivent rester centralisés.
@@ -507,7 +513,7 @@ Le système doit permettre à un dialogue de cibler un élément de l'écran.
 Exemple :
 
 ```ts
-target: "mars"
+target: 'mars';
 ```
 
 Pendant l'instruction :
@@ -607,13 +613,13 @@ Après avoir analysé le repo, Cursor doit dresser **l'inventaire exhaustif de t
 
 Créer un tableau comme celui-ci :
 
-| ID proposé | Emplacement actuel | Type | Texte actuel | Texte écran proposé | Texte oral proposé | Fichier cible |
-|---|---|---|---|---|---|---|
-| `solar-system.intro.start` | `...` | intro | `...` | `...` | `...` | `...` |
-| `solar-system.mars.place` | `...` | instruction | `...` | `...` | `...` | `...` |
-| `solar-system.mars.success` | `...` | success | `...` | `...` | `...` | `...` |
+| ID proposé                  | Emplacement actuel | Type        | Texte actuel | Texte écran proposé | Texte oral proposé | Fichier cible |
+| --------------------------- | ------------------ | ----------- | ------------ | ------------------- | ------------------ | ------------- |
+| `solar-system.intro.start`  | `...`              | intro       | `...`        | `...`               | `...`              | `...`         |
+| `solar-system.mars.place`   | `...`              | instruction | `...`        | `...`               | `...`              | `...`         |
+| `solar-system.mars.success` | `...`              | success     | `...`        | `...`               | `...`              | `...`         |
 
-Cette liste est essentielle.
+L'audit des textes ne doit pas conduire à tout enregistrer. La sélection de production est disponible dans `docs/audio/robot/textes-a-generer.fr.md`, avec un export CSV et un manifeste JSON. Elle ne contient que les 47 interventions retenues. Repartir de ces fichiers et des sources actuelles, pas des formulations antérieures à l’audit.
 
 Cursor doit rechercher :
 
@@ -631,6 +637,8 @@ Cursor doit rechercher :
 # 20. Ce que Cursor doit me demander de produire
 
 À partir de l'inventaire précédent, Cursor doit me fournir une liste **actionnable** des contenus à créer.
+
+Pour les voix françaises, la liste actuelle de 47 MP3 est la liste complète à produire. Chaque texte doit tenir dans une seule génération Chatterrer de 300 caractères maximum. Ne pas transformer le format d'exemple ci-dessous en obligation de produire une voix pour chaque texte affiché.
 
 Format obligatoire :
 
@@ -800,7 +808,7 @@ arrêter la lecture en cours.
 Si le projet utilise dans un premier temps la Web Speech API :
 
 ```ts
-window.speechSynthesis
+window.speechSynthesis;
 ```
 
 Cursor doit encapsuler son usage dans un service ou hook dédié.
@@ -956,7 +964,7 @@ La fonctionnalité sera considérée comme correctement intégrée lorsque :
 - [ ] les textes du robot ne sont plus dispersés inutilement dans les composants ;
 - [ ] chaque dialogue possède un identifiant stable ;
 - [ ] `text` et `speech` peuvent être différents ;
-- [ ] `speech` retombe sur `text` lorsqu'il est absent ;
+- [ ] sans fichier enregistré, le texte reste visible et le jeu reste jouable ; aucune synthèse automatique de tout l'écran n'est imposée ;
 - [ ] le robot peut lire une phrase ;
 - [ ] la lecture peut être interrompue ;
 - [ ] une nouvelle phrase interrompt proprement la précédente ;
@@ -966,7 +974,12 @@ La fonctionnalité sera considérée comme correctement intégrée lorsque :
 - [ ] désactiver la voix coupe immédiatement une lecture en cours ;
 - [ ] le jeu reste intégralement jouable sans audio ;
 - [ ] aucune donnée personnelle n'est nécessaire ;
-- [ ] l'architecture permet l'ajout futur de fichiers audio ;
+- [ ] les MP3 préparés sont reliés au manifeste et au lecteur ;
+- [ ] chaque fichier de production correspond à un texte de 300 caractères maximum ;
+- [ ] les consignes communes réutilisent le même MP3 sans répétition à chaque étape ;
+- [ ] une modification du texte oral indique quels MP3 doivent être régénérés ;
+- [ ] les textes restent courts et lisibles sur téléphone ;
+- [ ] aucun MP3 par question ou choix de quiz n'est exigé dans ce lot ;
 - [ ] l'architecture permet l'ajout futur d'autres langues.
 
 ---
@@ -992,3 +1005,47 @@ Je veux d'abord obtenir :
 7. la stratégie retenue pour la lecture, l'arrêt et la réécoute.
 
 Une fois cette analyse produite, attendre ma validation des textes et de l'architecture avant de migrer massivement les dialogues.
+
+---
+
+# 31. Décisions retenues après l’audit des textes
+
+## État réel du projet
+
+Next.js 16.3.6, App Router, export statique, React 19 et scènes Babylon.js. Les textes principaux sont dans `src/content/missions/` et `src/content/quizzes/`. Les scènes et les mini-jeux contiennent également des retours contextuels. Le Guide est affiché par `MissionImmersive` et `Companion`.
+
+La musique possède déjà un lecteur central, `MusicProvider`, des préférences `mc:music-muted` et `mc:music-volume`, et un déblocage au premier geste utilisateur. Il n’y a pas encore de lecteur de voix du robot ni de synthèse vocale reliée au Guide. Les textes français utilisent des IDs stables ; il n’existe pas encore de système de traduction complet.
+
+## Production des voix
+
+- Dossier de dépôt : `D:\Programmation\Mission Cosmos\public\assets\audio\robot\fr`.
+- Liste lisible : `docs/audio/robot/textes-a-generer.fr.md`.
+- Tableau de production : `docs/audio/robot/textes-a-generer.fr.csv` (UTF-8, séparateur point-virgule).
+- Correspondance machine : `docs/audio/robot/manifest.fr.json`.
+- Source éditoriale unique : `docs/audio/robot/dialogues-essentiels.fr.json`.
+- Quiz facultatifs : `docs/audio/robot/quizz-facultatifs.fr.md` et `.csv` ; correspondances dans `docs/audio/robot/manifest-quizz-facultatifs.fr.json`.
+- Régénération de la liste : `node scripts/generate-robot-voice-inventory.mjs`.
+
+Le générateur ne modifie pas les textes du jeu, ne crée pas de faux MP3 et n’écrase aucun MP3 déposé. Il valide les étapes référencées, impose 300 caractères maximum par texte et refuse un catalogue dépassant 50 fichiers. Il ne découpe jamais automatiquement un texte trop long : le texte doit être raccourci. Le lot retenu compte 47 fichiers, dont quatre phrases communes. Le plus long contient 248 caractères.
+
+Il n'y a plus de lots P1/P2/P3 à produire. Le catalogue unique couvre les consignes et notions essentielles des 14 missions. Les quatre phrases communes servent aux quiz, erreurs, réussites et explications sur les maquettes. Les fiches de planètes, le glossaire, les badges, les variantes aléatoires, les chapitres des films et le bonus facultatif de l'Aigle restent sans enregistrement spécifique.
+
+Pour un quiz, `common.quiz.mp3` sert à son introduction. Si le MP3 facultatif d'une question est présent, le jouer à l'arrivée sur cette question ou à la demande. Il contient la question et tous ses choix, sans révéler la bonne réponse. Les choix sont mélangés à l'écran : ne pas enregistrer de lettre ou de numéro. L'ordre oral peut différer de l'ordre visuel ; l'enfant choisit le texte correspondant, pas sa position. Ne pas associer cette énumération à un surlignage successif des boutons. Les corrections restent écrites ; les retours courts réutilisent les phrases communes.
+
+Sans le fichier facultatif, conserver les textes et la jouabilité. Le lot essentiel ne lit pas toute l'interface ; un enfant qui ne lit pas encore peut avoir besoin d'un adulte pour les choix écrits. Une éventuelle lecture navigateur à la demande reste une évolution distincte non implémentée. Le lot facultatif est généré depuis les sources actuelles des quiz : 44 fichiers, 281 caractères maximum actuellement. Le budget de 50 fichiers du générateur ne concerne que les voix essentielles ; la limite de 300 caractères est vérifiée pour tous les fichiers.
+
+## Texte court et complément oral
+
+Les instructions à effectuer restent explicites à l’écran. La voix définit les mots nécessaires avant leur premier emploi : axe, hémisphère, diamètre, année-lumière, masse, horizon. Les définitions restent accessibles sans audio. Ne pas réintroduire des paragraphes longs dans les bulles pour faire correspondre leur longueur à l’enregistrement.
+
+Réussites et erreurs utilisent les fichiers communs. Chaque intervention tient dans une génération de 300 caractères maximum, sans parties supplémentaires. Les durées sont indicatives, pas mesurées. Un fichier associé à plusieurs étapes est joué à la première étape pertinente, puis disponible à la demande : pas de répétition automatique à chaque étape. La consigne écran précise l'objectif actuel. Réécouter relance l'aide pertinente pour l'étape actuelle. La sécurité des éclipses utilise un fichier dédié et reste visible à l'écran. Si un fichier manque, conserver le texte et la jouabilité.
+
+## Lecture et musique
+
+Utiliser un lecteur de voix distinct de la musique, avec un réglage indépendant. Un fichier MP3 disponible est prioritaire ; un fallback de synthèse vocale peut être ajouté sans service cloud obligatoire. La lecture attend un geste utilisateur si le navigateur bloque l’autoplay. Le blocage ne doit pas empêcher de continuer.
+
+Pendant la voix, baisser temporairement la musique, puis rétablir son volume choisi par le joueur. Respecter la musique déjà coupée. Annuler la lecture et toute suite de clips lors d’un changement d’étape, d’une navigation, d’un changement de profil ou de la désactivation de la voix.
+
+Les films ne demandent pas de narration par chapitre dans ce lot. Garder leurs textes et proposer le bilan oral de la mission après le film, à la demande. Ne pas superposer une consigne au film. Les réglages de réduction des animations restent respectés.
+
+Les assets de `public` doivent être présents avant l’export statique. Le simple dépôt de fichiers ne les rend pas audibles : le branchement du lecteur, des réglages et de la réécoute constitue une étape d’implémentation séparée. Prévoir un chargement à la demande, pas le préchargement de tout le catalogue. Pour le hors connexion, préciser la politique de cache et sa taille avant d’inclure toutes les voix dans le service worker.
