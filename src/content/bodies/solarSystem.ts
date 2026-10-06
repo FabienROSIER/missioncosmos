@@ -129,7 +129,7 @@ export const SOLAR_SYSTEM_PLANETS: Record<
     orbitalPeriodDays: EARTH_ORBIT_PERIOD_DAYS,
     siderealRotationDays: 0.997269,
     axialTiltDeg: 23.44,
-    fact: 'Notre maison. De l’eau liquide et une atmosphère respirable.',
+    fact: 'Notre maison : de l’eau liquide et de l’air à respirer.',
   },
   mars: {
     bodyId: 'mars',
@@ -155,7 +155,7 @@ export const SOLAR_SYSTEM_PLANETS: Record<
     orbitalPeriodDays: 4332.589,
     siderealRotationDays: 0.41354,
     axialTiltDeg: 3.13,
-    fact: 'La plus grande. Une géante gazeuse avec une Grande Tache rouge.',
+    fact: 'La plus grande. Une géante faite surtout de gaz, avec une Grande Tache rouge.',
   },
   saturn: {
     bodyId: 'saturn',
@@ -168,7 +168,7 @@ export const SOLAR_SYSTEM_PLANETS: Record<
     orbitalPeriodDays: 10759.22,
     siderealRotationDays: 0.44401,
     axialTiltDeg: 26.73,
-    fact: 'Célèbre pour ses anneaux. Aussi une géante gazeuse.',
+    fact: 'Célèbre pour ses anneaux. Aussi une géante faite surtout de gaz.',
   },
   uranus: {
     bodyId: 'uranus',
@@ -182,7 +182,7 @@ export const SOLAR_SYSTEM_PLANETS: Record<
     siderealRotationDays: 0.71833,
     // ~98° : elle « roule » presque sur son orbite
     axialTiltDeg: 97.77,
-    fact: 'Géante de glace penchée à ~98° : elle roule presque sur son orbite.',
+    fact: 'Géante de glace penchée à 98° : elle tourne presque couchée.',
   },
   neptune: {
     bodyId: 'neptune',

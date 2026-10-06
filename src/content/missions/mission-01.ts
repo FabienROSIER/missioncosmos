@@ -50,12 +50,12 @@ export const MISSION_01: Mission = assertValidMission({
       id: 'm01-challenge-equator',
       kind: 'challenge',
       title: 'Repère 1 · Les deux moitiés',
-      body: 'La première balise doit séparer la moitié nord et la moitié sud de la Terre. Quel repère choisirais-tu ? Touche-le sur le globe ou choisis sa description. Ce grand cercle imaginaire s’appelle l’équateur.',
+      body: 'Choisis le repère qui sépare les moitiés nord et sud. Touche-le sur le globe ou choisis sa description. Ce grand cercle imaginaire s’appelle l’équateur.',
       requiresSuccess: true,
       targetMarkerId: 'equator',
       guideReminder: 'Retrouve le cercle qui sépare les moitiés nord et sud.',
       successFeedback:
-        'Première balise enregistrée ! L’équateur partage la Terre en deux hémisphères : nord et sud. Ce repère est imaginaire : il n’y a pas de trait jaune sur la vraie Terre.',
+        'Première balise enregistrée ! L’équateur sépare deux moitiés, appelées hémisphères : nord et sud. Ce repère est imaginaire : il n’y a pas de trait jaune sur la vraie Terre.',
       hint: 'Cherche la bande jaune au milieu, pas les points orange.',
     },
     {
@@ -67,7 +67,7 @@ export const MISSION_01: Mission = assertValidMission({
       targetMarkerId: 'north-pole',
       guideReminder: 'Retrouve l’extrémité nord de l’axe.',
       successFeedback:
-        'Deuxième balise enregistrée ! Le pôle Nord est une extrémité de l’axe de rotation. La Terre tourne autour de cet axe.',
+        'Deuxième balise enregistrée ! Le pôle Nord est un bout de l’axe autour duquel la Terre tourne.',
       hint: 'Regarde tout en haut du globe, le point orange.',
     },
     {
@@ -98,7 +98,7 @@ export const MISSION_01: Mission = assertValidMission({
       id: 'm01-explain',
       kind: 'explain',
       title: 'Deux mouvements',
-      body: 'Ta carte raconte deux mouvements différents. La Terre tourne sur elle-même en environ 24 heures : c’est l’alternance du jour et de la nuit. Elle fait aussi le tour du Soleil en environ 365 jours : c’est une année. Ici, le temps est accéléré et les tailles et distances sont celles d’une maquette.',
+      body: 'Ta carte raconte deux mouvements différents. La Terre tourne sur elle-même en environ 24 heures : c’est pour cela qu’il fait jour, puis nuit. Elle fait aussi le tour du Soleil en environ 365 jours : c’est une année. Le temps passe plus vite. Tailles et distances sont changées pour tout montrer.',
       ctaLabel: 'Petit quiz',
     },
     {

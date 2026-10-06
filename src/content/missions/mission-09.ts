@@ -46,8 +46,8 @@ export const MISSION_09: Mission = assertValidMission({
       kind: 'challenge',
       completionMode: 'discovery',
       title: 'Place le prisme',
-      guideReminder: 'Place le prisme dans le faisceau blanc.',
-      body: 'Ce triangle de verre est un prisme. Touche-le, ou appuie sur « Placer le prisme », pour le mettre dans le faisceau blanc.',
+      guideReminder: 'Place le prisme sur le trajet de la lumière blanche.',
+      body: 'Ce triangle de verre est un prisme. Touche-le, ou appuie sur « Placer le prisme », pour le mettre sur le trajet de la lumière blanche.',
       requiresSuccess: true,
       challengePrism: true,
       ctaLabel: 'Observer les couleurs',
@@ -111,5 +111,5 @@ export const MISSION_09: Mission = assertValidMission({
   glossaryIds: ['prisme', 'lumiere-blanche', 'spectre', 'melange-lumieres', 'soleil'],
   assets: [],
   notToScaleNotice:
-    'Laboratoire simplifié : faisceaux rendus visibles, tailles et angles adaptés pour observer.',
+    'Laboratoire simplifié : trajets lumineux dessinés. Tailles et angles simplifiés pour observer.',
 });

@@ -13,17 +13,17 @@ import { getUiMotionSnapshot, subscribeUiMotion, type UiMotionLevel } from '@/li
 import styles from './GraphicsQualitySetting.module.css';
 
 const OPTIONS: { value: GraphicsQualityLevel; label: string; help: string }[] = [
-  { value: 'auto', label: 'Auto', help: 'Choisit selon l’appareil' },
-  { value: 'low', label: 'Basse', help: 'Plus fluide sur mobile' },
-  { value: 'medium', label: 'Moyenne', help: 'Équilibrée pour mobile' },
-  { value: 'high', label: 'Élevée', help: 'Meilleur rendu' },
+  { value: 'auto', label: 'Auto', help: 'Le jeu choisit' },
+  { value: 'low', label: 'Basse', help: 'Moins de détails, moins de ralentissements' },
+  { value: 'medium', label: 'Moyenne', help: 'Détails et vitesse équilibrés' },
+  { value: 'high', label: 'Élevée', help: 'Plus de détails' },
 ];
 
 const MOTION_HELP: Record<UiMotionLevel, string> = {
-  none: 'Animations désactivées selon ta préférence système.',
-  minimal: 'Retours au clic et fondus courts. Effets décoratifs et flous désactivés.',
-  standard: 'Transitions douces et retours au clic. Effets décoratifs et flous désactivés.',
-  full: 'Transitions douces, apparitions progressives et légère animation du guide.',
+  none: 'Animations arrêtées selon les réglages de ton appareil.',
+  minimal: 'Les boutons réagissent. Peu d’animations, sans décor animé ni flou.',
+  standard: 'Les images changent doucement, sans décor animé ni flou.',
+  full: 'Les images apparaissent doucement. Le Guide bouge un peu.',
 };
 
 function getSnapshot(): GraphicsQualityLevel {
@@ -53,7 +53,7 @@ export function GraphicsQualitySetting() {
     <fieldset className={styles.root}>
       <legend className={styles.legend}>Qualité graphique</legend>
       <p className={styles.help}>
-        Interface : effet immédiat. Rendu 3D : au prochain lancement d&apos;une mission.
+        Menus : tout de suite. Images 3D : à la prochaine mission.
       </p>
       <div className={styles.row} role="group" aria-label="Qualité graphique">
         {OPTIONS.map((option) => (

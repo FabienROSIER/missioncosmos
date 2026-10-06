@@ -261,9 +261,9 @@ export function LightTravelChallenge({
   const answer = (id: LightTravelSourceId) => {
     if (phase !== 'question') return;
     if (!isOldestImageSource(id)) {
-      setStatus('Plus loin = lumière partie plus tôt. Choisis la galaxie la plus éloignée.');
+      setStatus('Partis ensemble, les flashs voyagent plus ou moins longtemps. Le plus lointain apporte l’image la plus ancienne.');
       onMiss(
-        'La lumière de la galaxie la plus lointaine a voyagé plus longtemps. C’est son image que nous voyons la plus ancienne.',
+        'Partis ensemble, les flashs voyagent plus ou moins longtemps. Le plus lointain apporte l’image la plus ancienne.',
       );
       return;
     }
@@ -292,7 +292,7 @@ export function LightTravelChallenge({
         <small>LES MESSAGERS DE LUMIÈRE</small>
         <strong>
           {phase === 'question' || phase === 'done'
-            ? 'Quelle galaxie voyons-nous dans le passé le plus lointain ?'
+            ? 'Quelle galaxie montre l’image la plus ancienne ?'
             : 'La lumière met du temps à voyager'}
         </strong>
       </header>
@@ -312,13 +312,13 @@ export function LightTravelChallenge({
         </span>
       ))}
       <p className={styles.caption}>
-        Maquette accélérée : distances proportionnelles 1 : 2 : 4. Les flashs avancent à la même
-        vitesse.
+        1 M a.l. = 1 million d’années-lumière. Distances : une fois, deux fois, quatre fois plus
+        loin. Les flashs avancent à la même vitesse.
       </p>
       <SceneControls className={styles.controls}>
         <div className={styles.timeline} aria-live="polite">
           <div className={styles.timelineHead}>
-            <span>Temps écoulé depuis l’émission</span>
+            <span>Temps depuis le départ</span>
             <strong>{formatMillionYears(elapsedMillionYears(elapsed))}</strong>
           </div>
           <div
@@ -327,7 +327,7 @@ export function LightTravelChallenge({
             aria-valuemin={0}
             aria-valuemax={LIGHT_TRAVEL_MAX_MILLION_YEARS}
             aria-valuenow={Number(elapsedMillionYears(elapsed).toFixed(1))}
-            aria-label="Temps écoulé depuis l’émission"
+            aria-label="Temps depuis le départ"
           >
             <span style={{ width: `${timelinePercent}%` }} />
           </div>
@@ -349,7 +349,7 @@ export function LightTravelChallenge({
         </ul>
         {phase === 'ready' && (
           <button disabled={!ready} onClick={emit}>
-            Émettre les flashs
+            Envoyer les flashs
           </button>
         )}
         {phase === 'running' && status ? <p role="status">{status}</p> : null}

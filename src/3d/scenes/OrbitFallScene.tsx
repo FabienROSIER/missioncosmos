@@ -496,7 +496,7 @@ export function OrbitFallScene({
             {success
               ? status.startsWith('Encore')
                 ? status
-                : `Oui ! ${COMPANION_TEMP_NAME} tombe vers la Terre, mais avance assez vite sur le côté — chute qui n’arrive jamais. Tu peux relancer pour expérimenter.`
+                : `Oui ! Le ${COMPANION_TEMP_NAME} tombe vers la Terre, mais avance assez vite de côté pour la manquer. Il reste en orbite.`
               : status}
           </p>
         ) : null}

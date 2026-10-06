@@ -210,7 +210,7 @@ export function StarsScene({
           showStar(id, new Vector3(x, 0, 0), radius);
           cursor += radius * 2 + surfaceGap;
         });
-        setFact('Tailles compressées pour tout voir : Proxima ≪ Soleil ≪ Bételgeuse.');
+        setFact('Proxima est plus petite que le Soleil, Bételgeuse bien plus grande. Tailles simplifiées ici.');
         return;
       }
 
@@ -220,7 +220,7 @@ export function StarsScene({
           const x = (index - 1) * spacing;
           showStar(id, new Vector3(x, 0, 0), 0.85);
         });
-        setFact('Rouge = plus froide · Bleutée = plus chaude (simplifié).');
+        setFact('Rouge = plus froide · Bleutée = plus chaude. K : kelvins, pour mesurer la température.');
         return;
       }
 
@@ -232,7 +232,7 @@ export function StarsScene({
         showStar(starId, new Vector3(0, 0, 0), displayRadius);
         setShowReticle(true);
         setFact(
-          `${STARS[starId].nameFr} · distance pédagogique ${Math.round(distance)} · ${
+          `${STARS[starId].nameFr} · distance dans la maquette : ${Math.round(distance)} · ${
             STARS[starId].estimateNote ?? 'géante rouge'
           }`,
         );
@@ -247,7 +247,7 @@ export function StarsScene({
         setShowReticle(true);
         setPhotoStar(starId);
         setFact(
-          `${STARS[starId].nameFr} · vraie taille : ${radiusLabelFr(
+          `${STARS[starId].nameFr} · ${radiusLabelFr(
             STARS[starId].radiusSolar,
           )}. Ajuste seulement la distance du télescope.`,
         );
@@ -493,7 +493,7 @@ export function StarsScene({
         setFact(
           `${STARS[hit.id].nameFr} · ${STARS[hit.id].colorLabelFr} · ${temperatureBandFr(
             STARS[hit.id].temperatureK,
-          )} (~${STARS[hit.id].temperatureK} K)`,
+          )} (≈ ${STARS[hit.id].temperatureK} K)`,
         );
         if (discoveryPhase === 'colors') {
           discoveryPhase = 'apparent';
@@ -686,7 +686,7 @@ export function StarsScene({
             <p>{STAR_FILM_CHAPTERS[filmChapter]!.text}</p>
           </div>
           <div className={styles.cinemaFooter}>
-            <p>Diamètres constants · tailles et distances simplifiées</p>
+            <p>Tailles fixes pendant le film. Maquette simplifiée.</p>
             <div>
               {film === 'finished' ? (
                 <button type="button" onClick={() => filmRef.current?.play()}>
@@ -700,7 +700,7 @@ export function StarsScene({
                       reducedFilm ? filmRef.current?.next() : filmRef.current?.pause()
                     }
                   >
-                    {reducedFilm ? 'Tableau suivant' : film === 'paused' ? 'Reprendre' : 'Pause'}
+                    {reducedFilm ? 'Étape suivante' : film === 'paused' ? 'Reprendre' : 'Pause'}
                   </button>
                   <button type="button" onClick={() => filmRef.current?.finish()}>
                     Passer
@@ -742,7 +742,7 @@ export function StarsScene({
               <p className={styles.roundTitle}>
                 {challengeActive
                   ? `Photo ${Math.min(progress.done + 1, 3)}/3 — ${STARS[photoStar].nameFr}`
-                  : 'Distance pédagogique'}
+                  : 'Distance dans la maquette'}
               </p>
               <p className={styles.sliderLabel}>
                 🔭 Distance : {Math.round(distanceAu)} — glisse vers « loin » pour reculer
@@ -797,7 +797,7 @@ export function StarsScene({
               {roundHint}
             </p>
           ) : null}
-          <p className={styles.note}>Maquette simplifiée · Bételgeuse : rayon estimé</p>
+          <p className={styles.note}>Maquette simplifiée · Bételgeuse : taille estimée</p>
         </SceneControls>
       ) : null}
     </div>

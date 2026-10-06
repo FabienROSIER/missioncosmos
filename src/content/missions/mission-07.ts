@@ -50,8 +50,8 @@ export const MISSION_07: Mission = assertValidMission({
       completionMode: 'discovery',
       requiresSuccess: true,
       title: 'Penchée, et pas la même saison',
-      body: 'La Terre est penchée d’environ 23°. Déplace-la sur l’anneau : quand c’est l’été au nord, c’est l’hiver au sud. Puis mets le curseur d’inclinaison à 0° : sans inclinaison, plus de vrai été ni d’hiver. La vraie Terre, elle, reste penchée.',
-      guideReminder: 'Déplace la Terre, puis mets l’inclinaison à 0°.',
+      body: 'La Terre est penchée d’environ 23°. Déplace-la sur l’anneau : quand c’est l’été au nord, c’est l’hiver au sud. Puis, avec le curseur, redresse la Terre à 0° : sans inclinaison, plus de vrai été ni d’hiver. La vraie Terre, elle, reste penchée.',
+      guideReminder: 'Déplace la Terre. Avec le curseur, redresse la Terre à 0°.',
       successFeedback: 'Tu as vu les deux : l’été et l’hiver s’inversent, et sans inclinaison les saisons disparaissent.',
       ctaLabel: 'Placer l’été au nord',
     },
@@ -59,7 +59,7 @@ export const MISSION_07: Mission = assertValidMission({
       id: 'm07-challenge',
       kind: 'challenge',
       title: 'Défi : été au nord',
-      body: 'Place la Terre pour que ce soit l’été dans l’hémisphère nord.',
+      body: 'Place la Terre pour que ce soit l’été dans la moitié nord de la Terre.',
       requiresSuccess: true,
       challengeNorthernSummer: true,
       successFeedback: 'Oui ! Le nord est penché vers le Soleil : c’est l’été au nord.',
@@ -69,7 +69,7 @@ export const MISSION_07: Mission = assertValidMission({
       id: 'm07-explain',
       kind: 'explain',
       title: 'Pas la distance !',
-      body: 'L’orbite est presque un cercle : la Terre n’est pas beaucoup plus près du Soleil en été. Ce qui compte, c’est l’inclinaison : un hémisphère reçoit des rayons plus directs. (Et attention : quand c’est l’été au nord, c’est l’hiver au sud !)',
+      body: 'Penchée vers le Soleil, une moitié reçoit sa lumière moins de travers. Elle chauffe davantage : c’est l’été. Ce n’est pas parce que la Terre se rapproche. Quand c’est l’été au nord, c’est l’hiver au sud.',
       ctaLabel: 'Petit quiz',
     },
     {
@@ -118,5 +118,5 @@ export const MISSION_07: Mission = assertValidMission({
     },
   ],
   notToScaleNotice:
-    'Orbite presque circulaire pour comparer. Inclinaison réelle ≈ 23,5°. Maquette simplifiée.',
+    'Chemin presque rond. Axe penché à environ 23,5°. Tailles et distances simplifiées.',
 });

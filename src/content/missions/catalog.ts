@@ -42,13 +42,13 @@ export const MISSION_CATALOG: MissionCatalogEntry[] = [
   {
     id: 'mission-06',
     title: 'Les orbites',
-    objective: 'Voir comment les planètes tournent et comparer leurs périodes.',
+    objective: 'Compare le temps d’un tour du Soleil pour chaque planète.',
     unlocksNextId: 'mission-07',
   },
   {
     id: 'mission-07',
     title: 'Les saisons',
-    objective: 'Comprendre l’inclinaison de la Terre et l’été / l’hiver.',
+    objective: 'Pourquoi la Terre penchée nous donne-t-elle des saisons ?',
     unlocksNextId: 'mission-08',
   },
   {
@@ -66,7 +66,7 @@ export const MISSION_CATALOG: MissionCatalogEntry[] = [
   {
     id: 'mission-constellations',
     title: 'Les dessins du ciel',
-    objective: 'Retrouver les constellations et découvrir leur profondeur en voyageant en 3D.',
+    objective: 'Retrouve les constellations et compare la distance de leurs étoiles.',
     unlocksNextId: 'mission-10',
   },
   {
@@ -84,13 +84,13 @@ export const MISSION_CATALOG: MissionCatalogEntry[] = [
   {
     id: 'mission-12',
     title: 'Les distances dans l’Univers',
-    objective: 'Comparer les ordres de grandeur, de la Terre à l’Univers observable.',
+    objective: 'Compare les distances, de la Terre aux galaxies les plus lointaines.',
     unlocksNextId: 'mission-13',
   },
   {
     id: 'mission-13',
     title: 'Les trous noirs',
-    objective: 'Aborder gravité extrême et horizon des événements sans fausse analogie.',
+    objective: 'Découvre les trous noirs et leur limite de non-retour.',
   },
 ];
 

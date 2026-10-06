@@ -26,20 +26,21 @@ export const QUIZ_MISSION_06: Quiz = {
       ],
       correctChoiceId: 'fast',
       explainCorrect: 'Exact : Mercure fait un tour bien plus vite que Jupiter.',
-      explainWrong: 'Plus près → année plus courte. Seule la Terre a une année d’environ 365 jours.',
+      explainWrong: 'Plus près du Soleil, un tour dure moins longtemps. Seule la Terre a une année d’environ 365 jours.',
     },
     {
       id: 'q3-fall',
       prompt: 'Une orbite, on peut aussi la voir comme…',
       choices: [
         { id: 'rope', label: 'Une corde invisible qui tient la planète' },
-        { id: 'fall', label: 'Une chute vers le centre, mais qui n’arrive jamais' },
+        { id: 'fall', label: 'Une chute, avec un mouvement de côté qui évite le centre' },
         { id: 'push', label: 'Le Soleil qui pousse la planète en avant' },
       ],
       correctChoiceId: 'fall',
       explainCorrect:
-        'Oui : elle tombe vers le centre, et avance assez vite sur le côté pour « rater » le sol — chute perpétuelle.',
-      explainWrong: 'Pas de corde, et le Soleil n’éloigne pas. C’est une chute + un mouvement de côté.',
+        'Attirée vers le Soleil, la planète avance aussi de côté : elle continue à tourner autour.',
+      explainWrong:
+        'Pas de corde, et le Soleil n’éloigne pas. Attirée vers le Soleil, la planète avance aussi de côté : elle continue à tourner autour.',
     },
     {
       id: 'q4-gravity',
@@ -50,8 +51,8 @@ export const QUIZ_MISSION_06: Quiz = {
         { id: 'freeze', label: 'Il s’arrête dans le ciel' },
       ],
       correctChoiceId: 'crash',
-      explainCorrect: 'Oui : trop lent → pas assez de mouvement de côté, il tombe.',
-      explainWrong: 'Trop lent = chute. Trop vite = il s’éloigne. L’arrêt total n’existe pas ici.',
+      explainCorrect: 'Trop lent : le Guide tombe. Trop rapide : il s’éloigne. Essaie entre les deux.',
+      explainWrong: 'Trop lent : le Guide tombe. Trop rapide : il s’éloigne. Essaie entre les deux.',
     },
   ],
 };

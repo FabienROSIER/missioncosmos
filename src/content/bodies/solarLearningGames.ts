@@ -192,11 +192,11 @@ export const SIZE_RIDDLES: ReadonlyArray<{
     question: 'Vénus et la Terre : leurs tailles sont-elles proches ?',
     choices: ['Oui, presque pareilles', 'Non, très différentes'],
     correct: 0,
-    explanation: 'Oui ! Vénus et la Terre ont presque le même diamètre.',
+    explanation: 'Oui ! Vénus et la Terre ont presque la même largeur.',
   },
   {
     group: 'planets',
-    question: 'Parmi les 8 planètes, combien sont rocheuses et combien sont gazeuses ?',
+    question: 'Combien de rocheuses comme la Terre, et de gazeuses comme Jupiter ?',
     choices: [
       '4 rocheuses et 4 gazeuses',
       '5 rocheuses et 3 gazeuses',

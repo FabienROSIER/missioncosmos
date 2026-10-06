@@ -86,10 +86,10 @@ export const MISSION_10: Mission = assertValidMission({
       requiresSuccess: true,
       title: 'Le grand voyage du Soleil',
       body: 'Le Soleil voyage avec toutes ses planètes ! Ta mission : trouve le chemin qui lui fait faire un tour autour du centre de la galaxie, sans plonger dedans. Compare les trois trajets, puis lance le voyage.',
-      guideReminder: 'Compare les trajets : lequel entoure le centre galactique ?',
+      guideReminder: 'Compare les trajets : lequel entoure le centre de la galaxie ?',
       hint: 'Le centre doit être à l’intérieur du grand tour du Soleil.',
       successFeedback:
-        'Bien joué ! Le Soleil tourne autour du centre galactique avec ses planètes. Un vrai tour dure environ 230 millions d’années !',
+        'Bien joué ! Le Soleil tourne autour du centre de la galaxie avec ses planètes. Un vrai tour dure environ 230 millions d’années !',
       ctaLabel: 'À toi de répondre',
     },
     {
@@ -134,5 +134,5 @@ export const MISSION_10: Mission = assertValidMission({
     },
   ],
   notToScaleNotice:
-    'Maquette simplifiée : bras artistiques, quartier du Soleil approximatif. Chaque point représente beaucoup d’étoiles. Tailles, distances et voyage ne sont pas à l’échelle.',
+    'Bras dessinés, Soleil placé approximativement. Tailles et distances simplifiées, voyage accéléré.',
 });

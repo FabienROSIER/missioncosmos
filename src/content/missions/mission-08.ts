@@ -50,7 +50,7 @@ export const MISSION_08: Mission = assertValidMission({
       completionMode: 'discovery',
       requiresSuccess: true,
       title: 'Des soleils, loin',
-      body: 'Le Soleil est une étoile. Touche une étoile pour comparer les tailles (elles sont compressées pour tout voir). Touche-en encore une : le bleu est plus chaud, le rouge plus froid. Puis bouge le curseur : une géante peut paraître toute petite si elle est loin.',
+      body: 'Le Soleil est une étoile. Touche une étoile pour comparer les tailles (les différences de taille sont réduites pour tout voir). Touche-en encore une : le bleu est plus chaud, le rouge plus froid. Puis bouge le curseur : une géante peut paraître toute petite si elle est loin.',
       guideReminder: 'Touche une étoile, encore une, puis bouge la distance.',
       successFeedback: 'Tu as vu la taille, la couleur, et pourquoi une étoile loin paraît petite.',
       ctaLabel: 'Photographier les étoiles',
@@ -69,7 +69,7 @@ export const MISSION_08: Mission = assertValidMission({
     {
       id: 'm08-explain',
       kind: 'explain',
-      title: 'Apparence ≠ réalité',
+      title: 'Taille vue, taille réelle',
       body: 'Le Soleil nous paraît grand parce qu’il est proche. Une géante rouge peut sembler un point dans le ciel si elle est très loin. La taille réelle et la taille apparente, ce n’est pas la même chose.',
       ctaLabel: 'Petit quiz',
     },
@@ -112,5 +112,5 @@ export const MISSION_08: Mission = assertValidMission({
   quizId: 'quiz-mission-08',
   assets: [],
   notToScaleNotice:
-    'Tailles compressées pour comparer. Distances pédagogiques. Bételgeuse : rayon estimé.',
+    'Tailles simplifiées, distances choisies pour comparer. Bételgeuse : taille estimée.',
 });

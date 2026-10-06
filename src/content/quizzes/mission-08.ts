@@ -49,7 +49,7 @@ export const QUIZ_MISSION_08: Quiz = {
         { id: 'planet', label: 'Une planète rouge' },
       ],
       correctChoiceId: 'giant',
-      explainCorrect: 'Oui : c’est une géante rouge (rayon estimé, ordre de grandeur).',
+      explainCorrect: 'Oui : c’est une géante rouge. Taille estimée, qui peut varier.',
       explainWrong: 'Bételgeuse est une étoile géante, pas une planète.',
     },
   ],

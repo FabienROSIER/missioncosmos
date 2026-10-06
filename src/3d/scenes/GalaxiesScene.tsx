@@ -172,7 +172,7 @@ export function GalaxiesScene({ className, stepId, onSuccess, onMiss, onClearFee
     if (candidate !== current) {
       setFailed(true);
       onMiss(
-        'Observe encore la forme : tourne la maquette pour chercher des bras ou un volume arrondi.',
+        'Observe encore la forme : tourne la maquette pour chercher des bras ou la forme arrondie.',
       );
       return;
     }
@@ -238,7 +238,7 @@ export function GalaxiesScene({ className, stepId, onSuccess, onMiss, onClearFee
         </div>
       )}
       {isScale && (
-        <div className={styles.zoomMap} aria-label="Les niveaux du zoom">
+        <div className={styles.zoomMap} aria-label="Du Soleil à la galaxie">
           <span className={styles.eyebrow}>DU PLUS PETIT AU PLUS GRAND</span>
           <div className={styles.levels}>
             {COSMIC_LEVELS.map((level, i) => (
@@ -285,10 +285,10 @@ export function GalaxiesScene({ className, stepId, onSuccess, onMiss, onClearFee
             </div>
             <p role="status" className={failed ? styles.error : ''}>
               {failed
-                ? 'Pas encore : cherche le plus petit ensemble restant.'
+                ? 'Pas encore : choisis le plus petit objet restant.'
                 : placed.length === 3
                   ? 'Les trois niveaux sont prêts !'
-                  : 'Touche le plus petit ensemble restant.'}
+                  : 'Choisis le plus petit objet restant.'}
             </p>
           </>
         ) : (

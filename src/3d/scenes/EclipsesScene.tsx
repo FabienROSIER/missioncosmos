@@ -484,9 +484,10 @@ export function EclipsesScene({
           </div>
           <p className={styles.safety}>
             <span className={styles.safetyFull}>
-              Ne regarde jamais le vrai Soleil sans filtre !
+              Ne regarde le vrai Soleil qu’avec une protection spéciale vérifiée par un adulte. Des
+              lunettes de soleil ne suffisent pas.
             </span>
-            <span className={styles.safetyCompact}>Soleil : filtre obligatoire</span>
+            <span className={styles.safetyCompact}>Soleil : protection spéciale</span>
           </p>
         </div>
         <button

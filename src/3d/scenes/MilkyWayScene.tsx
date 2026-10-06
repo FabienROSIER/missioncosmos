@@ -698,7 +698,7 @@ export function MilkyWayScene({ className, stepId, onSuccess, onMiss }: Props) {
         </div>
       ) : null}
       {stepId === 'm10-orbit' ? (
-        <div className={styles.caption}>Point doré : Soleil · Point bleu : centre galactique</div>
+        <div className={styles.caption}>Point doré : Soleil · Point bleu : centre de la galaxie</div>
       ) : stepId === 'm10-journey' && journey >= 0.04 ? (
         <div className={styles.caption}>Les planètes deviennent invisibles à cette échelle.</div>
       ) : galactic && located ? (
@@ -754,8 +754,8 @@ export function MilkyWayScene({ className, stepId, onSuccess, onMiss }: Props) {
                   : 'Lancer le voyage'}
             </button>
             <small>
-              Compare les chemins dans la galaxie. Le point doré est un repère agrandi. Voyage très
-              accéléré, trajectoire simplifiée.
+              Compare les chemins dans la galaxie. Soleil agrandi pour le repérer. Voyage accéléré,
+              chemin simplifié.
             </small>
           </>
         ) : galactic ? (

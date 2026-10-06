@@ -5,7 +5,7 @@ export const REWARD_DISTANCES: Reward = {
   id: 'reward-distances',
   title: 'Navigateur cosmique',
   kind: 'badge',
-  description: 'Tu sais comparer des distances et utiliser les repères UA et année-lumière.',
+  description: 'Tu sais comparer des distances et les mesurer avec l’unité astronomique (UA) et l’année-lumière.',
 };
 export const MISSION_12: Mission = assertValidMission({
   id: 'mission-12',
@@ -45,8 +45,8 @@ export const MISSION_12: Mission = assertValidMission({
       completionMode: 'discovery',
       requiresSuccess: true,
       title: 'De la Lune à l’Univers observable',
-      body: 'Avance à ton rythme avec « Plus loin », et reviens avec « Plus près ». Observe les sept repères jusqu’à l’Univers observable, puis prépare les destinations du robot. Les immenses distances sont comprimées dans notre maquette.',
-      guideReminder: 'Observe les distances : le voisinage apparaît pendant le recul.',
+      body: 'Avance à ton rythme avec « Plus loin », et reviens avec « Plus près ». Observe les sept repères jusqu’à l’Univers observable, la partie de l’Univers que nous pouvons observer, puis prépare les destinations du robot. Distances raccourcies pour tout montrer.',
+      guideReminder: 'Avec « Plus loin », observe ce qui apparaît autour de toi.',
       successFeedback: 'Notre voyage nous a montré des distances de plus en plus grandes.',
       ctaLabel: 'Préparer les destinations',
     },
@@ -66,9 +66,8 @@ export const MISSION_12: Mission = assertValidMission({
       kind: 'challenge',
       requiresSuccess: true,
       title: 'Les messagers de lumière',
-      body: 'Trois galaxies envoient un flash en même temps. Observe le voyage accéléré jusqu’à l’observatoire, puis choisis laquelle nous voyons dans le passé le plus lointain. Les distances de la maquette sont proportionnelles, pas à l’échelle réelle.',
-      guideReminder:
-        'Émets les flashs, suis la frise du temps, puis choisis la galaxie la plus lointaine.',
+      body: 'Trois galaxies envoient un flash en même temps. Observe le voyage accéléré jusqu’à l’observatoire, puis choisis la galaxie dont l’image est la plus ancienne. Distances réduites, écarts respectés.',
+      guideReminder: 'Envoie les flashs et suis la ligne du temps.',
       successFeedback:
         'La lumière transporte une ancienne image. Plus sa source est éloignée, plus cette image est ancienne.',
       hint: 'Le flash le plus long à arriver vient de plus loin : son image est la plus ancienne.',
@@ -78,7 +77,7 @@ export const MISSION_12: Mission = assertValidMission({
       id: 'm12-explain',
       kind: 'explain',
       title: 'La lumière apporte le passé',
-      body: 'La lumière voyage très vite, mais l’espace est immense : elle met du temps à nous rejoindre. Regarder une galaxie lointaine, c’est recevoir une image partie il y a longtemps. L’année-lumière est une unité de distance. L’Univers observable désigne la région dont la lumière peut nous parvenir ; ce n’est pas le bord de tout l’Univers.',
+      body: 'La lumière voyage très vite, mais l’espace est immense : elle met du temps à nous rejoindre. Regarder une galaxie lointaine, c’est recevoir une image partie il y a longtemps. L’année-lumière mesure le chemin parcouru par la lumière en un an. L’Univers observable, c’est la partie de l’Univers dont la lumière peut nous arriver ; ce n’est pas le bord de tout l’Univers.',
       ctaLabel: 'Répondre au robot',
     },
     {
@@ -115,5 +114,5 @@ export const MISSION_12: Mission = assertValidMission({
   glossaryIds: ['unite-astronomique', 'annee-lumiere', 'univers-observable'],
   assets: [],
   notToScaleNotice:
-    'Maquette 3D pédagogique : astres agrandis, espaces et temps comprimés. Le voyage de la lumière est accéléré pour rester lisible. Les diamètres sont indiqués explicitement. Neptune ne marque pas la fin du Système solaire.',
+    'Objets agrandis, distances raccourcies, temps accéléré. Les fiches précisent ce qu’on mesure. Le Système solaire continue au-delà de Neptune.',
 });

@@ -24,7 +24,7 @@ export default function CollectionPage() {
                 <RewardPanel
                   compact
                   title="Collection cosmique"
-                  description="Tes badges apparaîtront ici après tes premières missions. Aucun loot payant."
+                  description="Gagne tes badges en réussissant des missions. Rien à acheter."
                 />
               ) : (
                 <ul className={styles.list}>

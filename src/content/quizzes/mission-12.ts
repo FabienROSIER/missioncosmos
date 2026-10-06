@@ -18,7 +18,7 @@ export const QUIZ_MISSION_12: Quiz = {
     },
     {
       id: 'q2-au',
-      prompt: 'À quoi correspond 1 UA ?',
+      prompt: '1 UA, une unité astronomique, correspond à…',
       choices: [
         { id: 'moon', label: 'La distance moyenne Terre–Lune' },
         { id: 'sun', label: 'La distance moyenne Terre–Soleil' },
@@ -32,7 +32,7 @@ export const QUIZ_MISSION_12: Quiz = {
       prompt: 'L’Univers observable, c’est…',
       choices: [
         { id: 'all', label: 'Tout l’Univers, avec son bord' },
-        { id: 'visible', label: 'La région dont la lumière peut nous parvenir' },
+        { id: 'visible', label: 'La partie de l’Univers dont la lumière peut nous arriver' },
       ],
       correctChoiceId: 'visible',
       explainCorrect: 'Oui ! L’Univers peut s’étendre au-delà de ce que nous pouvons observer.',

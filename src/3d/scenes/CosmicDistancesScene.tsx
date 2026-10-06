@@ -142,7 +142,7 @@ export function CosmicDistancesScene({
                   Plus loin
                 </button>
               </div>
-              <small>Le voisinage apparaît pendant le changement d’échelle.</small>
+              <small>En reculant, tu vois plus d’objets autour de toi.</small>
             </>
           )}
         </SceneControls>

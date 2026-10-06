@@ -713,13 +713,13 @@ export function SolarSystemScene({
           <>
             <div className={styles.navRow} role="group" aria-label="Navigation planètes">
               <button type="button" className={styles.hudBtn} onClick={onPrev}>
-                Préc.
+                Précédente
               </button>
               <button type="button" className={styles.hudBtn} onClick={onOverview}>
                 Vue d’ensemble
               </button>
               <button type="button" className={styles.hudBtn} onClick={onNext}>
-                Suiv.
+                Suivante
               </button>
             </div>
             <div className={styles.mobileTargets} role="group" aria-label="Toucher une planète">
@@ -735,7 +735,7 @@ export function SolarSystemScene({
               ))}
             </div>
             <p className={styles.progress}>
-              Maquette : tailles et distances adaptées. Positions illustratives.
+              Tailles, distances et positions choisies pour apprendre.
             </p>
           </>
         )}

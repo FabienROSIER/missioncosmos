@@ -6,7 +6,7 @@ export const REWARD_CONSTELLATIONS: Reward = {
   id: 'reward-constellations',
   title: 'Cartographe du ciel',
   kind: 'badge',
-  description: 'Tu as retrouvé les dessins du ciel et découvert leur profondeur.',
+  description: 'Tu as retrouvé les dessins du ciel et découvert les différentes distances de leurs étoiles.',
 };
 
 export const MISSION_CONSTELLATIONS = assertValidMission({
@@ -45,7 +45,7 @@ export const MISSION_CONSTELLATIONS = assertValidMission({
       id: `mc-${item.id}`,
       kind: 'challenge' as const,
       title: `Retrouve ${item.title === 'Cassiopée' || item.title === 'Orion' ? '' : 'le dessin : '}${item.title}`,
-      body: `${item.clue} Compare les positions et les espacements avec ta petite carte. Retrouve les étoiles du dessin dans n’importe quel ordre pour révéler ${item.figure}.`,
+      body: `${item.clue} Compare la place des étoiles et leurs écarts avec ta carte. Retrouve les étoiles du dessin dans n’importe quel ordre pour révéler ${item.figure}.`,
       guideReminder:
         'Compare la forme de la carte au ciel. Tu peux choisir les étoiles dans n’importe quel ordre.',
       requiresSuccess: true,
@@ -104,7 +104,7 @@ export const MISSION_CONSTELLATIONS = assertValidMission({
       id: 'mc-reward',
       kind: 'reward',
       title: 'Cartographe du ciel',
-      body: 'Tu as retrouvé les dessins du ciel et découvert ce qui se cache derrière : des étoiles à des profondeurs différentes.',
+      body: 'Tu as retrouvé les dessins du ciel et découvert les différentes distances de leurs étoiles.',
       ctaLabel: 'Terminer',
     },
     {
@@ -126,5 +126,5 @@ export const MISSION_CONSTELLATIONS = assertValidMission({
   quizId: 'quiz-mission-constellations',
   assets: [],
   notToScaleNotice:
-    'Carte simplifiée. Voyage imaginaire en 3D : profondeurs de démonstration, pas distances réelles.',
+    'Carte simplifiée. Voyage imaginaire en 3D : distances choisies pour l’expérience, différentes des vraies distances.',
 });

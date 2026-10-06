@@ -39,9 +39,8 @@ export const QUIZ_MISSION_01: Quiz = {
         { id: 'oceans', label: 'Seulement des océans' },
       ],
       correctChoiceId: 'axis-ends',
-      explainCorrect: 'Oui : les pôles sont les extrémités de l’axe autour duquel la Terre tourne.',
-      explainWrong:
-        'Les pôles sont les deux extrémités de l’axe de rotation, pas le cercle du milieu.',
+      explainCorrect: 'Oui : les pôles sont les deux bouts de l’axe de rotation.',
+      explainWrong: 'Les pôles sont les deux bouts de l’axe de rotation, pas le cercle du milieu.',
     },
     {
       id: 'q4-orbit',

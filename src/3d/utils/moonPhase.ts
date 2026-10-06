@@ -17,7 +17,7 @@ export const MOON_PHASE_LABELS: Record<MoonPhaseId, string> = {
   new: 'Nouvelle Lune',
   crescent: 'Croissant',
   quarter: 'Premier / dernier quartier',
-  gibbous: 'Gibbeuse',
+  gibbous: 'Presque pleine',
   full: 'Pleine Lune',
 };
 

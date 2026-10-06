@@ -10,7 +10,7 @@ export const BLACK_HOLE_VIEWS = [
     label: 'Le gaz lumineux',
     title: 'Aux portes de l’invisible',
     body: 'Ce qui brille, c’est le gaz très chaud autour du trou noir. Tourne la vue pour observer le disque et la lumière déviée.',
-    note: 'Vue d’artiste · lumière déviée de façon stylisée',
+    note: 'Dessin imaginé. Lumière déviée de façon simplifiée.',
   },
   {
     id: 'orbits',
@@ -24,7 +24,7 @@ export const BLACK_HOLE_VIEWS = [
     label: 'L’horizon',
     title: 'Une frontière de non-retour',
     body: 'La limite en pointillés représente l’horizon des événements. Depuis l’intérieur, même la lumière ne peut plus ressortir. Cette limite n’est pas un mur.',
-    note: 'Schéma explicatif · l’horizon n’est pas l’ombre apparente',
+    note: 'Limite invisible : à distinguer de la zone noire visible.',
   },
 ] as const;
 export type BlackHoleView = (typeof BLACK_HOLE_VIEWS)[number]['id'];

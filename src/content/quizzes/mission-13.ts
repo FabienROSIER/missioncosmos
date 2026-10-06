@@ -30,7 +30,7 @@ export const QUIZ_MISSION_13: Quiz = {
       explainCorrect:
         'Exact ! À grande distance, la même masse produit la même attraction : la planète peut garder son orbite.',
       explainWrong:
-        'Dans l’expérience, la masse centrale, la distance et la vitesse ne changeaient pas. La planète gardait donc son orbite.',
+        'Dans l’expérience, même masse au centre, même distance et même vitesse au départ : la planète garde son orbite.',
     },
     {
       id: 'q3-disk',
@@ -56,9 +56,9 @@ export const QUIZ_MISSION_13: Quiz = {
       ],
       correctChoiceId: 'orbits',
       explainCorrect:
-        'Bravo ! Plusieurs étoiles tournant autour d’un même point peuvent révéler une masse invisible.',
+        'Bravo ! Plusieurs étoiles tournant autour d’un même point peuvent révéler un objet invisible.',
       explainWrong:
-        'Le trou noir peut rester invisible. Les orbites des étoiles proches donnent un indice sur la masse cachée.',
+        'Le trou noir peut rester invisible. Les orbites des étoiles proches donnent un indice sur l’objet caché.',
     },
   ],
 };

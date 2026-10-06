@@ -26,7 +26,7 @@ export const QUIZ_MISSION_02: Quiz = {
         { id: 'moon', label: 'La Lune allume la Terre' },
       ],
       correctChoiceId: 'facing',
-      explainCorrect: 'Exact : le jour, ton endroit regarde le Soleil.',
+      explainCorrect: 'Exact : le Soleil éclaire le côté de la Terre où tu es.',
       explainWrong: 'Ce n’est pas une question de distance ici : c’est le côté éclairé.',
     },
     {

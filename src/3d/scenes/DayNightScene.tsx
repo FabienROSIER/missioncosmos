@@ -452,7 +452,7 @@ export function DayNightScene({
                     : styles.housePipBadgeNight
               }`}
             >
-              {pipLighting === 'day' ? 'Jour' : pipLighting === 'twilight' ? 'Crépuscule' : 'Nuit'}
+              {pipLighting === 'day' ? 'Jour' : pipLighting === 'twilight' ? 'Entre jour et nuit' : 'Nuit'}
             </p>
           </div>
         </div>

@@ -24,7 +24,7 @@ export const STAR_FILM_CHAPTERS = [
     at: 11.9,
     tableau: 16.5,
     title: 'Le ciel change avec notre regard',
-    text: 'De côté, la profondeur se révèle. Aucune étoile n’a changé de diamètre.',
+    text: 'De côté, les distances se voient. Les étoiles gardent leur taille.',
   },
 ] as const;
 

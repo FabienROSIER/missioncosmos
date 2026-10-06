@@ -68,9 +68,9 @@ export const MISSION_11: Mission = assertValidMission({
       kind: 'challenge',
       requiresSuccess: true,
       title: 'Les fiches mélangées',
-      body: 'Le robot a perdu les étiquettes de son album ! Il y a quatre fiches à réparer. Une spirale barrée est une variante des spirales : une barre d’étoiles traverse son centre et ses bras partent des extrémités de la barre. Observe chaque maquette de face pour retrouver sa forme.',
+      body: 'Le robot a perdu les étiquettes de son album ! Il y a quatre fiches à réparer. Une spirale barrée est une sorte de galaxie spirale : une barre d’étoiles traverse son centre et ses bras partent des deux bouts de la barre. Observe chaque maquette de face pour retrouver sa forme.',
       guideReminder: 'Tourne la galaxie et retrouve sa forme pour réparer les quatre fiches.',
-      hint: 'De face, cherche une barre au centre de la spirale. Sinon, compare les bras, le volume arrondi ou la forme désorganisée.',
+      hint: 'De face, cherche une barre au centre de la spirale. Sinon, compare les bras, la forme arrondie ou la forme désorganisée.',
       successFeedback:
         'Album réparé ! Tu reconnais les spirales avec ou sans barre, les elliptiques et les irrégulières.',
       ctaLabel: 'Comparer les échelles',
@@ -80,8 +80,8 @@ export const MISSION_11: Mission = assertValidMission({
       kind: 'challenge',
       requiresSuccess: true,
       title: 'Du petit au gigantesque',
-      body: 'Les cartes du zoom du robot sont mélangées : la Voie lactée, le Soleil et notre Système solaire. Touche-les du plus petit au plus grand pour préparer le voyage. Pense à ce qui est contenu dans quoi !',
-      guideReminder: 'Construis le zoom du plus petit au plus grand.',
+      body: 'Les cartes du voyage sont mélangées : la Voie lactée, le Soleil et notre Système solaire. Touche-les du plus petit au plus grand pour préparer le voyage. Pense à ce qui est contenu dans quoi !',
+      guideReminder: 'Range du plus petit au plus grand.',
       hint: 'Les planètes entourent le Soleil. Notre Système solaire appartient à la Voie lactée.',
       successFeedback:
         'Zoom prêt ! Une étoile fait partie d’un système, qui est une toute petite partie d’une galaxie.',
@@ -136,7 +136,7 @@ export const MISSION_11: Mission = assertValidMission({
   ],
   assets: [],
   notToScaleNotice:
-    'Maquettes artistiques générées par le jeu. Formes, couleurs et tailles simplifiées ; les vues ne sont pas une carte du ciel. Le zoom compare des niveaux, sans respecter leurs proportions réelles.',
+    'Formes, couleurs et tailles simplifiées. Ce n’est pas une carte du ciel. Les vraies proportions ne sont pas respectées.',
   funFacts: [
     'Andromède se trouve à environ 2,5 millions d’années-lumière de nous. Des galaxies plus petites sont encore plus proches.',
   ],

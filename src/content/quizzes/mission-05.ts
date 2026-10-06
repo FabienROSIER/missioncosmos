@@ -14,7 +14,7 @@ export const QUIZ_MISSION_05: Quiz = {
       ],
       correctChoiceId: '8',
       explainCorrect: 'Oui : 8 planètes, de Mercure à Neptune.',
-      explainWrong: 'On compte 8 planètes. Pluton n’est plus classée comme planète.',
+      explainWrong: 'Huit planètes : Pluton est classée parmi les planètes naines.',
     },
     {
       id: 'q2-order',

@@ -44,7 +44,7 @@ export function ProfileSetupForm({ onDone, initial, profileCount = 0 }: ProfileS
       </p>
 
       <label className={styles.label} htmlFor="mc-pseudo">
-        Pseudo <span className={styles.optional}>(facultatif)</span>
+        Nom d’explorateur <span className={styles.optional}>(au choix)</span>
       </label>
       <input
         id="mc-pseudo"
@@ -57,8 +57,8 @@ export function ProfileSetupForm({ onDone, initial, profileCount = 0 }: ProfileS
         autoComplete="nickname"
       />
 
-      <p className={styles.label}>Avatar</p>
-      <div className={styles.avatars} role="radiogroup" aria-label="Choix d’avatar">
+      <p className={styles.label}>Choisis ton image</p>
+      <div className={styles.avatars} role="radiogroup" aria-label="Choisis ton image">
         {AVATAR_IDS.map((id) => (
           <button
             key={id}

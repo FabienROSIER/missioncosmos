@@ -44,7 +44,7 @@ export const STARS: Record<StarId, StarDefinition> = {
     colorLabelFr: 'jaune-blanc',
     demoDistanceAu: 1,
     color: { r: 1, g: 0.86, b: 0.45 },
-    shortFact: 'Notre étoile : une étoile banale… et indispensable.',
+    shortFact: 'Le Soleil : une étoile comme d’autres, essentielle à notre vie.',
   },
   sirius: {
     id: 'sirius',
@@ -63,7 +63,7 @@ export const STARS: Record<StarId, StarDefinition> = {
     temperatureK: 3500,
     colorLabelFr: 'rouge',
     demoDistanceAu: 40,
-    estimateNote: 'Rayon estimé (variable) — ordre de grandeur.',
+    estimateNote: 'Taille estimée, qui peut varier.',
     color: { r: 1, g: 0.38, b: 0.22 },
     shortFact: 'Une géante rouge : énorme, mais plus froide que le Soleil.',
   },
@@ -182,8 +182,9 @@ export function temperatureBandFr(temperatureK: number): string {
 }
 
 export function radiusLabelFr(radiusSolar: number): string {
-  if (radiusSolar < 1) return `${radiusSolar.toString().replace('.', ',')} × le Soleil`;
-  if (radiusSolar === 1) return '1 × le Soleil';
-  if (radiusSolar < 10) return `${radiusSolar.toString().replace('.', ',')} × le Soleil`;
-  return `≈ ${Math.round(radiusSolar)} × le Soleil`;
+  const ratio =
+    radiusSolar < 10
+      ? `${radiusSolar.toString().replace('.', ',')} × le Soleil`
+      : `≈ ${Math.round(radiusSolar)} × le Soleil`;
+  return `Largeur : ${ratio}`;
 }

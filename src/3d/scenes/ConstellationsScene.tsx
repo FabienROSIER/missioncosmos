@@ -182,7 +182,7 @@ export function ConstellationsScene({
             onClick={() => {
               setUnderstood(true);
               setMessage(
-                'Oui ! Notre point de vue a changé. Les étoiles sont à des profondeurs différentes.',
+                'Oui ! Notre point de vue a changé. Les étoiles ne sont pas toutes à la même distance.',
               );
               onSuccess();
             }}
@@ -447,11 +447,11 @@ export function ConstellationsScene({
             </>
           )}
           <small>
-            Éclat relatif adapté à l’écran. Étoiles voisines et magnitudes :{' '}
+            Luminosité adaptée à l’écran. Données sur les étoiles :{' '}
             <a href="https://github.com/astronexus/HYG-Database" target="_blank" rel="noreferrer">
               HYG 4.1, Astronexus
             </a>{' '}
-            (CC BY-SA 4.0). Tracé simplifié.
+            (CC BY-SA 4.0). Dessin simplifié.
           </small>
           {stepId === 'mc-aquila' && (
             <button onClick={onSkipBonus}>

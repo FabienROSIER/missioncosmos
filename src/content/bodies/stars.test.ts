@@ -67,7 +67,7 @@ describe('stars learning', () => {
   });
 
   it('formate un libellé de rayon lisible', () => {
-    expect(radiusLabelFr(1)).toBe('1 × le Soleil');
+    expect(radiusLabelFr(1)).toBe('Largeur : 1 × le Soleil');
     expect(radiusLabelFr(0.15)).toContain('Soleil');
     expect(radiusLabelFr(700)).toContain('700');
   });

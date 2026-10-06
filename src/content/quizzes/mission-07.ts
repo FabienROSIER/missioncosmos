@@ -14,7 +14,7 @@ export const QUIZ_MISSION_07: Quiz = {
       ],
       correctChoiceId: 'tilt',
       explainCorrect:
-        'Oui : l’inclinaison fait qu’un hémisphère reçoit des rayons plus directs selon le moment de l’année.',
+        'Penchée vers le Soleil, une moitié reçoit sa lumière moins de travers. Elle chauffe davantage : c’est l’été.',
       explainWrong: 'La rotation fait le jour et la nuit. Les saisons viennent surtout de l’inclinaison.',
     },
     {
@@ -39,7 +39,7 @@ export const QUIZ_MISSION_07: Quiz = {
         { id: 'same', label: 'Il n’y a pas de saison au sud' },
       ],
       correctChoiceId: 'winter-south',
-      explainCorrect: 'Oui : les hémisphères sont à l’envers pour les saisons.',
+      explainCorrect: 'Été au nord, hiver au sud : les saisons sont opposées.',
       explainWrong: 'Nord et sud ont des saisons opposées.',
     },
     {

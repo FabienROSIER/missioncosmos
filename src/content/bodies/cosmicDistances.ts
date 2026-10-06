@@ -13,7 +13,7 @@ export const DISTANCE_STOPS = [
     title: 'Le Soleil',
     measure: 'Terre → Soleil · distance moyenne',
     value: '1 UA · environ 150 millions de km',
-    note: 'Une unité astronomique (UA) correspond à la distance moyenne Terre–Soleil. La lumière met environ 8 minutes et 20 secondes.',
+    note: '1 UA = la distance moyenne entre la Terre et le Soleil. La lumière met environ 8 minutes et 20 secondes.',
   },
   {
     id: 'system',
@@ -32,7 +32,7 @@ export const DISTANCE_STOPS = [
   {
     id: 'milky-way',
     title: 'La Voie lactée',
-    measure: 'Diamètre approximatif du disque étoilé',
+    measure: 'Largeur du disque d’étoiles, estimée',
     value: 'Environ 100 000 années-lumière',
     note: 'Ici, on compare la largeur de la galaxie, pas sa distance depuis la Terre : nous sommes à l’intérieur.',
   },
@@ -46,7 +46,7 @@ export const DISTANCE_STOPS = [
   {
     id: 'universe',
     title: 'L’Univers observable',
-    measure: 'Diamètre actuel estimé de la région observable',
+    measure: 'Largeur de l’Univers observable, estimée aujourd’hui',
     value: 'Environ 93 milliards d’années-lumière',
     note: 'C’est la région dont la lumière peut nous parvenir, pas le bord de tout l’Univers. L’espace s’est agrandi pendant le voyage de cette lumière.',
   },

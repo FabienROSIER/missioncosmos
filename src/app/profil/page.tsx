@@ -30,7 +30,7 @@ export default function ProfilPage() {
               <h2 className={styles.name}>
                 {profile.displayName.trim() || 'Explorateur'}
               </h2>
-              <p className={styles.meta}>Profil actif sur cet appareil</p>
+              <p className={styles.meta}>Tu joues avec ce profil.</p>
             </div>
           </div>
         ) : (

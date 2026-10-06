@@ -34,7 +34,7 @@ export const QUIZ_MISSION_10: Quiz = {
       id: 'q3-shape',
       prompt: 'Vue de profil, la Voie lactée ressemble surtout à…',
       choices: [
-        { id: 'disk', label: 'Un disque avec un renflement au centre' },
+        { id: 'disk', label: 'Un disque plus épais au centre' },
         { id: 'sphere', label: 'Une boule pleine comme une planète' },
         { id: 'line', label: 'Une rangée de huit étoiles' },
       ],

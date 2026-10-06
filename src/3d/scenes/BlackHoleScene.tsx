@@ -157,7 +157,7 @@ export function BlackHoleScene({
         callbacks.current.onSuccess?.();
       } else {
         callbacks.current.onMiss?.(
-          'La planète garde son orbite : la masse centrale, sa distance et sa vitesse sont restées les mêmes.',
+          'Même masse au centre, même distance et même vitesse au départ : la planète garde son orbite.',
         );
       }
     }, 4300);
@@ -807,8 +807,8 @@ export function BlackHoleScene({
         <p className={styles.note}>
           {equalMassChallenge
             ? centralReplaced
-              ? 'Trou noir de même masse · orbite distante conservée'
-              : 'Étoile et planète · distance et vitesse initiales conservées'
+              ? 'Même masse : la planète garde son orbite.'
+              : 'Distance et vitesse de départ identiques.'
             : detectionChallenge
               ? detectionPaths
                 ? 'Indice affiché · cherche un centre commun aux trois trajectoires'
@@ -855,7 +855,7 @@ export function BlackHoleScene({
           )}
           {equalMassChallenge && (
             <div className={styles.predictionControls}>
-              <div className={styles.predictions} aria-label="Choisir une prédiction">
+              <div className={styles.predictions} aria-label="Choisis ce qui va se passer">
                 <button
                   aria-pressed={orbitPrediction === 'stable'}
                   disabled={comparisonRunning}

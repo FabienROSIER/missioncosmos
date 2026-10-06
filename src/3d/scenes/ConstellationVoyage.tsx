@@ -359,7 +359,7 @@ export function ConstellationVoyage({ mode, onSuccess, interactive = true }: Pro
                     disabled={!ready}
                     onClick={() => (reducedFilm ? nextTableau() : setPlaying(!playing))}
                   >
-                    {reducedFilm ? 'Tableau suivant' : playing ? 'Pause' : 'Reprendre'}
+                    {reducedFilm ? 'Étape suivante' : playing ? 'Pause' : 'Reprendre'}
                   </button>
                   <button disabled={!ready} onClick={finishFilm}>
                     Passer
@@ -376,13 +376,13 @@ export function ConstellationVoyage({ mode, onSuccess, interactive = true }: Pro
               {time >= CONSTELLATION_FILM_DURATION
                 ? 'Voyage terminé ! Tu peux continuer ou le revoir.'
                 : reducedFilm
-                  ? 'Avance avec « Tableau suivant », sans mouvement automatique.'
+                  ? 'Avance avec « Étape suivante », sans mouvement automatique.'
                   : 'Observe comment le dessin change quand le vaisseau se déplace.'}
             </p>
           </>
         )}
         <small>
-          Maquette : profondeurs de démonstration, pas distances réelles. Le voyage représente un
+          Distances choisies pour l’expérience, différentes des vraies distances. Le voyage représente un
           immense déplacement.
         </small>
       </SceneControls>

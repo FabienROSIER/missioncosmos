@@ -9,7 +9,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     id: 'unite-astronomique',
     term: 'Unité astronomique',
     definition:
-      'Une unité de distance correspondant à la distance moyenne entre la Terre et le Soleil.',
+      'Une unité astronomique (UA) vaut la distance moyenne entre la Terre et le Soleil.',
     enrichedDefinition:
       'On écrit UA. Une UA vaut environ 150 millions de kilomètres. Cette unité est pratique pour comparer les distances des planètes au Soleil.',
     unlockRewardId: 'reward-distances',
@@ -27,9 +27,9 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
   {
     id: 'univers-observable',
     term: 'Univers observable',
-    definition: 'La région de l’Univers dont la lumière peut nous parvenir.',
+    definition: 'La partie de l’Univers dont la lumière peut nous arriver.',
     enrichedDefinition:
-      'Sa limite dépend de ce que nous pouvons observer, pas d’un mur ou du bord de tout l’Univers. L’expansion de l’espace explique que son diamètre actuel soit bien plus grand que 13,8 milliards d’années-lumière.',
+      'Sa limite dépend de ce que nous pouvons observer, pas d’un mur ou du bord de tout l’Univers. L’espace s’agrandit pendant le voyage de la lumière. L’Univers observable dépasse donc 13,8 milliards d’années-lumière de large.',
     unlockRewardId: 'reward-distances',
     aliases: ['Univers observable', 'univers observable'],
   },
@@ -38,7 +38,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     term: 'Galaxie spirale barrée',
     definition: 'Une galaxie spirale avec une barre d’étoiles qui traverse son centre.',
     enrichedDefinition:
-      'Ses principaux bras partent des extrémités de la barre. C’est une forme de galaxie spirale, pas une famille indépendante.',
+      'Ses grands bras partent des deux bouts de la barre. C’est une forme de galaxie spirale, pas une famille indépendante.',
     unlockRewardId: 'reward-galaxies',
     aliases: ['spirale barrée', 'spirales barrées', 'galaxie spirale barrée'],
   },
@@ -65,7 +65,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     term: 'Galaxie elliptique',
     definition: 'Une galaxie arrondie ou allongée, sans bras en spirale.',
     enrichedDefinition:
-      'Ce n’est pas une boule pleine : ses nombreuses étoiles sont réparties dans un volume.',
+      'Ses étoiles sont réparties dans l’espace : ce n’est pas une boule pleine.',
     unlockRewardId: 'reward-galaxies',
     aliases: ['galaxie elliptique', 'galaxies elliptiques'],
   },
@@ -73,7 +73,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     id: 'galaxie-irreguliere',
     term: 'Galaxie irrégulière',
     definition:
-      'Une galaxie qui n’a pas de forme bien organisée, comme une spirale ou une ellipse.',
+      'Une galaxie qui n’a pas de forme bien organisée, comme une spirale ou une forme ovale.',
     enrichedDefinition:
       'Même sans forme régulière, c’est un immense ensemble d’étoiles, de gaz et de poussière rassemblés par la gravité.',
     unlockRewardId: 'reward-galaxies',
@@ -121,7 +121,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     id: 'pole',
     term: 'Pôle',
     definition:
-      'Une extrémité de l’axe autour duquel la Terre tourne. Il y a le pôle Nord (en haut) et le pôle Sud (en bas).',
+      'Un des deux bouts de l’axe autour duquel la Terre tourne. Il y a le pôle Nord (en haut) et le pôle Sud (en bas).',
     enrichedDefinition:
       'Aux pôles, il fait très froid. Selon la saison, on peut avoir de longues journées ou de longues nuits.',
     unlockRewardId: 'reward-earth-explorer',
@@ -131,7 +131,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     id: 'axe-rotation',
     term: 'Axe de rotation',
     definition:
-      'La ligne imaginaire qui traverse la Terre des pôles. La Terre tourne autour de cet axe : c’est ce qui donne le jour et la nuit.',
+      'La ligne imaginaire entre les pôles Nord et Sud. La Terre tourne autour.',
     enrichedDefinition:
       'La Terre tourne une fois en environ 24 heures. Ce n’est pas l’axe qu’on voit dans le ciel : c’est une ligne inventée pour expliquer le mouvement.',
     unlockRewardId: 'reward-earth-explorer',
@@ -171,7 +171,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     id: 'lune',
     term: 'Lune',
     definition:
-      'Le satellite naturel de la Terre. Elle n’émet pas de lumière : elle réfléchit celle du Soleil.',
+      'La Lune tourne autour de la Terre : c’est son satellite naturel. Elle nous renvoie la lumière du Soleil.',
     enrichedDefinition:
       'La Lune fait un tour autour de la Terre en environ un mois. C’est pour ça que les phases se répètent à peu près chaque mois.',
     unlockRewardId: 'reward-moon-phases',
@@ -181,7 +181,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     id: 'phase-lune',
     term: 'Phase de la Lune',
     definition:
-      'La forme de la Lune qu’on voit depuis la Terre : nouvelle, croissant, quartier, gibbeuse, pleine.',
+      'Les formes vues depuis la Terre : invisible, croissant, moitié, presque pleine, pleine.',
     enrichedDefinition:
       'Ce n’est pas la Lune qui change de taille. On voit plus ou moins la moitié éclairée par le Soleil, selon sa position.',
     unlockRewardId: 'reward-moon-phases',
@@ -203,7 +203,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     definition:
       'La zone sans lumière derrière un objet éclairé. La Terre et la Lune ont chacune une ombre dans l’espace.',
     enrichedDefinition:
-      'Dans les missions, on montre des cônes d’ombre simplifiés pour comprendre les éclipses — ce n’est pas une simulation exacte.',
+      'Les ombres sont simplifiées pour comprendre les éclipses.',
     unlockRewardId: 'reward-eclipses',
     aliases: ['ombre', 'ombres', 'pénombre'],
   },
@@ -212,7 +212,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     term: 'Système solaire',
     definition: 'Le Soleil et tout ce qui tourne autour : planètes, lunes, astéroïdes, comètes…',
     enrichedDefinition:
-      'Il y a 8 planètes. Les distances sont énormes : les maquettes de l’app ne sont pas à l’échelle.',
+      'Il y a 8 planètes. Tailles et distances changées pour bien voir les objets.',
     unlockRewardId: 'reward-solar-system',
     aliases: ['système solaire', 'systeme solaire'],
   },
@@ -220,7 +220,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     id: 'planete',
     term: 'Planète',
     definition:
-      'Un gros corps qui tourne autour du Soleil (chez nous) et qui a « nettoyé » son voisinage.',
+      'Un grand objet presque rond qui tourne autour d’une étoile et domine sa zone.',
     enrichedDefinition:
       'Mercure, Vénus, Terre, Mars, Jupiter, Saturne, Uranus, Neptune : voilà les 8.',
     unlockRewardId: 'reward-solar-system',
@@ -230,7 +230,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     id: 'planete-naine',
     term: 'Planète naine',
     definition:
-      'Un corps rond qui tourne autour du Soleil, mais trop petit pour être une planète. Exemple : Pluton.',
+      'Un objet presque rond qui tourne autour du Soleil, sans dominer sa zone. Exemple : Pluton.',
     enrichedDefinition:
       'Pluton n’est plus comptée comme 9e planète depuis 2006. Il existe d’autres planètes naines plus loin.',
     unlockRewardId: 'reward-solar-system',
@@ -252,7 +252,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     definition:
       'La force qui attire les objets les uns vers les autres. Le Soleil attire les planètes.',
     enrichedDefinition:
-      'Sans mouvement de côté, une planète tomberait vers le Soleil. Avec ce mouvement + l’attraction, elle reste en orbite. Ce n’est pas une corde invisible.',
+      'Le Soleil attire la planète. Son mouvement de côté lui permet de rester en orbite. Ce n’est pas une corde invisible.',
     unlockRewardId: 'reward-orbits',
     aliases: ['gravité', 'gravite', 'attirer', 'attraction'],
   },
@@ -260,9 +260,9 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     id: 'inclinaison',
     term: 'Inclinaison',
     definition:
-      'La Terre n’est pas droite : son axe est penché d’environ 23°. C’est cette inclinaison qui donne les saisons.',
+      'L’axe de la Terre est penché d’environ 23°. Cela donne les saisons.',
     enrichedDefinition:
-      'Sans inclinaison, il n’y aurait presque plus d’été ni d’hiver liés à la position sur l’orbite.',
+      'Sans cette inclinaison, presque plus d’été ni d’hiver.',
     unlockRewardId: 'reward-seasons',
     aliases: ['inclinaison', 'penchée', 'pencher', 'axe penché'],
   },
@@ -312,7 +312,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     definition:
       'Une étoile très gonflée et plutôt rouge. Elle est bien plus grande que le Soleil, mais sa surface est plus froide.',
     enrichedDefinition:
-      'Bételgeuse est un exemple. Son rayon exact change un peu : on donne un ordre de grandeur.',
+      'Bételgeuse est un exemple. Sa taille change : les nombres sont approximatifs.',
     unlockRewardId: 'reward-stars',
     aliases: ['géante rouge', 'geante rouge', 'Bételgeuse', 'Betelgeuse'],
   },
@@ -320,7 +320,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     id: 'temperature-etoile',
     term: 'Température d’une étoile',
     definition:
-      'La chaleur de la surface de l’étoile. En simplifiant : plus chaude → plus bleutée ; plus froide → plus rouge.',
+      'La chaleur de la surface de l’étoile. Surface plus chaude : plutôt bleue. Moins chaude : plutôt rouge.',
     enrichedDefinition:
       'Ce n’est pas toute l’histoire de la lumière des étoiles — on l’approfondit dans une autre mission.',
     unlockRewardId: 'reward-stars',
@@ -341,7 +341,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     term: 'Prisme',
     definition: 'Un morceau de verre qui peut séparer les couleurs de la lumière blanche.',
     enrichedDefinition:
-      'Les différentes couleurs sont déviées différemment par le verre. Elles sortent séparées, en arc-en-ciel.',
+      'Le verre change le trajet des couleurs. Elles sortent séparées.',
     unlockRewardId: 'reward-stellar-light',
     aliases: ['prisme', 'prismes'],
   },
@@ -361,7 +361,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     definition:
       'Quand plusieurs lumières éclairent le même endroit, elles s’ajoutent : rouge + vert font du jaune.',
     enrichedDefinition:
-      'Rouge + bleu font du rose (magenta), vert + bleu font du cyan, et les trois ensemble donnent du blanc. La peinture se mélange autrement.',
+      'Rouge + bleu font du rose (magenta), vert et bleu donnent du bleu-vert, appelé cyan, et les trois ensemble donnent du blanc. La peinture se mélange autrement.',
     unlockRewardId: 'reward-stellar-light',
     aliases: ['mélanges de lumières', 'mélange de lumières', 'projecteurs'],
   },
@@ -371,7 +371,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     definition:
       'Un instrument qui étale la lumière pour étudier ses couleurs. Les astronomes s’en servent pour « lire » les étoiles.',
     enrichedDefinition:
-      'Avec un vrai spectroscope, on voit aussi des raies fines manquantes ou plus sombres — omises dans notre laboratoire pédagogique.',
+      'Le spectroscope sépare les couleurs. De fines lignes sombres aident à étudier les étoiles. Elles ne sont pas montrées ici.',
     unlockRewardId: 'reward-stellar-light',
     aliases: ['spectroscope', 'spectroscopes', 'spectroscopie'],
   },
@@ -381,7 +381,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     definition:
       'Une unité de température (symbole K). Les astronomes l’utilisent pour parler de la surface des étoiles.',
     enrichedDefinition:
-      'Le Soleil fait environ 5800 K en surface. 0 K, c’est le zéro absolu — bien plus froid que 0 °C.',
+      'Soleil : environ 5 800 kelvins en surface. Zéro kelvin : la température la plus basse possible, bien sous 0 °C.',
     unlockRewardId: 'reward-stellar-light',
     aliases: ['kelvin', 'kelvins', 'K', 'température'],
   },
@@ -389,7 +389,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     id: 'trou-noir',
     term: 'Trou noir',
     definition:
-      'Une région où énormément de matière est concentrée dans très peu de place. Sa gravité est extrêmement forte.',
+      'Une région où énormément de matière tient dans un tout petit espace. Sa gravité est extrêmement forte.',
     enrichedDefinition:
       'Un trou noir n’est pas un aspirateur cosmique. Assez loin, un objet peut rester en orbite autour de lui, comme autour d’un autre objet de même masse.',
     unlockRewardId: 'reward-black-hole-detective',
@@ -401,7 +401,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     definition:
       'La limite autour d’un trou noir au-delà de laquelle rien ne peut ressortir, même pas la lumière.',
     enrichedDefinition:
-      'L’horizon n’est pas une paroi solide. Nous ne pouvons pas observer directement ce qui se passe à l’intérieur.',
+      'L’horizon n’est pas un mur solide. Nous ne pouvons pas observer directement ce qui se passe à l’intérieur.',
     unlockRewardId: 'reward-black-hole-detective',
     aliases: ['horizon', 'horizon des événements', 'horizon des evenements'],
   },
@@ -409,7 +409,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     id: 'disque-accretion',
     term: 'Disque d’accrétion',
     definition:
-      'Du gaz et de la matière qui tournent autour de certains trous noirs et peuvent devenir très lumineux en chauffant.',
+      'Du gaz et de la matière qui tournent autour de certains trous noirs et peuvent briller en devenant très chauds.',
     enrichedDefinition:
       'La lumière vient de la matière située à l’extérieur du trou noir. Tous les trous noirs ne possèdent pas un disque lumineux.',
     unlockRewardId: 'reward-black-hole-detective',

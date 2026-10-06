@@ -48,9 +48,9 @@ export const MISSION_13: Mission = assertValidMission({
       completionMode: 'discovery',
       requiresSuccess: true,
       title: 'Des indices dans les orbites',
-      body: 'Affiche la trajectoire de l’étoile dorée, puis suis son mouvement. Elle accélère quand elle se rapproche et ralentit quand elle s’éloigne. Son orbite nous révèle une masse dans la région sombre.',
+      body: 'Affiche la trajectoire de l’étoile dorée, puis suis son mouvement. Elle accélère quand elle se rapproche et ralentit quand elle s’éloigne. Son orbite révèle un objet invisible qui l’attire.',
       guideReminder: 'Affiche puis suis la trajectoire de l’étoile dorée.',
-      successFeedback: 'Le mouvement de l’étoile révèle une masse invisible.',
+      successFeedback: 'Le mouvement de l’étoile révèle un objet invisible.',
       ctaLabel: 'Observer un autre exemple',
     },
     {
@@ -70,8 +70,8 @@ export const MISSION_13: Mission = assertValidMission({
       completionMode: 'discovery',
       requiresSuccess: true,
       title: 'La frontière de non-retour',
-      body: 'Cette coupe est un schéma. Déclenche un signal dirigé vers l’extérieur depuis chaque émetteur. Compare ce qui se passe dehors et dedans, puis repère l’horizon des événements.',
-      guideReminder: 'Teste les deux émetteurs, dehors puis dedans.',
+      body: 'Ce dessin montre l’intérieur. Envoie la lumière vers l’extérieur, depuis le point dehors puis celui dedans.',
+      guideReminder: 'Teste le point dehors, puis le point dedans.',
       successFeedback:
         'Depuis l’intérieur de l’horizon, même un signal lumineux ne peut plus ressortir.',
       ctaLabel: 'Relever le premier défi',
@@ -81,8 +81,8 @@ export const MISSION_13: Mission = assertValidMission({
       kind: 'challenge',
       requiresSuccess: true,
       title: 'Même masse, même orbite ?',
-      body: 'Une planète tourne loin de son étoile. Imagine que nous remplaçons cette étoile par un trou noir de même masse. Prédis ce qui arrivera, puis lance la comparaison.',
-      guideReminder: 'Choisis une prédiction avant de lancer la comparaison.',
+      body: 'Une planète tourne loin de son étoile. Imagine que nous remplaçons cette étoile par un trou noir de même masse, avec autant de matière. Choisis ce qui va se passer, puis vérifie avec l’expérience.',
+      guideReminder: 'Choisis avant de lancer l’expérience.',
       hint: 'La masse au centre est restée la même. Observe aussi la distance de la planète.',
       successFeedback:
         'De loin, un trou noir attire comme un autre objet de même masse : la planète peut conserver son orbite.',
@@ -93,10 +93,10 @@ export const MISSION_13: Mission = assertValidMission({
       kind: 'challenge',
       requiresSuccess: true,
       title: 'Détective de l’invisible',
-      body: 'Trois régions sont candidates. Cherche celle dont les étoiles tournent autour d’un même centre invisible. Les trajectoires peuvent t’aider, mais un mouvement orbital reste un indice à vérifier.',
+      body: 'L’objet invisible pourrait être dans l’une de ces trois régions. Cherche celle dont les étoiles tournent autour d’un même centre invisible. Les étoiles qui tournent donnent un indice à vérifier.',
       guideReminder: 'Cherche le centre commun des orbites.',
       hint: 'Affiche les trajectoires et cherche la région autour de laquelle elles s’organisent.',
-      successFeedback: 'Les mouvements concordants montrent où chercher l’objet invisible.',
+      successFeedback: 'Ces étoiles tournent autour du même endroit. Cherchons l’objet invisible ici.',
       ctaLabel: 'Rassembler les découvertes',
     },
     {
@@ -141,5 +141,5 @@ export const MISSION_13: Mission = assertValidMission({
   glossaryIds: ['trou-noir', 'horizon-evenements', 'disque-accretion', 'gravite', 'orbite'],
   assets: [],
   notToScaleNotice:
-    'Maquette pédagogique : tailles, distances et durées adaptées. Effets lumineux stylisés ; aucune simulation complète de la relativité.',
+    'Tailles, distances et durées simplifiées. Certains effets d’un vrai trou noir ne sont pas représentés.',
 });

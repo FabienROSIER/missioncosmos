@@ -47,7 +47,7 @@ export const QUIZ_MISSION_03: Quiz = {
       ],
       correctChoiceId: 'opposite',
       explainCorrect:
-        'Exact : face à la face éclairée, on voit presque tout le disque lumineux.',
+        'Exact : depuis la Terre, nous voyons presque toute la face éclairée.',
       explainWrong:
         'Entre Terre et Soleil, on voit plutôt une nouvelle Lune (presque invisible).',
     },

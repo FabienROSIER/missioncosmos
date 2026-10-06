@@ -623,7 +623,7 @@ export function SeasonsScene({
             Printemps
           </button>
           <button type="button" className={styles.jumpBtn} onClick={() => jump(NORTH_SUMMER_ANGLE)}>
-            Été N
+            Été au nord
           </button>
           <button type="button" className={styles.jumpBtn} onClick={() => jump(Math.PI)}>
             Automne
@@ -633,7 +633,7 @@ export function SeasonsScene({
             className={styles.jumpBtn}
             onClick={() => jump(NORTH_SUMMER_ANGLE + Math.PI)}
           >
-            Hiver N
+            Hiver au nord
           </button>
         </div>
         {hint ? (

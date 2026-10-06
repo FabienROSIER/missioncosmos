@@ -35,7 +35,7 @@ export const UNIVERSE_ZONES: UniverseZone[] = [
   {
     id: 'moon',
     title: 'La Lune',
-    blurb: 'Notre satellite, tout près.',
+    blurb: 'La Lune tourne autour de la Terre.',
     missionIds: ['mission-03', 'mission-04'],
   },
   {

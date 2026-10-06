@@ -978,9 +978,9 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
       : challengeObservatory
         ? 'Cadre chaque étoile : si elle déborde, éloigne le télescope ; si elle paraît trop petite, rapproche-le.'
         : challengeNorthernSummer
-          ? 'Glisse la Terre (ou utilise Été N) pour que le nord soit penché vers le Soleil.'
+          ? 'Glisse la Terre (ou utilise Été au nord) pour que le nord soit penché vers le Soleil.'
           : challengeOrbitFall
-            ? 'Règle le curseur, lance, observe, puis ajuste — sans zones colorées toutes faites.'
+            ? 'Règle la vitesse, lance le Guide, puis ajuste si besoin.'
             : challengeOrbitRace
               ? 'Touche la planète qui finit un tour en premier (la plus rapide).'
               : challengePlanetOrder
@@ -993,7 +993,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                     ? targetPhase === 'full'
                       ? 'Glisse pour mettre la Lune à l’opposé du Soleil (pleine Lune dans la vue Terre).'
                       : targetPhase === 'crescent'
-                        ? 'Glisse pour rapprocher la Lune du Soleil, sans la coller dessus (croissant).'
+                        ? 'Déplace la Lune sur son orbite, côté Soleil. Cherche un croissant dans la petite vue.'
                         : targetPhase === 'new'
                           ? 'Glisse pour mettre la Lune presque entre la Terre et le Soleil.'
                           : targetPhase === 'quarter'
@@ -1223,7 +1223,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
               }}
               disabled={!cameraApi || recentering}
             >
-              Recentrer
+              Vue de départ
             </button>
             {mission.notToScaleNotice ? (
               <details className={styles.sceneNotice}>

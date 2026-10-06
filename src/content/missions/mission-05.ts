@@ -47,7 +47,7 @@ export const MISSION_05: Mission = assertValidMission({
       completionMode: 'discovery',
       requiresSuccess: true,
       title: 'Huit planètes',
-      body: 'Il y a 8 planètes. Ici, tailles et distances ne sont pas à l’échelle. Touche une planète, ou utilise Préc. / Suiv., pour lire sa fiche.',
+      body: 'Il y a 8 planètes. Planètes rapprochées, tailles changées pour bien les voir. Touche une planète, ou utilise Précédente / Suivante, pour lire sa fiche.',
       guideReminder: 'Touche une planète pour ouvrir sa fiche.',
       successFeedback: 'Tu as ouvert une fiche. Chaque planète a sa place autour du Soleil.',
       ctaLabel: 'Les ranger dans l’ordre',
@@ -84,7 +84,7 @@ export const MISSION_05: Mission = assertValidMission({
       id: 'm05-explain',
       kind: 'explain',
       title: 'Et Pluton ?',
-      body: 'Pluton n’est pas une 9e planète : c’est une planète naine, plus petite, avec d’autres objets lointains. Les planètes du système solaire sont 8.',
+      body: 'Pluton est une planète naine. Elle n’est pas comptée parmi les huit planètes.',
       ctaLabel: 'Petit quiz',
     },
     {
@@ -132,5 +132,5 @@ export const MISSION_05: Mission = assertValidMission({
       credit: 'Pack système solaire (usage perso)',
     },
   ],
-  notToScaleNotice: 'Chaque vue précise son échelle : maquette, diamètres ou distances.',
+  notToScaleNotice: 'Trois vues : reconnaître les planètes, comparer leurs tailles, comparer leurs distances.',
 });

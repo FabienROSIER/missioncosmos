@@ -11,7 +11,7 @@ export function MusicSetting() {
     <div className={styles.block}>
       <h2 className={styles.heading}>Musique</h2>
       <p className={styles.copy}>
-        Une ambiance pour les menus, d’autres pistes mélangées pendant les missions.
+        Une musique dans les menus, plusieurs pendant les missions.
       </p>
       <label className={styles.row}>
         <input

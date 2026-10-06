@@ -6,7 +6,7 @@ export const REWARD_ORBITS: Reward = {
   id: 'reward-orbits',
   title: 'Gardien des orbites',
   description:
-    'Tu sais qu’une orbite est un chemin autour du Soleil, que plus une planète est proche plus son année est courte, et qu’orbiter c’est « tomber » sans jamais arriver.',
+    'Tu sais qu’une orbite est un chemin autour du Soleil, que plus une planète est proche plus son année est courte, et qu’orbiter, c’est tomber tout en avançant de côté pour éviter le centre.',
   kind: 'badge',
 };
 
@@ -75,7 +75,7 @@ export const MISSION_06: Mission = assertValidMission({
       requiresSuccess: true,
       challengeOrbitFall: true,
       successFeedback:
-        'Bravo ! Orbite = elle tombe vers la Terre, mais avance assez vite sur le côté pour ne jamais y arriver.',
+        'Bravo ! Le Guide tombe vers la Terre, mais avance assez vite de côté pour la manquer. Il reste en orbite.',
       hint: 'Regarde ce qui se passe après le lancement, puis ajuste un peu — pas d’un seul coup.',
       ctaLabel: 'Continuer',
     },
@@ -83,7 +83,7 @@ export const MISSION_06: Mission = assertValidMission({
       id: 'm06-explain',
       kind: 'explain',
       title: 'Pourquoi ça tourne ?',
-      body: 'Le Soleil (ou la Terre pour le Guide) attire. Comme il avance déjà sur le côté, il rate le centre : il reste en orbite — une chute perpétuelle. Plus près → tour plus court. (Cercles ici pour bien voir ; en vrai un peu ovales.)',
+      body: 'Le Soleil attire les planètes. Leur mouvement de côté les garde en orbite. Plus près du Soleil, un tour dure moins longtemps.',
       ctaLabel: 'Petit quiz',
     },
     {
@@ -132,5 +132,5 @@ export const MISSION_06: Mission = assertValidMission({
     },
   ],
   notToScaleNotice:
-    'Orbites en cercles pour comparer. Vitesses relatives fidèles aux périodes ; tailles et distances = maquette.',
+    'Cercles pour comparer. Temps accéléré, durées des tours respectées. Tailles et distances simplifiées.',
 });

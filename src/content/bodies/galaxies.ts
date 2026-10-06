@@ -3,7 +3,7 @@ import { galaxyPoints } from './milkyWay';
 export const GALAXY_FAMILIES = ['spiral', 'barred-spiral', 'elliptical', 'irregular'] as const;
 export type GalaxyFamily = (typeof GALAXY_FAMILIES)[number];
 export const GALAXY_FAMILY_LABELS: Record<GalaxyFamily, string> = {
-  spiral: 'Spirale non barrée',
+  spiral: 'Spirale sans barre',
   'barred-spiral': 'Spirale barrée',
   elliptical: 'Elliptique',
   irregular: 'Irrégulière',
