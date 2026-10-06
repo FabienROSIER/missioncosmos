@@ -46,6 +46,20 @@ describe('verrouillage des manipulations de mission', () => {
     expect(canInteract(stepById('m01-intro'), false, true)).toBe(true);
   });
 
+  it('affiche la question des constellations sans À toi de jouer', () => {
+    const step = stepById('mc-understand');
+    expect(isPlayGatedStep(step)).toBe(false);
+    expect(canInteract(step, false, true)).toBe(true);
+    expect(
+      canInteractWithScene({
+        step,
+        playStarted: false,
+        guideExpanded: true,
+        challengeSolved: true,
+      }),
+    ).toBe(false);
+  });
+
   it('garde les activités intégrées au panneau du Guide hors de la scène', () => {
     for (const id of ['m05-scale', 'm05-distances']) {
       const step = stepById(id);

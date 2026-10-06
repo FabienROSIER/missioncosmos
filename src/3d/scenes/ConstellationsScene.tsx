@@ -28,6 +28,8 @@ type Props = {
   stepId: string;
   onSuccess: () => void;
   onSkipBonus?: () => void;
+  /** Faux tant que « À toi de jouer » n’a pas ouvert la scène. */
+  interactive?: boolean;
 };
 
 function SkyGlyph({
@@ -67,7 +69,13 @@ function SkyGlyph({
   );
 }
 
-export function ConstellationsScene({ className, stepId, onSuccess, onSkipBonus }: Props) {
+export function ConstellationsScene({
+  className,
+  stepId,
+  onSuccess,
+  onSkipBonus,
+  interactive = true,
+}: Props) {
   const artworkId = useId().replace(/:/g, '');
   const free = stepId === 'mc-complete';
   const intro = stepId === 'mc-intro' || stepId === 'mc-reward' || stepId === 'mc-quiz';
@@ -149,6 +157,7 @@ export function ConstellationsScene({ className, stepId, onSuccess, onSkipBonus 
         <ConstellationVoyage
           mode={stepId === 'mc-film' ? 'film' : 'perspective'}
           onSuccess={onSuccess}
+          interactive={interactive}
         />
       </div>
     );

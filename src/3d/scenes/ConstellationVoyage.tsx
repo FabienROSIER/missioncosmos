@@ -29,10 +29,15 @@ import { withBasePath } from '@/lib/basePath';
 import { prefersReducedMotion } from '@/lib/motion';
 import styles from './ConstellationsScene.module.css';
 
-type Props = { mode: 'perspective' | 'film'; onSuccess: () => void };
+type Props = {
+  mode: 'perspective' | 'film';
+  onSuccess: () => void;
+  /** Faux tant que le Guide n’a pas lancé « À toi de jouer ». */
+  interactive?: boolean;
+};
 
 /** Real Babylon scene: fixed model positions, camera movement only. */
-export function ConstellationVoyage({ mode, onSuccess }: Props) {
+export function ConstellationVoyage({ mode, onSuccess, interactive = true }: Props) {
   const [ready, setReady] = useState(false);
   const [offset, setOffset] = useState(82);
   const [time, setTime] = useState(0);
@@ -43,9 +48,13 @@ export function ConstellationVoyage({ mode, onSuccess }: Props) {
   const sample = useRef({ offset: mode === 'film' ? 0 : perspectiveOffset(82), lines: true });
   const callback = useRef(onSuccess);
   const completed = useRef(false);
+  const interactiveRef = useRef(interactive);
   useEffect(() => {
     callback.current = onSuccess;
   }, [onSuccess]);
+  useEffect(() => {
+    interactiveRef.current = interactive;
+  }, [interactive]);
 
   const view = filmView(time);
   const chapter = CONSTELLATION_FILM_CHAPTERS[view.chapter]!;
@@ -57,12 +66,24 @@ export function ConstellationVoyage({ mode, onSuccess }: Props) {
   }, [mode, view.offset, offset, time]);
 
   const finish = useCallback(() => {
+    // Le film peut tourner derrière la consigne. On n’enregistre la réussite
+    // qu’une fois la scène ouverte, sinon le bouton « Continuer » n’apparaît jamais.
+    if (!interactiveRef.current) return;
     setDone(true);
     if (!completed.current) {
       completed.current = true;
       callback.current();
     }
   }, []);
+
+  useEffect(() => {
+    if (mode !== 'film' || !ready || done) return;
+    if (!interactive) {
+      setPlaying(false);
+      return;
+    }
+    if (!reducedFilm) setPlaying(true);
+  }, [interactive, mode, ready, done, reducedFilm]);
 
   useEffect(() => {
     if (!playing) return;
@@ -201,7 +222,6 @@ export function ConstellationVoyage({ mode, onSuccess }: Props) {
       });
       const reducedMotion = prefersReducedMotion();
       setReducedFilm(reducedMotion);
-      setPlaying(mode === 'film' && !reducedMotion);
       setReady(true);
       return () => {
         scene.onBeforeRenderObservable.remove(observer);

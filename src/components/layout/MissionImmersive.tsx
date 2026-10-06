@@ -281,7 +281,9 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   });
   const showPlayButton =
     guideExpanded && !hasMoreGuideText && guideCanFold && !challengeSolved && playGatedStep;
-  const showSceneControls = hasSceneControls && sceneInteractionAllowed;
+  const showSceneControls =
+    hasSceneControls &&
+    (sceneInteractionAllowed || (isConstellations && step.id === 'mc-film' && challengeSolved));
   const quiz = step.quizId ? getQuizById(step.quizId) : undefined;
   const glossaryEntries = getGlossaryEntries(mission.glossaryIds ?? []);
   const nextMissionId = getCatalogEntry(mission.id)?.unlocksNextId;
@@ -1066,6 +1068,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                 stepId={step.id}
                 onSuccess={onObservatorySuccess}
                 onSkipBonus={onContinue}
+                interactive={sceneInteractionAllowed}
               />
             ) : isStellarLight ? (
               <StarLightScene
@@ -1443,7 +1446,11 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                       companionButtonRef.current?.focus({ preventScroll: true });
                     }}
                   >
-                    {playStarted ? 'Reprendre' : 'À toi de jouer'}
+                    {playStarted
+                      ? 'Reprendre'
+                      : step.id === 'mc-film'
+                        ? 'Lancer le voyage'
+                        : 'À toi de jouer'}
                   </button>
                 ) : null}
                 {!hasMoreGuideText &&

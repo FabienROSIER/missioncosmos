@@ -11,7 +11,7 @@ type Props = {
   portalId?: string;
 };
 
-/** Shared, non-blocking success feedback for challenges, quizzes and rewards. */
+/** Succès partagé. L’encart plein écran se ferme au premier appui ; le quiz et la récompense restent. */
 export function SuccessCelebration({
   message,
   title = 'Défi réussi !',
@@ -20,17 +20,21 @@ export function SuccessCelebration({
   portalId,
 }: Props) {
   const [host, setHost] = useState<HTMLElement | null>(null);
+  const [dismissed, setDismissed] = useState(false);
   useEffect(() => {
     if (!portalId) return;
     const timer = setTimeout(() => setHost(document.getElementById(portalId)), 0);
     return () => clearTimeout(timer);
   }, [portalId]);
-  const card = (
-    <div
-      className={inline ? styles.inline : styles.overlay}
-      style={portalId ? { pointerEvents: 'none' } : undefined}
-      data-success-celebration
-    >
+  useEffect(() => {
+    if (inline || dismissed) return;
+    const dismiss = () => setDismissed(true);
+    window.addEventListener('pointerdown', dismiss);
+    return () => window.removeEventListener('pointerdown', dismiss);
+  }, [inline, dismissed]);
+  if (dismissed) return null;
+  const card = inline ? (
+    <div className={styles.inline} data-success-celebration>
       <div className={`${styles.card} ${compact ? styles.compact : ''}`} role="status">
         <span className={styles.check} aria-hidden="true">
           ✓
@@ -39,6 +43,27 @@ export function SuccessCelebration({
         <p>{message}</p>
       </div>
     </div>
+  ) : (
+    <button
+      type="button"
+      className={styles.overlay}
+      data-success-celebration
+      aria-label="Fermer le message de réussite"
+      onPointerDown={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        setDismissed(true);
+      }}
+    >
+      <div className={`${styles.card} ${compact ? styles.compact : ''}`} role="status">
+        <span className={styles.check} aria-hidden="true">
+          ✓
+        </span>
+        <strong>{title}</strong>
+        <p>{message}</p>
+        <p className={styles.dismissHint}>Appuie pour fermer</p>
+      </div>
+    </button>
   );
   return portalId ? (host ? createPortal(card, host) : null) : card;
 }
