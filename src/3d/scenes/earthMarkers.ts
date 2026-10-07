@@ -11,6 +11,7 @@ import {
   type Scene,
   type TransformNode,
 } from '@babylonjs/core';
+import { MOBILE_GAME_QUERY } from '@/lib/mobileLayout';
 
 export type EarthMarkerId = 'north-pole' | 'south-pole' | 'equator';
 
@@ -23,6 +24,10 @@ export type EarthMarkersHandle = {
   setSurfacePickEnabled: (enabled: boolean) => void;
   dispose: () => void;
 };
+
+function isTouchGameLayout(): boolean {
+  return typeof window !== 'undefined' && window.matchMedia(MOBILE_GAME_QUERY).matches;
+}
 
 /**
  * Repères pédagogiques : pôles + équateur (plan XZ local, axe Y = pôles).
@@ -37,10 +42,14 @@ export function createEarthMarkers(
   const onPick = new Observable<EarthMarkerId>();
   const meshes: AbstractMesh[] = [];
   let surfacePickEnabled = false;
+  const touchLayout = isTouchGameLayout();
+  // Doigts : marqueurs et bandes surface plus larges (desktop inchangé).
+  const poleDiameter = radius * (touchLayout ? 0.28 : 0.12);
+  const generousHits = touchLayout;
 
   const north = MeshBuilder.CreateSphere(
     'marker-north-pole',
-    { diameter: radius * 0.12, segments: 16 },
+    { diameter: poleDiameter, segments: 16 },
     scene,
   );
   north.parent = parent;
@@ -50,7 +59,7 @@ export function createEarthMarkers(
 
   const south = MeshBuilder.CreateSphere(
     'marker-south-pole',
-    { diameter: radius * 0.12, segments: 16 },
+    { diameter: poleDiameter, segments: 16 },
     scene,
   );
   south.parent = parent;
@@ -58,7 +67,7 @@ export function createEarthMarkers(
   south.position = new Vector3(0, -radius * 1.018, 0);
   south.metadata = { markerId: 'south-pole' satisfies EarthMarkerId };
 
-  const equator = createEquatorRing(scene, parent, radius);
+  const equator = createEquatorRing(scene, parent, radius, touchLayout);
 
   // A fine cartographic grid makes the globe's volume readable from every side.
   const gridPaths: Vector3[][] = [];
@@ -147,25 +156,41 @@ export function createEarthMarkers(
     meshes.push(mesh);
   }
 
+  let lastPickAt = 0;
+  const emitPick = (id: EarthMarkerId) => {
+    const now = performance.now();
+    if (now - lastPickAt < 280) return;
+    lastPickAt = now;
+    onPick.notifyObservers(id);
+  };
+
   const pickObserver = scene.onPointerObservable.add((info) => {
-    if (info.type !== PointerEventTypes.POINTERPICK) return;
+    const isPick =
+      info.type === PointerEventTypes.POINTERPICK || info.type === PointerEventTypes.POINTERTAP;
+    if (!isPick) return;
     if (!surfacePickEnabled) return;
 
-    const directId = info.pickInfo?.pickedMesh?.metadata?.markerId as EarthMarkerId | undefined;
+    let picked = info.pickInfo?.pickedMesh ?? null;
+    let point = info.pickInfo?.pickedPoint ?? null;
+    if ((!picked || !point) && info.type === PointerEventTypes.POINTERTAP) {
+      const retry = scene.pick(scene.pointerX, scene.pointerY);
+      picked = retry?.pickedMesh ?? null;
+      point = retry?.pickedPoint ?? null;
+    }
+
+    const directId = picked?.metadata?.markerId as EarthMarkerId | undefined;
     if (directId) {
-      onPick.notifyObservers(directId);
+      emitPick(directId);
       return;
     }
 
-    const picked = info.pickInfo?.pickedMesh;
-    const point = info.pickInfo?.pickedPoint;
     if (!picked || !point) return;
 
     const onGlobe = globeMeshes.some((mesh) => mesh === picked || picked.isDescendantOf(parent));
     if (!onGlobe || meshes.includes(picked)) return;
 
-    const region = classifyGlobeHit(parent, point, radius);
-    if (region) onPick.notifyObservers(region);
+    const region = classifyGlobeHit(parent, point, radius, { generous: generousHits });
+    if (region) emitPick(region);
   });
 
   return {
@@ -204,8 +229,13 @@ export function createEarthMarkers(
   };
 }
 
-/** Anneau équatorial fin, légèrement au-dessus de la surface. */
-function createEquatorRing(scene: Scene, parent: TransformNode, radius: number): Mesh {
+/** Anneau équatorial, légèrement au-dessus de la surface. */
+function createEquatorRing(
+  scene: Scene,
+  parent: TransformNode,
+  radius: number,
+  touchLayout: boolean,
+): Mesh {
   const ringRadius = radius * 1.022;
   const path: Vector3[] = [];
   const segments = 96;
@@ -218,7 +248,8 @@ function createEquatorRing(scene: Scene, parent: TransformNode, radius: number):
     'marker-equator',
     {
       path,
-      radius: radius * 0.014,
+      // Mobile : tube plus épais = cible tactile plus large.
+      radius: radius * (touchLayout ? 0.045 : 0.014),
       tessellation: 8,
       cap: 0,
     },
@@ -229,6 +260,11 @@ function createEquatorRing(scene: Scene, parent: TransformNode, radius: number):
   return tube;
 }
 
+export type ClassifyGlobeHitOptions = {
+  /** Bandes élargies pour doigt (mobile) — sans chevauchement pôles / équateur. */
+  generous?: boolean;
+};
+
 /**
  * Classe un point monde sur le globe (repère local du pivot : Y = pôles).
  * Bandes assez larges pour le doigt, sans se chevaucher.
@@ -237,15 +273,20 @@ export function classifyGlobeHit(
   pivot: TransformNode,
   worldPoint: Vector3,
   radius: number,
+  options?: ClassifyGlobeHitOptions,
 ): EarthMarkerId | null {
   const inv = Matrix.Invert(pivot.getWorldMatrix());
   const local = Vector3.TransformCoordinates(worldPoint, inv);
   const y = local.y / Math.max(radius, 1e-6);
 
+  // Desktop serré ; mobile : ~calotte polaire / bande tropicale élargies.
+  const poleMin = options?.generous ? 0.5 : 0.72;
+  const equatorMax = options?.generous ? 0.38 : 0.22;
+
   // Pôles d'abord (priorité sur la bande équateur)
-  if (y > 0.72) return 'north-pole';
-  if (y < -0.72) return 'south-pole';
-  if (Math.abs(y) < 0.22) return 'equator';
+  if (y > poleMin) return 'north-pole';
+  if (y < -poleMin) return 'south-pole';
+  if (Math.abs(y) < equatorMax) return 'equator';
   return null;
 }
 

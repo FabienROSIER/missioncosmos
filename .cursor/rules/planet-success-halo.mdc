@@ -9,8 +9,9 @@ alwaysApply: false
 Quand un défi demande de **toucher / sélectionner une planète** et que la réponse est correcte, utiliser **uniquement** le halo partagé :
 
 - API : `playPlanetSuccessHalo(scene, position, planetRadius)` dans `src/3d/fx/planetSuccessHalo.ts`
-- Effet : anneau soft billboard hors globe (trou central), expand + fade (~300 ms)
-- Respecter `prefers-reduced-motion` (déjà géré dans le helper)
+- Effet : anneau soft billboard hors globe (trou central), expand + fade
+- Adapté à chaque niveau de motion UI (`none` / `minimal` / `standard` / `full`) — ne jamais court-circuiter si la qualité n’est pas `high`
+- Respecter `prefers-reduced-motion` (flash fixe sans expand en `none`)
 
 ## À faire
 

@@ -398,7 +398,8 @@ export function EarthPreviewScene({
       sunOrbitDrag.setEnabled(false);
       let pickEnabled = false;
       controlsRef.current = {
-        advance: () => advanceOrbit(Math.PI / 6),
+        // Sens antihoraire vu du nord (+Y), comme le reste du système solaire.
+        advance: () => advanceOrbit(-Math.PI / 6),
         look: () => {
           camera.alpha += Math.PI / 3;
         },
