@@ -28,10 +28,9 @@ class RobotVoiceController {
   private unlocked = false;
   private enabled = true;
   private lastMessageId: string | null = null;
-  /** Message demandé avant que play() navigateur soit possible. */
   private pendingMessageId: string | null = null;
-  /** Messages déjà démarrés avec succès (évite relecture au clic / unlock). */
-  private startedMessageIds = new Set<string>();
+  /** Id en cours ou terminé avec succès — évite un 2e flush au clic. */
+  private activeOrDoneId: string | null = null;
   private playing = false;
   private readonly listeners = new Set<VoiceListener>();
 
@@ -55,14 +54,10 @@ class RobotVoiceController {
     for (const listener of this.listeners) listener();
   }
 
-  /** Aligne le déblocage sur la musique si elle est déjà autorisée. */
   syncUnlockFromMusic(): void {
-    if (musicController.isUnlocked()) {
-      this.unlocked = true;
-    }
+    if (musicController.isUnlocked()) this.unlocked = true;
   }
 
-  /** Débloque l’autoplay ; ne relance un pending que s’il n’a pas déjà été entendu. */
   unlock(): void {
     this.unlocked = true;
     this.flushPending();
@@ -95,15 +90,13 @@ class RobotVoiceController {
     return this.playing;
   }
 
-  /** Oublie les messages « déjà joués » (changement de mission). */
   resetSessionMarks(): void {
-    this.startedMessageIds.clear();
+    this.activeOrDoneId = null;
+    this.pendingMessageId = null;
   }
 
-  /** Joue un message par id catalogue. No-op si désactivé ou fichier inconnu. */
   play(messageId: string, options?: { force?: boolean }): RobotVoicePlayResult {
     if (!this.enabled) return 'skipped';
-
     this.syncUnlockFromMusic();
 
     const message = getRobotVoiceMessage(messageId);
@@ -112,15 +105,12 @@ class RobotVoiceController {
     this.lastMessageId = messageId;
     this.notify();
 
-    // Déjà démarré dans cette session : pas de relecture auto (clic / unlock).
-    if (!options?.force && this.startedMessageIds.has(messageId)) {
-      this.pendingMessageId = null;
+    if (!options?.force && this.playing && this.activeOrDoneId === messageId) {
       return 'skipped';
     }
 
     if (!this.unlocked) {
       this.pendingMessageId = messageId;
-      // Baisse la musique dès la mise en file (lancement mission).
       musicController.setSpeechDuck(true);
       return 'queued';
     }
@@ -130,14 +120,15 @@ class RobotVoiceController {
     return 'started';
   }
 
-  /** Relance le dernier message (ou un id fourni) — volontaire (bouton Écouter). */
   replay(messageId?: string): void {
     const id = messageId ?? this.lastMessageId;
     if (!id) return;
+    this.activeOrDoneId = null;
     this.play(id, { force: true });
   }
 
   stop(): void {
+    const interruptedId = this.playing ? this.activeOrDoneId : null;
     this.pendingMessageId = null;
     const el = this.audio;
     if (el) {
@@ -147,6 +138,8 @@ class RobotVoiceController {
     }
     const wasPlaying = this.playing;
     this.playing = false;
+    // Interrompu : autoriser une nouvelle planification du même message.
+    if (interruptedId) this.activeOrDoneId = null;
     musicController.setSpeechDuck(false);
     if (wasPlaying) this.notify();
   }
@@ -154,11 +147,14 @@ class RobotVoiceController {
   private flushPending(): void {
     if (!this.enabled || !this.pendingMessageId) return;
     const id = this.pendingMessageId;
-    if (this.startedMessageIds.has(id)) {
+
+    // Déjà en cours ou déjà entendu : ne pas relire au déblocage / clic.
+    if (this.activeOrDoneId === id) {
       this.pendingMessageId = null;
       if (!this.playing) musicController.setSpeechDuck(false);
       return;
     }
+
     const message = getRobotVoiceMessage(id);
     if (!message) {
       this.pendingMessageId = null;
@@ -181,29 +177,23 @@ class RobotVoiceController {
   }
 
   private async startPlayback(message: RobotVoiceMessage, force: boolean): Promise<void> {
-    if (!force && this.startedMessageIds.has(message.id) && this.playing) {
-      return;
-    }
+    if (!force && this.playing && this.activeOrDoneId === message.id) return;
 
     const el = this.ensureAudio();
     el.pause();
     el.src = robotVoicePublicUrl(message.relativePath);
     this.playing = true;
+    this.activeOrDoneId = message.id;
     musicController.setSpeechDuck(true);
     this.notify();
     try {
       await el.play();
-      this.startedMessageIds.add(message.id);
       this.pendingMessageId = null;
     } catch {
-      // Autoplay encore bloqué : garder le duck + file d’attente, sans relecture forcée ensuite.
       this.playing = false;
-      if (!this.startedMessageIds.has(message.id)) {
-        this.pendingMessageId = message.id;
-        musicController.setSpeechDuck(true);
-      } else {
-        musicController.setSpeechDuck(false);
-      }
+      this.activeOrDoneId = null;
+      this.pendingMessageId = message.id;
+      musicController.setSpeechDuck(true);
       this.notify();
     }
   }
@@ -211,6 +201,7 @@ class RobotVoiceController {
   private onEnded(): void {
     if (!this.playing) return;
     this.playing = false;
+    // Garde activeOrDoneId pour bloquer le flush au clic, pas un nouveau play() hook.
     musicController.setSpeechDuck(false);
     this.notify();
   }
