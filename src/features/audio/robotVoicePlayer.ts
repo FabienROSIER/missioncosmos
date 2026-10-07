@@ -125,11 +125,10 @@ class RobotVoiceController {
       el.removeAttribute('src');
       el.load();
     }
-    if (this.playing) {
-      this.playing = false;
-      musicController.setSpeechDuck(false);
-      this.notify();
-    }
+    const wasPlaying = this.playing;
+    this.playing = false;
+    musicController.setSpeechDuck(false);
+    if (wasPlaying) this.notify();
   }
 
   private flushPending(): void {

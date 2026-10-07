@@ -1,0 +1,2 @@
+# Aucune dépendance Python externe : le script n'utilise que la bibliothèque standard.
+# FFmpeg doit être installé séparément et disponible dans le PATH.

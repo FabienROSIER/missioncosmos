@@ -1,0 +1,30 @@
+{
+  "root_folder": "D:\\Programmation\\Mission Cosmos\\public\\assets\\audio\\robot\\fr",
+
+  "pitch_semitones": 1.5,
+  "tempo": 0.96,
+
+  "highpass_hz": 90,
+
+  "presence_gain_db": 1.5,
+  "presence_frequency_hz": 3000,
+
+  "robot_effect_enabled": true,
+  "robot_delay_ms": 16,
+  "robot_mix": 0.06,
+  "robot_side_pitch_cents": 8,
+
+  "saturation_enabled": false,
+  "saturation_drive": 0.08,
+
+  "compress_threshold_db": -18,
+  "compress_ratio": 2.5,
+  "compress_attack_ms": 20,
+  "compress_release_ms": 200,
+  "compress_makeup_db": 1.0,
+
+  "normalize_lufs": -16,
+  "true_peak_db": -1,
+
+  "mp3_bitrate": "192k"
+}

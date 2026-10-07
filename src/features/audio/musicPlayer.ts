@@ -10,6 +10,8 @@ export type MusicMode = 'menu' | 'game' | 'off';
 
 const STORAGE_MUTE = 'mc:music-muted';
 const STORAGE_VOLUME = 'mc:music-volume';
+/** Volume musique pendant la voix du robot (fraction du volume choisi). */
+const SPEECH_DUCK_FACTOR = 0.1;
 
 /**
  * Lecteur musique singleton (HTMLAudioElement).
@@ -94,11 +96,11 @@ class MusicController {
   }
 
   /**
-   * Baisse temporaire du volume pendant la voix du robot.
+   * Baisse automatique du volume pendant la voix du robot.
    * Respecte le mute ; ne change pas le volume enregistré.
    */
   setSpeechDuck(active: boolean): void {
-    this.duckFactor = active ? 0.22 : 1;
+    this.duckFactor = active ? SPEECH_DUCK_FACTOR : 1;
     this.applyOutputVolume();
   }
 
@@ -152,6 +154,7 @@ class MusicController {
       el.src.includes(track.file.replace(/ /g, '%20'));
     if (!restart && sameSrc && !el.paused) {
       el.loop = loop;
+      this.applyOutputVolume();
       return;
     }
     this.current = track;
