@@ -94,8 +94,9 @@ export class CelestialBodyEntity {
     this.highlight.innerGlow = false;
     this.highlight.outerGlow = true;
 
+    // POINTERTAP : plus fiable que POINTERPICK au tactile (caméra ArcRotate).
     this.pickObserver = this.scene.onPointerObservable.add((pointerInfo) => {
-      if (pointerInfo.type !== PointerEventTypes.POINTERPICK) return;
+      if (pointerInfo.type !== PointerEventTypes.POINTERTAP) return;
       const picked = pointerInfo.pickInfo?.pickedMesh;
       if (!picked) return;
       // Ignorer les marqueurs pédagogiques (enfants du pivot)

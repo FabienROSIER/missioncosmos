@@ -580,8 +580,10 @@ export function SolarSystemScene({
       focusNext,
       focusPrev,
       setOrderChallenge: (enabled) => {
-        orderChallenge = enabled;
         if (enabled) {
+          // Ne pas réinitialiser si le défi tourne déjà (re-sync layout / parent).
+          if (orderChallenge) return;
+          orderChallenge = true;
           setScaleMode('readable');
           orderIndex = 0;
           orderDone = false;
@@ -592,6 +594,7 @@ export function SolarSystemScene({
             orderHint: `Prochaine : ${SOLAR_SYSTEM_PLANETS.mercury.nameFr}`,
           });
         } else {
+          orderChallenge = false;
           setOrderProgress(null);
         }
       },
@@ -711,23 +714,33 @@ export function SolarSystemScene({
       <SceneControls className={styles.hud} onPointerDown={(e) => e.stopPropagation()}>
         {scaleModeLabel === 'readable' && (
           <>
-            <div className={styles.navRow} role="group" aria-label="Navigation planètes">
-              <button type="button" className={styles.hudBtn} onClick={onPrev}>
-                Précédente
-              </button>
-              <button type="button" className={styles.hudBtn} onClick={onOverview}>
-                Vue d’ensemble
-              </button>
-              <button type="button" className={styles.hudBtn} onClick={onNext}>
-                Suivante
-              </button>
-            </div>
+            {/* Pendant le défi d’ordre : pas de nav (évite un 1er « focus » sans validation). */}
+            {!orderProgress ? (
+              <div className={styles.navRow} role="group" aria-label="Navigation planètes">
+                <button type="button" className={styles.hudBtn} onClick={onPrev}>
+                  Précédente
+                </button>
+                <button type="button" className={styles.hudBtn} onClick={onOverview}>
+                  Vue d’ensemble
+                </button>
+                <button type="button" className={styles.hudBtn} onClick={onNext}>
+                  Suivante
+                </button>
+              </div>
+            ) : null}
             <div className={styles.mobileTargets} role="group" aria-label="Toucher une planète">
               {PLANET_ORDER.map((id) => (
                 <button
                   type="button"
                   key={id}
                   className={styles.hudBtn}
+                  onPointerDown={(e) => {
+                    // Tap immédiat au tactile ; preventDefault évite un 2e déclenchement via click.
+                    if (e.button !== 0) return;
+                    if (e.pointerType !== 'touch' && e.pointerType !== 'pen') return;
+                    e.preventDefault();
+                    mobilePickRef.current?.(id);
+                  }}
                   onClick={() => mobilePickRef.current?.(id)}
                 >
                   {SOLAR_SYSTEM_PLANETS[id].nameFr}

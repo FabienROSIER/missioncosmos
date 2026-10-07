@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Companion } from '@/components/game/Companion';
 import { SafeBackButton } from '@/components/layout/SafeBackButton';
@@ -491,7 +491,9 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     step.id,
   ]);
 
-  useEffect(() => {
+  // useLayoutEffect : activer pick/défi avant le paint, sinon le 1er tap responsive
+  // sur les boutons planètes est ignoré (pickEnabled / orderChallenge encore faux).
+  useLayoutEffect(() => {
     if (!solarApi || !isSolarSystem) return;
     const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
 
@@ -518,7 +520,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     step.id,
   ]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!orbitsApi || !isOrbits || showOrbitFall) return;
     const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
     orbitsApi.setPickEnabled(!cinematic && sceneInteractionAllowed && step.kind !== 'intro');

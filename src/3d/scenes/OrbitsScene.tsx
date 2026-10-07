@@ -347,9 +347,10 @@ export function OrbitsScene({
         pickEnabled = enabled;
       },
       setRaceChallenge: (enabled) => {
-        raceChallenge = enabled;
-        setRaceMode(enabled);
         if (enabled) {
+          if (raceChallenge) return;
+          raceChallenge = true;
+          setRaceMode(true);
           // Défi : forcer Normal (ou garder Pause si déjà en pause)
           if (speedMult > 1) {
             speedMult = 1;
@@ -362,6 +363,8 @@ export function OrbitsScene({
             planetEntities.get(pid)?.setHighlighted(false);
           }
         } else {
+          raceChallenge = false;
+          setRaceMode(false);
           raceDone = false;
           setRaceHint(null);
         }
@@ -433,6 +436,12 @@ export function OrbitsScene({
               type="button"
               key={id}
               className={styles.speedBtn}
+              onPointerDown={(e) => {
+                if (e.button !== 0) return;
+                if (e.pointerType !== 'touch' && e.pointerType !== 'pen') return;
+                e.preventDefault();
+                mobilePickRef.current?.(id);
+              }}
               onClick={() => mobilePickRef.current?.(id)}
             >
               {SOLAR_SYSTEM_PLANETS[id].nameFr}
