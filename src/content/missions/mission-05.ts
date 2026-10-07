@@ -45,11 +45,10 @@ export const MISSION_05: Mission = assertValidMission({
       id: 'm05-observe',
       kind: 'challenge',
       completionMode: 'discovery',
-      requiresSuccess: true,
+      requiresSuccess: false,
       title: 'Huit planètes',
-      body: 'Il y a 8 planètes. Planètes rapprochées, tailles changées pour bien les voir. Touche une planète, ou utilise Précédente / Suivante, pour lire sa fiche.',
+      body: 'Il y a 8 planètes. Planètes rapprochées, tailles changées pour bien les voir. Touche une planète, ou utilise Précédente / Suivante, pour lire sa fiche. Explore autant que tu veux, puis continue quand tu es prêt.',
       guideReminder: 'Touche une planète pour ouvrir sa fiche.',
-      successFeedback: 'Tu as ouvert une fiche. Chaque planète a sa place autour du Soleil.',
       ctaLabel: 'Les ranger dans l’ordre',
     },
     {

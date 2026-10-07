@@ -22,7 +22,7 @@ describe('Mission 05 — échelles explicites', () => {
     expect(validateMission(MISSION_05)).toEqual([]);
     const ids = MISSION_05.steps!.map((step) => step.id);
     expect(ids.indexOf('m05-challenge-order')).toBeGreaterThan(ids.indexOf('m05-observe'));
-    expect(MISSION_05.steps!.find((s) => s.id === 'm05-observe')?.requiresSuccess).toBe(true);
+    expect(MISSION_05.steps!.find((s) => s.id === 'm05-observe')?.requiresSuccess).toBe(false);
     expect(ids.indexOf('m05-scale')).toBeGreaterThan(ids.indexOf('m05-challenge-order'));
     expect(ids.indexOf('m05-distances')).toBeGreaterThan(ids.indexOf('m05-scale'));
     const scale = MISSION_05.steps!.find((s) => s.id === 'm05-scale');

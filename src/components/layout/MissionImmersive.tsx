@@ -740,17 +740,6 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     solarApi?.setOrderChallenge(false);
   }, [markChallengeSolved, solarApi]);
 
-  const onSolarPlanetSelect = useCallback(
-    (id: PlanetId | 'sun') => {
-      const ctx = pickCtxRef.current;
-      if (id === 'sun' || ctx.stepId !== 'm05-observe') return;
-      if (!ctx.sceneInteractionAllowed || ctx.challengeSolved) return;
-      setFeedback({ stepId: ctx.stepId, text: ctx.successFeedback, wrong: false });
-      markChallengeSolved();
-    },
-    [markChallengeSolved],
-  );
-
   const onRaceSuccess = useCallback(() => {
     const ctx = pickCtxRef.current;
     if (!ctx.sceneInteractionAllowed || ctx.stepKind !== 'challenge' || ctx.challengeSolved) return;
@@ -1123,7 +1112,6 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                 onSceneApi={onSolarApi}
                 onOrderSuccess={onOrderSuccess}
                 onOrderMiss={onOrderMiss}
-                onPlanetSelect={onSolarPlanetSelect}
               />
             ) : isEclipses ? (
               <EclipsesScene

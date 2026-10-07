@@ -83,7 +83,6 @@ type SolarSystemSceneProps = {
   className?: string;
   fill?: boolean;
   onSceneApi?: (api: SolarSystemSceneApi) => void;
-  onPlanetSelect?: (id: PlanetId | 'sun') => void;
   onOrderSuccess?: () => void;
   onOrderMiss?: (expected: PlanetId) => void;
 };
@@ -137,7 +136,6 @@ export function SolarSystemScene({
   className,
   fill = false,
   onSceneApi,
-  onPlanetSelect,
   onOrderSuccess,
   onOrderMiss,
 }: SolarSystemSceneProps) {
@@ -152,16 +150,12 @@ export function SolarSystemScene({
   const mobilePickRef = useRef<((id: PlanetId | 'sun') => void) | null>(null);
   const apiRef = useRef<SolarSystemSceneApi | null>(null);
   const onSceneApiRef = useRef(onSceneApi);
-  const onPlanetSelectRef = useRef(onPlanetSelect);
   const onOrderSuccessRef = useRef(onOrderSuccess);
   const onOrderMissRef = useRef(onOrderMiss);
 
   useEffect(() => {
     onSceneApiRef.current = onSceneApi;
   }, [onSceneApi]);
-  useEffect(() => {
-    onPlanetSelectRef.current = onPlanetSelect;
-  }, [onPlanetSelect]);
   useEffect(() => {
     onOrderSuccessRef.current = onOrderSuccess;
   }, [onOrderSuccess]);
@@ -512,7 +506,6 @@ export function SolarSystemScene({
       }
 
       presentBody(id);
-      onPlanetSelectRef.current?.(id);
     };
 
     mobilePickRef.current = handlePick;
