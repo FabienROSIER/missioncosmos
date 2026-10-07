@@ -980,9 +980,9 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     stepId: step.id,
     stepKind: step.kind,
     feedbackWrong: visibleFeedback ? visibleFeedback.wrong : null,
-    feedbackSuccess: visibleFeedback ? !visibleFeedback.wrong : null,
     quizMood,
     filmPlaying: starFilmPlaying,
+    isComplete,
   });
 
   const challengeHint = challengeOrbit

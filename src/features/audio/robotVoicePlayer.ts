@@ -17,6 +17,8 @@ export function robotVoicePublicUrl(relativePath: string): string {
 
 type VoiceListener = () => void;
 
+export type RobotVoicePlayResult = 'started' | 'queued' | 'skipped';
+
 /**
  * Lecteur voix robot (HTMLAudioElement), distinct de la musique.
  * MP3 préenregistrés uniquement — pas de TTS de secours dans ce lot.
@@ -26,6 +28,8 @@ class RobotVoiceController {
   private unlocked = false;
   private enabled = true;
   private lastMessageId: string | null = null;
+  /** Message demandé avant geste utilisateur (ou après play() refusé). */
+  private pendingMessageId: string | null = null;
   private playing = false;
   private readonly listeners = new Set<VoiceListener>();
 
@@ -49,8 +53,10 @@ class RobotVoiceController {
     for (const listener of this.listeners) listener();
   }
 
+  /** Débloque l’autoplay et relance un message en attente. */
   unlock(): void {
     this.unlocked = true;
+    this.flushPending();
   }
 
   isUnlocked(): boolean {
@@ -76,22 +82,32 @@ class RobotVoiceController {
     return this.lastMessageId;
   }
 
+  getPendingMessageId(): string | null {
+    return this.pendingMessageId;
+  }
+
   isPlaying(): boolean {
     return this.playing;
   }
 
   /** Joue un message par id catalogue. No-op si désactivé ou fichier inconnu. */
-  play(messageId: string): void {
-    if (!this.enabled) return;
+  play(messageId: string): RobotVoicePlayResult {
+    if (!this.enabled) return 'skipped';
 
     const message = getRobotVoiceMessage(messageId);
-    if (!message) return;
+    if (!message) return 'skipped';
 
     this.lastMessageId = messageId;
     this.notify();
 
-    if (!this.unlocked) return;
+    if (!this.unlocked) {
+      this.pendingMessageId = messageId;
+      return 'queued';
+    }
+
+    this.pendingMessageId = null;
     void this.startPlayback(message);
+    return 'started';
   }
 
   /** Relance le dernier message (ou un id fourni). */
@@ -102,6 +118,7 @@ class RobotVoiceController {
   }
 
   stop(): void {
+    this.pendingMessageId = null;
     const el = this.audio;
     if (el) {
       el.pause();
@@ -113,6 +130,19 @@ class RobotVoiceController {
       musicController.setSpeechDuck(false);
       this.notify();
     }
+  }
+
+  private flushPending(): void {
+    if (!this.enabled || !this.pendingMessageId) return;
+    const message = getRobotVoiceMessage(this.pendingMessageId);
+    if (!message) {
+      this.pendingMessageId = null;
+      return;
+    }
+    const id = this.pendingMessageId;
+    this.pendingMessageId = null;
+    this.lastMessageId = id;
+    void this.startPlayback(message);
   }
 
   private ensureAudio(): HTMLAudioElement {
@@ -135,8 +165,11 @@ class RobotVoiceController {
     try {
       await el.play();
     } catch {
+      // Autoplay encore bloqué : remettre en file jusqu’au prochain geste.
       this.playing = false;
+      this.pendingMessageId = message.id;
       musicController.setSpeechDuck(false);
+      this.unlocked = false;
       this.notify();
     }
   }

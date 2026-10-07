@@ -26,10 +26,11 @@ export function RobotVoiceProvider({ children }: { children: ReactNode }) {
   const [enabled, setEnabledState] = useState(() => robotVoiceController.isEnabled());
   const [playing, setPlaying] = useState(() => robotVoiceController.isPlaying());
 
+  // Chaque geste peut débloquer / relancer un message en attente (autoplay).
   useEffect(() => {
     const unlock = () => robotVoiceController.unlock();
-    window.addEventListener('pointerdown', unlock, { once: true });
-    window.addEventListener('keydown', unlock, { once: true });
+    window.addEventListener('pointerdown', unlock);
+    window.addEventListener('keydown', unlock);
     return () => {
       window.removeEventListener('pointerdown', unlock);
       window.removeEventListener('keydown', unlock);
