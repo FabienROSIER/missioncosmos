@@ -51,6 +51,10 @@ class MusicController {
     this.applyMode(this.mode, true);
   }
 
+  isUnlocked(): boolean {
+    return this.unlocked;
+  }
+
   setMode(mode: MusicMode, options?: { reshuffle?: boolean }): void {
     // Navigation entre écrans menu : ne pas relancer la piste.
     if (mode === 'menu' && this.mode === 'menu' && !options?.reshuffle) return;

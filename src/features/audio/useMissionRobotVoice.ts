@@ -30,9 +30,6 @@ function isMissionFinale(stepKind: MissionStepKind, isComplete: boolean): boolea
 /**
  * Déclencheurs voix en mission : consigne à la 1re étape pertinente,
  * phrases communes quiz / erreur, bravo une seule fois en fin de mission.
- *
- * Le marquage « déjà joué » est différé pour survivre au double montage Strict Mode
- * (sinon le 1er dialogue est stoppé au cleanup puis jamais rejoué).
  */
 export function useMissionRobotVoice(input: UseMissionRobotVoiceInput) {
   const { enabled, play, replay, stop } = useRobotVoice();
@@ -42,6 +39,7 @@ export function useMissionRobotVoice(input: UseMissionRobotVoiceInput) {
   const missionBravoPlayedRef = useRef(false);
   const prevQuizMoodRef = useRef<CompanionFeedbackMood>('none');
   const missionIdRef = useRef(input.missionId);
+  const lastMessageRef = useRef<string | null>(null);
 
   // Reset des compteurs quand on change de mission.
   useEffect(() => {
@@ -52,6 +50,8 @@ export function useMissionRobotVoice(input: UseMissionRobotVoiceInput) {
     quizIntroPlayedRef.current = false;
     missionBravoPlayedRef.current = false;
     prevQuizMoodRef.current = 'none';
+    lastMessageRef.current = null;
+    robotVoiceController.resetSessionMarks();
     stop();
   }, [input.missionId, stop]);
 
@@ -69,6 +69,7 @@ export function useMissionRobotVoice(input: UseMissionRobotVoiceInput) {
 
     if (!enabled || input.filmPlaying) {
       stop();
+      lastMessageRef.current = null;
       return () => {
         cancelled = true;
       };
@@ -76,9 +77,11 @@ export function useMissionRobotVoice(input: UseMissionRobotVoiceInput) {
 
     // Fin de mission : un seul bravo.
     if (isMissionFinale(input.stepKind, input.isComplete)) {
-      if (!missionBravoPlayedRef.current) {
+      const bravoId = ROBOT_VOICE_COMMON.success;
+      if (!missionBravoPlayedRef.current && lastMessageRef.current !== bravoId) {
         stop();
-        const result = robotVoiceController.play(ROBOT_VOICE_COMMON.success);
+        lastMessageRef.current = bravoId;
+        const result = robotVoiceController.play(bravoId);
         if (result !== 'skipped') {
           queueMicrotask(() => {
             if (!cancelled) missionBravoPlayedRef.current = true;
@@ -87,14 +90,16 @@ export function useMissionRobotVoice(input: UseMissionRobotVoiceInput) {
       }
       return () => {
         cancelled = true;
+        // Pas de stop : évite de couper le bravo (Strict Mode / re-render).
       };
     }
 
-    stop();
-
     if (input.stepKind === 'quiz') {
-      if (!quizIntroPlayedRef.current) {
-        const result = robotVoiceController.play(ROBOT_VOICE_COMMON.quiz);
+      const quizId = ROBOT_VOICE_COMMON.quiz;
+      if (!quizIntroPlayedRef.current && lastMessageRef.current !== quizId) {
+        stop();
+        lastMessageRef.current = quizId;
+        const result = robotVoiceController.play(quizId);
         if (result !== 'skipped') {
           queueMicrotask(() => {
             if (!cancelled) quizIntroPlayedRef.current = true;
@@ -103,7 +108,6 @@ export function useMissionRobotVoice(input: UseMissionRobotVoiceInput) {
       }
       return () => {
         cancelled = true;
-        stop();
       };
     }
 
@@ -114,18 +118,21 @@ export function useMissionRobotVoice(input: UseMissionRobotVoiceInput) {
       };
     }
 
-    if (autoPlayedRef.current.has(message.id)) {
+    if (autoPlayedRef.current.has(message.id) || lastMessageRef.current === message.id) {
       return () => {
         cancelled = true;
       };
     }
 
+    // Nouveau message uniquement : stop l’ancien, lance le nouveau.
+    stop();
+    lastMessageRef.current = message.id;
     const result = robotVoiceController.play(message.id);
     if (result !== 'skipped') markPlayed(message.id);
 
     return () => {
       cancelled = true;
-      stop();
+      // Pas de stop ici : laisse finir le dialogue (Strict Mode / clic UI).
     };
   }, [
     enabled,
@@ -150,7 +157,7 @@ export function useMissionRobotVoice(input: UseMissionRobotVoiceInput) {
     prevQuizMoodRef.current = input.quizMood;
   }, [enabled, input.filmPlaying, input.quizMood, input.stepKind, play]);
 
-  // Défi : erreur une fois max par étape (évite le spam clic).
+  // Défi : erreur une fois max par étape.
   useEffect(() => {
     if (!enabled || input.filmPlaying || input.stepKind === 'quiz') return;
 
@@ -160,7 +167,7 @@ export function useMissionRobotVoice(input: UseMissionRobotVoiceInput) {
     }
   }, [enabled, input.filmPlaying, input.feedbackWrong, input.stepKind, play]);
 
-  // Stop propre à la sortie de mission (démontage réel).
+  // Stop à la sortie réelle de la mission.
   useEffect(() => {
     return () => stop();
   }, [stop]);

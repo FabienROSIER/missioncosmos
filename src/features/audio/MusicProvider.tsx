@@ -11,6 +11,7 @@ import {
 } from 'react';
 import { usePathname } from 'next/navigation';
 import { musicController, type MusicMode } from '@/features/audio/musicPlayer';
+import { unlockGameAudio } from '@/features/audio/unlockGameAudio';
 
 type MusicContextValue = {
   muted: boolean;
@@ -29,13 +30,13 @@ function modeFromPath(pathname: string): MusicMode {
 
 export function MusicProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname() ?? '/';
+  const mode = modeFromPath(pathname);
   const [muted, setMutedState] = useState(() => musicController.isMuted());
   const [volume, setVolumeState] = useState(() => musicController.getVolume());
-  const [mode, setModeState] = useState<MusicMode>('menu');
 
-  // Débloque l’audio au premier geste (autoplay navigateur).
+  // Débloque musique + voix au premier geste (autoplay navigateur).
   useEffect(() => {
-    const unlock = () => musicController.unlock();
+    const unlock = () => unlockGameAudio();
     window.addEventListener('pointerdown', unlock, { once: true });
     window.addEventListener('keydown', unlock, { once: true });
     return () => {
@@ -44,12 +45,10 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  // Lecteur externe uniquement — le mode React est dérivé du pathname.
   useEffect(() => {
-    const next = modeFromPath(pathname);
-    // Chaque entrée / changement de mission : nouvelle file shuffle.
-    musicController.setMode(next, { reshuffle: next === 'game' });
-    setModeState(next);
-  }, [pathname]);
+    musicController.setMode(mode, { reshuffle: mode === 'game' });
+  }, [mode]);
 
   const setMuted = useCallback((value: boolean) => {
     musicController.setMuted(value);

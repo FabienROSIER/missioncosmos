@@ -9,7 +9,9 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+import { musicController } from '@/features/audio/musicPlayer';
 import { robotVoiceController } from '@/features/audio/robotVoicePlayer';
+import { unlockGameAudio } from '@/features/audio/unlockGameAudio';
 
 type RobotVoiceContextValue = {
   enabled: boolean;
@@ -26,11 +28,16 @@ export function RobotVoiceProvider({ children }: { children: ReactNode }) {
   const [enabled, setEnabledState] = useState(() => robotVoiceController.isEnabled());
   const [playing, setPlaying] = useState(() => robotVoiceController.isPlaying());
 
-  // Chaque geste peut débloquer / relancer un message en attente (autoplay).
   useEffect(() => {
-    const unlock = () => robotVoiceController.unlock();
-    window.addEventListener('pointerdown', unlock);
-    window.addEventListener('keydown', unlock);
+    // Si la musique est déjà débloquée (geste sur la carte), aligner la voix tout de suite.
+    robotVoiceController.syncUnlockFromMusic();
+    if (musicController.isUnlocked()) {
+      robotVoiceController.unlock();
+      return;
+    }
+    const unlock = () => unlockGameAudio();
+    window.addEventListener('pointerdown', unlock, { once: true });
+    window.addEventListener('keydown', unlock, { once: true });
     return () => {
       window.removeEventListener('pointerdown', unlock);
       window.removeEventListener('keydown', unlock);
