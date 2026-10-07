@@ -94,19 +94,33 @@ export class CelestialBodyEntity {
     this.highlight.innerGlow = false;
     this.highlight.outerGlow = true;
 
-    // POINTERTAP : plus fiable que POINTERPICK au tactile (caméra ArcRotate).
+    // POINTERPICK + POINTERTAP : desktop et tactile ; anti-doublon si les deux arrivent.
+    let lastPickEmittedAt = 0;
     this.pickObserver = this.scene.onPointerObservable.add((pointerInfo) => {
-      if (pointerInfo.type !== PointerEventTypes.POINTERTAP) return;
-      const picked = pointerInfo.pickInfo?.pickedMesh;
+      const isPick =
+        pointerInfo.type === PointerEventTypes.POINTERPICK ||
+        pointerInfo.type === PointerEventTypes.POINTERTAP;
+      if (!isPick) return;
+      let picked = pointerInfo.pickInfo?.pickedMesh ?? null;
+      if (!picked && pointerInfo.type === PointerEventTypes.POINTERTAP) {
+        const tapPick = this.scene.pick(this.scene.pointerX, this.scene.pointerY, (mesh) =>
+          this.loaded.meshes.some(
+            (bodyMesh) => bodyMesh === mesh || mesh.isDescendantOf(this.loaded.pivot),
+          ),
+        );
+        picked = tapPick?.pickedMesh ?? null;
+      }
       if (!picked) return;
       // Ignorer les marqueurs pédagogiques (enfants du pivot)
       if (picked.metadata?.markerId) return;
       const hit = this.loaded.meshes.some(
         (mesh) => mesh === picked || picked.isDescendantOf(this.loaded.pivot),
       );
-      if (hit) {
-        this.onPick.notifyObservers(this);
-      }
+      if (!hit) return;
+      const now = performance.now();
+      if (now - lastPickEmittedAt < 280) return;
+      lastPickEmittedAt = now;
+      this.onPick.notifyObservers(this);
     });
 
     const allowSpin = options.spin !== false && !prefersReducedMotion();

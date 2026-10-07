@@ -403,12 +403,12 @@ export function SolarSystemScene({
       });
     };
 
-    const selectBody = (id: PlanetId | 'sun') => {
+    /** Fiche + surbrillance (Préc./Suiv. ou pick 3D). Ne valide pas l’étape découverte. */
+    const presentBody = (id: PlanetId | 'sun') => {
       clearSelection();
       if (id === 'sun') sun.setSelected(true);
       else planetEntities.get(id)?.setSelected(true);
       showFactFor(id);
-      onPlanetSelectRef.current?.(id);
     };
 
     const focusBody = (id: SolarSystemFocusId) => {
@@ -427,14 +427,14 @@ export function SolarSystemScene({
         frameSolarSystemOverview(camera, maxOrbit());
       } else if (id === 'sun') {
         focusIndex = 0;
-        selectBody('sun');
+        presentBody('sun');
         frameSolarSystemBody(camera, sun.pivot.position, resolveSunRadius());
       } else {
         const idx = PLANET_ORDER.indexOf(id);
         focusIndex = idx + 1;
         const entity = planetEntities.get(id);
         if (!entity) return;
-        selectBody(id);
+        presentBody(id);
         frameSolarSystemBody(camera, entity.pivot.position, radiusFor(id));
       }
       // Mode ciné : cadrage immédiat, le suivi suit la planète en orbite chaque frame
@@ -467,12 +467,12 @@ export function SolarSystemScene({
 
       if (orderChallenge && !orderDone) {
         if (id === 'sun') {
-          selectBody('sun');
+          presentBody('sun');
           return;
         }
         const expected = PLANET_ORDER[orderIndex]!;
         if (id === expected) {
-          selectBody(id);
+          presentBody(id);
           const entity = planetEntities.get(id);
           if (entity) {
             playPlanetSuccessHalo(scene, entity.pivot.position.clone(), radiusFor(id));
@@ -511,7 +511,8 @@ export function SolarSystemScene({
         return;
       }
 
-      selectBody(id);
+      presentBody(id);
+      onPlanetSelectRef.current?.(id);
     };
 
     mobilePickRef.current = handlePick;
@@ -728,25 +729,21 @@ export function SolarSystemScene({
                 </button>
               </div>
             ) : null}
-            <div className={styles.mobileTargets} role="group" aria-label="Toucher une planète">
-              {PLANET_ORDER.map((id) => (
-                <button
-                  type="button"
-                  key={id}
-                  className={styles.hudBtn}
-                  onPointerDown={(e) => {
-                    // Tap immédiat au tactile ; preventDefault évite un 2e déclenchement via click.
-                    if (e.button !== 0) return;
-                    if (e.pointerType !== 'touch' && e.pointerType !== 'pen') return;
-                    e.preventDefault();
-                    mobilePickRef.current?.(id);
-                  }}
-                  onClick={() => mobilePickRef.current?.(id)}
-                >
-                  {SOLAR_SYSTEM_PLANETS[id].nameFr}
-                </button>
-              ))}
-            </div>
+            {/* Pas de raccourcis par nom pendant le défi d’ordre (reconnaissance 3D). */}
+            {!orderProgress ? (
+              <div className={styles.mobileTargets} role="group" aria-label="Toucher une planète">
+                {PLANET_ORDER.map((id) => (
+                  <button
+                    type="button"
+                    key={id}
+                    className={styles.hudBtn}
+                    onClick={() => mobilePickRef.current?.(id)}
+                  >
+                    {SOLAR_SYSTEM_PLANETS[id].nameFr}
+                  </button>
+                ))}
+              </div>
+            ) : null}
             <p className={styles.progress}>
               Tailles, distances et positions choisies pour apprendre.
             </p>
