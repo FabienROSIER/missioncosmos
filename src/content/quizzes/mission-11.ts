@@ -1,46 +1,47 @@
 import type { Quiz } from '@/types/quiz';
 export const QUIZ_MISSION_11: Quiz = {
   id: 'quiz-mission-11',
-  title: 'Des îles d’étoiles',
+  title: 'Notre galaxie',
   questions: [
     {
-      id: 'q1-neighbour',
-      prompt: 'Andromède, c’est…',
+      id: 'q1-home',
+      prompt: 'Où se trouve notre Système solaire ?',
       choices: [
-        { id: 'galaxy', label: 'Une autre galaxie, très loin de nous' },
-        { id: 'star', label: 'Une étoile de notre Système solaire' },
-        { id: 'home', label: 'Un autre nom de la Voie lactée' },
+        { id: 'inside', label: 'Dans la Voie lactée' },
+        { id: 'outside', label: 'À l’extérieur de toutes les galaxies' },
+        { id: 'centre', label: 'Au centre de la Voie lactée' },
       ],
-      correctChoiceId: 'galaxy',
-      explainCorrect: 'Oui ! Andromède et la Voie lactée sont deux galaxies différentes.',
-      explainWrong:
-        'Notre Soleil appartient à la Voie lactée. Andromède est une autre galaxie, avec ses propres étoiles.',
-    },
-    {
-      id: 'q2-spiral',
-      prompt: 'Quelle famille possède des bras qui s’enroulent ?',
-      choices: [
-        { id: 'elliptical', label: 'Les elliptiques' },
-        { id: 'spiral', label: 'Les spirales' },
-        { id: 'irregular', label: 'Les irrégulières' },
-      ],
-      correctChoiceId: 'spiral',
-      explainCorrect: 'Exact ! La Voie lactée et Andromède sont des galaxies spirales.',
-      explainWrong:
-        'Repense aux maquettes : les bras s’enroulent autour du centre des galaxies spirales.',
-    },
-    {
-      id: 'q3-light',
-      prompt: 'Pourquoi une galaxie est-elle lumineuse ?',
-      choices: [
-        { id: 'sun', label: 'C’est une seule étoile gigantesque' },
-        { id: 'stars', label: 'Elle contient énormément d’étoiles' },
-      ],
-      correctChoiceId: 'stars',
+      correctChoiceId: 'inside',
       explainCorrect:
-        'Oui ! La lumière de nombreuses étoiles se mêle quand on regarde une galaxie de loin.',
+        'Oui ! Notre Système solaire fait partie de la Voie lactée, loin de son centre.',
+      explainWrong: 'Le Soleil est une étoile du disque de la Voie lactée. Il n’est pas au centre.',
+    },
+    {
+      id: 'q2-galaxy',
+      prompt: 'Une galaxie, c’est…',
+      choices: [
+        { id: 'star', label: 'Une seule étoile géante' },
+        { id: 'group', label: 'Un immense ensemble d’étoiles, de gaz et de poussière' },
+        { id: 'planets', label: 'Seulement les huit planètes du Soleil' },
+      ],
+      correctChoiceId: 'group',
+      explainCorrect:
+        'Exact ! La gravité rassemble les étoiles, le gaz et la poussière d’une galaxie.',
       explainWrong:
-        'Une galaxie contient beaucoup d’étoiles, ainsi que du gaz et de la poussière. Ce n’est pas un Soleil géant.',
+        'Une galaxie contient énormément d’étoiles. Le Soleil et ses planètes n’en sont qu’une toute petite partie.',
+    },
+    {
+      id: 'q3-shape',
+      prompt: 'Vue de profil, la Voie lactée ressemble surtout à…',
+      choices: [
+        { id: 'disk', label: 'Un disque plus épais au centre' },
+        { id: 'sphere', label: 'Une boule pleine comme une planète' },
+        { id: 'line', label: 'Une rangée de huit étoiles' },
+      ],
+      correctChoiceId: 'disk',
+      explainCorrect: 'Oui : le disque contient les bras, et le centre est plus épais.',
+      explainWrong:
+        'Repense à la vue de profil : le disque est aplati et le centre plus épais. Il existe aussi des étoiles autour du disque.',
     },
   ],
 };

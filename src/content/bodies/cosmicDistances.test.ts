@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { AU_KM, LIGHT_YEAR_KM, DELIVERY_TARGETS } from './cosmicDistances';
-import { MISSION_12 } from '@/content/missions/mission-12';
+import { MISSION_13 } from '@/content/missions/mission-13';
 import { getMissionById } from '@/content/missions';
 import { getQuizById } from '@/content/quizzes';
 import { getRewardById } from '@/content/rewards/catalog';
@@ -111,13 +111,13 @@ describe('Navigation cosmique', () => {
     expect(cosmicScaleFrame(5.5).galaxyScale).toBeLessThan(0.002);
   });
   it('enregistre mission, quiz, badge et glossaire sans célébrer le film', () => {
-    expect(getMissionById(MISSION_12.id)).toBe(MISSION_12);
-    expect(getQuizById(MISSION_12.quizId!)).toBeDefined();
-    MISSION_12.rewardIds.forEach((id) => expect(getRewardById(id)).toBeDefined());
-    MISSION_12.glossaryIds?.forEach((id) => expect(getGlossaryEntry(id)).toBeDefined());
-    expect(MISSION_12.steps.filter(isCelebratedChallenge).map((s) => s.id)).toEqual([
-      'm12-order',
-      'm12-signals',
+    expect(getMissionById(MISSION_13.id)).toBe(MISSION_13);
+    expect(getQuizById(MISSION_13.quizId!)).toBeDefined();
+    MISSION_13.rewardIds.forEach((id) => expect(getRewardById(id)).toBeDefined());
+    MISSION_13.glossaryIds?.forEach((id) => expect(getGlossaryEntry(id)).toBeDefined());
+    expect(MISSION_13.steps.filter(isCelebratedChallenge).map((s) => s.id)).toEqual([
+      'm13-order',
+      'm13-signals',
     ]);
   });
 });

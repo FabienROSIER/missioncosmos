@@ -1,4 +1,5 @@
 import { SAVE_SCHEMA_VERSION } from '@/lib/constants';
+import { remapLegacyMissionId } from '@/features/progression/legacyMissionIds';
 
 const STORAGE_KEY = 'mc:mission-session';
 
@@ -26,10 +27,12 @@ export function loadMissionSession(missionId: string): MissionSession | null {
     const raw = storage.getItem(STORAGE_KEY);
     if (!raw) return null;
     const data = JSON.parse(raw) as MissionSession;
-    if (data.version !== SAVE_SCHEMA_VERSION) return null;
-    if (data.missionId !== missionId) return null;
+    if (data.version !== 1 && data.version !== SAVE_SCHEMA_VERSION) return null;
+    const storedMissionId =
+      data.version === 1 ? remapLegacyMissionId(data.missionId) : data.missionId;
+    if (storedMissionId !== missionId) return null;
     if (typeof data.stepIndex !== 'number' || data.stepIndex < 0) return null;
-    return data;
+    return { ...data, version: SAVE_SCHEMA_VERSION, missionId: storedMissionId };
   } catch {
     return null;
   }

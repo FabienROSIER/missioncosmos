@@ -34,8 +34,8 @@ Sources : [catalogue des missions](<D:/Programmation/Mission Cosmos/src/content/
 | 2 | Carte — objectif de la mission 06, Les orbites | « Voir comment les planètes tournent et comparer leurs périodes. » | « Compare le temps d’un tour du Soleil pour chaque planète. » |
 | 3 | Carte — objectif de la mission 07, Les saisons | « Comprendre l’inclinaison de la Terre et l’été / l’hiver. » | « Pourquoi la Terre penchée nous donne-t-elle des saisons ? » |
 | 4 | Carte — objectif de la mission Les dessins du ciel | « Retrouver les constellations et découvrir leur profondeur en voyageant en 3D. » | « Retrouve les constellations et compare la distance de leurs étoiles. » **Oral :** expliquer comment le voyage révèle ces distances. |
-| 5 | Carte — objectif de la mission 12 | « Comparer les ordres de grandeur, de la Terre à l’Univers observable. » | « Compare les distances, de la Terre aux galaxies les plus lointaines. » **Oral :** préciser la limite de l’Univers observable. |
-| 6 | Carte — objectif de la mission 13 | « Aborder gravité extrême et horizon des événements sans fausse analogie. » | « Découvre les trous noirs et leur limite de non-retour. » **Oral :** expliquer la gravité et le rôle de cette limite. |
+| 5 | Carte — objectif de la mission 13 | « Comparer les ordres de grandeur, de la Terre à l’Univers observable. » | « Compare les distances, de la Terre aux galaxies les plus lointaines. » **Oral :** préciser la limite de l’Univers observable. |
+| 6 | Carte — objectif de la mission 14 | « Aborder gravité extrême et horizon des événements sans fausse analogie. » | « Découvre les trous noirs et leur limite de non-retour. » **Oral :** expliquer la gravité et le rôle de cette limite. |
 | 7 | Collection — avant le premier badge | « Tes badges apparaîtront ici après tes premières missions. Aucun loot payant. » | « Gagne tes badges en réussissant des missions. Rien à acheter. » |
 | 8 | Création ou modification du profil — champ du nom | « Pseudo (facultatif) » | « Nom d’explorateur (au choix) » |
 | 9 | Création ou modification du profil — choix d’image | « Avatar » | « Choisis ton image » |
@@ -161,9 +161,9 @@ Source : [textes de mission](<D:/Programmation/Mission Cosmos/src/content/missio
 | --- | --- | --- | --- |
 | 58 | Place le prisme — consigne et rappel ; actions, notice La maquette | « dans le faisceau blanc » ; « faisceaux rendus visibles, tailles et angles adaptés pour observer » | Consigne et rappel : « sur le trajet de la lumière blanche ». Notice : « Trajets lumineux dessinés. Tailles et angles simplifiés pour observer. » Le mot prisme est déjà expliqué et peut rester. |
 
-## Mission — Les dessins du ciel
+## Mission 10 — Les dessins du ciel
 
-Sources : [textes de mission](<D:/Programmation/Mission Cosmos/src/content/missions/mission-constellations.ts>), [scène](<D:/Programmation/Mission Cosmos/src/3d/scenes/ConstellationsScene.tsx>), [voyage](<D:/Programmation/Mission Cosmos/src/3d/scenes/ConstellationVoyage.tsx>).
+Sources : [textes de mission](<D:/Programmation/Mission Cosmos/src/content/missions/mission-10.ts>), [scène](<D:/Programmation/Mission Cosmos/src/3d/scenes/ConstellationsScene.tsx>), [voyage](<D:/Programmation/Mission Cosmos/src/3d/scenes/ConstellationVoyage.tsx>).
 
 | N° | Défi ou contexte | Texte actuel | Proposition de remplacement |
 | --- | --- | --- | --- |
@@ -173,9 +173,9 @@ Sources : [textes de mission](<D:/Programmation/Mission Cosmos/src/content/missi
 | 62 | Actions, notice La maquette ; note du voyage | « profondeurs de démonstration, pas distances réelles » | « Distances choisies pour l’expérience, différentes des vraies distances. » **Oral :** expliquer comment le point de vue transforme le dessin. |
 | 63 | Bas de la scène de recherche — note précédant les crédits | « Éclat relatif adapté à l’écran. Étoiles voisines et magnitudes : » ; « Tracé simplifié. » | « Luminosité adaptée à l’écran. Données sur les étoiles : » ; « Dessin simplifié. » Conserver les noms et la licence qui suivent. |
 
-## Mission 10 — Notre galaxie
+## Mission 11 — Notre galaxie
 
-Sources : [textes de mission](<D:/Programmation/Mission Cosmos/src/content/missions/mission-10.ts>), [scène](<D:/Programmation/Mission Cosmos/src/3d/scenes/MilkyWayScene.tsx>), [quiz](<D:/Programmation/Mission Cosmos/src/content/quizzes/mission-10.ts>).
+Sources : [textes de mission](<D:/Programmation/Mission Cosmos/src/content/missions/mission-11.ts>), [scène](<D:/Programmation/Mission Cosmos/src/3d/scenes/MilkyWayScene.tsx>), [quiz](<D:/Programmation/Mission Cosmos/src/content/quizzes/mission-11.ts>).
 
 | N° | Défi ou contexte | Texte actuel | Proposition de remplacement |
 | --- | --- | --- | --- |
@@ -184,9 +184,9 @@ Sources : [textes de mission](<D:/Programmation/Mission Cosmos/src/content/missi
 | 66 | Défi du voyage — note sous la scène | « Le point doré est un repère agrandi. Voyage très accéléré, trajectoire simplifiée. » | « Soleil agrandi pour le repérer. Voyage accéléré, chemin simplifié. » |
 | 67 | Actions de mission — notice La maquette | « bras artistiques, quartier du Soleil approximatif » ; « Tailles, distances et voyage ne sont pas à l’échelle. » | « Bras dessinés, Soleil placé approximativement. Tailles et distances simplifiées, voyage accéléré. » **Oral :** expliquer que la maquette n’est pas une carte précise. |
 
-## Mission 11 — Les galaxies
+## Mission 12 — Les galaxies
 
-Sources : [textes de mission](<D:/Programmation/Mission Cosmos/src/content/missions/mission-11.ts>), [scène](<D:/Programmation/Mission Cosmos/src/3d/scenes/GalaxiesScene.tsx>), [libellés des formes](<D:/Programmation/Mission Cosmos/src/content/bodies/galaxies.ts>).
+Sources : [textes de mission](<D:/Programmation/Mission Cosmos/src/content/missions/mission-12.ts>), [scène](<D:/Programmation/Mission Cosmos/src/3d/scenes/GalaxiesScene.tsx>), [libellés des formes](<D:/Programmation/Mission Cosmos/src/content/bodies/galaxies.ts>).
 
 | N° | Défi ou contexte | Texte actuel | Proposition de remplacement |
 | --- | --- | --- | --- |
@@ -195,9 +195,9 @@ Sources : [textes de mission](<D:/Programmation/Mission Cosmos/src/content/missi
 | 70 | Du petit au gigantesque — consigne, rappel, titre des cartes et retours de la scène | « Les cartes du zoom du robot » ; « Construis le zoom » ; « Les niveaux du zoom » ; « cherche le plus petit ensemble restant » | Respectivement : « Les cartes du voyage » ; « Range du plus petit au plus grand » ; « Du Soleil à la galaxie » ; « Choisis le plus petit objet restant ». Le classement porte sur ce que les cartes représentent. |
 | 71 | Actions de mission — notice La maquette | « Maquettes artistiques générées par le jeu. […] Le zoom compare des niveaux, sans respecter leurs proportions réelles. » | « Formes, couleurs et tailles simplifiées. Ce n’est pas une carte du ciel. Les vraies proportions ne sont pas respectées. » **Oral :** détailler les trois niveaux montrés pendant le voyage. |
 
-## Mission 12 — Les distances dans l’Univers
+## Mission 13 — Les distances dans l’Univers
 
-Sources : [textes de mission](<D:/Programmation/Mission Cosmos/src/content/missions/mission-12.ts>), [fiches des repères](<D:/Programmation/Mission Cosmos/src/content/bodies/cosmicDistances.ts>), [scène du voyage](<D:/Programmation/Mission Cosmos/src/3d/scenes/CosmicDistancesScene.tsx>), [expérience des flashs](<D:/Programmation/Mission Cosmos/src/3d/scenes/LightTravelChallenge.tsx>).
+Sources : [textes de mission](<D:/Programmation/Mission Cosmos/src/content/missions/mission-13.ts>), [fiches des repères](<D:/Programmation/Mission Cosmos/src/content/bodies/cosmicDistances.ts>), [scène du voyage](<D:/Programmation/Mission Cosmos/src/3d/scenes/CosmicDistancesScene.tsx>), [expérience des flashs](<D:/Programmation/Mission Cosmos/src/3d/scenes/LightTravelChallenge.tsx>).
 
 | N° | Défi ou contexte | Texte actuel | Proposition de remplacement |
 | --- | --- | --- | --- |
@@ -212,9 +212,9 @@ Sources : [textes de mission](<D:/Programmation/Mission Cosmos/src/content/missi
 | 80 | Actions de mission — notice La maquette | « Maquette 3D pédagogique : astres agrandis, espaces et temps comprimés. Le voyage de la lumière est accéléré pour rester lisible. Les diamètres sont indiqués explicitement. Neptune ne marque pas la fin du Système solaire. » | « Objets agrandis, distances raccourcies, temps accéléré. Les fiches précisent ce qu’on mesure. Le Système solaire continue au-delà de Neptune. » **Oral :** détailler largeur et distance. |
 | 81 | Récompense et collection — description du badge Navigateur cosmique | « utiliser les repères UA et année-lumière » | « mesurer les distances avec l’unité astronomique (UA) et l’année-lumière » |
 
-## Mission 13 — Les trous noirs
+## Mission 14 — Les trous noirs
 
-Sources : [textes de mission](<D:/Programmation/Mission Cosmos/src/content/missions/mission-13.ts>), [scène](<D:/Programmation/Mission Cosmos/src/3d/scenes/BlackHoleScene.tsx>), [notes des vues](<D:/Programmation/Mission Cosmos/src/content/bodies/blackHolePreview.ts>), [quiz](<D:/Programmation/Mission Cosmos/src/content/quizzes/mission-13.ts>).
+Sources : [textes de mission](<D:/Programmation/Mission Cosmos/src/content/missions/mission-14.ts>), [scène](<D:/Programmation/Mission Cosmos/src/3d/scenes/BlackHoleScene.tsx>), [notes des vues](<D:/Programmation/Mission Cosmos/src/content/bodies/blackHolePreview.ts>), [quiz](<D:/Programmation/Mission Cosmos/src/content/quizzes/mission-14.ts>).
 
 | N° | Défi ou contexte | Texte actuel | Proposition de remplacement |
 | --- | --- | --- | --- |
@@ -244,10 +244,10 @@ Source : [définitions et bonus](<D:/Programmation/Mission Cosmos/src/content/gl
 | 98 | Mission 09 — Prisme, bonus ; Mélange de lumières, bonus | « Les différentes couleurs sont déviées différemment par le verre. » ; « vert + bleu font du cyan » | Prisme : « Le verre change le trajet des couleurs. Elles sortent séparées. » Mélange : « vert et bleu donnent du bleu-vert, appelé cyan ». **Oral :** expliquer que chaque couleur est déviée différemment. |
 | 99 | Après la mission 09 — Spectroscope, bonus visible dans la collection | « des raies fines manquantes ou plus sombres — omises dans notre laboratoire pédagogique » | « Le spectroscope sépare les couleurs. De fines lignes sombres aident à étudier les étoiles. Elles ne sont pas montrées ici. » |
 | 100 | Après la mission 09 — Kelvin, bonus visible dans la collection | « 5800 K en surface. 0 K, c’est le zéro absolu — bien plus froid que 0 °C. » | « Soleil : environ 5 800 kelvins en surface. Zéro kelvin : la température la plus basse possible, bien sous 0 °C. » **Oral :** expliquer le kelvin, Celsius et le nom zéro absolu. |
-| 101 | Mission 11 — Spirale barrée, bonus ; Elliptique, bonus ; Irrégulière, définition | « ses principaux bras partent des extrémités de la barre » ; « ses nombreuses étoiles sont réparties dans un volume » ; « comme une spirale ou une ellipse » | « Ses grands bras partent des deux bouts de la barre. » ; « Ses étoiles sont réparties dans l’espace : ce n’est pas une boule pleine. » ; « comme une spirale ou une forme ovale ». |
-| 102 | Mission 12 — Unité astronomique, définition | « Une unité de distance correspondant à la distance moyenne entre la Terre et le Soleil. » | « Une unité astronomique (UA) vaut la distance moyenne entre la Terre et le Soleil. » **Oral :** expliquer moyenne avant de l’utiliser dans une question. |
-| 103 | Mission 12 — Univers observable, bonus | « L’expansion de l’espace explique que son diamètre actuel soit bien plus grand que 13,8 milliards d’années-lumière. » | « L’espace s’agrandit pendant le voyage de la lumière. L’Univers observable dépasse donc 13,8 milliards d’années-lumière de large. » **Oral :** expliquer expansion et distinguer la largeur actuelle de la distance parcourue par la lumière. |
-| 104 | Mission 13 — Trou noir, définition ; Disque d’accrétion, définition ; Horizon des événements, bonus | « énormément de matière est concentrée dans très peu de place » ; « peuvent devenir très lumineux en chauffant » ; « une paroi solide » | « énormément de matière tient dans un tout petit espace » ; « peuvent briller en devenant très chauds » ; « un mur solide ». Garder disque d’accrétion : cette entrée sert à expliquer le mot. |
+| 101 | Mission 12 — Spirale barrée, bonus ; Elliptique, bonus ; Irrégulière, définition | « ses principaux bras partent des extrémités de la barre » ; « ses nombreuses étoiles sont réparties dans un volume » ; « comme une spirale ou une ellipse » | « Ses grands bras partent des deux bouts de la barre. » ; « Ses étoiles sont réparties dans l’espace : ce n’est pas une boule pleine. » ; « comme une spirale ou une forme ovale ». |
+| 102 | Mission 13 — Unité astronomique, définition | « Une unité de distance correspondant à la distance moyenne entre la Terre et le Soleil. » | « Une unité astronomique (UA) vaut la distance moyenne entre la Terre et le Soleil. » **Oral :** expliquer moyenne avant de l’utiliser dans une question. |
+| 103 | Mission 13 — Univers observable, bonus | « L’expansion de l’espace explique que son diamètre actuel soit bien plus grand que 13,8 milliards d’années-lumière. » | « L’espace s’agrandit pendant le voyage de la lumière. L’Univers observable dépasse donc 13,8 milliards d’années-lumière de large. » **Oral :** expliquer expansion et distinguer la largeur actuelle de la distance parcourue par la lumière. |
+| 104 | Mission 14 — Trou noir, définition ; Disque d’accrétion, définition ; Horizon des événements, bonus | « énormément de matière est concentrée dans très peu de place » ; « peuvent devenir très lumineux en chauffant » ; « une paroi solide » | « énormément de matière tient dans un tout petit espace » ; « peuvent briller en devenant très chauds » ; « un mur solide ». Garder disque d’accrétion : cette entrée sert à expliquer le mot. |
 
 ## Prise en compte des futurs dialogues
 

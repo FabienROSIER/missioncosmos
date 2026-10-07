@@ -255,7 +255,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     isBlackHoles ||
     isGalaxies ||
     isMilkyWay ||
-    (isConstellations && !['mc-intro', 'mc-reward', 'mc-understand'].includes(step.id)) ||
+    (isConstellations && !['m10-intro', 'm10-reward', 'm10-understand'].includes(step.id)) ||
     isOrbits ||
     isSeasons ||
     isStars ||
@@ -296,7 +296,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     (!showPlayButton || (playStarted && step.requiresSuccess !== true));
   const showSceneControls =
     hasSceneControls &&
-    (sceneInteractionAllowed || (isConstellations && step.id === 'mc-film' && challengeSolved));
+    (sceneInteractionAllowed || (isConstellations && step.id === 'm10-film' && challengeSolved));
   const quiz = step.quizId ? getQuizById(step.quizId) : undefined;
   const glossaryEntries = getGlossaryEntries(mission.glossaryIds ?? []);
   const nextMissionId = getCatalogEntry(mission.id)?.unlocksNextId;
@@ -1189,7 +1189,12 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
 
         <header ref={topBarRef} className={styles.topBar}>
           <SafeBackButton fallbackHref="/missions" label="Quitter" compact preferFallback />
-          <h1 className={styles.title}>{mission.title}</h1>
+          <div className={styles.titleBlock}>
+            <p className={styles.missionIndex}>
+              Mission · {mission.id.match(/(\d+)$/)?.[1]?.padStart(2, '0')}
+            </p>
+            <h1 className={styles.title}>{mission.title}</h1>
+          </div>
           <button
             type="button"
             ref={menuToggleRef}
@@ -1490,7 +1495,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                   >
                     {playStarted
                       ? 'Reprendre'
-                      : step.id === 'mc-film'
+                      : step.id === 'm10-film'
                         ? 'Lancer le voyage'
                         : 'À toi de jouer'}
                   </button>

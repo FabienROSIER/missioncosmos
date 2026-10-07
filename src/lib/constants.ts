@@ -5,7 +5,7 @@ export const APP_LOCALE = 'fr' as const;
 export const TARGET_AGE = { min: 6, max: 12 } as const;
 
 /** Version du schéma de sauvegarde locale */
-export const SAVE_SCHEMA_VERSION = 1;
+export const SAVE_SCHEMA_VERSION = 2;
 
 /**
  * Racine logique des assets (sans basePath).

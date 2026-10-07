@@ -1,10 +1,10 @@
 # ADR-005 — Maquettes des familles de galaxies
 
-Date : 2026-10-02. Statut : adopté pour la mission 11.
+Date : 2026-10-02. Statut : adopté pour la mission 12.
 
 ## Décision
 
-Représenter les galaxies par des volumes de points et des halos 3D générés par le code du projet. Réutiliser le disque, les bras et le bulbe de la mission 10 pour les spirales ; ajouter un ellipsoïde d’étoiles sans bras et une distribution irrégulière en plusieurs concentrations. Conserver le fond image AST-021 déjà documenté, conformément à l’ADR-002.
+Représenter les galaxies par des volumes de points et des halos 3D générés par le code du projet. Réutiliser le disque, les bras et le bulbe de la mission 11 pour les spirales ; ajouter un ellipsoïde d’étoiles sans bras et une distribution irrégulière en plusieurs concentrations. Conserver le fond image AST-021 déjà documenté, conformément à l’ADR-002.
 
 L’asset gate est résolu par ces modèles pédagogiques, sans photographie, texture ou modèle tiers supplémentaire. La géométrie et les shaders ajoutés sont du code original du projet ; ils ne nécessitent pas de licence d’asset externe. La provenance du fond image reste celle de `docs/ASSETS.md`. Les références NASA servent uniquement à vérifier les notions : aucun média NASA n’est importé.
 
@@ -22,7 +22,7 @@ Les défis utilisent les contrôles tactiles communs, sans glisser-déposer obli
 
 ## Ajustement — spirales barrées et halos
 
-Ajout de deux maquettes de spirales distinctes : la barrée possède une barre centrale allongée et deux bras partant de ses extrémités, avec un halo correspondant au nuage de points. Les quatre maquettes utilisent un halo renforcé (intensité × 1,65) dans M11 ; le réglage historique de M10 reste inchangé. La barre est expliquée comme une sous-catégorie des spirales dans la mission, le quiz et le glossaire. Album étendu à quatre fiches, boutons sur deux colonnes pour rester lisibles sur mobile.
+Ajout de deux maquettes de spirales distinctes : la barrée possède une barre centrale allongée et deux bras partant de ses extrémités, avec un halo correspondant au nuage de points. Les quatre maquettes utilisent un halo renforcé (intensité × 1,65) dans M12 ; le réglage historique de M11 reste inchangé. La barre est expliquée comme une sous-catégorie des spirales dans la mission, le quiz et le glossaire. Album étendu à quatre fiches, boutons sur deux colonnes pour rester lisibles sur mobile.
 
 Correction de périmètre : le modèle barré générique reste dans les quatre fiches du défi, avec sa définition dans le glossaire. Les vues des galaxies nommées sont rétablies, le quiz revient à la question sur les bras des spirales, et l’exploration libre propose trois familles. Cette simplification visuelle n’est pas une reclassification scientifique de la Voie lactée.
 

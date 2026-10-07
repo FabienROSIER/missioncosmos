@@ -448,10 +448,10 @@ La carte doit matérialiser l'élargissement progressif du champ de connaissance
 - [x] voisinage terrestre. _(retiré 2026-09-28 — zone orpheline ; progression Lune → Système solaire)_
 - [x] Système solaire. _(missions 05–07 catalogue)_
 - [x] Soleil/étoiles. _(missions 08–09 catalogue)_
-- [x] Voie lactée. _(mission 10 catalogue)_
-- [x] galaxies. _(mission 11 catalogue)_
-- [x] Univers profond. _(mission 12 catalogue — distances)_
-- [x] phénomènes extrêmes. _(mission 13 catalogue — trous noirs)_
+- [x] Voie lactée. _(mission 11 catalogue)_
+- [x] galaxies. _(mission 12 catalogue)_
+- [x] Univers profond. _(mission 13 catalogue — distances)_
+- [x] phénomènes extrêmes. _(mission 14 catalogue — trous noirs)_
 
 ## 7.2 Fonctionnalités
 
@@ -538,7 +538,7 @@ Objectifs : forme, rotation, pôles, équateur, repères fondamentaux.
 - [x] Ordre des planètes.
 - [x] Défi de placement.
 - [x] Mentionner planète naine séparément sans présenter Pluton comme 9e planète.
-- [x] Aborder les distances moyennes au Soleil (étape « Mesurer le vide », zoom Soleil–Mars) — orbites/périodes → Mission 06 ; distances cosmiques → Mission 11.
+- [x] Aborder les distances moyennes au Soleil (étape « Mesurer le vide », zoom Soleil–Mars) — orbites/périodes → Mission 06 ; distances cosmiques → Mission 13.
 
 ### ASSET GATE — planètes
 
@@ -587,7 +587,11 @@ Objectifs : forme, rotation, pôles, équateur, repères fondamentaux.
 - [x] Défi d'association.
 - [x] Défi « Commandes du prisme » : 3 réglages (Proxima / Soleil / Sirius) avec une mécanique unique — notes dans `docs/pedagogy/mission-09-stellar-light.md`.
 
-## Mission 10 — Notre galaxie
+## Mission 10 — Les dessins du ciel
+
+- [x] Atlas des constellations, voyage 3D et quiz. Notes : `docs/pedagogy/mission-10-constellations.md`.
+
+## Mission 11 — Notre galaxie
 
 - [x] Représentation 3D simplifiée de la Voie lactée.
 - [x] Position approximative du Soleil.
@@ -596,14 +600,14 @@ Objectifs : forme, rotation, pôles, équateur, repères fondamentaux.
 - [x] Rotation/exploration.
 - [x] Défi de localisation conceptuelle.
 
-_2026-10-02 : voyage automatique de 8 s, disque/bras artistiques/centre épaissi, vues face/profil, rotation et zoom, trois repères avec indices. Quiz commun sans scroll avec robot, badge et déblocage de M11. Parcours complet, reprise, replay et réduction des animations vérifiés ; six formats navigateur testés. Notes et sources : `docs/pedagogy/mission-10-milky-way.md`._
+_2026-10-02 : voyage automatique de 8 s, disque/bras artistiques/centre épaissi, vues face/profil, rotation et zoom, trois repères avec indices. Quiz commun sans scroll avec robot, badge et déblocage de M12. Parcours complet, reprise, replay et réduction des animations vérifiés ; six formats navigateur testés. Notes et sources : `docs/pedagogy/mission-11-milky-way.md`._
 
 ### ASSET GATE — Voie lactée
 
 - [x] déterminer si texture, skybox, particules ou modèle est préférable. _(Maquette en points 3D ; fond image AST-021 conservé. ADR-004.)_
 - [x] demander l'asset seulement après définition technique précise. _(Aucun nouvel asset externe requis pour cette maquette pédagogique ; décision documentée dans `docs/decisions/004-milky-way-learning-model.md`.)_
 
-## Mission 11 — Les galaxies
+## Mission 12 — Les galaxies
 
 Objectifs : d’autres galaxies que la nôtre ; idée d’« îles d’étoiles » ; Andromède comme exemple proche.
 
@@ -614,7 +618,7 @@ Objectifs : d’autres galaxies que la nôtre ; idée d’« îles d’étoiles 
 - [x] Défi pédagogique (association ou ordre). _(Album de quatre formes, dont deux variantes de spirales, + zoom Soleil / Système solaire / Voie lactée ; positions des réponses mélangées.)_
 - [x] Éviter de présenter les galaxies comme des « soleils géants ».
 
-_2026-10-02 : mission 11 jouable, maquettes 3D avec halos volumétriques, vues face/profil animées, deux défis, quiz commun avec robot, badge et déblocage de M12. Parcours complet avec erreurs, reprise et recommencement vérifiés. Quiz et feedback sans scroll sur 390×844, 320×568, 844×390 et 568×320 ; préférence de réduction des animations vérifiée. 149 tests passent, TypeScript / lint ciblé / build réussis. Sources et limites : `docs/pedagogy/mission-11-galaxies.md`. Les étapes d’observation ne célèbrent pas de faux défi._
+_2026-10-02 : mission 12 jouable, maquettes 3D avec halos volumétriques, vues face/profil animées, deux défis, quiz commun avec robot, badge et déblocage de M13. Parcours complet avec erreurs, reprise et recommencement vérifiés. Quiz et feedback sans scroll sur 390×844, 320×568, 844×390 et 568×320 ; préférence de réduction des animations vérifiée. 149 tests passent, TypeScript / lint ciblé / build réussis. Sources et limites : `docs/pedagogy/mission-12-galaxies.md`. Les étapes d’observation ne célèbrent pas de faux défi._
 
 ### ASSET GATE — galaxies
 
@@ -627,7 +631,7 @@ _Ajustement : halos renforcés sur les quatre maquettes ; spirales barrées ajou
 - [x] choisir représentation (illustration, skybox, modèle simplifié). _(Nuages de points et halos 3D générés par le code, fond AST-021 existant.)_
 - [x] licence documentée avant intégration définitive. _(Code original du projet, aucun nouveau média tiers ; ADR-005 et `docs/ASSETS.md`.)_
 
-## Mission 12 — Les distances dans l'Univers
+## Mission 13 — Les distances dans l'Univers
 
 - [x] Terre → Lune.
 - [x] Terre → Soleil.
@@ -641,9 +645,9 @@ _Ajustement : halos renforcés sur les quatre maquettes ; spirales barrées ajou
 - [x] Signaler les compressions d'échelle.
 - [x] Défi d'ordre de grandeur. _(Destinations classées, puis trois messages lumineux reçus ou non reçus ; aucun calibrage chiffré.)_
 
-_Mission 12 révisée après retour utilisateur : une seule phase de voyage manuel avant le premier défi, modèles 3D texturés du jeu, recul continu et couches de voisinage superposées, Voie lactée cadrée entière, Voie lactée et Andromède ensemble, puis 24–48 galaxies espacées. Règle numérique remplacée par les messages du ciel, trois trajets à observer sans calcul. Deux défis, quiz commun avec robot, badge et déblocage M13. 154 tests passent ; parcours complet avec erreurs, transitions, quiz et récompense vérifié sur ordinateur et mobile simulé. Sources et limites dans `docs/pedagogy/mission-12-distances.md` ; représentation et provenance dans ADR-006. Vérification sur appareil mobile physique encore à faire._
+_Mission 13 révisée après retour utilisateur : une seule phase de voyage manuel avant le premier défi, modèles 3D texturés du jeu, recul continu et couches de voisinage superposées, Voie lactée cadrée entière, Voie lactée et Andromède ensemble, puis 24–48 galaxies espacées. Règle numérique remplacée par les messages du ciel, trois trajets à observer sans calcul. Deux défis, quiz commun avec robot, badge et déblocage M14. 154 tests passent ; parcours complet avec erreurs, transitions, quiz et récompense vérifié sur ordinateur et mobile simulé. Sources et limites dans `docs/pedagogy/mission-13-distances.md` ; représentation et provenance dans ADR-006. Vérification sur appareil mobile physique encore à faire._
 
-## Mission 13 — Les trous noirs
+## Mission 14 — Les trous noirs
 
 - [ ] Définition adaptée aux enfants.
 - [ ] Horizon des événements.
@@ -654,7 +658,7 @@ _Mission 12 révisée après retour utilisateur : une seule phase de voyage manu
 - [ ] Corriger l'idée « aspirateur cosmique qui avale tout l'Univers ».
 - [ ] Ne pas prétendre simuler fidèlement la relativité si ce n'est pas le cas.
 
-_Avancement du 5 octobre 2026 : mission branchée sur le moteur commun jusqu’à la récompense. Introduction, manipulations et deux défis sont intégrés. Le quiz comporte quatre questions sur les principes manipulés, avec indice après erreur, et mène correctement à la récompense. L’achèvement, la persistance et le parcours mobile complet restent à valider. Détail dans `docs/pedagogy/mission-13-black-holes.md`._
+_Avancement du 5 octobre 2026 : mission branchée sur le moteur commun jusqu’à la récompense. Introduction, manipulations et deux défis sont intégrés. Le quiz comporte quatre questions sur les principes manipulés, avec indice après erreur, et mène correctement à la récompense. L’achèvement, la persistance et le parcours mobile complet restent à valider. Détail dans `docs/pedagogy/mission-14-black-holes.md`._
 
 ---
 
@@ -942,7 +946,7 @@ Possibilités futures :
 
 Ces fonctionnalités ne doivent pas bloquer la version principale mais l'architecture doit éviter de les rendre impossibles.
 
-- [x] Constellations — mission « Les dessins du ciel », illustrations et voyage 3D (voir `docs/pedagogy/mission-constellations.md`).
+- [x] Constellations — mission « Les dessins du ciel », illustrations et voyage 3D (voir `docs/pedagogy/mission-10-constellations.md`).
 - [ ] Observation du ciel.
 - [ ] Télescopes et fonctionnement optique.
 - [ ] Astronautique.
@@ -993,8 +997,8 @@ Les décisions importantes doivent avoir une ADR dans `/docs/decisions/` et êtr
 
 | Date       | Décision                                                                                                                  | ADR                                              |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| 2026-10-02 | Mission 10 : maquette pédagogique en points 3D, fond AST-021 réutilisé, aucun nouvel asset externe requis | `docs/decisions/004-milky-way-learning-model.md` |
-| 2026-09-28 | Carte 8 zones alignée sur 13 missions (mix C) ; suppression zone Voisinage ; M11 Galaxies ; Distances→12 ; Trous noirs→13 | —                                                |
+| 2026-10-02 | Mission 11 : maquette pédagogique en points 3D, fond AST-021 réutilisé, aucun nouvel asset externe requis | `docs/decisions/004-milky-way-learning-model.md` |
+| 2026-09-28 | Carte 8 zones alignée sur 14 missions (mix C) ; suppression zone Voisinage ; M12 Galaxies ; Distances→13 ; Trous noirs→14 | —                                                |
 | 2026-09-26 | Next.js + React + TypeScript comme socle web                                                                              | `docs/decisions/001-stack-initiale.md`           |
 | 2026-09-26 | Babylon.js (`@babylonjs/core`) comme moteur 3D                                                                            | `docs/decisions/001-stack-initiale.md`           |
 | 2026-09-26 | CSS natif (tokens en Phase 2), pas Tailwind au démarrage                                                                  | `docs/decisions/001-stack-initiale.md`           |
@@ -1006,15 +1010,15 @@ Les décisions importantes doivent avoir une ADR dans `/docs/decisions/` et êtr
 
 # État global du projet
 
-**Statut : MISSION 13 EN COURS — jouable jusqu’à la récompense**
+**Statut : MISSION 14 EN COURS — jouable jusqu’à la récompense**
 
 Phase actuelle : **Phase 8 — Missions pédagogiques**
 
-Carte / catalogue : **13 missions principales + mission Constellations** branchées sur **8 zones**. Scènes jouables : M01–M12, Constellations et M13 jusqu’à la récompense ; fin et persistance de M13 à valider.
+Carte / catalogue : **14 missions** branchées sur **8 zones**. Scènes jouables : M01–M14 jusqu’à la récompense ; fin et persistance de M14 à valider.
 
-Sous-phases : Mission 01 · Mission 02 · Mission 03 · Mission 04 · Mission 05 · Mission 06 · Mission 07 · Mission 08 · Mission 09 · Constellations · Mission 10 · Mission 11 · Mission 12 terminées.
+Sous-phases : Mission 01 · Mission 02 · Mission 03 · Mission 04 · Mission 05 · Mission 06 · Mission 07 · Mission 08 · Mission 09 · Mission 10 · Mission 11 · Mission 12 · Mission 13 terminées.
 
-Prochaine action : **Mission 13 — valider récompense, achèvement, persistance et parcours mobile complet**.
+Prochaine action : **Mission 14 — valider récompense, achèvement, persistance et parcours mobile complet**.
 
 ### Notes découvertes
 

@@ -53,17 +53,17 @@ describe('zoneStatus', () => {
     expect(UNIVERSE_ZONES.some((z) => z.id === ('earth-neighborhood' as never))).toBe(false);
   });
 
-  it('galaxies verrouillée tant que mission-11 pas débloquée', () => {
+  it('galaxies verrouillée tant que mission-12 pas débloquée', () => {
     const input = {
-      isMissionUnlocked: (id: string) => id === 'mission-01' || id === 'mission-10',
+      isMissionUnlocked: (id: string) => id === 'mission-01' || id === 'mission-11',
       isMissionCompleted: () => false,
     };
     expect(getZoneStatus(getZoneById('galaxies')!, input)).toBe('locked');
   });
 
-  it('galaxies disponible si mission-11 débloquée', () => {
+  it('galaxies disponible si mission-12 débloquée', () => {
     const input = {
-      isMissionUnlocked: (id: string) => id === 'mission-11',
+      isMissionUnlocked: (id: string) => id === 'mission-12',
       isMissionCompleted: () => false,
     };
     expect(getZoneStatus(getZoneById('galaxies')!, input)).toBe('available');

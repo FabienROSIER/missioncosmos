@@ -9,7 +9,7 @@ import {
   galaxyTransition,
   galacticRoutePosition,
 } from './milkyWay';
-import { MISSION_10 } from '@/content/missions/mission-10';
+import { MISSION_11 } from '@/content/missions/mission-11';
 import { getMissionById } from '@/content/missions';
 import { getQuizById } from '@/content/quizzes';
 import { getRewardById } from '@/content/rewards/catalog';
@@ -35,10 +35,10 @@ describe('mission Notre galaxie', () => {
       expect(galacticRoutePosition(id, -1)).toEqual(galacticRoutePosition(id, 0));
       expect(galacticRoutePosition(id, 2)).toEqual(galacticRoutePosition(id, 1));
     }
-    const challenge = MISSION_10.steps.find((step) => step.id === 'm10-orbit');
+    const challenge = MISSION_11.steps.find((step) => step.id === 'm11-orbit');
     expect(challenge?.requiresSuccess).toBe(true);
-    expect(MISSION_10.steps.findIndex((step) => step.id === 'm10-orbit')).toBeLessThan(
-      MISSION_10.steps.findIndex((step) => step.kind === 'quiz'),
+    expect(MISSION_11.steps.findIndex((step) => step.id === 'm11-orbit')).toBeLessThan(
+      MISSION_11.steps.findIndex((step) => step.kind === 'quiz'),
     );
   });
   it('préserve un contexte visible pendant tout le recul, sans intervalle vide', () => {
@@ -118,11 +118,11 @@ describe('mission Notre galaxie', () => {
     }
   });
   it('branche les contenus, le quiz, le badge et tous les mots du glossaire', () => {
-    expect(validateMission(MISSION_10)).toEqual([]);
-    expect(getMissionById(MISSION_10.id)).toEqual(MISSION_10);
-    expect(getQuizById(MISSION_10.quizId!)?.questions.length).toBe(3);
-    expect(MISSION_10.rewardIds.every((id) => Boolean(getRewardById(id)))).toBe(true);
-    expect(MISSION_10.glossaryIds).toHaveLength(4);
-    expect((MISSION_10.glossaryIds ?? []).every((id) => Boolean(getGlossaryEntry(id)))).toBe(true);
+    expect(validateMission(MISSION_11)).toEqual([]);
+    expect(getMissionById(MISSION_11.id)).toEqual(MISSION_11);
+    expect(getQuizById(MISSION_11.quizId!)?.questions.length).toBe(3);
+    expect(MISSION_11.rewardIds.every((id) => Boolean(getRewardById(id)))).toBe(true);
+    expect(MISSION_11.glossaryIds).toHaveLength(4);
+    expect((MISSION_11.glossaryIds ?? []).every((id) => Boolean(getGlossaryEntry(id)))).toBe(true);
   });
 });

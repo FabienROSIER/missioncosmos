@@ -23,8 +23,8 @@ describe('catalogue voix robot', () => {
   });
 
   it('construit une URL publique avec basePath', () => {
-    expect(robotVoicePublicUrl('mission-11/mission-11.voisines.mp3')).toBe(
-      '/assets/audio/robot/fr/mission-11/mission-11.voisines.mp3',
+    expect(robotVoicePublicUrl('mission-12/mission-12.voisines.mp3')).toBe(
+      '/assets/audio/robot/fr/mission-12/mission-12.voisines.mp3',
     );
   });
 });

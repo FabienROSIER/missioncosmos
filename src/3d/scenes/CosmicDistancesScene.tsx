@@ -24,19 +24,19 @@ export function CosmicDistancesScene({
     [delivered, setDelivered] = useState<string[]>([]),
     [cards, setCards] = useState([...DELIVERY_TARGETS]),
     [status, setStatus] = useState('');
-  const journey = stepId === 'm12-journey',
-    ordering = stepId === 'm12-order';
+  const journey = stepId === 'm13-journey',
+    ordering = stepId === 'm13-order';
   const stop = DISTANCE_STOPS[index]!;
   useEffect(() => {
     const timer = setTimeout(() => {
       setStatus('');
-      if (stepId === 'm12-intro' || journey) setIndex(0);
+      if (stepId === 'm13-intro' || journey) setIndex(0);
       if (ordering) {
         setIndex(6);
         setDelivered([]);
         setCards(shuffleArray([...DELIVERY_TARGETS]));
       }
-      if (stepId === 'm12-explain') setIndex(6);
+      if (stepId === 'm13-explain') setIndex(6);
     }, 0);
     return () => clearTimeout(timer);
   }, [stepId, journey, ordering]);
@@ -59,7 +59,7 @@ export function CosmicDistancesScene({
     setDelivered(next);
     if (next.length === 4) onSuccess();
   };
-  if (stepId === 'm12-signals')
+  if (stepId === 'm13-signals')
     return (
       <div className={[styles.wrap, className].filter(Boolean).join(' ')}>
         <LightTravelChallenge
@@ -100,7 +100,7 @@ export function CosmicDistancesScene({
       <p className={styles.caption}>
         {ordering ? 'Messages préparés : ' + delivered.length + '/4' : stop.note}
       </p>
-      {(journey || ordering || stepId === 'm12-complete') && (
+      {(journey || ordering || stepId === 'm13-complete') && (
         <SceneControls className={styles.controls}>
           {ordering ? (
             <>

@@ -19,11 +19,11 @@
     "mission-07": 2,
     "mission-08": 3,
     "mission-09": 3,
-    "mission-constellations": 6,
-    "mission-10": 3,
+    "mission-10": 6,
     "mission-11": 3,
-    "mission-12": 4,
+    "mission-12": 3,
     "mission-13": 4,
+    "mission-14": 4,
     "common": 4
   },
   "excludedFromRecording": [
@@ -1026,18 +1026,18 @@
       ]
     },
     {
-      "id": "mission-constellations.atlas",
-      "group": "mission-constellations",
+      "id": "mission-10.atlas",
+      "group": "mission-10",
       "mission": "Les dessins du ciel",
       "context": "Introduction ; consigne commune aux dessins de l’atlas",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
-        "mc-intro"
+        "m10-intro"
       ],
       "sourceRefs": [
         {
-          "source": "src/content/missions/mission-constellations.ts",
-          "stepId": "mc-intro",
+          "source": "src/content/missions/mission-10.ts",
+          "stepId": "m10-intro",
           "screenText": "Depuis longtemps, les humains imaginent des personnages et des animaux en regardant les étoiles. Ouvre ton atlas : nous allons retrouver quatre de ces dessins !",
           "sourceHash": "cc5b8cdde466e507a78bb352a1ae50a03cd231ce435fa5d8bd11fbc6da81948d"
         }
@@ -1046,11 +1046,11 @@
       "characterCount": 220,
       "clips": [
         {
-          "id": "mission-constellations.atlas",
-          "file": "mission-constellations.atlas.mp3",
-          "relativePath": "mission-constellations/mission-constellations.atlas.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-constellations/mission-constellations.atlas.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-constellations/mission-constellations.atlas.mp3",
+          "id": "mission-10.atlas",
+          "file": "mission-10.atlas.mp3",
+          "relativePath": "mission-10/mission-10.atlas.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-10/mission-10.atlas.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-10/mission-10.atlas.mp3",
           "speech": "Une constellation est un dessin que nous imaginons avec les étoiles. Compare le ciel avec la carte de ton atlas. Touche les étoiles du dessin dans l’ordre que tu veux. Leur place et leurs écarts t’aident à les retrouver.",
           "characterCount": 220,
           "estimatedSeconds": 17
@@ -1058,18 +1058,18 @@
       ]
     },
     {
-      "id": "mission-constellations.cassiopee",
-      "group": "mission-constellations",
+      "id": "mission-10.cassiopee",
+      "group": "mission-10",
       "mission": "Les dessins du ciel",
       "context": "Défi Cassiopée",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
-        "mc-cassiopeia"
+        "m10-cassiopeia"
       ],
       "sourceRefs": [
         {
-          "source": "src/content/missions/mission-constellations.ts",
-          "stepId": "mc-cassiopeia",
+          "source": "src/content/missions/mission-10.ts",
+          "stepId": "m10-cassiopeia",
           "screenText": "Cherche cinq étoiles qui dessinent un W un peu penché. Compare la place des étoiles et leurs écarts avec ta carte. Retrouve les étoiles du dessin dans n’importe quel ordre pour révéler une reine assise sur son trône.",
           "sourceHash": "499598cb79afbfc2f91f1add808a2be2ae8cf7b7c8f8bdb30957299639519dbe"
         }
@@ -1078,11 +1078,11 @@
       "characterCount": 144,
       "clips": [
         {
-          "id": "mission-constellations.cassiopee",
-          "file": "mission-constellations.cassiopee.mp3",
-          "relativePath": "mission-constellations/mission-constellations.cassiopee.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-constellations/mission-constellations.cassiopee.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-constellations/mission-constellations.cassiopee.mp3",
+          "id": "mission-10.cassiopee",
+          "file": "mission-10.cassiopee.mp3",
+          "relativePath": "mission-10/mission-10.cassiopee.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-10/mission-10.cassiopee.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-10/mission-10.cassiopee.mp3",
           "speech": "Pour Cassiopée, cherche cinq étoiles qui dessinent un double vé un peu penché. Compare avec la carte de ton atlas, puis touche les cinq étoiles.",
           "characterCount": 144,
           "estimatedSeconds": 11
@@ -1090,18 +1090,18 @@
       ]
     },
     {
-      "id": "mission-constellations.grande-ourse",
-      "group": "mission-constellations",
+      "id": "mission-10.grande-ourse",
+      "group": "mission-10",
       "mission": "Les dessins du ciel",
       "context": "Défi Grande Ourse",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
-        "mc-ursa-major"
+        "m10-ursa-major"
       ],
       "sourceRefs": [
         {
-          "source": "src/content/missions/mission-constellations.ts",
-          "stepId": "mc-ursa-major",
+          "source": "src/content/missions/mission-10.ts",
+          "stepId": "m10-ursa-major",
           "screenText": "Cherche la casserole : quatre étoiles pour le récipient et trois pour le manche. Compare la place des étoiles et leurs écarts avec ta carte. Retrouve les étoiles du dessin dans n’importe quel ordre pour révéler une ourse céleste.",
           "sourceHash": "1097b7d57087ae722db68cf61e76a978666b56a6785a03cc4b91006d9ed846bf"
         }
@@ -1110,11 +1110,11 @@
       "characterCount": 156,
       "clips": [
         {
-          "id": "mission-constellations.grande-ourse",
-          "file": "mission-constellations.grande-ourse.mp3",
-          "relativePath": "mission-constellations/mission-constellations.grande-ourse.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-constellations/mission-constellations.grande-ourse.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-constellations/mission-constellations.grande-ourse.mp3",
+          "id": "mission-10.grande-ourse",
+          "file": "mission-10.grande-ourse.mp3",
+          "relativePath": "mission-10/mission-10.grande-ourse.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-10/mission-10.grande-ourse.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-10/mission-10.grande-ourse.mp3",
           "speech": "Pour la Grande Ourse, cherche une casserole : quatre étoiles pour le récipient et trois pour le manche. Compare avec ta carte, puis touche les sept étoiles.",
           "characterCount": 156,
           "estimatedSeconds": 12
@@ -1122,18 +1122,18 @@
       ]
     },
     {
-      "id": "mission-constellations.cygne",
-      "group": "mission-constellations",
+      "id": "mission-10.cygne",
+      "group": "mission-10",
       "mission": "Les dessins du ciel",
       "context": "Défi Cygne",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
-        "mc-cygnus"
+        "m10-cygnus"
       ],
       "sourceRefs": [
         {
-          "source": "src/content/missions/mission-constellations.ts",
-          "stepId": "mc-cygnus",
+          "source": "src/content/missions/mission-10.ts",
+          "stepId": "m10-cygnus",
           "screenText": "Cherche une croix : une longue ligne et deux ailes de chaque côté. Compare la place des étoiles et leurs écarts avec ta carte. Retrouve les étoiles du dessin dans n’importe quel ordre pour révéler un cygne aux ailes déployées.",
           "sourceHash": "3f9bbfbda3f910183f578d1d384548661f703f3466147bac9bdd4f0547d1c229"
         }
@@ -1142,11 +1142,11 @@
       "characterCount": 157,
       "clips": [
         {
-          "id": "mission-constellations.cygne",
-          "file": "mission-constellations.cygne.mp3",
-          "relativePath": "mission-constellations/mission-constellations.cygne.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-constellations/mission-constellations.cygne.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-constellations/mission-constellations.cygne.mp3",
+          "id": "mission-10.cygne",
+          "file": "mission-10.cygne.mp3",
+          "relativePath": "mission-10/mission-10.cygne.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-10/mission-10.cygne.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-10/mission-10.cygne.mp3",
           "speech": "Pour le Cygne, cherche une croix : une longue ligne et deux ailes de chaque côté. Compare la place des étoiles avec ta carte, puis retrouve-les dans le ciel.",
           "characterCount": 157,
           "estimatedSeconds": 13
@@ -1154,18 +1154,18 @@
       ]
     },
     {
-      "id": "mission-constellations.orion",
-      "group": "mission-constellations",
+      "id": "mission-10.orion",
+      "group": "mission-10",
       "mission": "Les dessins du ciel",
       "context": "Défi Orion",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
-        "mc-orion"
+        "m10-orion"
       ],
       "sourceRefs": [
         {
-          "source": "src/content/missions/mission-constellations.ts",
-          "stepId": "mc-orion",
+          "source": "src/content/missions/mission-10.ts",
+          "stepId": "m10-orion",
           "screenText": "Repère les trois étoiles presque alignées de sa ceinture, ses épaules et ses pieds. Compare la place des étoiles et leurs écarts avec ta carte. Retrouve les étoiles du dessin dans n’importe quel ordre pour révéler un chasseur avec une ceinture.",
           "sourceHash": "d89525447327fe5db418d6e388d4838ec696c2c4b7a5942d4fefea8edfbc4ce9"
         }
@@ -1174,11 +1174,11 @@
       "characterCount": 171,
       "clips": [
         {
-          "id": "mission-constellations.orion",
-          "file": "mission-constellations.orion.mp3",
-          "relativePath": "mission-constellations/mission-constellations.orion.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-constellations/mission-constellations.orion.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-constellations/mission-constellations.orion.mp3",
+          "id": "mission-10.orion",
+          "file": "mission-10.orion.mp3",
+          "relativePath": "mission-10/mission-10.orion.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-10/mission-10.orion.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-10/mission-10.orion.mp3",
           "speech": "Pour Orion, repère les trois étoiles presque alignées de sa ceinture. Puis retrouve ses épaules et ses pieds grâce à la carte. Touche les étoiles pour révéler le chasseur.",
           "characterCount": 171,
           "estimatedSeconds": 13
@@ -1186,25 +1186,25 @@
       ]
     },
     {
-      "id": "mission-constellations.point-de-vue",
-      "group": "mission-constellations",
+      "id": "mission-10.point-de-vue",
+      "group": "mission-10",
       "mission": "Les dessins du ciel",
       "context": "Défi du point de vue ; explication réécoutable après le film",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
-        "mc-perspective",
-        "mc-understand"
+        "m10-perspective",
+        "m10-understand"
       ],
       "sourceRefs": [
         {
-          "source": "src/content/missions/mission-constellations.ts",
-          "stepId": "mc-perspective",
+          "source": "src/content/missions/mission-10.ts",
+          "stepId": "m10-perspective",
           "screenText": "Le vaisseau a changé de place et le cygne est déformé ! Déplace le vaisseau avec le curseur. Retrouve la croix de ta carte, puis appuie sur « Vérifier mon point de vue ». Les étoiles restent immobiles.",
           "sourceHash": "c46ac7207b4970790642a3f5d17aa82e4e7f85bad2e588cf4bacfdc7413afa18"
         },
         {
-          "source": "src/content/missions/mission-constellations.ts",
-          "stepId": "mc-understand",
+          "source": "src/content/missions/mission-10.ts",
+          "stepId": "m10-understand",
           "screenText": "Pendant notre voyage, le dessin du cygne s’est déformé. Pourquoi ? Choisis l’explication qui correspond à ce que tu as observé.",
           "sourceHash": "2f542fb43e614f35d2241adad8d211fddccafdca731c74487152780a73ba390b"
         }
@@ -1213,11 +1213,11 @@
       "characterCount": 239,
       "clips": [
         {
-          "id": "mission-constellations.point-de-vue",
-          "file": "mission-constellations.point-de-vue.mp3",
-          "relativePath": "mission-constellations/mission-constellations.point-de-vue.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-constellations/mission-constellations.point-de-vue.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-constellations/mission-constellations.point-de-vue.mp3",
+          "id": "mission-10.point-de-vue",
+          "file": "mission-10.point-de-vue.mp3",
+          "relativePath": "mission-10/mission-10.point-de-vue.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-10/mission-10.point-de-vue.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-10/mission-10.point-de-vue.mp3",
           "speech": "Déplace le vaisseau avec le curseur pour retrouver la croix de ta carte, puis vérifie ton point de vue. Les étoiles ne bougent pas. Elles sont à des distances différentes : quand nous changeons de place, leur dessin dans notre ciel change.",
           "characterCount": 239,
           "estimatedSeconds": 18
@@ -1225,32 +1225,32 @@
       ]
     },
     {
-      "id": "mission-10.galaxie",
-      "group": "mission-10",
+      "id": "mission-11.galaxie",
+      "group": "mission-11",
       "mission": "Notre galaxie",
       "context": "Introduction et voyage vers la Voie lactée",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
-        "m10-intro",
-        "m10-journey",
-        "m10-explain"
+        "m11-intro",
+        "m11-journey",
+        "m11-explain"
       ],
       "sourceRefs": [
         {
-          "source": "src/content/missions/mission-10.ts",
-          "stepId": "m10-intro",
+          "source": "src/content/missions/mission-11.ts",
+          "stepId": "m11-intro",
           "screenText": "Voici le Soleil et ses huit planètes. Ensemble, ils forment notre Système solaire. Mais le Soleil est aussi une étoile parmi beaucoup d’autres. Où habitent-elles ?",
           "sourceHash": "574fdbf5227320728e795b3dc07775d16b64ef03dfc1b733785f787bcc439e3c"
         },
         {
-          "source": "src/content/missions/mission-10.ts",
-          "stepId": "m10-journey",
+          "source": "src/content/missions/mission-11.ts",
+          "stepId": "m11-journey",
           "screenText": "Notre vaisseau recule très, très loin. Les planètes deviennent invisibles à cette échelle. Découvre l’immense ensemble auquel appartient le Soleil !",
           "sourceHash": "dc88e63d220b59b899a12bc602157d5ab48094b92ce6866761e7d4b6cfff0b9a"
         },
         {
-          "source": "src/content/missions/mission-10.ts",
-          "stepId": "m10-explain",
+          "source": "src/content/missions/mission-11.ts",
+          "stepId": "m11-explain",
           "screenText": "La Terre est une planète du Système solaire. Le Soleil est l’étoile de ce système. Notre Système solaire appartient à la Voie lactée, une galaxie contenant énormément d’étoiles, du gaz et de la poussière. La gravité les rassemble.",
           "sourceHash": "793779630b22bdbb2176312c276859d1a81a1d9c9911f800466864f2118a9264"
         }
@@ -1259,11 +1259,11 @@
       "characterCount": 234,
       "clips": [
         {
-          "id": "mission-10.galaxie",
-          "file": "mission-10.galaxie.mp3",
-          "relativePath": "mission-10/mission-10.galaxie.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-10/mission-10.galaxie.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-10/mission-10.galaxie.mp3",
+          "id": "mission-11.galaxie",
+          "file": "mission-11.galaxie.mp3",
+          "relativePath": "mission-11/mission-11.galaxie.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-11/mission-11.galaxie.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-11/mission-11.galaxie.mp3",
           "speech": "Le Soleil et ses huit planètes forment notre Système solaire. Il appartient à la Voie lactée : une galaxie avec énormément d’étoiles, du gaz et de la poussière. La gravité les rassemble. Prenons du recul pour découvrir notre galaxie !",
           "characterCount": 234,
           "estimatedSeconds": 17
@@ -1271,25 +1271,25 @@
       ]
     },
     {
-      "id": "mission-10.quartier",
-      "group": "mission-10",
+      "id": "mission-11.quartier",
+      "group": "mission-11",
       "mission": "Notre galaxie",
       "context": "Explorer la galaxie puis retrouver le quartier du Soleil",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
-        "m10-explore",
-        "m10-locate"
+        "m11-explore",
+        "m11-locate"
       ],
       "sourceRefs": [
         {
-          "source": "src/content/missions/mission-10.ts",
-          "stepId": "m10-explore",
+          "source": "src/content/missions/mission-11.ts",
+          "stepId": "m11-explore",
           "screenText": "Essaie « De face » et « De profil ». De face, tu vois un disque et des bras. De profil, le centre est plus épais. Chaque point représente beaucoup d’étoiles.",
           "sourceHash": "f44c32b5303fc17b7d32ecf4baa441c663755f5832342a4d0085fe1af15b6f68"
         },
         {
-          "source": "src/content/missions/mission-10.ts",
-          "stepId": "m10-locate",
+          "source": "src/content/missions/mission-11.ts",
+          "stepId": "m11-locate",
           "screenText": "Le Soleil ne se trouve ni au centre, ni à l’extérieur. Notre quartier est dans le disque, dans un petit bras appelé bras d’Orion. Touche le repère qui correspond à ce quartier.",
           "sourceHash": "814bca0e3d95e176dab3968e7d97a62022be9947e65606bbb74cb8c47c32d3a1"
         }
@@ -1298,11 +1298,11 @@
       "characterCount": 193,
       "clips": [
         {
-          "id": "mission-10.quartier",
-          "file": "mission-10.quartier.mp3",
-          "relativePath": "mission-10/mission-10.quartier.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-10/mission-10.quartier.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-10/mission-10.quartier.mp3",
+          "id": "mission-11.quartier",
+          "file": "mission-11.quartier.mp3",
+          "relativePath": "mission-11/mission-11.quartier.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-11/mission-11.quartier.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-11/mission-11.quartier.mp3",
           "speech": "Regarde la galaxie de face, puis de profil. Notre Soleil est dans le disque, dans un petit bras appelé bras d’Orion. Il n’est ni au centre, ni à l’extérieur. Touche le repère de notre quartier.",
           "characterCount": 193,
           "estimatedSeconds": 15
@@ -1310,18 +1310,18 @@
       ]
     },
     {
-      "id": "mission-10.trajet",
-      "group": "mission-10",
+      "id": "mission-11.trajet",
+      "group": "mission-11",
       "mission": "Notre galaxie",
       "context": "Défi du trajet galactique",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
-        "m10-orbit"
+        "m11-orbit"
       ],
       "sourceRefs": [
         {
-          "source": "src/content/missions/mission-10.ts",
-          "stepId": "m10-orbit",
+          "source": "src/content/missions/mission-11.ts",
+          "stepId": "m11-orbit",
           "screenText": "Le Soleil voyage avec toutes ses planètes ! Ta mission : trouve le chemin qui lui fait faire un tour autour du centre de la galaxie, sans plonger dedans. Compare les trois trajets, puis lance le voyage.",
           "sourceHash": "d693effe00fcbfc10d318d2e20dabed6ceb27d62b8442010b8cc749daf6c6c85"
         }
@@ -1330,11 +1330,11 @@
       "characterCount": 186,
       "clips": [
         {
-          "id": "mission-10.trajet",
-          "file": "mission-10.trajet.mp3",
-          "relativePath": "mission-10/mission-10.trajet.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-10/mission-10.trajet.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-10/mission-10.trajet.mp3",
+          "id": "mission-11.trajet",
+          "file": "mission-11.trajet.mp3",
+          "relativePath": "mission-11/mission-11.trajet.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-11/mission-11.trajet.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-11/mission-11.trajet.mp3",
           "speech": "Le Soleil voyage dans la galaxie avec toutes ses planètes. Compare les trois trajets. Choisis celui qui lui fait faire un tour autour du centre sans plonger dedans, puis lance le voyage.",
           "characterCount": 186,
           "estimatedSeconds": 14
@@ -1342,32 +1342,32 @@
       ]
     },
     {
-      "id": "mission-11.voisines",
-      "group": "mission-11",
+      "id": "mission-12.voisines",
+      "group": "mission-12",
       "mission": "Les galaxies",
       "context": "Introduction et comparaison avec Andromède",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
-        "m11-intro",
-        "m11-neighbour",
-        "m11-explain"
+        "m12-intro",
+        "m12-neighbour",
+        "m12-explain"
       ],
       "sourceRefs": [
         {
-          "source": "src/content/missions/mission-11.ts",
-          "stepId": "m11-intro",
+          "source": "src/content/missions/mission-12.ts",
+          "stepId": "m12-intro",
           "screenText": "Nous habitons la Voie lactée. Mais elle n’est pas seule : l’Univers contient énormément d’autres galaxies. Ce sont comme des îles d’étoiles, avec aussi du gaz et de la poussière !",
           "sourceHash": "89d3f45abb2ddd2a2b1862a1674780a7adf844d22603f8e29842b9baeed7afa8"
         },
         {
-          "source": "src/content/missions/mission-11.ts",
-          "stepId": "m11-neighbour",
+          "source": "src/content/missions/mission-12.ts",
+          "stepId": "m12-neighbour",
           "screenText": "Regarde la Voie lactée, puis Andromède. Toutes deux ont des bras en spirale. Andromède est notre plus proche grande galaxie voisine, mais sa lumière met environ 2,5 millions d’années pour nous atteindre !",
           "sourceHash": "468ea8998f9b180e671924fd6412253a81264bf1e962a42a976f6821adc68686"
         },
         {
-          "source": "src/content/missions/mission-11.ts",
-          "stepId": "m11-explain",
+          "source": "src/content/missions/mission-12.ts",
+          "stepId": "m12-explain",
           "screenText": "La lumière d’une galaxie vient de ses nombreuses étoiles : ce n’est pas un Soleil géant ! Notre Soleil appartient à la Voie lactée. Andromède est une autre galaxie, avec ses propres étoiles. Les couleurs et les distances de nos maquettes sont simplifiées.",
           "sourceHash": "1d3bc4f1d70998262672a0dd4fdcc0041409fd90000b4ca38a7985d3e66ecd25"
         }
@@ -1376,11 +1376,11 @@
       "characterCount": 200,
       "clips": [
         {
-          "id": "mission-11.voisines",
-          "file": "mission-11.voisines.mp3",
-          "relativePath": "mission-11/mission-11.voisines.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-11/mission-11.voisines.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-11/mission-11.voisines.mp3",
+          "id": "mission-12.voisines",
+          "file": "mission-12.voisines.mp3",
+          "relativePath": "mission-12/mission-12.voisines.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-12/mission-12.voisines.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-12/mission-12.voisines.mp3",
           "speech": "La Voie lactée n’est pas seule : il existe énormément d’autres galaxies. Andromède est notre plus proche grande voisine. Une galaxie n’est pas un Soleil géant : sa lumière vient de toutes ses étoiles.",
           "characterCount": 200,
           "estimatedSeconds": 15
@@ -1388,25 +1388,25 @@
       ]
     },
     {
-      "id": "mission-11.formes",
-      "group": "mission-11",
+      "id": "mission-12.formes",
+      "group": "mission-12",
       "mission": "Les galaxies",
       "context": "Exploration des familles et album des quatre formes",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
-        "m11-families",
-        "m11-album"
+        "m12-families",
+        "m12-album"
       ],
       "sourceRefs": [
         {
-          "source": "src/content/missions/mission-11.ts",
-          "stepId": "m11-families",
+          "source": "src/content/missions/mission-12.ts",
+          "stepId": "m12-families",
           "screenText": "Une spirale a des bras qui s’enroulent dans un disque. Une spirale barrée a aussi une barre d’étoiles au centre. Une elliptique est arrondie, sans bras. Une irrégulière n’a pas de forme bien organisée. Ouvre les quatre maquettes.",
           "sourceHash": "6b647a69d27be1fba8135a305243dd92af730f331340a844696c4dabbded01af"
         },
         {
-          "source": "src/content/missions/mission-11.ts",
-          "stepId": "m11-album",
+          "source": "src/content/missions/mission-12.ts",
+          "stepId": "m12-album",
           "screenText": "Le robot a perdu les étiquettes de son album ! Il y a quatre fiches à réparer. Une spirale barrée est une sorte de galaxie spirale : une barre d’étoiles traverse son centre et ses bras partent des deux bouts de la barre. Observe chaque maquette de face pour retrouver sa forme.",
           "sourceHash": "16552f7543b878df30cdcd7b3bbd88e7397dd47a4be4532ff9e046b9fa540688"
         }
@@ -1415,11 +1415,11 @@
       "characterCount": 248,
       "clips": [
         {
-          "id": "mission-11.formes",
-          "file": "mission-11.formes.mp3",
-          "relativePath": "mission-11/mission-11.formes.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-11/mission-11.formes.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-11/mission-11.formes.mp3",
+          "id": "mission-12.formes",
+          "file": "mission-12.formes.mp3",
+          "relativePath": "mission-12/mission-12.formes.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-12/mission-12.formes.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-12/mission-12.formes.mp3",
           "speech": "Observe les quatre formes pour réparer l’album. Une spirale a des bras enroulés. Une spirale barrée a aussi une barre au centre. Une elliptique est arrondie, sans bras. Une irrégulière n’a pas de forme bien organisée. Regarde les maquettes de face.",
           "characterCount": 248,
           "estimatedSeconds": 18
@@ -1427,18 +1427,18 @@
       ]
     },
     {
-      "id": "mission-11.classer",
-      "group": "mission-11",
+      "id": "mission-12.classer",
+      "group": "mission-12",
       "mission": "Les galaxies",
       "context": "Défi des cartes du plus petit au plus grand",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
-        "m11-scale"
+        "m12-scale"
       ],
       "sourceRefs": [
         {
-          "source": "src/content/missions/mission-11.ts",
-          "stepId": "m11-scale",
+          "source": "src/content/missions/mission-12.ts",
+          "stepId": "m12-scale",
           "screenText": "Les cartes du voyage sont mélangées : la Voie lactée, le Soleil et notre Système solaire. Touche-les du plus petit au plus grand pour préparer le voyage. Pense à ce qui est contenu dans quoi !",
           "sourceHash": "7531618d7f4677c5e06f0ced949556c710ffd39cc5f16f7143c6e5d8498ce35c"
         }
@@ -1447,11 +1447,11 @@
       "characterCount": 201,
       "clips": [
         {
-          "id": "mission-11.classer",
-          "file": "mission-11.classer.mp3",
-          "relativePath": "mission-11/mission-11.classer.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-11/mission-11.classer.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-11/mission-11.classer.mp3",
+          "id": "mission-12.classer",
+          "file": "mission-12.classer.mp3",
+          "relativePath": "mission-12/mission-12.classer.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-12/mission-12.classer.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-12/mission-12.classer.mp3",
           "speech": "Classe les cartes du plus petit au plus grand. Le Soleil est dans notre Système solaire, qui est lui-même dans la Voie lactée. Pense à ce qui est contenu dans quoi, puis touche les cartes dans l’ordre.",
           "characterCount": 201,
           "estimatedSeconds": 16
@@ -1459,25 +1459,25 @@
       ]
     },
     {
-      "id": "mission-12.voyage",
-      "group": "mission-12",
+      "id": "mission-13.voyage",
+      "group": "mission-13",
       "mission": "Les distances dans l’Univers",
       "context": "Introduction et parcours des sept repères",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
-        "m12-intro",
-        "m12-journey"
+        "m13-intro",
+        "m13-journey"
       ],
       "sourceRefs": [
         {
-          "source": "src/content/missions/mission-12.ts",
-          "stepId": "m12-intro",
+          "source": "src/content/missions/mission-13.ts",
+          "stepId": "m13-intro",
           "screenText": "La Lune nous semble loin. Pourtant, les étoiles et les galaxies sont beaucoup plus éloignées ! Le robot t’emmène comparer ces distances. Nous prenons du recul parmi les planètes et les galaxies de notre maquette.",
           "sourceHash": "70778161ac993b89db29607bae6308dd3f4807ca97a2ce5ace58e051f965d482"
         },
         {
-          "source": "src/content/missions/mission-12.ts",
-          "stepId": "m12-journey",
+          "source": "src/content/missions/mission-13.ts",
+          "stepId": "m13-journey",
           "screenText": "Avance à ton rythme avec « Plus loin », et reviens avec « Plus près ». Observe les sept repères jusqu’à l’Univers observable, la partie de l’Univers que nous pouvons observer, puis prépare les destinations du robot. Distances raccourcies pour tout montrer.",
           "sourceHash": "3c1235880ab65ead381a35aa7d803cff96d8930699303dc1f18d37e116dfb035"
         }
@@ -1486,11 +1486,11 @@
       "characterCount": 248,
       "clips": [
         {
-          "id": "mission-12.voyage",
-          "file": "mission-12.voyage.mp3",
-          "relativePath": "mission-12/mission-12.voyage.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-12/mission-12.voyage.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-12/mission-12.voyage.mp3",
+          "id": "mission-13.voyage",
+          "file": "mission-13.voyage.mp3",
+          "relativePath": "mission-13/mission-13.voyage.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-13/mission-13.voyage.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-13/mission-13.voyage.mp3",
           "speech": "Découvre les distances dans l’espace. Utilise Plus loin pour avancer et Plus près pour revenir. Observe les sept repères. Nos distances sont raccourcies pour tout montrer : dans l’espace, les étoiles et les galaxies sont bien plus loin que la Lune.",
           "characterCount": 248,
           "estimatedSeconds": 18
@@ -1498,18 +1498,18 @@
       ]
     },
     {
-      "id": "mission-12.destinations",
-      "group": "mission-12",
+      "id": "mission-13.destinations",
+      "group": "mission-13",
       "mission": "Les distances dans l’Univers",
       "context": "Défi des destinations des messages lumineux",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
-        "m12-order"
+        "m13-order"
       ],
       "sourceRefs": [
         {
-          "source": "src/content/missions/mission-12.ts",
-          "stepId": "m12-order",
+          "source": "src/content/missions/mission-13.ts",
+          "stepId": "m13-order",
           "screenText": "Le robot prépare quatre messages lumineux depuis notre voisinage. Classe leurs destinations de la plus proche à la plus lointaine. Choisis chaque carte dans l’ordre pour préparer les quatre envois.",
           "sourceHash": "1d705c0d19938914e4a1efb635b86c4d35f44756d9fe9f155db3eeac4bd14c9f"
         }
@@ -1518,11 +1518,11 @@
       "characterCount": 189,
       "clips": [
         {
-          "id": "mission-12.destinations",
-          "file": "mission-12.destinations.mp3",
-          "relativePath": "mission-12/mission-12.destinations.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-12/mission-12.destinations.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-12/mission-12.destinations.mp3",
+          "id": "mission-13.destinations",
+          "file": "mission-13.destinations.mp3",
+          "relativePath": "mission-13/mission-13.destinations.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-13/mission-13.destinations.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-13/mission-13.destinations.mp3",
           "speech": "Le robot prépare quatre messages lumineux depuis notre voisinage. Classe leurs destinations de la plus proche à la plus lointaine. Touche les cartes dans cet ordre pour préparer les envois.",
           "characterCount": 189,
           "estimatedSeconds": 13
@@ -1530,18 +1530,18 @@
       ]
     },
     {
-      "id": "mission-12.signaux",
-      "group": "mission-12",
+      "id": "mission-13.signaux",
+      "group": "mission-13",
       "mission": "Les distances dans l’Univers",
       "context": "Expérience des trois flashs et explication",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
-        "m12-signals"
+        "m13-signals"
       ],
       "sourceRefs": [
         {
-          "source": "src/content/missions/mission-12.ts",
-          "stepId": "m12-signals",
+          "source": "src/content/missions/mission-13.ts",
+          "stepId": "m13-signals",
           "screenText": "Trois galaxies envoient un flash en même temps. Observe le voyage accéléré jusqu’à l’observatoire, puis choisis la galaxie dont l’image est la plus ancienne. Distances réduites, écarts respectés.",
           "sourceHash": "3cac217b8af195078934971d4b7c5db5baab96b0e19a7b8948cf8385dbdc480e"
         }
@@ -1550,11 +1550,11 @@
       "characterCount": 236,
       "clips": [
         {
-          "id": "mission-12.signaux",
-          "file": "mission-12.signaux.mp3",
-          "relativePath": "mission-12/mission-12.signaux.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-12/mission-12.signaux.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-12/mission-12.signaux.mp3",
+          "id": "mission-13.signaux",
+          "file": "mission-13.signaux.mp3",
+          "relativePath": "mission-13/mission-13.signaux.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-13/mission-13.signaux.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-13/mission-13.signaux.mp3",
           "speech": "Trois galaxies envoient un flash en même temps. Observe les arrivées, puis cherche l’image la plus ancienne. La lumière met du temps à voyager : celle de la galaxie la plus lointaine arrive plus tard et nous montre un passé plus ancien.",
           "characterCount": 236,
           "estimatedSeconds": 18
@@ -1562,18 +1562,18 @@
       ]
     },
     {
-      "id": "mission-12.annee-lumiere",
-      "group": "mission-12",
+      "id": "mission-13.annee-lumiere",
+      "group": "mission-13",
       "mission": "Les distances dans l’Univers",
       "context": "Bilan des distances et de l’Univers observable",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
-        "m12-explain"
+        "m13-explain"
       ],
       "sourceRefs": [
         {
-          "source": "src/content/missions/mission-12.ts",
-          "stepId": "m12-explain",
+          "source": "src/content/missions/mission-13.ts",
+          "stepId": "m13-explain",
           "screenText": "La lumière voyage très vite, mais l’espace est immense : elle met du temps à nous rejoindre. Regarder une galaxie lointaine, c’est recevoir une image partie il y a longtemps. L’année-lumière mesure le chemin parcouru par la lumière en un an. L’Univers observable, c’est la partie de l’Univers dont la lumière peut nous arriver ; ce n’est pas le bord de tout l’Univers.",
           "sourceHash": "fc41a6f6495a4773acc7b839aa0ea9772db8b80e3a0225044722e6bc06b5dc20"
         }
@@ -1582,11 +1582,11 @@
       "characterCount": 203,
       "clips": [
         {
-          "id": "mission-12.annee-lumiere",
-          "file": "mission-12.annee-lumiere.mp3",
-          "relativePath": "mission-12/mission-12.annee-lumiere.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-12/mission-12.annee-lumiere.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-12/mission-12.annee-lumiere.mp3",
+          "id": "mission-13.annee-lumiere",
+          "file": "mission-13.annee-lumiere.mp3",
+          "relativePath": "mission-13/mission-13.annee-lumiere.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-13/mission-13.annee-lumiere.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-13/mission-13.annee-lumiere.mp3",
           "speech": "Une année-lumière est une distance : le chemin parcouru par la lumière en un an. L’Univers observable est la partie de l’Univers dont la lumière peut nous arriver. Ce n’est pas le bord de tout l’Univers.",
           "characterCount": 203,
           "estimatedSeconds": 16
@@ -1594,32 +1594,32 @@
       ]
     },
     {
-      "id": "mission-13.indices",
-      "group": "mission-13",
+      "id": "mission-14.indices",
+      "group": "mission-14",
       "mission": "Les trous noirs",
       "context": "Introduction, observation de l’étoile et défi de détection",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
-        "m13-intro",
-        "m13-observe",
-        "m13-detect"
+        "m14-intro",
+        "m14-observe",
+        "m14-detect"
       ],
       "sourceRefs": [
         {
-          "source": "src/content/missions/mission-13.ts",
-          "stepId": "m13-intro",
+          "source": "src/content/missions/mission-14.ts",
+          "stepId": "m14-intro",
           "screenText": "Ces étoiles tournent autour d’une région sombre. Un trou noir concentre énormément de matière dans très peu de place. Sa gravité attire les objets proches, mais il n’aspire pas tout : des étoiles peuvent rester en orbite autour de lui.",
           "sourceHash": "63a5f9f5ef8f5652d86abc755e2122d5ceba3bd3429f2e9098724340a729cf0d"
         },
         {
-          "source": "src/content/missions/mission-13.ts",
-          "stepId": "m13-observe",
+          "source": "src/content/missions/mission-14.ts",
+          "stepId": "m14-observe",
           "screenText": "Affiche la trajectoire de l’étoile dorée, puis suis son mouvement. Elle accélère quand elle se rapproche et ralentit quand elle s’éloigne. Son orbite révèle un objet invisible qui l’attire.",
           "sourceHash": "155367596167291de3f3a54ab66d11be0e1a0657a1ba766149150d5cecd48e20"
         },
         {
-          "source": "src/content/missions/mission-13.ts",
-          "stepId": "m13-detect",
+          "source": "src/content/missions/mission-14.ts",
+          "stepId": "m14-detect",
           "screenText": "L’objet invisible pourrait être dans l’une de ces trois régions. Cherche celle dont les étoiles tournent autour d’un même centre invisible. Les étoiles qui tournent donnent un indice à vérifier.",
           "sourceHash": "c982876836b591c4a1f4d3b003b6ba3268456b52124231dd05787fb18db1380b"
         }
@@ -1628,11 +1628,11 @@
       "characterCount": 239,
       "clips": [
         {
-          "id": "mission-13.indices",
-          "file": "mission-13.indices.mp3",
-          "relativePath": "mission-13/mission-13.indices.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-13/mission-13.indices.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-13/mission-13.indices.mp3",
+          "id": "mission-14.indices",
+          "file": "mission-14.indices.mp3",
+          "relativePath": "mission-14/mission-14.indices.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-14/mission-14.indices.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-14/mission-14.indices.mp3",
           "speech": "Un trou noir rassemble énormément de matière dans très peu de place. Observe les étoiles : elles peuvent tourner autour de lui sans tomber dedans. Pour trouver l’objet invisible, cherche la région où elles tournent autour d’un même centre.",
           "characterCount": 239,
           "estimatedSeconds": 17
@@ -1640,18 +1640,18 @@
       ]
     },
     {
-      "id": "mission-13.disque",
-      "group": "mission-13",
+      "id": "mission-14.disque",
+      "group": "mission-14",
       "mission": "Les trous noirs",
       "context": "Observation du gaz autour d’un trou noir",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
-        "m13-surroundings"
+        "m14-surroundings"
       ],
       "sourceRefs": [
         {
-          "source": "src/content/missions/mission-13.ts",
-          "stepId": "m13-surroundings",
+          "source": "src/content/missions/mission-14.ts",
+          "stepId": "m14-surroundings",
           "screenText": "Dans cet autre exemple, du gaz très chaud forme un disque lumineux autour du trou noir. Ce gaz appartient aux alentours : tous les trous noirs n’ont pas un disque lumineux. Observe sa forme avant de commencer.",
           "sourceHash": "4316cdc637475e0d55f1f14b3254aee72c3bf86f65d9b0734564d326ffb9bbf6"
         }
@@ -1660,11 +1660,11 @@
       "characterCount": 166,
       "clips": [
         {
-          "id": "mission-13.disque",
-          "file": "mission-13.disque.mp3",
-          "relativePath": "mission-13/mission-13.disque.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-13/mission-13.disque.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-13/mission-13.disque.mp3",
+          "id": "mission-14.disque",
+          "file": "mission-14.disque.mp3",
+          "relativePath": "mission-14/mission-14.disque.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-14/mission-14.disque.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-14/mission-14.disque.mp3",
           "speech": "Ce disque lumineux est du gaz très chaud autour du trou noir. Ce n’est pas le trou noir lui-même. Tous les trous noirs n’ont pas un disque lumineux. Observe sa forme.",
           "characterCount": 166,
           "estimatedSeconds": 13
@@ -1672,25 +1672,25 @@
       ]
     },
     {
-      "id": "mission-13.limite",
-      "group": "mission-13",
+      "id": "mission-14.limite",
+      "group": "mission-14",
       "mission": "Les trous noirs",
       "context": "Expérience des signaux lumineux et explication de l’horizon",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
-        "m13-signals",
-        "m13-explain"
+        "m14-signals",
+        "m14-explain"
       ],
       "sourceRefs": [
         {
-          "source": "src/content/missions/mission-13.ts",
-          "stepId": "m13-signals",
+          "source": "src/content/missions/mission-14.ts",
+          "stepId": "m14-signals",
           "screenText": "Ce dessin montre l’intérieur. Envoie la lumière vers l’extérieur, depuis le point dehors puis celui dedans.",
           "sourceHash": "64dbb61d41ccece129d26aef9e556d54c7514b4b7dfeb33e2eebf54e8b93d45b"
         },
         {
-          "source": "src/content/missions/mission-13.ts",
-          "stepId": "m13-explain",
+          "source": "src/content/missions/mission-14.ts",
+          "stepId": "m14-explain",
           "screenText": "L’horizon des événements est une limite : une fois à l’intérieur, même la lumière ne ressort plus. De loin, un trou noir n’aspire pas davantage qu’un objet de même masse. Enfin, les mouvements d’étoiles ou le gaz chaud peuvent révéler un trou noir que nous ne voyons pas directement.",
           "sourceHash": "95537a9603a05a7103bff6e296f2345998abc79c1413c75f4d01d03375aaf829"
         }
@@ -1699,11 +1699,11 @@
       "characterCount": 203,
       "clips": [
         {
-          "id": "mission-13.limite",
-          "file": "mission-13.limite.mp3",
-          "relativePath": "mission-13/mission-13.limite.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-13/mission-13.limite.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-13/mission-13.limite.mp3",
+          "id": "mission-14.limite",
+          "file": "mission-14.limite.mp3",
+          "relativePath": "mission-14/mission-14.limite.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-14/mission-14.limite.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-14/mission-14.limite.mp3",
           "speech": "Envoie la lumière vers l’extérieur, d’abord depuis le point dehors, puis depuis celui dedans. La limite s’appelle l’horizon des événements. Une fois à l’intérieur, même la lumière ne peut plus ressortir.",
           "characterCount": 203,
           "estimatedSeconds": 13
@@ -1711,18 +1711,18 @@
       ]
     },
     {
-      "id": "mission-13.meme-masse",
-      "group": "mission-13",
+      "id": "mission-14.meme-masse",
+      "group": "mission-14",
       "mission": "Les trous noirs",
       "context": "Expérience de l’étoile remplacée par un trou noir",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
-        "m13-orbit"
+        "m14-orbit"
       ],
       "sourceRefs": [
         {
-          "source": "src/content/missions/mission-13.ts",
-          "stepId": "m13-orbit",
+          "source": "src/content/missions/mission-14.ts",
+          "stepId": "m14-orbit",
           "screenText": "Une planète tourne loin de son étoile. Imagine que nous remplaçons cette étoile par un trou noir de même masse, avec autant de matière. Choisis ce qui va se passer, puis vérifie avec l’expérience.",
           "sourceHash": "db0f9460bae9ee472c43788853a3feaeba03ea20db3f7cde856d346d48330c9a"
         }
@@ -1731,11 +1731,11 @@
       "characterCount": 221,
       "clips": [
         {
-          "id": "mission-13.meme-masse",
-          "file": "mission-13.meme-masse.mp3",
-          "relativePath": "mission-13/mission-13.meme-masse.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-13/mission-13.meme-masse.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-13/mission-13.meme-masse.mp3",
+          "id": "mission-14.meme-masse",
+          "file": "mission-14.meme-masse.mp3",
+          "relativePath": "mission-14/mission-14.meme-masse.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-14/mission-14.meme-masse.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-14/mission-14.meme-masse.mp3",
           "speech": "Imagine qu’on remplace l’étoile par un trou noir de même masse, avec autant de matière. Que fera la planète qui tourne loin ? Choisis, puis vérifie. De loin, le trou noir attire autant que l’étoile : il n’aspire pas tout.",
           "characterCount": 221,
           "estimatedSeconds": 17

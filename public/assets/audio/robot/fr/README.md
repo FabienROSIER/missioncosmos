@@ -12,7 +12,7 @@ Exemple :
 mission-01/mission-01.reperes.mp3
 ```
 
-Les dossiers `mission-01` à `mission-13`, `mission-constellations` et `common` sont prêts. Aucun enregistrement de glossaire n'est demandé. Les fichiers `.gitkeep` conservent les dossiers vides ; ne pas les renommer en MP3.
+Les dossiers `mission-01` à `mission-14` et `common` sont prêts. Aucun enregistrement de glossaire n'est demandé. Les fichiers `.gitkeep` conservent les dossiers vides ; ne pas les renommer en MP3.
 
 Pour les quiz, les sous-dossiers `quiz/` des missions concernées sont prêts. Exemple : `mission-01/quiz/mission-01.quiz.q1-shape.mp3`. Un fichier contient la question et ses choix, sans bonne réponse ni correction. Les choix sont lus sans lettre ni numéro, indépendamment de leur ordre affiché.
 

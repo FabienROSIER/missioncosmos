@@ -53,23 +53,45 @@ describe('saveStore', () => {
     expect(progress.earnedRewardIds).toContain('reward-earth-explorer');
   });
 
-  it('opens constellations for old saves without relocking later missions or losing badges', () => {
+  it('migre une sauvegarde v1 : constellations en 10, les suivantes décalées', () => {
     const id = newProfileId();
-    upsertProfile({
-      id,
-      displayName: 'Luna',
-      avatarId: 'moon',
-      createdAt: new Date().toISOString(),
-    });
-    completeMission('mission-09', ['reward-stellar-light'], 'mission-10');
-    // Force a fresh storage snapshot, as on a browser reload.
-    const oldSave = JSON.parse(store.get('mc:save')!);
-    oldSave.updatedAt = '2026-09-30T00:00:00.000Z';
-    store.set('mc:save', JSON.stringify(oldSave));
+    store.set(
+      'mc:save',
+      JSON.stringify({
+        version: 1,
+        profiles: [
+          {
+            id,
+            displayName: 'Luna',
+            avatarId: 'moon',
+            createdAt: '2026-09-30T00:00:00.000Z',
+          },
+        ],
+        activeProfileId: id,
+        progressByProfile: {
+          [id]: {
+            version: 1,
+            profileId: id,
+            completedMissionIds: ['mission-09', 'mission-10'],
+            unlockedMissionIds: ['mission-01', 'mission-09', 'mission-10', 'mission-11'],
+            earnedRewardIds: ['reward-stellar-light', 'reward-milky-way'],
+            lastPlayedMissionId: 'mission-10',
+            updatedAt: '2026-09-30T00:00:00.000Z',
+          },
+        },
+        updatedAt: '2026-09-30T00:00:00.000Z',
+      }),
+    );
     const progress = loadSave().progressByProfile[id]!;
-    expect(progress.unlockedMissionIds).toContain('mission-constellations');
-    expect(progress.unlockedMissionIds).toContain('mission-10');
-    expect(progress.completedMissionIds).toContain('mission-09');
-    expect(progress.earnedRewardIds).toContain('reward-stellar-light');
+    expect(progress.completedMissionIds).toEqual(['mission-09', 'mission-11']);
+    expect(progress.unlockedMissionIds).toEqual([
+      'mission-01',
+      'mission-09',
+      'mission-11',
+      'mission-12',
+      'mission-10',
+    ]);
+    expect(progress.lastPlayedMissionId).toBe('mission-11');
+    expect(progress.earnedRewardIds).toContain('reward-milky-way');
   });
 });

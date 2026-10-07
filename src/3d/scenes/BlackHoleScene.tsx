@@ -44,18 +44,18 @@ type Props = {
 };
 
 function viewForStep(stepId: string | undefined): BlackHoleView {
-  if (stepId === 'm13-surroundings') return 'disk';
-  if (stepId === 'm13-signals') return 'horizon';
+  if (stepId === 'm14-surroundings') return 'disk';
+  if (stepId === 'm14-signals') return 'horizon';
   return 'orbits';
 }
 
 /** After the orbit-detection challenge, show one possible luminous-disk example. */
 function isAccretionRevealStep(stepId: string | undefined): boolean {
   return (
-    stepId === 'm13-explain' ||
-    stepId === 'm13-quiz' ||
-    stepId === 'm13-reward' ||
-    stepId === 'm13-complete'
+    stepId === 'm14-explain' ||
+    stepId === 'm14-quiz' ||
+    stepId === 'm14-reward' ||
+    stepId === 'm14-complete'
   );
 }
 
@@ -84,7 +84,7 @@ export function BlackHoleScene({
 }: Props) {
   const activeView = view ?? viewForStep(stepId);
   const [paused, setPaused] = useState(false);
-  const [paths, setPaths] = useState(stepId !== 'm13-intro');
+  const [paths, setPaths] = useState(stepId !== 'm14-intro');
   const [followingOrbit, setFollowingOrbit] = useState(false);
   const [observedOrbit, setObservedOrbit] = useState(false);
   const [identifiedGas, setIdentifiedGas] = useState(false);
@@ -139,7 +139,7 @@ export function BlackHoleScene({
     detectionPaths,
   ]);
   useEffect(() => {
-    if (!followingOrbit || observedOrbit || stepId !== 'm13-observe') return;
+    if (!followingOrbit || observedOrbit || stepId !== 'm14-observe') return;
     const timer = window.setTimeout(() => {
       setObservedOrbit(true);
       onClearFeedback?.();
@@ -148,7 +148,7 @@ export function BlackHoleScene({
     return () => window.clearTimeout(timer);
   }, [followingOrbit, observedOrbit, stepId, onClearFeedback, onSuccess]);
   useEffect(() => {
-    if (!comparisonRunning || stepId !== 'm13-orbit' || !orbitPrediction) return;
+    if (!comparisonRunning || stepId !== 'm14-orbit' || !orbitPrediction) return;
     callbacks.current.onClearFeedback?.();
     const replaceTimer = window.setTimeout(() => setCentralReplaced(true), 1100);
     const resultTimer = window.setTimeout(() => {
@@ -184,7 +184,7 @@ export function BlackHoleScene({
     cam.panningSensibility = 0;
     camera.current = cam;
     const background = createSpaceBackground(scene, undefined, { level: 0.28, segments: 24 });
-    const detectionChallengeSetup = stepId === 'm13-detect';
+    const detectionChallengeSetup = stepId === 'm14-detect';
     // The detection challenge must not show any central black marker.
     const hole = detectionChallengeSetup ? null : createBlackHole(scene, quality);
     const darkSphere = detectionChallengeSetup
@@ -267,14 +267,14 @@ export function BlackHoleScene({
           return line;
         });
     const challengeSun =
-      stepId === 'm13-orbit' ? createStarMesh(scene, 'sun', quality) : null;
+      stepId === 'm14-orbit' ? createStarMesh(scene, 'sun', quality) : null;
     challengeSun?.setRadius(1.25);
     challengeSun?.root
       .getChildMeshes()
       .filter((mesh) => mesh.name.startsWith('star-label-'))
       .forEach((mesh) => mesh.setEnabled(false));
     const challengePlanet =
-      stepId === 'm13-orbit'
+      stepId === 'm14-orbit'
         ? await CelestialBodyEntity.create(scene, {
             definition: {
               ...EARTH_BODY,
@@ -290,7 +290,7 @@ export function BlackHoleScene({
       });
     }
     const challengeOrbit =
-      stepId === 'm13-orbit'
+      stepId === 'm14-orbit'
         ? MeshBuilder.CreateTorus(
             'equal-mass-challenge-orbit',
             { diameter: 14, thickness: 0.035, tessellation: quality === 'low' ? 48 : 80 },
@@ -298,7 +298,7 @@ export function BlackHoleScene({
           )
         : null;
     const challengeOrbitMaterial =
-      stepId === 'm13-orbit' ? new StandardMaterial('equal-mass-orbit-material', scene) : null;
+      stepId === 'm14-orbit' ? new StandardMaterial('equal-mass-orbit-material', scene) : null;
     if (challengeOrbit && challengeOrbitMaterial) {
       challengeOrbitMaterial.disableLighting = true;
       challengeOrbitMaterial.emissiveColor = Color3.FromHexString('#7ed6df');
@@ -307,7 +307,7 @@ export function BlackHoleScene({
       challengeOrbit.isPickable = false;
     }
     const replacementRing =
-      stepId === 'm13-orbit'
+      stepId === 'm14-orbit'
         ? MeshBuilder.CreateTorus(
             'equal-mass-black-hole-marker',
             { diameter: 2.9, thickness: 0.055, tessellation: 64 },
@@ -315,7 +315,7 @@ export function BlackHoleScene({
           )
         : null;
     const replacementRingMaterial =
-      stepId === 'm13-orbit'
+      stepId === 'm14-orbit'
         ? new StandardMaterial('equal-mass-black-hole-marker-material', scene)
         : null;
     if (replacementRing && replacementRingMaterial) {
@@ -367,13 +367,13 @@ export function BlackHoleScene({
       );
     };
     const detectionMaterial =
-      stepId === 'm13-detect' ? new StandardMaterial('detection-stars-material', scene) : null;
+      stepId === 'm14-detect' ? new StandardMaterial('detection-stars-material', scene) : null;
     if (detectionMaterial) {
       detectionMaterial.disableLighting = true;
       detectionMaterial.emissiveColor = Color3.FromHexString('#fff1b8');
     }
     const detectionStars =
-      stepId === 'm13-detect'
+      stepId === 'm14-detect'
         ? detectionCenters.flatMap((_, regionIndex) =>
             Array.from({ length: 3 }, (_, starIndex) => {
               const mesh = MeshBuilder.CreateSphere(
@@ -393,7 +393,7 @@ export function BlackHoleScene({
           )
         : [];
     const detectionTrails =
-      stepId === 'm13-detect'
+      stepId === 'm14-detect'
         ? detectionStars.map(({ region, starIndex }) => {
             const trail = MeshBuilder.CreateLines(
               `detection-trail-${region}-${starIndex}`,
@@ -422,7 +422,7 @@ export function BlackHoleScene({
       const state = options.current;
       if (
         info.type !== PointerEventTypes.POINTERDOWN ||
-        state.stepId !== 'm13-surroundings' ||
+        state.stepId !== 'm14-surroundings' ||
         !gasPicker ||
         !centerPicker
       )
@@ -447,8 +447,8 @@ export function BlackHoleScene({
       if (!state.paused && !reducedMotion) {
         time += delta;
         if (state.view === 'orbits') orbitTime += delta;
-        if (state.stepId === 'm13-orbit') challengeAngle += delta * 0.42;
-        if (state.stepId === 'm13-detect') detectionTime += delta;
+        if (state.stepId === 'm14-orbit') challengeAngle += delta * 0.42;
+        if (state.stepId === 'm14-detect') detectionTime += delta;
       }
       if (restartOrbit.current) {
         orbitTime = 0;
@@ -473,8 +473,8 @@ export function BlackHoleScene({
         cam.upperBetaLimit = state.view === 'horizon' ? Math.PI / 2 : Math.PI - 0.08;
         lastView = state.view;
       }
-      const equalMassChallenge = state.stepId === 'm13-orbit';
-      const detectionChallenge = state.stepId === 'm13-detect';
+      const equalMassChallenge = state.stepId === 'm14-orbit';
+      const detectionChallenge = state.stepId === 'm14-detect';
       const accretionReveal = isAccretionRevealStep(state.stepId);
       // Detection must never show a central marker. After that challenge, the
       // orbits view may reveal one possible accretion-disk appearance.
@@ -493,10 +493,10 @@ export function BlackHoleScene({
           (!equalMassChallenge || state.centralReplaced),
       );
       gasPicker?.setEnabled(
-        state.stepId === 'm13-surroundings' && state.view === 'disk' && !state.identifiedGas,
+        state.stepId === 'm14-surroundings' && state.view === 'disk' && !state.identifiedGas,
       );
       centerPicker?.setEnabled(
-        state.stepId === 'm13-surroundings' &&
+        state.stepId === 'm14-surroundings' &&
           state.view === 'disk' &&
           state.identifiedGas &&
           !state.identifiedCenter,
@@ -629,8 +629,8 @@ export function BlackHoleScene({
     camera.current.radius = activeView === 'orbits' ? 32 : 25;
   };
   const detail = BLACK_HOLE_VIEWS.find((entry) => entry.id === activeView)!;
-  const equalMassChallenge = stepId === 'm13-orbit';
-  const detectionChallenge = stepId === 'm13-detect';
+  const equalMassChallenge = stepId === 'm14-orbit';
+  const detectionChallenge = stepId === 'm14-detect';
   const accretionReveal = isAccretionRevealStep(stepId);
   const detectionSolved = detectionChoice === 1;
   const toggleOrbitTracking = () => {
@@ -681,7 +681,7 @@ export function BlackHoleScene({
         mobileFovScale={1.1}
       />
       <header className={styles.heading}>
-        <span>OBSERVATOIRE · 13</span>
+        <span>OBSERVATOIRE · 14</span>
         <h2>
           {equalMassChallenge
             ? 'Même masse, autre objet'
@@ -735,7 +735,7 @@ export function BlackHoleScene({
             <text x="300" y="470" className={styles.diagramCaption}>
               Une limite, pas une paroi.
             </text>
-            {stepId === 'm13-signals' && (
+            {stepId === 'm14-signals' && (
               <>
                 <circle cx="470" cy="250" r="11" className={styles.outsideEmitter} />
                 <text x="470" y="286" className={styles.emitterLabel}>
@@ -797,7 +797,7 @@ export function BlackHoleScene({
             <small>par rapport à son passage le plus lent</small>
           </p>
         )}
-        {stepId === 'm13-signals' && (outsideSignal || insideSignal) ? (
+        {stepId === 'm14-signals' && (outsideSignal || insideSignal) ? (
           <p className={styles.signalResult} role="status">
             {insideSignal
               ? 'Dedans : le signal se dirige vers le centre et ne ressort pas.'
@@ -842,7 +842,7 @@ export function BlackHoleScene({
               </button>
             </>
           )}
-          {stepId === 'm13-observe' && (
+          {stepId === 'm14-observe' && (
             <button aria-pressed={followingOrbit} onClick={toggleOrbitTracking}>
               {followingOrbit
                 ? observedOrbit
@@ -902,7 +902,7 @@ export function BlackHoleScene({
               {detectionPaths ? 'Masquer les trajectoires' : 'Afficher les trajectoires'}
             </button>
           )}
-          {stepId === 'm13-signals' && (
+          {stepId === 'm14-signals' && (
             <>
               <button aria-pressed={outsideSignal} disabled={outsideSignal} onClick={emitOutside}>
                 {outsideSignal ? 'Signal dehors testé ✓' : 'Émettre dehors'}

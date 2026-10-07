@@ -3,7 +3,7 @@ import type { MissionStep } from '@/types/mission';
 const PLAY_STEP_KINDS = new Set<MissionStep['kind']>(['observe', 'manipulate', 'challenge']);
 const GUIDE_EMBEDDED_STEP_IDS = new Set(['m05-scale', 'm05-distances']);
 /** Question affichée tout de suite : pas d’étape « À toi de jouer ». */
-const IMMEDIATE_QUESTION_STEP_IDS = new Set(['mc-understand']);
+const IMMEDIATE_QUESTION_STEP_IDS = new Set(['m10-understand']);
 
 /** Étapes dont les manipulations commencent explicitement après la consigne du Guide. */
 export function isPlayGatedStep(step: MissionStep): boolean {

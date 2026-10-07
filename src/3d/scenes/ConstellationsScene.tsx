@@ -77,15 +77,15 @@ export function ConstellationsScene({
   interactive = true,
 }: Props) {
   const artworkId = useId().replace(/:/g, '');
-  const free = stepId === 'mc-complete';
-  const intro = stepId === 'mc-intro' || stepId === 'mc-reward' || stepId === 'mc-quiz';
+  const free = stepId === 'm10-complete';
+  const intro = stepId === 'm10-intro' || stepId === 'm10-reward' || stepId === 'm10-quiz';
   const [exploring, setExploring] = useState<ConstellationId>('cassiopeia');
   const [found, setFound] = useState<number[]>([]);
   const [showArt, setShowArt] = useState(true);
   const [hintIndex, setHintIndex] = useState<number | null>(null);
   const [message, setMessage] = useState('');
   const [understood, setUnderstood] = useState(false);
-  const selected = free ? exploring : stepId.replace('mc-', '');
+  const selected = free ? exploring : stepId.replace('m10-', '');
   const item = getConstellation(selected);
   const points = skyPoints(item);
   const field = constellationField(item);
@@ -151,17 +151,17 @@ export function ConstellationsScene({
     if (star) choose(star);
   };
 
-  if (stepId === 'mc-perspective' || stepId === 'mc-film')
+  if (stepId === 'm10-perspective' || stepId === 'm10-film')
     return (
       <div className={`${styles.wrap} ${className ?? ''}`}>
         <ConstellationVoyage
-          mode={stepId === 'mc-film' ? 'film' : 'perspective'}
+          mode={stepId === 'm10-film' ? 'film' : 'perspective'}
           onSuccess={onSuccess}
           interactive={interactive}
         />
       </div>
     );
-  if (stepId === 'mc-understand')
+  if (stepId === 'm10-understand')
     return (
       <div className={`${styles.wrap} ${className ?? ''}`}>
         <div className={styles.question}>
@@ -453,7 +453,7 @@ export function ConstellationsScene({
             </a>{' '}
             (CC BY-SA 4.0). Dessin simplifié.
           </small>
-          {stepId === 'mc-aquila' && (
+          {stepId === 'm10-aquila' && (
             <button onClick={onSkipBonus}>
               {solved ? 'Continuer le voyage' : 'Passer le bonus'}
             </button>

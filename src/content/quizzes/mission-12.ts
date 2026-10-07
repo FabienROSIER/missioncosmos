@@ -1,56 +1,46 @@
 import type { Quiz } from '@/types/quiz';
 export const QUIZ_MISSION_12: Quiz = {
   id: 'quiz-mission-12',
-  title: 'Navigateur cosmique',
+  title: 'Des îles d’étoiles',
   questions: [
     {
-      id: 'q1-unit',
-      prompt: 'Une année-lumière mesure…',
+      id: 'q1-neighbour',
+      prompt: 'Andromède, c’est…',
       choices: [
-        { id: 'distance', label: 'Une distance' },
-        { id: 'age', label: 'L’âge d’une étoile' },
-        { id: 'speed', label: 'La vitesse d’un vaisseau' },
+        { id: 'galaxy', label: 'Une autre galaxie, très loin de nous' },
+        { id: 'star', label: 'Une étoile de notre Système solaire' },
+        { id: 'home', label: 'Un autre nom de la Voie lactée' },
       ],
-      correctChoiceId: 'distance',
-      explainCorrect: 'Oui ! C’est la distance parcourue par la lumière en un an.',
+      correctChoiceId: 'galaxy',
+      explainCorrect: 'Oui ! Andromède et la Voie lactée sont deux galaxies différentes.',
       explainWrong:
-        'Le mot « année » sert ici à définir le trajet de la lumière. Une année-lumière est une distance.',
+        'Notre Soleil appartient à la Voie lactée. Andromède est une autre galaxie, avec ses propres étoiles.',
     },
     {
-      id: 'q2-au',
-      prompt: '1 UA, une unité astronomique, correspond à…',
+      id: 'q2-spiral',
+      prompt: 'Quelle famille possède des bras qui s’enroulent ?',
       choices: [
-        { id: 'moon', label: 'La distance moyenne Terre–Lune' },
-        { id: 'sun', label: 'La distance moyenne Terre–Soleil' },
+        { id: 'elliptical', label: 'Les elliptiques' },
+        { id: 'spiral', label: 'Les spirales' },
+        { id: 'irregular', label: 'Les irrégulières' },
       ],
-      correctChoiceId: 'sun',
-      explainCorrect: 'Exact ! C’est environ 150 millions de kilomètres.',
-      explainWrong: 'L’UA utilise la distance moyenne entre la Terre et le Soleil comme repère.',
-    },
-    {
-      id: 'q3-visible',
-      prompt: 'L’Univers observable, c’est…',
-      choices: [
-        { id: 'all', label: 'Tout l’Univers, avec son bord' },
-        { id: 'visible', label: 'La partie de l’Univers dont la lumière peut nous arriver' },
-      ],
-      correctChoiceId: 'visible',
-      explainCorrect: 'Oui ! L’Univers peut s’étendre au-delà de ce que nous pouvons observer.',
+      correctChoiceId: 'spiral',
+      explainCorrect: 'Exact ! La Voie lactée et Andromède sont des galaxies spirales.',
       explainWrong:
-        'Observable ne veut pas dire tout l’Univers. La limite de ce que nous pouvons observer n’est pas un mur.',
+        'Repense aux maquettes : les bras s’enroulent autour du centre des galaxies spirales.',
     },
     {
-      id: 'q4-lookback',
-      prompt: 'Quand nous regardons Andromède aujourd’hui, nous la voyons…',
+      id: 'q3-light',
+      prompt: 'Pourquoi une galaxie est-elle lumineuse ?',
       choices: [
-        { id: 'now', label: 'Exactement telle qu’elle est en ce moment' },
-        { id: 'past', label: 'Telle qu’elle était il y a environ 2,5 millions d’années' },
+        { id: 'sun', label: 'C’est une seule étoile gigantesque' },
+        { id: 'stars', label: 'Elle contient énormément d’étoiles' },
       ],
-      correctChoiceId: 'past',
+      correctChoiceId: 'stars',
       explainCorrect:
-        'Oui ! Sa lumière a mis environ 2,5 millions d’années à nous rejoindre. Regarder loin, c’est regarder dans le passé.',
+        'Oui ! La lumière de nombreuses étoiles se mêle quand on regarde une galaxie de loin.',
       explainWrong:
-        'La lumière d’Andromède met environ 2,5 millions d’années à nous atteindre. Nous recevons donc une ancienne image.',
+        'Une galaxie contient beaucoup d’étoiles, ainsi que du gaz et de la poussière. Ce n’est pas un Soleil géant.',
     },
   ],
 };

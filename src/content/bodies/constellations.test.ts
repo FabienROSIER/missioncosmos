@@ -9,7 +9,7 @@ import {
   CONSTELLATION_OBSERVER_POSITION,
   skyPoints,
 } from './constellations';
-import { MISSION_CONSTELLATIONS } from '@/content/missions/mission-constellations';
+import { MISSION_10 } from '@/content/missions/mission-10';
 import { validateMission } from '@/content/missions/validateMission';
 import { getCatalogEntry } from '@/content/missions/catalog';
 import { artworkClipPoints, artworkMatrix, artworkMesh } from './constellationArtwork';
@@ -165,23 +165,23 @@ describe('constellations and perspective', () => {
     expect(perspectiveSolved(68)).toBe(false);
   });
   it('registers the mission and requires the main drawings, viewpoint, film and explanation', () => {
-    expect(validateMission(MISSION_CONSTELLATIONS)).toEqual([]);
-    expect(getCatalogEntry('mission-09')?.unlocksNextId).toBe(MISSION_CONSTELLATIONS.id);
-    expect(getCatalogEntry(MISSION_CONSTELLATIONS.id)?.unlocksNextId).toBe('mission-10');
+    expect(validateMission(MISSION_10)).toEqual([]);
+    expect(getCatalogEntry('mission-09')?.unlocksNextId).toBe(MISSION_10.id);
+    expect(getCatalogEntry(MISSION_10.id)?.unlocksNextId).toBe('mission-11');
     for (const id of [
-      'mc-cassiopeia',
-      'mc-ursa-major',
-      'mc-cygnus',
-      'mc-orion',
-      'mc-perspective',
-      'mc-film',
-      'mc-understand',
-      'mc-quiz',
+      'm10-cassiopeia',
+      'm10-ursa-major',
+      'm10-cygnus',
+      'm10-orion',
+      'm10-perspective',
+      'm10-film',
+      'm10-understand',
+      'm10-quiz',
     ]) {
-      expect(MISSION_CONSTELLATIONS.steps.find((s) => s.id === id)?.requiresSuccess).toBe(true);
+      expect(MISSION_10.steps.find((s) => s.id === id)?.requiresSuccess).toBe(true);
     }
     expect(
-      MISSION_CONSTELLATIONS.steps.find((s) => s.id === 'mc-aquila')?.requiresSuccess,
+      MISSION_10.steps.find((s) => s.id === 'm10-aquila')?.requiresSuccess,
     ).not.toBe(true);
   });
 });

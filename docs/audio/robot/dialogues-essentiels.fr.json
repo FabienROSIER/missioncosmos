@@ -195,143 +195,143 @@
     "speech": "Le prisme sépare les couleurs de la lumière blanche. Les projecteurs font l’inverse : leurs lumières s’ajoutent. Ensemble, les lumières rouge, verte et bleue donnent du blanc."
   },
   {
-    "group": "mission-constellations",
+    "group": "mission-10",
     "key": "atlas",
     "context": "Introduction ; consigne commune aux dessins de l’atlas",
-    "steps": ["mc-intro"],
+    "steps": ["m10-intro"],
     "speech": "Une constellation est un dessin que nous imaginons avec les étoiles. Compare le ciel avec la carte de ton atlas. Touche les étoiles du dessin dans l’ordre que tu veux. Leur place et leurs écarts t’aident à les retrouver."
   },
   {
-    "group": "mission-constellations",
+    "group": "mission-10",
     "key": "cassiopee",
     "context": "Défi Cassiopée",
-    "steps": ["mc-cassiopeia"],
+    "steps": ["m10-cassiopeia"],
     "speech": "Pour Cassiopée, cherche cinq étoiles qui dessinent un double vé un peu penché. Compare avec la carte de ton atlas, puis touche les cinq étoiles."
   },
   {
-    "group": "mission-constellations",
+    "group": "mission-10",
     "key": "grande-ourse",
     "context": "Défi Grande Ourse",
-    "steps": ["mc-ursa-major"],
+    "steps": ["m10-ursa-major"],
     "speech": "Pour la Grande Ourse, cherche une casserole : quatre étoiles pour le récipient et trois pour le manche. Compare avec ta carte, puis touche les sept étoiles."
   },
   {
-    "group": "mission-constellations",
+    "group": "mission-10",
     "key": "cygne",
     "context": "Défi Cygne",
-    "steps": ["mc-cygnus"],
+    "steps": ["m10-cygnus"],
     "speech": "Pour le Cygne, cherche une croix : une longue ligne et deux ailes de chaque côté. Compare la place des étoiles avec ta carte, puis retrouve-les dans le ciel."
   },
   {
-    "group": "mission-constellations",
+    "group": "mission-10",
     "key": "orion",
     "context": "Défi Orion",
-    "steps": ["mc-orion"],
+    "steps": ["m10-orion"],
     "speech": "Pour Orion, repère les trois étoiles presque alignées de sa ceinture. Puis retrouve ses épaules et ses pieds grâce à la carte. Touche les étoiles pour révéler le chasseur."
   },
   {
-    "group": "mission-constellations",
+    "group": "mission-10",
     "key": "point-de-vue",
     "context": "Défi du point de vue ; explication réécoutable après le film",
-    "steps": ["mc-perspective", "mc-understand"],
+    "steps": ["m10-perspective", "m10-understand"],
     "speech": "Déplace le vaisseau avec le curseur pour retrouver la croix de ta carte, puis vérifie ton point de vue. Les étoiles ne bougent pas. Elles sont à des distances différentes : quand nous changeons de place, leur dessin dans notre ciel change."
   },
   {
-    "group": "mission-10",
+    "group": "mission-11",
     "key": "galaxie",
     "context": "Introduction et voyage vers la Voie lactée",
-    "steps": ["m10-intro", "m10-journey", "m10-explain"],
+    "steps": ["m11-intro", "m11-journey", "m11-explain"],
     "speech": "Le Soleil et ses huit planètes forment notre Système solaire. Il appartient à la Voie lactée : une galaxie avec énormément d’étoiles, du gaz et de la poussière. La gravité les rassemble. Prenons du recul pour découvrir notre galaxie !"
   },
   {
-    "group": "mission-10",
+    "group": "mission-11",
     "key": "quartier",
     "context": "Explorer la galaxie puis retrouver le quartier du Soleil",
-    "steps": ["m10-explore", "m10-locate"],
+    "steps": ["m11-explore", "m11-locate"],
     "speech": "Regarde la galaxie de face, puis de profil. Notre Soleil est dans le disque, dans un petit bras appelé bras d’Orion. Il n’est ni au centre, ni à l’extérieur. Touche le repère de notre quartier."
   },
   {
-    "group": "mission-10",
+    "group": "mission-11",
     "key": "trajet",
     "context": "Défi du trajet galactique",
-    "steps": ["m10-orbit"],
+    "steps": ["m11-orbit"],
     "speech": "Le Soleil voyage dans la galaxie avec toutes ses planètes. Compare les trois trajets. Choisis celui qui lui fait faire un tour autour du centre sans plonger dedans, puis lance le voyage."
   },
   {
-    "group": "mission-11",
+    "group": "mission-12",
     "key": "voisines",
     "context": "Introduction et comparaison avec Andromède",
-    "steps": ["m11-intro", "m11-neighbour", "m11-explain"],
+    "steps": ["m12-intro", "m12-neighbour", "m12-explain"],
     "speech": "La Voie lactée n’est pas seule : il existe énormément d’autres galaxies. Andromède est notre plus proche grande voisine. Une galaxie n’est pas un Soleil géant : sa lumière vient de toutes ses étoiles."
   },
   {
-    "group": "mission-11",
+    "group": "mission-12",
     "key": "formes",
     "context": "Exploration des familles et album des quatre formes",
-    "steps": ["m11-families", "m11-album"],
+    "steps": ["m12-families", "m12-album"],
     "speech": "Observe les quatre formes pour réparer l’album. Une spirale a des bras enroulés. Une spirale barrée a aussi une barre au centre. Une elliptique est arrondie, sans bras. Une irrégulière n’a pas de forme bien organisée. Regarde les maquettes de face."
   },
   {
-    "group": "mission-11",
+    "group": "mission-12",
     "key": "classer",
     "context": "Défi des cartes du plus petit au plus grand",
-    "steps": ["m11-scale"],
+    "steps": ["m12-scale"],
     "speech": "Classe les cartes du plus petit au plus grand. Le Soleil est dans notre Système solaire, qui est lui-même dans la Voie lactée. Pense à ce qui est contenu dans quoi, puis touche les cartes dans l’ordre."
   },
   {
-    "group": "mission-12",
+    "group": "mission-13",
     "key": "voyage",
     "context": "Introduction et parcours des sept repères",
-    "steps": ["m12-intro", "m12-journey"],
+    "steps": ["m13-intro", "m13-journey"],
     "speech": "Découvre les distances dans l’espace. Utilise Plus loin pour avancer et Plus près pour revenir. Observe les sept repères. Nos distances sont raccourcies pour tout montrer : dans l’espace, les étoiles et les galaxies sont bien plus loin que la Lune."
   },
   {
-    "group": "mission-12",
+    "group": "mission-13",
     "key": "destinations",
     "context": "Défi des destinations des messages lumineux",
-    "steps": ["m12-order"],
+    "steps": ["m13-order"],
     "speech": "Le robot prépare quatre messages lumineux depuis notre voisinage. Classe leurs destinations de la plus proche à la plus lointaine. Touche les cartes dans cet ordre pour préparer les envois."
   },
   {
-    "group": "mission-12",
+    "group": "mission-13",
     "key": "signaux",
     "context": "Expérience des trois flashs et explication",
-    "steps": ["m12-signals"],
+    "steps": ["m13-signals"],
     "speech": "Trois galaxies envoient un flash en même temps. Observe les arrivées, puis cherche l’image la plus ancienne. La lumière met du temps à voyager : celle de la galaxie la plus lointaine arrive plus tard et nous montre un passé plus ancien."
   },
   {
-    "group": "mission-12",
+    "group": "mission-13",
     "key": "annee-lumiere",
     "context": "Bilan des distances et de l’Univers observable",
-    "steps": ["m12-explain"],
+    "steps": ["m13-explain"],
     "speech": "Une année-lumière est une distance : le chemin parcouru par la lumière en un an. L’Univers observable est la partie de l’Univers dont la lumière peut nous arriver. Ce n’est pas le bord de tout l’Univers."
   },
   {
-    "group": "mission-13",
+    "group": "mission-14",
     "key": "indices",
     "context": "Introduction, observation de l’étoile et défi de détection",
-    "steps": ["m13-intro", "m13-observe", "m13-detect"],
+    "steps": ["m14-intro", "m14-observe", "m14-detect"],
     "speech": "Un trou noir rassemble énormément de matière dans très peu de place. Observe les étoiles : elles peuvent tourner autour de lui sans tomber dedans. Pour trouver l’objet invisible, cherche la région où elles tournent autour d’un même centre."
   },
   {
-    "group": "mission-13",
+    "group": "mission-14",
     "key": "disque",
     "context": "Observation du gaz autour d’un trou noir",
-    "steps": ["m13-surroundings"],
+    "steps": ["m14-surroundings"],
     "speech": "Ce disque lumineux est du gaz très chaud autour du trou noir. Ce n’est pas le trou noir lui-même. Tous les trous noirs n’ont pas un disque lumineux. Observe sa forme."
   },
   {
-    "group": "mission-13",
+    "group": "mission-14",
     "key": "limite",
     "context": "Expérience des signaux lumineux et explication de l’horizon",
-    "steps": ["m13-signals", "m13-explain"],
+    "steps": ["m14-signals", "m14-explain"],
     "speech": "Envoie la lumière vers l’extérieur, d’abord depuis le point dehors, puis depuis celui dedans. La limite s’appelle l’horizon des événements. Une fois à l’intérieur, même la lumière ne peut plus ressortir."
   },
   {
-    "group": "mission-13",
+    "group": "mission-14",
     "key": "meme-masse",
     "context": "Expérience de l’étoile remplacée par un trou noir",
-    "steps": ["m13-orbit"],
+    "steps": ["m14-orbit"],
     "speech": "Imagine qu’on remplace l’étoile par un trou noir de même masse, avec autant de matière. Que fera la planète qui tourne loin ? Choisis, puis vérifie. De loin, le trou noir attire autant que l’étoile : il n’aspire pas tout."
   }
 ]

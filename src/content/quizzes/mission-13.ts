@@ -1,64 +1,56 @@
 import type { Quiz } from '@/types/quiz';
-
 export const QUIZ_MISSION_13: Quiz = {
   id: 'quiz-mission-13',
-  title: 'Enquête sur l’invisible',
+  title: 'Navigateur cosmique',
   questions: [
     {
-      id: 'q1-horizon',
-      prompt: 'Que devient une lumière allumée à l’intérieur de l’horizon ?',
+      id: 'q1-unit',
+      prompt: 'Une année-lumière mesure…',
       choices: [
-        { id: 'escape', label: 'Elle peut ressortir' },
-        { id: 'trapped', label: 'Elle ne peut plus ressortir' },
-        { id: 'faster', label: 'Elle va seulement plus vite' },
+        { id: 'distance', label: 'Une distance' },
+        { id: 'age', label: 'L’âge d’une étoile' },
+        { id: 'speed', label: 'La vitesse d’un vaisseau' },
       ],
-      correctChoiceId: 'trapped',
-      explainCorrect:
-        'Oui ! L’horizon est une limite : depuis l’intérieur, même la lumière ne peut plus ressortir.',
+      correctChoiceId: 'distance',
+      explainCorrect: 'Oui ! C’est la distance parcourue par la lumière en un an.',
       explainWrong:
-        'Repense aux deux signaux : celui lancé depuis l’intérieur ne pouvait pas franchir l’horizon vers l’extérieur.',
+        'Le mot « année » sert ici à définir le trajet de la lumière. Une année-lumière est une distance.',
     },
     {
-      id: 'q2-same-mass',
-      prompt: 'Une étoile est remplacée par un trou noir de même masse. Que peut faire une planète éloignée ?',
+      id: 'q2-au',
+      prompt: '1 UA, une unité astronomique, correspond à…',
       choices: [
-        { id: 'orbit', label: 'Continuer sur la même orbite' },
-        { id: 'swallowed', label: 'Être aussitôt avalée' },
-        { id: 'stop', label: 'S’arrêter dans l’espace' },
+        { id: 'moon', label: 'La distance moyenne Terre–Lune' },
+        { id: 'sun', label: 'La distance moyenne Terre–Soleil' },
       ],
-      correctChoiceId: 'orbit',
-      explainCorrect:
-        'Exact ! À grande distance, la même masse produit la même attraction : la planète peut garder son orbite.',
-      explainWrong:
-        'Dans l’expérience, même masse au centre, même distance et même vitesse au départ : la planète garde son orbite.',
+      correctChoiceId: 'sun',
+      explainCorrect: 'Exact ! C’est environ 150 millions de kilomètres.',
+      explainWrong: 'L’UA utilise la distance moyenne entre la Terre et le Soleil comme repère.',
     },
     {
-      id: 'q3-disk',
-      prompt: 'Qu’est-ce qui brille autour de certains trous noirs ?',
+      id: 'q3-visible',
+      prompt: 'L’Univers observable, c’est…',
       choices: [
-        { id: 'inside', label: 'La lumière sortie de l’intérieur' },
-        { id: 'gas', label: 'Du gaz très chaud autour' },
-        { id: 'wall', label: 'Une paroi lumineuse' },
+        { id: 'all', label: 'Tout l’Univers, avec son bord' },
+        { id: 'visible', label: 'La partie de l’Univers dont la lumière peut nous arriver' },
       ],
-      correctChoiceId: 'gas',
-      explainCorrect:
-        'Oui ! Le disque lumineux est du gaz chaud autour du trou noir. Tous les trous noirs n’en ont pas.',
+      correctChoiceId: 'visible',
+      explainCorrect: 'Oui ! L’Univers peut s’étendre au-delà de ce que nous pouvons observer.',
       explainWrong:
-        'Ce qui brille vient des alentours : du gaz peut chauffer en tournant autour du trou noir.',
+        'Observable ne veut pas dire tout l’Univers. La limite de ce que nous pouvons observer n’est pas un mur.',
     },
     {
-      id: 'q4-detection',
-      prompt: 'Comment repérer un trou noir que nous ne voyons pas ?',
+      id: 'q4-lookback',
+      prompt: 'Quand nous regardons Andromède aujourd’hui, nous la voyons…',
       choices: [
-        { id: 'orbits', label: 'Observer les mouvements des étoiles proches' },
-        { id: 'color', label: 'Chercher toujours une boule noire' },
-        { id: 'sound', label: 'Écouter un bruit dans l’espace' },
+        { id: 'now', label: 'Exactement telle qu’elle est en ce moment' },
+        { id: 'past', label: 'Telle qu’elle était il y a environ 2,5 millions d’années' },
       ],
-      correctChoiceId: 'orbits',
+      correctChoiceId: 'past',
       explainCorrect:
-        'Bravo ! Plusieurs étoiles tournant autour d’un même point peuvent révéler un objet invisible.',
+        'Oui ! Sa lumière a mis environ 2,5 millions d’années à nous rejoindre. Regarder loin, c’est regarder dans le passé.',
       explainWrong:
-        'Le trou noir peut rester invisible. Les orbites des étoiles proches donnent un indice sur l’objet caché.',
+        'La lumière d’Andromède met environ 2,5 millions d’années à nous atteindre. Nous recevons donc une ancienne image.',
     },
   ],
 };

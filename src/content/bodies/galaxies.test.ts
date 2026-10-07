@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { acceptsCosmicLevel, galaxyFamilyPoints, GALAXY_FAMILIES, COSMIC_LEVELS } from './galaxies';
-import { MISSION_11 } from '@/content/missions/mission-11';
+import { MISSION_12 } from '@/content/missions/mission-12';
 import { getMissionById } from '@/content/missions';
 import { getQuizById } from '@/content/quizzes';
 import { getRewardById } from '@/content/rewards/catalog';
@@ -10,14 +10,14 @@ import { isCelebratedChallenge } from '@/features/missions/challengeCelebration'
 
 describe('Les galaxies', () => {
   it('relie la mission, son quiz, son badge et ses mots sans célébrer les observations', () => {
-    expect(validateMission(MISSION_11)).toEqual([]);
-    expect(getMissionById(MISSION_11.id)).toBe(MISSION_11);
-    expect(getQuizById(MISSION_11.quizId!)).toBeDefined();
-    MISSION_11.rewardIds.forEach((id) => expect(getRewardById(id)).toBeDefined());
-    MISSION_11.glossaryIds?.forEach((id) => expect(getGlossaryEntry(id)).toBeDefined());
-    expect(MISSION_11.steps.filter(isCelebratedChallenge).map((step) => step.id)).toEqual([
-      'm11-album',
-      'm11-scale',
+    expect(validateMission(MISSION_12)).toEqual([]);
+    expect(getMissionById(MISSION_12.id)).toBe(MISSION_12);
+    expect(getQuizById(MISSION_12.quizId!)).toBeDefined();
+    MISSION_12.rewardIds.forEach((id) => expect(getRewardById(id)).toBeDefined());
+    MISSION_12.glossaryIds?.forEach((id) => expect(getGlossaryEntry(id)).toBeDefined());
+    expect(MISSION_12.steps.filter(isCelebratedChallenge).map((step) => step.id)).toEqual([
+      'm12-album',
+      'm12-scale',
     ]);
   });
   it('ne valide que le prochain niveau d’inclusion et rejette les doublons et les sauts', () => {

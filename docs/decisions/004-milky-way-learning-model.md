@@ -1,6 +1,6 @@
 # ADR-004 — Maquette pédagogique de la Voie lactée
 
-Date : 2026-10-02. Statut : adopté pour la mission 10.
+Date : 2026-10-02. Statut : adopté pour la mission 11.
 
 ## Besoin
 
@@ -16,4 +16,4 @@ L’introduction réutilise les neuf modèles texturés du pack Système solaire
 
 ## Conséquences
 
-Chargement léger, vues interactives, pas de nouvel asset à demander ni de nouvelle licence. Les bras restent artistiques ; cette représentation ne remplace pas une carte de la Voie lactée. Une éventuelle version cartographique demanderait des données sourcées et une définition technique distincte. Sources et limites dans `docs/pedagogy/mission-10-milky-way.md`.
+Chargement léger, vues interactives, pas de nouvel asset à demander ni de nouvelle licence. Les bras restent artistiques ; cette représentation ne remplace pas une carte de la Voie lactée. Une éventuelle version cartographique demanderait des données sourcées et une définition technique distincte. Sources et limites dans `docs/pedagogy/mission-11-milky-way.md`.

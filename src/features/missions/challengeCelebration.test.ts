@@ -7,7 +7,7 @@ const stepById = (id: string) => steps.find((step) => step.id === id)!;
 
 describe('achievement feedback across all missions', () => {
   it('does not turn a film or a guided activation into a victory, while keeping progression gated', () => {
-    for (const id of ['m10-journey', 'mc-film', 'm09-color']) {
+    for (const id of ['m11-journey', 'm10-film', 'm09-color']) {
       const step = stepById(id);
       expect(step.requiresSuccess).toBe(true);
       expect(isCelebratedChallenge(step)).toBe(false);
@@ -28,10 +28,10 @@ describe('achievement feedback across all missions', () => {
       'm07-challenge',
       'm08-challenge',
       'm09-challenge',
-      'mc-perspective',
-      'mc-understand',
-      'm10-locate',
-      'm10-orbit',
+      'm10-perspective',
+      'm10-understand',
+      'm11-locate',
+      'm11-orbit',
     ]) {
       expect(stepById(id), id).toBeDefined();
       expect(isCelebratedChallenge(stepById(id)), id).toBe(true);

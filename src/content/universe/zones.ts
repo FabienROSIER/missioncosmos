@@ -22,7 +22,7 @@ export type UniverseZone = {
 
 /**
  * Ordre de gauche à droite sur la carte.
- * Aligné mix C : 8 zones, chacune ≥1 mission (01–13).
+ * Aligné mix C : 8 zones, chacune ≥1 mission (01–14).
  * (Zone « Voisinage » retirée — orpheline.)
  */
 export const UNIVERSE_ZONES: UniverseZone[] = [
@@ -48,31 +48,31 @@ export const UNIVERSE_ZONES: UniverseZone[] = [
     id: 'stars',
     title: 'Étoiles',
     blurb: 'Soleil et autres soleils.',
-    missionIds: ['mission-08', 'mission-09', 'mission-constellations'],
+    missionIds: ['mission-08', 'mission-09', 'mission-10'],
   },
   {
     id: 'milky-way',
     title: 'Voie lactée',
     blurb: 'Notre galaxie.',
-    missionIds: ['mission-10'],
+    missionIds: ['mission-11'],
   },
   {
     id: 'galaxies',
     title: 'Galaxies',
     blurb: 'D’autres îles d’étoiles.',
-    missionIds: ['mission-11'],
+    missionIds: ['mission-12'],
   },
   {
     id: 'deep-universe',
     title: 'Univers profond',
     blurb: 'Les distances immenses.',
-    missionIds: ['mission-12'],
+    missionIds: ['mission-13'],
   },
   {
     id: 'extremes',
     title: 'Extrêmes',
     blurb: 'Phénomènes hors du commun.',
-    missionIds: ['mission-13'],
+    missionIds: ['mission-14'],
   },
 ];
 

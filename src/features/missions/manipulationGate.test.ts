@@ -30,10 +30,10 @@ describe('verrouillage des manipulations de mission', () => {
       'm06-fall',
       'm08-challenge',
       'm09-color',
-      'mc-orion',
-      'm10-journey',
-      'm11-album',
-      'm12-journey',
+      'm10-orion',
+      'm11-journey',
+      'm12-album',
+      'm13-journey',
     ]) {
       const step = stepById(id);
       expect(step, id).toBeDefined();
@@ -47,7 +47,7 @@ describe('verrouillage des manipulations de mission', () => {
   });
 
   it('affiche la question des constellations sans À toi de jouer', () => {
-    const step = stepById('mc-understand');
+    const step = stepById('m10-understand');
     expect(isPlayGatedStep(step)).toBe(false);
     expect(canInteract(step, false, true)).toBe(true);
     expect(

@@ -10,7 +10,7 @@ import { QUIZ_MISSION_10 } from '@/content/quizzes/mission-10';
 import { QUIZ_MISSION_11 } from '@/content/quizzes/mission-11';
 import { QUIZ_MISSION_12 } from '@/content/quizzes/mission-12';
 import { QUIZ_MISSION_13 } from '@/content/quizzes/mission-13';
-import { QUIZ_MISSION_CONSTELLATIONS } from '@/content/quizzes/mission-constellations';
+import { QUIZ_MISSION_14 } from '@/content/quizzes/mission-14';
 import type { Quiz } from '@/types/quiz';
 
 export { QUIZ_MISSION_01 } from '@/content/quizzes/mission-01';
@@ -25,7 +25,7 @@ export { QUIZ_MISSION_10 } from '@/content/quizzes/mission-10';
 export { QUIZ_MISSION_11 } from '@/content/quizzes/mission-11';
 export { QUIZ_MISSION_12 } from '@/content/quizzes/mission-12';
 export { QUIZ_MISSION_13 } from '@/content/quizzes/mission-13';
-export { QUIZ_MISSION_CONSTELLATIONS } from '@/content/quizzes/mission-constellations';
+export { QUIZ_MISSION_14 } from '@/content/quizzes/mission-14';
 
 const BY_ID: Record<string, Quiz> = {
   [QUIZ_MISSION_01.id]: QUIZ_MISSION_01,
@@ -40,7 +40,7 @@ const BY_ID: Record<string, Quiz> = {
   [QUIZ_MISSION_11.id]: QUIZ_MISSION_11,
   [QUIZ_MISSION_12.id]: QUIZ_MISSION_12,
   [QUIZ_MISSION_13.id]: QUIZ_MISSION_13,
-  [QUIZ_MISSION_CONSTELLATIONS.id]: QUIZ_MISSION_CONSTELLATIONS,
+  [QUIZ_MISSION_14.id]: QUIZ_MISSION_14,
 };
 
 export function getQuizById(id: string): Quiz | undefined {

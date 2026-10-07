@@ -436,7 +436,7 @@ Bételgeuse est surtout… Tu peux choisir : Une toute petite étoile toute proc
 
 **Contexte :** Quiz « Les dessins du ciel » — Qui a inventé les constellations, et pourquoi ?
 
-**Fichier :** `mission-constellations/quiz/mission-constellations.quiz.q1-origin.mp3`
+**Fichier :** `mission-10/quiz/mission-10.quiz.q1-origin.mp3`
 
 **Longueur :** 281 caractères.
 
@@ -452,7 +452,7 @@ Qui a inventé les constellations, et pourquoi ? Tu peux choisir : Une seule per
 
 **Contexte :** Quiz « Notre galaxie » — Où se trouve notre Système solaire ?
 
-**Fichier :** `mission-10/quiz/mission-10.quiz.q1-home.mp3`
+**Fichier :** `mission-11/quiz/mission-11.quiz.q1-home.mp3`
 
 **Longueur :** 144 caractères.
 
@@ -466,7 +466,7 @@ Où se trouve notre Système solaire ? Tu peux choisir : Dans la Voie lactée ; 
 
 **Contexte :** Quiz « Notre galaxie » — Une galaxie, c’est…
 
-**Fichier :** `mission-10/quiz/mission-10.quiz.q2-galaxy.mp3`
+**Fichier :** `mission-11/quiz/mission-11.quiz.q2-galaxy.mp3`
 
 **Longueur :** 158 caractères.
 
@@ -480,7 +480,7 @@ Une galaxie, c’est… Tu peux choisir : Une seule étoile géante ; Un immense
 
 **Contexte :** Quiz « Notre galaxie » — Vue de profil, la Voie lactée ressemble surtout à…
 
-**Fichier :** `mission-10/quiz/mission-10.quiz.q3-shape.mp3`
+**Fichier :** `mission-11/quiz/mission-11.quiz.q3-shape.mp3`
 
 **Longueur :** 166 caractères.
 
@@ -496,7 +496,7 @@ Vue de profil, la Voie lactée ressemble surtout à… Tu peux choisir : Un disq
 
 **Contexte :** Quiz « Des îles d’étoiles » — Andromède, c’est…
 
-**Fichier :** `mission-11/quiz/mission-11.quiz.q1-neighbour.mp3`
+**Fichier :** `mission-12/quiz/mission-12.quiz.q1-neighbour.mp3`
 
 **Longueur :** 144 caractères.
 
@@ -510,7 +510,7 @@ Andromède, c’est… Tu peux choisir : Une autre galaxie, très loin de nous ;
 
 **Contexte :** Quiz « Des îles d’étoiles » — Quelle famille possède des bras qui s’enroulent ?
 
-**Fichier :** `mission-11/quiz/mission-11.quiz.q2-spiral.mp3`
+**Fichier :** `mission-12/quiz/mission-12.quiz.q2-spiral.mp3`
 
 **Longueur :** 118 caractères.
 
@@ -524,7 +524,7 @@ Quelle famille possède des bras qui s’enroulent ? Tu peux choisir : Les ellip
 
 **Contexte :** Quiz « Des îles d’étoiles » — Pourquoi une galaxie est-elle lumineuse ?
 
-**Fichier :** `mission-11/quiz/mission-11.quiz.q3-light.mp3`
+**Fichier :** `mission-12/quiz/mission-12.quiz.q3-light.mp3`
 
 **Longueur :** 132 caractères.
 
@@ -540,7 +540,7 @@ Pourquoi une galaxie est-elle lumineuse ? Tu peux choisir : C’est une seule é
 
 **Contexte :** Quiz « Navigateur cosmique » — Une année-lumière mesure…
 
-**Fichier :** `mission-12/quiz/mission-12.quiz.q1-unit.mp3`
+**Fichier :** `mission-13/quiz/mission-13.quiz.q1-unit.mp3`
 
 **Longueur :** 105 caractères.
 
@@ -554,7 +554,7 @@ Une année-lumière mesure… Tu peux choisir : Une distance ; L’âge d’une 
 
 **Contexte :** Quiz « Navigateur cosmique » — 1 UA, une unité astronomique, correspond à…
 
-**Fichier :** `mission-12/quiz/mission-12.quiz.q2-au.mp3`
+**Fichier :** `mission-13/quiz/mission-13.quiz.q2-au.mp3`
 
 **Longueur :** 122 caractères.
 
@@ -568,7 +568,7 @@ Une unité astronomique, correspond à… Tu peux choisir : La distance moyenne 
 
 **Contexte :** Quiz « Navigateur cosmique » — L’Univers observable, c’est…
 
-**Fichier :** `mission-12/quiz/mission-12.quiz.q3-visible.mp3`
+**Fichier :** `mission-13/quiz/mission-13.quiz.q3-visible.mp3`
 
 **Longueur :** 136 caractères.
 
@@ -582,7 +582,7 @@ L’Univers observable, c’est… Tu peux choisir : Tout l’Univers, avec son 
 
 **Contexte :** Quiz « Navigateur cosmique » — Quand nous regardons Andromède aujourd’hui, nous la voyons…
 
-**Fichier :** `mission-12/quiz/mission-12.quiz.q4-lookback.mp3`
+**Fichier :** `mission-13/quiz/mission-13.quiz.q4-lookback.mp3`
 
 **Longueur :** 193 caractères.
 
@@ -598,7 +598,7 @@ Quand nous regardons Andromède aujourd’hui, nous la voyons… Tu peux choisir
 
 **Contexte :** Quiz « Enquête sur l’invisible » — Que devient une lumière allumée à l’intérieur de l’horizon ?
 
-**Fichier :** `mission-13/quiz/mission-13.quiz.q1-horizon.mp3`
+**Fichier :** `mission-14/quiz/mission-14.quiz.q1-horizon.mp3`
 
 **Longueur :** 159 caractères.
 
@@ -612,7 +612,7 @@ Que devient une lumière allumée à l’intérieur de l’horizon ? Tu peux cho
 
 **Contexte :** Quiz « Enquête sur l’invisible » — Une étoile est remplacée par un trou noir de même masse. Que peut faire une planète éloignée ?
 
-**Fichier :** `mission-13/quiz/mission-13.quiz.q2-same-mass.mp3`
+**Fichier :** `mission-14/quiz/mission-14.quiz.q2-same-mass.mp3`
 
 **Longueur :** 191 caractères.
 
@@ -626,7 +626,7 @@ Une étoile est remplacée par un trou noir de même masse. Que peut faire une p
 
 **Contexte :** Quiz « Enquête sur l’invisible » — Qu’est-ce qui brille autour de certains trous noirs ?
 
-**Fichier :** `mission-13/quiz/mission-13.quiz.q3-disk.mp3`
+**Fichier :** `mission-14/quiz/mission-14.quiz.q3-disk.mp3`
 
 **Longueur :** 154 caractères.
 
@@ -640,7 +640,7 @@ Qu’est-ce qui brille autour de certains trous noirs ? Tu peux choisir : La lum
 
 **Contexte :** Quiz « Enquête sur l’invisible » — Comment repérer un trou noir que nous ne voyons pas ?
 
-**Fichier :** `mission-13/quiz/mission-13.quiz.q4-detection.mp3`
+**Fichier :** `mission-14/quiz/mission-14.quiz.q4-detection.mp3`
 
 **Longueur :** 185 caractères.
 

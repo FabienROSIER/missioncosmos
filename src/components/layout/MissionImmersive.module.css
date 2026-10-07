@@ -69,8 +69,22 @@
     max(1rem, env(safe-area-inset-left));
   background: var(--color-space-900);
 }
-.title {
+.titleBlock {
   flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 0.05rem;
+}
+.missionIndex {
+  margin: 0;
+  color: var(--color-nebula-soft);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+.title {
   min-width: 0;
   margin: 0;
   color: var(--color-star);
@@ -423,11 +437,17 @@
     padding: max(0.35rem, env(safe-area-inset-top)) max(0.5rem, env(safe-area-inset-right)) 0.35rem
       max(0.5rem, env(safe-area-inset-left));
   }
+  .titleBlock {
+    min-width: 0;
+  }
+  .missionIndex,
   .title {
-    font-size: 1rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+  .title {
+    font-size: 1rem;
   }
   .menuToggle {
     display: inline-flex;

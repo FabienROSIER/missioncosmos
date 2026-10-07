@@ -880,15 +880,15 @@
       ]
     },
     {
-      "id": "mission-constellations.quiz.q1-origin",
-      "group": "mission-constellations",
+      "id": "mission-10.quiz.q1-origin",
+      "group": "mission-10",
       "mission": "Les dessins du ciel",
       "optional": true,
-      "quizId": "quiz-mission-constellations",
+      "quizId": "quiz-mission-10",
       "questionId": "q1-origin",
       "context": "Quiz « Les dessins du ciel » — Qui a inventé les constellations, et pourquoi ?",
       "triggerPolicy": "question-entry-or-request",
-      "source": "src/content/quizzes/mission-constellations.ts",
+      "source": "src/content/quizzes/mission-10.ts",
       "sourceHash": "6a4286dbc1aacee0b1f0f364c74533cb5404c26216838d65805da1c3c490e824",
       "choiceIds": [
         "one-recent",
@@ -899,26 +899,26 @@
       "characterCount": 281,
       "clips": [
         {
-          "id": "mission-constellations.quiz.q1-origin",
-          "file": "mission-constellations.quiz.q1-origin.mp3",
-          "relativePath": "mission-constellations/quiz/mission-constellations.quiz.q1-origin.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-constellations/quiz/mission-constellations.quiz.q1-origin.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-constellations/quiz/mission-constellations.quiz.q1-origin.mp3",
+          "id": "mission-10.quiz.q1-origin",
+          "file": "mission-10.quiz.q1-origin.mp3",
+          "relativePath": "mission-10/quiz/mission-10.quiz.q1-origin.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-10/quiz/mission-10.quiz.q1-origin.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-10/quiz/mission-10.quiz.q1-origin.mp3",
           "speech": "Qui a inventé les constellations, et pourquoi ? Tu peux choisir : Une seule personne, il y a peu de temps, pour décorer les cartes ; Des peuples très anciens, pour se repérer, suivre les saisons et raconter des histoires ; Les étoiles, qui se sont rangées toutes seules en animaux.",
           "characterCount": 281
         }
       ]
     },
     {
-      "id": "mission-10.quiz.q1-home",
-      "group": "mission-10",
+      "id": "mission-11.quiz.q1-home",
+      "group": "mission-11",
       "mission": "Notre galaxie",
       "optional": true,
-      "quizId": "quiz-mission-10",
+      "quizId": "quiz-mission-11",
       "questionId": "q1-home",
       "context": "Quiz « Notre galaxie » — Où se trouve notre Système solaire ?",
       "triggerPolicy": "question-entry-or-request",
-      "source": "src/content/quizzes/mission-10.ts",
+      "source": "src/content/quizzes/mission-11.ts",
       "sourceHash": "6fcc2374dc3be2b6388f0f2aff55699a907865617db3dd6013ecad83dc79eb54",
       "choiceIds": [
         "inside",
@@ -929,26 +929,26 @@
       "characterCount": 144,
       "clips": [
         {
-          "id": "mission-10.quiz.q1-home",
-          "file": "mission-10.quiz.q1-home.mp3",
-          "relativePath": "mission-10/quiz/mission-10.quiz.q1-home.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-10/quiz/mission-10.quiz.q1-home.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-10/quiz/mission-10.quiz.q1-home.mp3",
+          "id": "mission-11.quiz.q1-home",
+          "file": "mission-11.quiz.q1-home.mp3",
+          "relativePath": "mission-11/quiz/mission-11.quiz.q1-home.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-11/quiz/mission-11.quiz.q1-home.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-11/quiz/mission-11.quiz.q1-home.mp3",
           "speech": "Où se trouve notre Système solaire ? Tu peux choisir : Dans la Voie lactée ; À l’extérieur de toutes les galaxies ; Au centre de la Voie lactée.",
           "characterCount": 144
         }
       ]
     },
     {
-      "id": "mission-10.quiz.q2-galaxy",
-      "group": "mission-10",
+      "id": "mission-11.quiz.q2-galaxy",
+      "group": "mission-11",
       "mission": "Notre galaxie",
       "optional": true,
-      "quizId": "quiz-mission-10",
+      "quizId": "quiz-mission-11",
       "questionId": "q2-galaxy",
       "context": "Quiz « Notre galaxie » — Une galaxie, c’est…",
       "triggerPolicy": "question-entry-or-request",
-      "source": "src/content/quizzes/mission-10.ts",
+      "source": "src/content/quizzes/mission-11.ts",
       "sourceHash": "5961540f0ebf6880553ffba6805ea5c17e809e7e325efab4eed9a9444e42c985",
       "choiceIds": [
         "star",
@@ -959,26 +959,26 @@
       "characterCount": 158,
       "clips": [
         {
-          "id": "mission-10.quiz.q2-galaxy",
-          "file": "mission-10.quiz.q2-galaxy.mp3",
-          "relativePath": "mission-10/quiz/mission-10.quiz.q2-galaxy.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-10/quiz/mission-10.quiz.q2-galaxy.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-10/quiz/mission-10.quiz.q2-galaxy.mp3",
+          "id": "mission-11.quiz.q2-galaxy",
+          "file": "mission-11.quiz.q2-galaxy.mp3",
+          "relativePath": "mission-11/quiz/mission-11.quiz.q2-galaxy.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-11/quiz/mission-11.quiz.q2-galaxy.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-11/quiz/mission-11.quiz.q2-galaxy.mp3",
           "speech": "Une galaxie, c’est… Tu peux choisir : Une seule étoile géante ; Un immense ensemble d’étoiles, de gaz et de poussière ; Seulement les huit planètes du Soleil.",
           "characterCount": 158
         }
       ]
     },
     {
-      "id": "mission-10.quiz.q3-shape",
-      "group": "mission-10",
+      "id": "mission-11.quiz.q3-shape",
+      "group": "mission-11",
       "mission": "Notre galaxie",
       "optional": true,
-      "quizId": "quiz-mission-10",
+      "quizId": "quiz-mission-11",
       "questionId": "q3-shape",
       "context": "Quiz « Notre galaxie » — Vue de profil, la Voie lactée ressemble surtout à…",
       "triggerPolicy": "question-entry-or-request",
-      "source": "src/content/quizzes/mission-10.ts",
+      "source": "src/content/quizzes/mission-11.ts",
       "sourceHash": "fd1ca65bf3d4b083d4cf9c38826fb9cd36a76a99e030265c9dedf738d1bd9c06",
       "choiceIds": [
         "disk",
@@ -989,26 +989,26 @@
       "characterCount": 166,
       "clips": [
         {
-          "id": "mission-10.quiz.q3-shape",
-          "file": "mission-10.quiz.q3-shape.mp3",
-          "relativePath": "mission-10/quiz/mission-10.quiz.q3-shape.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-10/quiz/mission-10.quiz.q3-shape.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-10/quiz/mission-10.quiz.q3-shape.mp3",
+          "id": "mission-11.quiz.q3-shape",
+          "file": "mission-11.quiz.q3-shape.mp3",
+          "relativePath": "mission-11/quiz/mission-11.quiz.q3-shape.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-11/quiz/mission-11.quiz.q3-shape.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-11/quiz/mission-11.quiz.q3-shape.mp3",
           "speech": "Vue de profil, la Voie lactée ressemble surtout à… Tu peux choisir : Un disque plus épais au centre ; Une boule pleine comme une planète ; Une rangée de huit étoiles.",
           "characterCount": 166
         }
       ]
     },
     {
-      "id": "mission-11.quiz.q1-neighbour",
-      "group": "mission-11",
+      "id": "mission-12.quiz.q1-neighbour",
+      "group": "mission-12",
       "mission": "Les galaxies",
       "optional": true,
-      "quizId": "quiz-mission-11",
+      "quizId": "quiz-mission-12",
       "questionId": "q1-neighbour",
       "context": "Quiz « Des îles d’étoiles » — Andromède, c’est…",
       "triggerPolicy": "question-entry-or-request",
-      "source": "src/content/quizzes/mission-11.ts",
+      "source": "src/content/quizzes/mission-12.ts",
       "sourceHash": "0b5c774e542dd27c066038c1b5f2cb6542ac24a8c78c0fc41fe9043a96e235f7",
       "choiceIds": [
         "galaxy",
@@ -1019,26 +1019,26 @@
       "characterCount": 144,
       "clips": [
         {
-          "id": "mission-11.quiz.q1-neighbour",
-          "file": "mission-11.quiz.q1-neighbour.mp3",
-          "relativePath": "mission-11/quiz/mission-11.quiz.q1-neighbour.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-11/quiz/mission-11.quiz.q1-neighbour.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-11/quiz/mission-11.quiz.q1-neighbour.mp3",
+          "id": "mission-12.quiz.q1-neighbour",
+          "file": "mission-12.quiz.q1-neighbour.mp3",
+          "relativePath": "mission-12/quiz/mission-12.quiz.q1-neighbour.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-12/quiz/mission-12.quiz.q1-neighbour.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-12/quiz/mission-12.quiz.q1-neighbour.mp3",
           "speech": "Andromède, c’est… Tu peux choisir : Une autre galaxie, très loin de nous ; Une étoile de notre Système solaire ; Un autre nom de la Voie lactée.",
           "characterCount": 144
         }
       ]
     },
     {
-      "id": "mission-11.quiz.q2-spiral",
-      "group": "mission-11",
+      "id": "mission-12.quiz.q2-spiral",
+      "group": "mission-12",
       "mission": "Les galaxies",
       "optional": true,
-      "quizId": "quiz-mission-11",
+      "quizId": "quiz-mission-12",
       "questionId": "q2-spiral",
       "context": "Quiz « Des îles d’étoiles » — Quelle famille possède des bras qui s’enroulent ?",
       "triggerPolicy": "question-entry-or-request",
-      "source": "src/content/quizzes/mission-11.ts",
+      "source": "src/content/quizzes/mission-12.ts",
       "sourceHash": "9d9076fcfc484160c984e1623b392576d10433e3713abf1bc74b567bcd3eaa15",
       "choiceIds": [
         "elliptical",
@@ -1049,26 +1049,26 @@
       "characterCount": 118,
       "clips": [
         {
-          "id": "mission-11.quiz.q2-spiral",
-          "file": "mission-11.quiz.q2-spiral.mp3",
-          "relativePath": "mission-11/quiz/mission-11.quiz.q2-spiral.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-11/quiz/mission-11.quiz.q2-spiral.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-11/quiz/mission-11.quiz.q2-spiral.mp3",
+          "id": "mission-12.quiz.q2-spiral",
+          "file": "mission-12.quiz.q2-spiral.mp3",
+          "relativePath": "mission-12/quiz/mission-12.quiz.q2-spiral.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-12/quiz/mission-12.quiz.q2-spiral.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-12/quiz/mission-12.quiz.q2-spiral.mp3",
           "speech": "Quelle famille possède des bras qui s’enroulent ? Tu peux choisir : Les elliptiques ; Les spirales ; Les irrégulières.",
           "characterCount": 118
         }
       ]
     },
     {
-      "id": "mission-11.quiz.q3-light",
-      "group": "mission-11",
+      "id": "mission-12.quiz.q3-light",
+      "group": "mission-12",
       "mission": "Les galaxies",
       "optional": true,
-      "quizId": "quiz-mission-11",
+      "quizId": "quiz-mission-12",
       "questionId": "q3-light",
       "context": "Quiz « Des îles d’étoiles » — Pourquoi une galaxie est-elle lumineuse ?",
       "triggerPolicy": "question-entry-or-request",
-      "source": "src/content/quizzes/mission-11.ts",
+      "source": "src/content/quizzes/mission-12.ts",
       "sourceHash": "c0c4b3fb5e0bbd335837800cd57934a8fb5115a5aec389a826670fe96184d24c",
       "choiceIds": [
         "sun",
@@ -1078,26 +1078,26 @@
       "characterCount": 132,
       "clips": [
         {
-          "id": "mission-11.quiz.q3-light",
-          "file": "mission-11.quiz.q3-light.mp3",
-          "relativePath": "mission-11/quiz/mission-11.quiz.q3-light.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-11/quiz/mission-11.quiz.q3-light.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-11/quiz/mission-11.quiz.q3-light.mp3",
+          "id": "mission-12.quiz.q3-light",
+          "file": "mission-12.quiz.q3-light.mp3",
+          "relativePath": "mission-12/quiz/mission-12.quiz.q3-light.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-12/quiz/mission-12.quiz.q3-light.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-12/quiz/mission-12.quiz.q3-light.mp3",
           "speech": "Pourquoi une galaxie est-elle lumineuse ? Tu peux choisir : C’est une seule étoile gigantesque ; Elle contient énormément d’étoiles.",
           "characterCount": 132
         }
       ]
     },
     {
-      "id": "mission-12.quiz.q1-unit",
-      "group": "mission-12",
+      "id": "mission-13.quiz.q1-unit",
+      "group": "mission-13",
       "mission": "Les distances dans l’Univers",
       "optional": true,
-      "quizId": "quiz-mission-12",
+      "quizId": "quiz-mission-13",
       "questionId": "q1-unit",
       "context": "Quiz « Navigateur cosmique » — Une année-lumière mesure…",
       "triggerPolicy": "question-entry-or-request",
-      "source": "src/content/quizzes/mission-12.ts",
+      "source": "src/content/quizzes/mission-13.ts",
       "sourceHash": "fe2a5511cc5377b025b0435fdff1219b5328ba9fa9b572477650a41511600ff1",
       "choiceIds": [
         "distance",
@@ -1108,26 +1108,26 @@
       "characterCount": 105,
       "clips": [
         {
-          "id": "mission-12.quiz.q1-unit",
-          "file": "mission-12.quiz.q1-unit.mp3",
-          "relativePath": "mission-12/quiz/mission-12.quiz.q1-unit.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-12/quiz/mission-12.quiz.q1-unit.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-12/quiz/mission-12.quiz.q1-unit.mp3",
+          "id": "mission-13.quiz.q1-unit",
+          "file": "mission-13.quiz.q1-unit.mp3",
+          "relativePath": "mission-13/quiz/mission-13.quiz.q1-unit.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-13/quiz/mission-13.quiz.q1-unit.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-13/quiz/mission-13.quiz.q1-unit.mp3",
           "speech": "Une année-lumière mesure… Tu peux choisir : Une distance ; L’âge d’une étoile ; La vitesse d’un vaisseau.",
           "characterCount": 105
         }
       ]
     },
     {
-      "id": "mission-12.quiz.q2-au",
-      "group": "mission-12",
+      "id": "mission-13.quiz.q2-au",
+      "group": "mission-13",
       "mission": "Les distances dans l’Univers",
       "optional": true,
-      "quizId": "quiz-mission-12",
+      "quizId": "quiz-mission-13",
       "questionId": "q2-au",
       "context": "Quiz « Navigateur cosmique » — 1 UA, une unité astronomique, correspond à…",
       "triggerPolicy": "question-entry-or-request",
-      "source": "src/content/quizzes/mission-12.ts",
+      "source": "src/content/quizzes/mission-13.ts",
       "sourceHash": "6ae9f10db9b2dd144988597ee47daa25fb77cecd3fb80add7f34bdf2c26a1eb1",
       "choiceIds": [
         "moon",
@@ -1137,26 +1137,26 @@
       "characterCount": 122,
       "clips": [
         {
-          "id": "mission-12.quiz.q2-au",
-          "file": "mission-12.quiz.q2-au.mp3",
-          "relativePath": "mission-12/quiz/mission-12.quiz.q2-au.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-12/quiz/mission-12.quiz.q2-au.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-12/quiz/mission-12.quiz.q2-au.mp3",
+          "id": "mission-13.quiz.q2-au",
+          "file": "mission-13.quiz.q2-au.mp3",
+          "relativePath": "mission-13/quiz/mission-13.quiz.q2-au.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-13/quiz/mission-13.quiz.q2-au.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-13/quiz/mission-13.quiz.q2-au.mp3",
           "speech": "Une unité astronomique, correspond à… Tu peux choisir : La distance moyenne Terre–Lune ; La distance moyenne Terre–Soleil.",
           "characterCount": 122
         }
       ]
     },
     {
-      "id": "mission-12.quiz.q3-visible",
-      "group": "mission-12",
+      "id": "mission-13.quiz.q3-visible",
+      "group": "mission-13",
       "mission": "Les distances dans l’Univers",
       "optional": true,
-      "quizId": "quiz-mission-12",
+      "quizId": "quiz-mission-13",
       "questionId": "q3-visible",
       "context": "Quiz « Navigateur cosmique » — L’Univers observable, c’est…",
       "triggerPolicy": "question-entry-or-request",
-      "source": "src/content/quizzes/mission-12.ts",
+      "source": "src/content/quizzes/mission-13.ts",
       "sourceHash": "0dd93a1982c1afbb78c9010dd5b917fde4d8aff31692e87a975a8b211a90f007",
       "choiceIds": [
         "all",
@@ -1166,26 +1166,26 @@
       "characterCount": 136,
       "clips": [
         {
-          "id": "mission-12.quiz.q3-visible",
-          "file": "mission-12.quiz.q3-visible.mp3",
-          "relativePath": "mission-12/quiz/mission-12.quiz.q3-visible.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-12/quiz/mission-12.quiz.q3-visible.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-12/quiz/mission-12.quiz.q3-visible.mp3",
+          "id": "mission-13.quiz.q3-visible",
+          "file": "mission-13.quiz.q3-visible.mp3",
+          "relativePath": "mission-13/quiz/mission-13.quiz.q3-visible.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-13/quiz/mission-13.quiz.q3-visible.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-13/quiz/mission-13.quiz.q3-visible.mp3",
           "speech": "L’Univers observable, c’est… Tu peux choisir : Tout l’Univers, avec son bord ; La partie de l’Univers dont la lumière peut nous arriver.",
           "characterCount": 136
         }
       ]
     },
     {
-      "id": "mission-12.quiz.q4-lookback",
-      "group": "mission-12",
+      "id": "mission-13.quiz.q4-lookback",
+      "group": "mission-13",
       "mission": "Les distances dans l’Univers",
       "optional": true,
-      "quizId": "quiz-mission-12",
+      "quizId": "quiz-mission-13",
       "questionId": "q4-lookback",
       "context": "Quiz « Navigateur cosmique » — Quand nous regardons Andromède aujourd’hui, nous la voyons…",
       "triggerPolicy": "question-entry-or-request",
-      "source": "src/content/quizzes/mission-12.ts",
+      "source": "src/content/quizzes/mission-13.ts",
       "sourceHash": "d3ea850a2580f2049c0c8ee5a1a403849643f2bc6d43182f995852926ffad711",
       "choiceIds": [
         "now",
@@ -1195,26 +1195,26 @@
       "characterCount": 193,
       "clips": [
         {
-          "id": "mission-12.quiz.q4-lookback",
-          "file": "mission-12.quiz.q4-lookback.mp3",
-          "relativePath": "mission-12/quiz/mission-12.quiz.q4-lookback.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-12/quiz/mission-12.quiz.q4-lookback.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-12/quiz/mission-12.quiz.q4-lookback.mp3",
+          "id": "mission-13.quiz.q4-lookback",
+          "file": "mission-13.quiz.q4-lookback.mp3",
+          "relativePath": "mission-13/quiz/mission-13.quiz.q4-lookback.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-13/quiz/mission-13.quiz.q4-lookback.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-13/quiz/mission-13.quiz.q4-lookback.mp3",
           "speech": "Quand nous regardons Andromède aujourd’hui, nous la voyons… Tu peux choisir : Exactement telle qu’elle est en ce moment ; Telle qu’elle était il y a environ deux virgule cinq millions d’années.",
           "characterCount": 193
         }
       ]
     },
     {
-      "id": "mission-13.quiz.q1-horizon",
-      "group": "mission-13",
+      "id": "mission-14.quiz.q1-horizon",
+      "group": "mission-14",
       "mission": "Les trous noirs",
       "optional": true,
-      "quizId": "quiz-mission-13",
+      "quizId": "quiz-mission-14",
       "questionId": "q1-horizon",
       "context": "Quiz « Enquête sur l’invisible » — Que devient une lumière allumée à l’intérieur de l’horizon ?",
       "triggerPolicy": "question-entry-or-request",
-      "source": "src/content/quizzes/mission-13.ts",
+      "source": "src/content/quizzes/mission-14.ts",
       "sourceHash": "78b65d8132a61e14c6423871616c1e1b358d4b3e41a676310fccfa4fb9c06272",
       "choiceIds": [
         "escape",
@@ -1225,26 +1225,26 @@
       "characterCount": 159,
       "clips": [
         {
-          "id": "mission-13.quiz.q1-horizon",
-          "file": "mission-13.quiz.q1-horizon.mp3",
-          "relativePath": "mission-13/quiz/mission-13.quiz.q1-horizon.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-13/quiz/mission-13.quiz.q1-horizon.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-13/quiz/mission-13.quiz.q1-horizon.mp3",
+          "id": "mission-14.quiz.q1-horizon",
+          "file": "mission-14.quiz.q1-horizon.mp3",
+          "relativePath": "mission-14/quiz/mission-14.quiz.q1-horizon.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-14/quiz/mission-14.quiz.q1-horizon.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-14/quiz/mission-14.quiz.q1-horizon.mp3",
           "speech": "Que devient une lumière allumée à l’intérieur de l’horizon ? Tu peux choisir : Elle peut ressortir ; Elle ne peut plus ressortir ; Elle va seulement plus vite.",
           "characterCount": 159
         }
       ]
     },
     {
-      "id": "mission-13.quiz.q2-same-mass",
-      "group": "mission-13",
+      "id": "mission-14.quiz.q2-same-mass",
+      "group": "mission-14",
       "mission": "Les trous noirs",
       "optional": true,
-      "quizId": "quiz-mission-13",
+      "quizId": "quiz-mission-14",
       "questionId": "q2-same-mass",
       "context": "Quiz « Enquête sur l’invisible » — Une étoile est remplacée par un trou noir de même masse. Que peut faire une planète éloignée ?",
       "triggerPolicy": "question-entry-or-request",
-      "source": "src/content/quizzes/mission-13.ts",
+      "source": "src/content/quizzes/mission-14.ts",
       "sourceHash": "6a773ef306887afee7f4a4ef97f67d706ae594b2130b29389a4142e954965a30",
       "choiceIds": [
         "orbit",
@@ -1255,26 +1255,26 @@
       "characterCount": 191,
       "clips": [
         {
-          "id": "mission-13.quiz.q2-same-mass",
-          "file": "mission-13.quiz.q2-same-mass.mp3",
-          "relativePath": "mission-13/quiz/mission-13.quiz.q2-same-mass.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-13/quiz/mission-13.quiz.q2-same-mass.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-13/quiz/mission-13.quiz.q2-same-mass.mp3",
+          "id": "mission-14.quiz.q2-same-mass",
+          "file": "mission-14.quiz.q2-same-mass.mp3",
+          "relativePath": "mission-14/quiz/mission-14.quiz.q2-same-mass.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-14/quiz/mission-14.quiz.q2-same-mass.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-14/quiz/mission-14.quiz.q2-same-mass.mp3",
           "speech": "Une étoile est remplacée par un trou noir de même masse. Que peut faire une planète éloignée ? Tu peux choisir : Continuer sur la même orbite ; Être aussitôt avalée ; S’arrêter dans l’espace.",
           "characterCount": 191
         }
       ]
     },
     {
-      "id": "mission-13.quiz.q3-disk",
-      "group": "mission-13",
+      "id": "mission-14.quiz.q3-disk",
+      "group": "mission-14",
       "mission": "Les trous noirs",
       "optional": true,
-      "quizId": "quiz-mission-13",
+      "quizId": "quiz-mission-14",
       "questionId": "q3-disk",
       "context": "Quiz « Enquête sur l’invisible » — Qu’est-ce qui brille autour de certains trous noirs ?",
       "triggerPolicy": "question-entry-or-request",
-      "source": "src/content/quizzes/mission-13.ts",
+      "source": "src/content/quizzes/mission-14.ts",
       "sourceHash": "e1a899898c92e3fd39cbb1c055b9f4b43a579093bd63d58859c659236a62507c",
       "choiceIds": [
         "inside",
@@ -1285,26 +1285,26 @@
       "characterCount": 154,
       "clips": [
         {
-          "id": "mission-13.quiz.q3-disk",
-          "file": "mission-13.quiz.q3-disk.mp3",
-          "relativePath": "mission-13/quiz/mission-13.quiz.q3-disk.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-13/quiz/mission-13.quiz.q3-disk.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-13/quiz/mission-13.quiz.q3-disk.mp3",
+          "id": "mission-14.quiz.q3-disk",
+          "file": "mission-14.quiz.q3-disk.mp3",
+          "relativePath": "mission-14/quiz/mission-14.quiz.q3-disk.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-14/quiz/mission-14.quiz.q3-disk.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-14/quiz/mission-14.quiz.q3-disk.mp3",
           "speech": "Qu’est-ce qui brille autour de certains trous noirs ? Tu peux choisir : La lumière sortie de l’intérieur ; Du gaz très chaud autour ; Une paroi lumineuse.",
           "characterCount": 154
         }
       ]
     },
     {
-      "id": "mission-13.quiz.q4-detection",
-      "group": "mission-13",
+      "id": "mission-14.quiz.q4-detection",
+      "group": "mission-14",
       "mission": "Les trous noirs",
       "optional": true,
-      "quizId": "quiz-mission-13",
+      "quizId": "quiz-mission-14",
       "questionId": "q4-detection",
       "context": "Quiz « Enquête sur l’invisible » — Comment repérer un trou noir que nous ne voyons pas ?",
       "triggerPolicy": "question-entry-or-request",
-      "source": "src/content/quizzes/mission-13.ts",
+      "source": "src/content/quizzes/mission-14.ts",
       "sourceHash": "1565cc8efd848ae06e73d4230d0a21e1867d3b0c988d09006e70646f02bc36c3",
       "choiceIds": [
         "orbits",
@@ -1315,11 +1315,11 @@
       "characterCount": 185,
       "clips": [
         {
-          "id": "mission-13.quiz.q4-detection",
-          "file": "mission-13.quiz.q4-detection.mp3",
-          "relativePath": "mission-13/quiz/mission-13.quiz.q4-detection.mp3",
-          "destination": "public/assets/audio/robot/fr/mission-13/quiz/mission-13.quiz.q4-detection.mp3",
-          "publicPath": "/assets/audio/robot/fr/mission-13/quiz/mission-13.quiz.q4-detection.mp3",
+          "id": "mission-14.quiz.q4-detection",
+          "file": "mission-14.quiz.q4-detection.mp3",
+          "relativePath": "mission-14/quiz/mission-14.quiz.q4-detection.mp3",
+          "destination": "public/assets/audio/robot/fr/mission-14/quiz/mission-14.quiz.q4-detection.mp3",
+          "publicPath": "/assets/audio/robot/fr/mission-14/quiz/mission-14.quiz.q4-detection.mp3",
           "speech": "Comment repérer un trou noir que nous ne voyons pas ? Tu peux choisir : Observer les mouvements des étoiles proches ; Chercher toujours une boule noire ; Écouter un bruit dans l’espace.",
           "characterCount": 185
         }

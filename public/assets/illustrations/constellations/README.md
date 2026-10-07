@@ -1,7 +1,7 @@
 # Illustrations de constellations
 
 Cinq illustrations à fond transparent, générées avec l'outil intégré image_gen (skill imagegen), plus une variante du Cygne adaptée à la mission.
-Les fichiers sont des illustrations artistiques. La mission `mission-constellations` utilise ces superpositions sur des positions stellaires issues du catalogue de l'IAU.
+Les fichiers sont des illustrations artistiques. La mission `mission-10` utilise ces superpositions sur des positions stellaires issues du catalogue de l'IAU.
 
 | Fichier            | Sujet                                                                        |
 | ------------------ | ---------------------------------------------------------------------------- |
@@ -14,7 +14,7 @@ Les fichiers sont des illustrations artistiques. La mission `mission-constellati
 
 Afficher à une opacité initiale de 0,30 à ajuster, avec les vraies étoiles et les traits rendus devant. Le fond transparent des PNG permet de régler l'opacité au rendu sans modifier les originaux.
 
-Voir [la conception de mission](../../../../docs/pedagogy/mission-constellations.md).
+Voir [la conception de mission](../../../../docs/pedagogy/mission-10-constellations.md).
 
 ## Versions calées sur les étoiles
 

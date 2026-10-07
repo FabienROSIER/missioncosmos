@@ -1,4 +1,5 @@
 import { SAVE_SCHEMA_VERSION } from '@/lib/constants';
+import { remapLegacyMissionId } from '@/features/progression/legacyMissionIds';
 import { createEmptyProgress, createEmptySave, type LocalSave } from '@/features/progression/types';
 import type { ChildProfile } from '@/types/profile';
 import type { Progress } from '@/types/progress';
@@ -37,20 +38,62 @@ export function subscribeSave(onStoreChange: () => void): () => void {
   };
 }
 
+function remapIds(ids: string[]): string[] {
+  const seen = new Set<string>();
+  const next: string[] = [];
+  for (const id of ids) {
+    const mapped = remapLegacyMissionId(id);
+    if (seen.has(mapped)) continue;
+    seen.add(mapped);
+    next.push(mapped);
+  }
+  return next;
+}
+
+function migrateProgress(progress: Progress): Progress {
+  const completed = Array.isArray(progress.completedMissionIds)
+    ? [...progress.completedMissionIds]
+    : [];
+  const unlocked = Array.isArray(progress.unlockedMissionIds)
+    ? [...progress.unlockedMissionIds]
+    : [];
+  if (completed.includes('mission-09') && !unlocked.includes('mission-constellations')) {
+    unlocked.push('mission-constellations');
+  }
+  return {
+    ...progress,
+    version: SAVE_SCHEMA_VERSION,
+    completedMissionIds: remapIds(completed),
+    unlockedMissionIds: remapIds(unlocked),
+    lastPlayedMissionId: progress.lastPlayedMissionId
+      ? remapLegacyMissionId(progress.lastPlayedMissionId)
+      : progress.lastPlayedMissionId,
+  };
+}
+
 function migrate(raw: unknown): LocalSave {
   if (!raw || typeof raw !== 'object') return EMPTY_SAVE;
   const data = raw as Partial<LocalSave>;
-  if (data.version !== SAVE_SCHEMA_VERSION) {
+  if (data.version !== 1 && data.version !== SAVE_SCHEMA_VERSION) {
     return EMPTY_SAVE;
   }
+  const progressByProfile =
+    data.progressByProfile && typeof data.progressByProfile === 'object'
+      ? data.progressByProfile
+      : {};
   return {
     version: SAVE_SCHEMA_VERSION,
     profiles: Array.isArray(data.profiles) ? data.profiles : [],
     activeProfileId: data.activeProfileId ?? null,
     progressByProfile:
-      data.progressByProfile && typeof data.progressByProfile === 'object'
-        ? data.progressByProfile
-        : {},
+      data.version === 1
+        ? Object.fromEntries(
+            Object.entries(progressByProfile).map(([id, progress]) => [
+              id,
+              migrateProgress(progress),
+            ]),
+          )
+        : progressByProfile,
     updatedAt: data.updatedAt ?? new Date().toISOString(),
   };
 }
@@ -73,15 +116,6 @@ export function getSaveSnapshot(): LocalSave {
     for (const profile of parsed.profiles) {
       if (!parsed.progressByProfile[profile.id]) {
         parsed.progressByProfile[profile.id] = createEmptyProgress(profile.id);
-      }
-      // Add the new mission for returning players without relocking old missions
-      // or changing any earned badges and existing mission IDs.
-      const progress = parsed.progressByProfile[profile.id]!;
-      if (
-        progress.completedMissionIds.includes('mission-09') &&
-        !progress.unlockedMissionIds.includes('mission-constellations')
-      ) {
-        progress.unlockedMissionIds = [...progress.unlockedMissionIds, 'mission-constellations'];
       }
     }
     cachedSave = parsed;

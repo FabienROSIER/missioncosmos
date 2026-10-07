@@ -48,7 +48,7 @@ import {
 } from '@/content/bodies/cosmicScale';
 import styles from './CosmicScaleView.module.css';
 
-/** The same textured bodies and galaxy volumes as M10/M11, in nested frames.
+/** The same textured bodies and galaxy volumes as M11/M12, in nested frames.
  * Logarithmic frame scaling compresses the immense empty distances, not the relative
  * orbital layout. All members of an outgoing frame shrink together. */
 export function CosmicScaleView({

@@ -458,13 +458,13 @@ Le prisme sépare les couleurs de la lumière blanche. Les projecteurs font l’
 
 ## Les dessins du ciel — 6 MP3
 
-### mission-constellations.atlas
+### mission-10.atlas
 
 **Contexte :** Introduction ; consigne commune aux dessins de l’atlas
 
-**Étapes :** `mc-intro`.
+**Étapes :** `m10-intro`.
 
-**Fichier :** `mission-constellations/mission-constellations.atlas.mp3`
+**Fichier :** `mission-10/mission-10.atlas.mp3`
 
 **Longueur :** 220 caractères.
 
@@ -474,13 +474,13 @@ Le prisme sépare les couleurs de la lumière blanche. Les projecteurs font l’
 Une constellation est un dessin que nous imaginons avec les étoiles. Compare le ciel avec la carte de ton atlas. Touche les étoiles du dessin dans l’ordre que tu veux. Leur place et leurs écarts t’aident à les retrouver.
 ```
 
-### mission-constellations.cassiopee
+### mission-10.cassiopee
 
 **Contexte :** Défi Cassiopée
 
-**Étapes :** `mc-cassiopeia`.
+**Étapes :** `m10-cassiopeia`.
 
-**Fichier :** `mission-constellations/mission-constellations.cassiopee.mp3`
+**Fichier :** `mission-10/mission-10.cassiopee.mp3`
 
 **Longueur :** 144 caractères.
 
@@ -490,13 +490,13 @@ Une constellation est un dessin que nous imaginons avec les étoiles. Compare le
 Pour Cassiopée, cherche cinq étoiles qui dessinent un double vé un peu penché. Compare avec la carte de ton atlas, puis touche les cinq étoiles.
 ```
 
-### mission-constellations.grande-ourse
+### mission-10.grande-ourse
 
 **Contexte :** Défi Grande Ourse
 
-**Étapes :** `mc-ursa-major`.
+**Étapes :** `m10-ursa-major`.
 
-**Fichier :** `mission-constellations/mission-constellations.grande-ourse.mp3`
+**Fichier :** `mission-10/mission-10.grande-ourse.mp3`
 
 **Longueur :** 156 caractères.
 
@@ -506,13 +506,13 @@ Pour Cassiopée, cherche cinq étoiles qui dessinent un double vé un peu pench�
 Pour la Grande Ourse, cherche une casserole : quatre étoiles pour le récipient et trois pour le manche. Compare avec ta carte, puis touche les sept étoiles.
 ```
 
-### mission-constellations.cygne
+### mission-10.cygne
 
 **Contexte :** Défi Cygne
 
-**Étapes :** `mc-cygnus`.
+**Étapes :** `m10-cygnus`.
 
-**Fichier :** `mission-constellations/mission-constellations.cygne.mp3`
+**Fichier :** `mission-10/mission-10.cygne.mp3`
 
 **Longueur :** 157 caractères.
 
@@ -522,13 +522,13 @@ Pour la Grande Ourse, cherche une casserole : quatre étoiles pour le récipient
 Pour le Cygne, cherche une croix : une longue ligne et deux ailes de chaque côté. Compare la place des étoiles avec ta carte, puis retrouve-les dans le ciel.
 ```
 
-### mission-constellations.orion
+### mission-10.orion
 
 **Contexte :** Défi Orion
 
-**Étapes :** `mc-orion`.
+**Étapes :** `m10-orion`.
 
-**Fichier :** `mission-constellations/mission-constellations.orion.mp3`
+**Fichier :** `mission-10/mission-10.orion.mp3`
 
 **Longueur :** 171 caractères.
 
@@ -538,13 +538,13 @@ Pour le Cygne, cherche une croix : une longue ligne et deux ailes de chaque côt
 Pour Orion, repère les trois étoiles presque alignées de sa ceinture. Puis retrouve ses épaules et ses pieds grâce à la carte. Touche les étoiles pour révéler le chasseur.
 ```
 
-### mission-constellations.point-de-vue
+### mission-10.point-de-vue
 
 **Contexte :** Défi du point de vue ; explication réécoutable après le film
 
-**Étapes :** `mc-perspective`, `mc-understand`.
+**Étapes :** `m10-perspective`, `m10-understand`.
 
-**Fichier :** `mission-constellations/mission-constellations.point-de-vue.mp3`
+**Fichier :** `mission-10/mission-10.point-de-vue.mp3`
 
 **Longueur :** 239 caractères.
 
@@ -556,13 +556,13 @@ Déplace le vaisseau avec le curseur pour retrouver la croix de ta carte, puis v
 
 ## Notre galaxie — 3 MP3
 
-### mission-10.galaxie
+### mission-11.galaxie
 
 **Contexte :** Introduction et voyage vers la Voie lactée
 
-**Étapes :** `m10-intro`, `m10-journey`, `m10-explain`.
+**Étapes :** `m11-intro`, `m11-journey`, `m11-explain`.
 
-**Fichier :** `mission-10/mission-10.galaxie.mp3`
+**Fichier :** `mission-11/mission-11.galaxie.mp3`
 
 **Longueur :** 234 caractères.
 
@@ -572,13 +572,13 @@ Déplace le vaisseau avec le curseur pour retrouver la croix de ta carte, puis v
 Le Soleil et ses huit planètes forment notre Système solaire. Il appartient à la Voie lactée : une galaxie avec énormément d’étoiles, du gaz et de la poussière. La gravité les rassemble. Prenons du recul pour découvrir notre galaxie !
 ```
 
-### mission-10.quartier
+### mission-11.quartier
 
 **Contexte :** Explorer la galaxie puis retrouver le quartier du Soleil
 
-**Étapes :** `m10-explore`, `m10-locate`.
+**Étapes :** `m11-explore`, `m11-locate`.
 
-**Fichier :** `mission-10/mission-10.quartier.mp3`
+**Fichier :** `mission-11/mission-11.quartier.mp3`
 
 **Longueur :** 193 caractères.
 
@@ -588,13 +588,13 @@ Le Soleil et ses huit planètes forment notre Système solaire. Il appartient à
 Regarde la galaxie de face, puis de profil. Notre Soleil est dans le disque, dans un petit bras appelé bras d’Orion. Il n’est ni au centre, ni à l’extérieur. Touche le repère de notre quartier.
 ```
 
-### mission-10.trajet
+### mission-11.trajet
 
 **Contexte :** Défi du trajet galactique
 
-**Étapes :** `m10-orbit`.
+**Étapes :** `m11-orbit`.
 
-**Fichier :** `mission-10/mission-10.trajet.mp3`
+**Fichier :** `mission-11/mission-11.trajet.mp3`
 
 **Longueur :** 186 caractères.
 
@@ -606,13 +606,13 @@ Le Soleil voyage dans la galaxie avec toutes ses planètes. Compare les trois tr
 
 ## Les galaxies — 3 MP3
 
-### mission-11.voisines
+### mission-12.voisines
 
 **Contexte :** Introduction et comparaison avec Andromède
 
-**Étapes :** `m11-intro`, `m11-neighbour`, `m11-explain`.
+**Étapes :** `m12-intro`, `m12-neighbour`, `m12-explain`.
 
-**Fichier :** `mission-11/mission-11.voisines.mp3`
+**Fichier :** `mission-12/mission-12.voisines.mp3`
 
 **Longueur :** 200 caractères.
 
@@ -622,13 +622,13 @@ Le Soleil voyage dans la galaxie avec toutes ses planètes. Compare les trois tr
 La Voie lactée n’est pas seule : il existe énormément d’autres galaxies. Andromède est notre plus proche grande voisine. Une galaxie n’est pas un Soleil géant : sa lumière vient de toutes ses étoiles.
 ```
 
-### mission-11.formes
+### mission-12.formes
 
 **Contexte :** Exploration des familles et album des quatre formes
 
-**Étapes :** `m11-families`, `m11-album`.
+**Étapes :** `m12-families`, `m12-album`.
 
-**Fichier :** `mission-11/mission-11.formes.mp3`
+**Fichier :** `mission-12/mission-12.formes.mp3`
 
 **Longueur :** 248 caractères.
 
@@ -638,13 +638,13 @@ La Voie lactée n’est pas seule : il existe énormément d’autres galaxies. 
 Observe les quatre formes pour réparer l’album. Une spirale a des bras enroulés. Une spirale barrée a aussi une barre au centre. Une elliptique est arrondie, sans bras. Une irrégulière n’a pas de forme bien organisée. Regarde les maquettes de face.
 ```
 
-### mission-11.classer
+### mission-12.classer
 
 **Contexte :** Défi des cartes du plus petit au plus grand
 
-**Étapes :** `m11-scale`.
+**Étapes :** `m12-scale`.
 
-**Fichier :** `mission-11/mission-11.classer.mp3`
+**Fichier :** `mission-12/mission-12.classer.mp3`
 
 **Longueur :** 201 caractères.
 
@@ -656,13 +656,13 @@ Classe les cartes du plus petit au plus grand. Le Soleil est dans notre Système
 
 ## Les distances dans l’Univers — 4 MP3
 
-### mission-12.voyage
+### mission-13.voyage
 
 **Contexte :** Introduction et parcours des sept repères
 
-**Étapes :** `m12-intro`, `m12-journey`.
+**Étapes :** `m13-intro`, `m13-journey`.
 
-**Fichier :** `mission-12/mission-12.voyage.mp3`
+**Fichier :** `mission-13/mission-13.voyage.mp3`
 
 **Longueur :** 248 caractères.
 
@@ -672,13 +672,13 @@ Classe les cartes du plus petit au plus grand. Le Soleil est dans notre Système
 Découvre les distances dans l’espace. Utilise Plus loin pour avancer et Plus près pour revenir. Observe les sept repères. Nos distances sont raccourcies pour tout montrer : dans l’espace, les étoiles et les galaxies sont bien plus loin que la Lune.
 ```
 
-### mission-12.destinations
+### mission-13.destinations
 
 **Contexte :** Défi des destinations des messages lumineux
 
-**Étapes :** `m12-order`.
+**Étapes :** `m13-order`.
 
-**Fichier :** `mission-12/mission-12.destinations.mp3`
+**Fichier :** `mission-13/mission-13.destinations.mp3`
 
 **Longueur :** 189 caractères.
 
@@ -688,13 +688,13 @@ Découvre les distances dans l’espace. Utilise Plus loin pour avancer et Plus 
 Le robot prépare quatre messages lumineux depuis notre voisinage. Classe leurs destinations de la plus proche à la plus lointaine. Touche les cartes dans cet ordre pour préparer les envois.
 ```
 
-### mission-12.signaux
+### mission-13.signaux
 
 **Contexte :** Expérience des trois flashs et explication
 
-**Étapes :** `m12-signals`.
+**Étapes :** `m13-signals`.
 
-**Fichier :** `mission-12/mission-12.signaux.mp3`
+**Fichier :** `mission-13/mission-13.signaux.mp3`
 
 **Longueur :** 236 caractères.
 
@@ -704,13 +704,13 @@ Le robot prépare quatre messages lumineux depuis notre voisinage. Classe leurs 
 Trois galaxies envoient un flash en même temps. Observe les arrivées, puis cherche l’image la plus ancienne. La lumière met du temps à voyager : celle de la galaxie la plus lointaine arrive plus tard et nous montre un passé plus ancien.
 ```
 
-### mission-12.annee-lumiere
+### mission-13.annee-lumiere
 
 **Contexte :** Bilan des distances et de l’Univers observable
 
-**Étapes :** `m12-explain`.
+**Étapes :** `m13-explain`.
 
-**Fichier :** `mission-12/mission-12.annee-lumiere.mp3`
+**Fichier :** `mission-13/mission-13.annee-lumiere.mp3`
 
 **Longueur :** 203 caractères.
 
@@ -722,13 +722,13 @@ Une année-lumière est une distance : le chemin parcouru par la lumière en un 
 
 ## Les trous noirs — 4 MP3
 
-### mission-13.indices
+### mission-14.indices
 
 **Contexte :** Introduction, observation de l’étoile et défi de détection
 
-**Étapes :** `m13-intro`, `m13-observe`, `m13-detect`.
+**Étapes :** `m14-intro`, `m14-observe`, `m14-detect`.
 
-**Fichier :** `mission-13/mission-13.indices.mp3`
+**Fichier :** `mission-14/mission-14.indices.mp3`
 
 **Longueur :** 239 caractères.
 
@@ -738,13 +738,13 @@ Une année-lumière est une distance : le chemin parcouru par la lumière en un 
 Un trou noir rassemble énormément de matière dans très peu de place. Observe les étoiles : elles peuvent tourner autour de lui sans tomber dedans. Pour trouver l’objet invisible, cherche la région où elles tournent autour d’un même centre.
 ```
 
-### mission-13.disque
+### mission-14.disque
 
 **Contexte :** Observation du gaz autour d’un trou noir
 
-**Étapes :** `m13-surroundings`.
+**Étapes :** `m14-surroundings`.
 
-**Fichier :** `mission-13/mission-13.disque.mp3`
+**Fichier :** `mission-14/mission-14.disque.mp3`
 
 **Longueur :** 166 caractères.
 
@@ -754,13 +754,13 @@ Un trou noir rassemble énormément de matière dans très peu de place. Observe
 Ce disque lumineux est du gaz très chaud autour du trou noir. Ce n’est pas le trou noir lui-même. Tous les trous noirs n’ont pas un disque lumineux. Observe sa forme.
 ```
 
-### mission-13.limite
+### mission-14.limite
 
 **Contexte :** Expérience des signaux lumineux et explication de l’horizon
 
-**Étapes :** `m13-signals`, `m13-explain`.
+**Étapes :** `m14-signals`, `m14-explain`.
 
-**Fichier :** `mission-13/mission-13.limite.mp3`
+**Fichier :** `mission-14/mission-14.limite.mp3`
 
 **Longueur :** 203 caractères.
 
@@ -770,13 +770,13 @@ Ce disque lumineux est du gaz très chaud autour du trou noir. Ce n’est pas le
 Envoie la lumière vers l’extérieur, d’abord depuis le point dehors, puis depuis celui dedans. La limite s’appelle l’horizon des événements. Une fois à l’intérieur, même la lumière ne peut plus ressortir.
 ```
 
-### mission-13.meme-masse
+### mission-14.meme-masse
 
 **Contexte :** Expérience de l’étoile remplacée par un trou noir
 
-**Étapes :** `m13-orbit`.
+**Étapes :** `m14-orbit`.
 
-**Fichier :** `mission-13/mission-13.meme-masse.mp3`
+**Fichier :** `mission-14/mission-14.meme-masse.mp3`
 
 **Longueur :** 221 caractères.
 

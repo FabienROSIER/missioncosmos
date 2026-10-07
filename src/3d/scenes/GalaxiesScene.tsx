@@ -39,9 +39,9 @@ export function GalaxiesScene({ className, stepId, onSuccess, onMiss, onClearFee
   const [placed, setPlaced] = useState<CosmicLevel[]>([]);
   const [failed, setFailed] = useState(false);
   const [ready, setReady] = useState(false);
-  const isAlbum = stepId === 'm11-album';
-  const isScale = stepId === 'm11-scale';
-  const isNeighbour = ['m11-intro', 'm11-neighbour'].includes(stepId);
+  const isAlbum = stepId === 'm12-album';
+  const isScale = stepId === 'm12-scale';
+  const isNeighbour = ['m12-intro', 'm12-neighbour'].includes(stepId);
   const current = isAlbum ? (order[round] ?? 'spiral') : isNeighbour ? 'spiral' : family;
   const camera = useRef<ArcRotateCamera | null>(null);
   const exploreSeen = useRef({
@@ -58,29 +58,29 @@ export function GalaxiesScene({ className, stepId, onSuccess, onMiss, onClearFee
       reported: false,
     };
   }, [stepId]);
-  const sample = useRef({ current, faded: isScale || stepId === 'm11-quiz', neighbour });
+  const sample = useRef({ current, faded: isScale || stepId === 'm12-quiz', neighbour });
   const tween = useRef<{ from: number; to: number; started: number } | null>(null);
   useEffect(() => {
     sample.current = {
       current,
-      faded: isScale || stepId === 'm11-quiz',
+      faded: isScale || stepId === 'm12-quiz',
       neighbour: isNeighbour && neighbour,
     };
   }, [current, isScale, stepId, neighbour, isNeighbour]);
   useEffect(() => {
     const timer = setTimeout(() => {
       setFailed(false);
-      if (stepId === 'm11-intro') {
+      if (stepId === 'm12-intro') {
         setNeighbour(false);
         setFamily('spiral');
       }
-      if (stepId === 'm11-album') {
+      if (stepId === 'm12-album') {
         setOrder(shuffleArray([...GALAXY_FAMILIES]));
         setChoiceOrder(shuffleArray([...GALAXY_FAMILIES]));
         setRound(0);
         setIdentified(false);
       }
-      if (stepId === 'm11-scale') {
+      if (stepId === 'm12-scale') {
         setPlaced([]);
         setLevelOrder(shuffleArray([...COSMIC_LEVELS]));
       }
@@ -149,7 +149,7 @@ export function GalaxiesScene({ className, stepId, onSuccess, onMiss, onClearFee
   };
   const markNeighbour = (showNeighbour: boolean) => {
     setNeighbour(showNeighbour);
-    if (stepId !== 'm11-neighbour') return;
+    if (stepId !== 'm12-neighbour') return;
     const seen = exploreSeen.current;
     if (showNeighbour) seen.neighbour = true;
     else seen.home = true;
@@ -158,7 +158,7 @@ export function GalaxiesScene({ className, stepId, onSuccess, onMiss, onClearFee
   const markFamily = (kind: GalaxyFamily) => {
     setFamily(kind);
     changeView(0.45);
-    if (stepId !== 'm11-families') return;
+    if (stepId !== 'm12-families') return;
     exploreSeen.current.families.add(kind);
     if (exploreSeen.current.families.size === GALAXY_FAMILIES.length) reportExplore();
   };
@@ -208,7 +208,7 @@ export function GalaxiesScene({ className, stepId, onSuccess, onMiss, onClearFee
         onSceneReady={onSceneReady}
         loadingMessage="Préparation de l’observatoire…"
       />
-      {!isScale && stepId !== 'm11-quiz' && (
+      {!isScale && stepId !== 'm12-quiz' && (
         <div className={styles.title}>
           <span>
             {isAlbum

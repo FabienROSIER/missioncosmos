@@ -34,7 +34,7 @@ export function BlackHolePreview() {
         <div className={styles.intro}>
           <Companion pose="thinking" size="sm" />
           <div>
-            <small>MISSION 13</small>
+            <small>MISSION 14</small>
             <h2>Explorer l’invisible</h2>
           </div>
         </div>
