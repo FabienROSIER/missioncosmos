@@ -48,6 +48,7 @@ import { GlossaryPanel } from '@/features/glossary/GlossaryPanel';
 import { RichMissionText } from '@/features/glossary/RichMissionText';
 import { resolveCompanionCue, type CompanionFeedbackMood } from '@/features/companion';
 import { MissionQuiz } from '@/features/missions/MissionQuiz';
+import { useKeepScreenAwake } from '@/lib/keepScreenAwake';
 import { useMissionSequence } from '@/features/missions/useMissionSequence';
 import { splitGuideText } from '@/features/missions/guideText';
 import { isCelebratedChallenge } from '@/features/missions/challengeCelebration';
@@ -113,6 +114,7 @@ function challengeFromStep(step: MissionStep): {
 
 /** Layout mission : 3D plein écran + séquence pédagogique. */
 export function MissionImmersive({ mission }: MissionImmersiveProps) {
+  useKeepScreenAwake(true);
   const isDayNight = mission.sceneId === 'day-night';
   const isMoonPhases = mission.sceneId === 'moon-phases';
   const isEclipses = mission.sceneId === 'eclipses';
@@ -281,6 +283,16 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   });
   const showPlayButton =
     guideExpanded && !hasMoreGuideText && guideCanFold && !challengeSolved && playGatedStep;
+  // Exploration libre (ex. m05-observe) : garder le CTA visible même en « Relire »,
+  // sinon seul « Reprendre » apparaît et on ne peut plus avancer (surtout mobile).
+  const showContinueCta =
+    !hasMoreGuideText &&
+    canAdvance &&
+    !isComplete &&
+    step.kind !== 'quiz' &&
+    step.id !== 'm05-scale' &&
+    step.id !== 'm05-distances' &&
+    (!showPlayButton || (playStarted && step.requiresSuccess !== true));
   const showSceneControls =
     hasSceneControls &&
     (sceneInteractionAllowed || (isConstellations && step.id === 'mc-film' && challengeSolved));
@@ -1422,10 +1434,16 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                   >
                     Suivant →
                   </button>
-                ) : showPlayButton ? (
+                ) : null}
+                {showContinueCta ? (
+                  <button type="button" className={styles.cta} onClick={onContinue}>
+                    {step.ctaLabel ?? 'Continuer'}
+                  </button>
+                ) : null}
+                {!hasMoreGuideText && showPlayButton ? (
                   <button
                     type="button"
-                    className={styles.cta}
+                    className={showContinueCta ? styles.ghostBtnWide : styles.cta}
                     onClick={() => {
                       setPlayStartedStepId(step.id);
                       setGuideOverride({
@@ -1441,17 +1459,6 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                       : step.id === 'mc-film'
                         ? 'Lancer le voyage'
                         : 'À toi de jouer'}
-                  </button>
-                ) : null}
-                {!hasMoreGuideText &&
-                !showPlayButton &&
-                canAdvance &&
-                !isComplete &&
-                step.kind !== 'quiz' &&
-                step.id !== 'm05-scale' &&
-                step.id !== 'm05-distances' ? (
-                  <button type="button" className={styles.cta} onClick={onContinue}>
-                    {step.ctaLabel ?? 'Continuer'}
                   </button>
                 ) : null}
                 {canAdvance &&

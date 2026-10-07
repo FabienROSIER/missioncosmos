@@ -3,6 +3,9 @@
 import { useEffect, useState } from 'react';
 import styles from './InstallPrompt.module.css';
 
+/** Une proposition par onglet / lancement ; ne revient pas à chaque page. */
+const SESSION_KEY = 'mc:install-prompt-session';
+
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>;
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
@@ -20,22 +23,41 @@ function isStandaloneDisplay(): boolean {
   );
 }
 
+function wasPromptedThisSession(): boolean {
+  try {
+    return sessionStorage.getItem(SESSION_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+function markPromptedThisSession(): void {
+  try {
+    sessionStorage.setItem(SESSION_KEY, '1');
+  } catch {
+    // stockage indisponible (mode privé strict, etc.)
+  }
+}
+
 /**
  * Bouton d’installation : visible seulement si beforeinstallprompt est dispo
  * et que l’app n’est pas déjà en mode standalone.
+ * Affiché au plus une fois par lancement (sessionStorage).
  */
 export function InstallPrompt() {
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
   const [hidden, setHidden] = useState(true);
 
   useEffect(() => {
-    if (isStandaloneDisplay()) {
+    if (isStandaloneDisplay() || wasPromptedThisSession()) {
       setHidden(true);
       return;
     }
 
     const onBip = (event: Event) => {
       event.preventDefault();
+      if (wasPromptedThisSession()) return;
+      markPromptedThisSession();
       setDeferred(event as BeforeInstallPromptEvent);
       setHidden(false);
     };
@@ -56,6 +78,7 @@ export function InstallPrompt() {
           type="button"
           className={styles.dismiss}
           onClick={() => {
+            markPromptedThisSession();
             setHidden(true);
             setDeferred(null);
           }}
@@ -67,6 +90,7 @@ export function InstallPrompt() {
           className={styles.install}
           onClick={() => {
             void (async () => {
+              markPromptedThisSession();
               await deferred.prompt();
               await deferred.userChoice;
               setDeferred(null);
