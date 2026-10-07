@@ -1,11 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { MissionCard } from '@/components/ui/MissionCard';
 import { UNIVERSE_ZONES, getMissionsForZone, type UniverseZoneId } from '@/content/universe';
 import {
   getZoneStatus,
-  pickInitialZoneId,
+  resolveMapZoneId,
   type ZoneMapStatus,
 } from '@/features/universe/zoneStatus';
 import styles from './UniverseMap.module.css';
@@ -17,6 +17,8 @@ type UniverseMapProps = {
   isMissionCompleted: (missionId: string) => boolean;
   /** Change quand la progression change (ex. % ou ids). */
   progressKey: string;
+  /** Zone demandée au retour d’une mission (`?zone=`). */
+  returnZoneId?: string | null;
   onStartMission: (missionId: string) => void;
 };
 
@@ -51,6 +53,7 @@ export function UniverseMap({
   isMissionUnlocked,
   isMissionCompleted,
   progressKey,
+  returnZoneId = null,
   onStartMission,
 }: UniverseMapProps) {
   const statusInput = useMemo(
@@ -58,10 +61,24 @@ export function UniverseMap({
     [isMissionUnlocked, isMissionCompleted],
   );
 
-  const [selectedId, setSelectedId] = useState<UniverseZoneId>(() =>
-    pickInitialZoneId(statusInput),
-  );
-  const [seenZones, setSeenZones] = useState<Set<string>>(() => readSeenZones());
+  const openedZoneId = resolveMapZoneId(returnZoneId, statusInput);
+  const [selectedId, setSelectedId] = useState<UniverseZoneId>(openedZoneId);
+  const [seenZones, setSeenZones] = useState<Set<string>>(() => {
+    const seen = readSeenZones();
+    if (returnZoneId && openedZoneId === returnZoneId && !seen.has(openedZoneId)) {
+      seen.add(openedZoneId);
+      writeSeenZones(seen);
+      return new Set(seen);
+    }
+    return seen;
+  });
+
+  useEffect(() => {
+    const current = UNIVERSE_ZONES.find((zone) => zone.id === selectedId);
+    if (!current || getZoneStatus(current, statusInput) !== 'locked') return;
+    const next = resolveMapZoneId(returnZoneId, statusInput);
+    if (next !== selectedId) setSelectedId(next);
+  }, [returnZoneId, selectedId, statusInput]);
 
   const selectedZone = UNIVERSE_ZONES.find((z) => z.id === selectedId) ?? UNIVERSE_ZONES[0]!;
   const selectedStatus = getZoneStatus(selectedZone, statusInput);

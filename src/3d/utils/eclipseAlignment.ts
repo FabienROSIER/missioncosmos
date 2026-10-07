@@ -12,8 +12,8 @@ export const ECLIPSE_LABELS: Record<EclipseKind, string> = {
   lunar: 'Éclipse lunaire',
 };
 
-/** Seuil d’alignement (rad) pour réussir un défi. */
-const SOLAR_MAX = 0.22;
+/** Seuil d’alignement (rad). Solaire : disques presque superposés (quasi totale). */
+const SOLAR_MAX = 0.04;
 const LUNAR_MIN = Math.PI - 0.22;
 /** Hors du plan : trop haut/bas = pas d’éclipse (orbite inclinée). */
 const PLANE_MAX = 0.28;

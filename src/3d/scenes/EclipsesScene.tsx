@@ -60,8 +60,6 @@ export type EclipsesSceneApi = {
   camera: MissionCameraApi;
   setMoonDragEnabled: (enabled: boolean) => void;
   setEclipseChallenge: (target: EclipseTarget | null) => void;
-  /** Découverte : réussie dès que la Lune a clairement bougé sur son orbite. */
-  setMoonMoveDiscovery: (enabled: boolean) => void;
   /** Orbite penchée (étape « pas chaque mois »). */
   setOrbitTilted: (tilted: boolean) => void;
   setCinematicMode: (enabled: boolean) => void;
@@ -203,8 +201,6 @@ export function EclipsesScene({
     const camera = scene.activeCamera;
     let drag: ReturnType<typeof attachMoonOrbitDrag> | null = null;
     let challengeTarget: EclipseTarget | null = null;
-    let moveDiscovery = false;
-    let moveStartAngle: number | null = null;
     let holdAccum = 0;
     let successSent = false;
     let moonPip: ReturnType<typeof attachEclipseEarthPip> | null = null;
@@ -362,27 +358,16 @@ export function EclipsesScene({
           setPipKind(kind);
         }
 
-        if (successSent) return;
-        if (challengeTarget) {
-          const dt = scene.getEngine().getDeltaTime();
-          if (isEclipseMatch(b.earth, b.sun, b.moon, challengeTarget)) {
-            holdAccum += dt;
-            if (holdAccum >= HOLD_MS) {
-              successSent = true;
-              onEclipseSuccessRef.current?.(challengeTarget);
-            }
-          } else {
-            holdAccum = 0;
+        if (successSent || !challengeTarget) return;
+        const dt = scene.getEngine().getDeltaTime();
+        if (isEclipseMatch(b.earth, b.sun, b.moon, challengeTarget)) {
+          holdAccum += dt;
+          if (holdAccum >= HOLD_MS) {
+            successSent = true;
+            onEclipseSuccessRef.current?.(challengeTarget);
           }
-          return;
-        }
-        if (
-          moveDiscovery &&
-          moveStartAngle !== null &&
-          Math.abs(orbit.getAngle() - moveStartAngle) >= 0.45
-        ) {
-          successSent = true;
-          onEclipseSuccessRef.current?.('solar');
+        } else {
+          holdAccum = 0;
         }
       });
 
@@ -395,21 +380,8 @@ export function EclipsesScene({
           challengeTarget = target;
           holdAccum = 0;
           if (target) {
-            moveDiscovery = false;
             successSent = false;
             shadows.setHighlight(target);
-          }
-        },
-        setMoonMoveDiscovery: (enabled) => {
-          if (enabled === moveDiscovery) return;
-          moveDiscovery = enabled;
-          holdAccum = 0;
-          if (enabled) {
-            challengeTarget = null;
-            successSent = false;
-            moveStartAngle = orbit.getAngle();
-          } else {
-            moveStartAngle = null;
           }
         },
         setOrbitTilted: (tilted) => {

@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 import {
   getZoneStatus,
   isZoneUnlockedByProgression,
+  missionsMapHref,
   pickInitialZoneId,
+  resolveMapZoneId,
 } from '@/features/universe/zoneStatus';
 import { getZoneById, UNIVERSE_ZONES } from '@/content/universe';
 
@@ -82,5 +84,31 @@ describe('zoneStatus', () => {
       isMissionCompleted: (m) => m === 'mission-01',
     });
     expect(id).toBe('earth');
+  });
+
+  it('le retour de mission ouvre la zone de cette mission, même si une autre est en cours', () => {
+    const input = {
+      isMissionUnlocked: (m: string) => m === 'mission-01' || m === 'mission-05',
+      isMissionCompleted: () => false,
+    };
+    expect(missionsMapHref('mission-05')).toBe('/missions?zone=solar-system');
+    expect(resolveMapZoneId('solar-system', input)).toBe('solar-system');
+    expect(pickInitialZoneId(input)).toBe('earth');
+  });
+
+  it('ignore une zone inconnue ou verrouillée', () => {
+    const input = {
+      isMissionUnlocked: (m: string) => m === 'mission-01',
+      isMissionCompleted: () => false,
+    };
+    expect(resolveMapZoneId('galaxies', input)).toBe('earth');
+    expect(resolveMapZoneId('nulle-part', input)).toBe('earth');
+    expect(missionsMapHref('mission-inconnue')).toBe('/missions');
+    expect(
+      resolveMapZoneId('solar-system', {
+        isMissionUnlocked: () => false,
+        isMissionCompleted: () => false,
+      }),
+    ).toBe('solar-system');
   });
 });

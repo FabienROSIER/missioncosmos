@@ -1,4 +1,9 @@
-import { UNIVERSE_ZONES, type UniverseZone, type UniverseZoneId } from '@/content/universe/zones';
+import {
+  getZoneIdForMission,
+  UNIVERSE_ZONES,
+  type UniverseZone,
+  type UniverseZoneId,
+} from '@/content/universe/zones';
 
 export type ZoneMapStatus = 'locked' | 'available' | 'completed' | 'coming-soon';
 
@@ -38,6 +43,30 @@ export function isZoneUnlockedByProgression(
     return isZoneUnlockedByProgression(prev.id, input);
   }
   return getZoneStatus(prev, input) === 'completed';
+}
+
+/** Carte ouverte sur la zone de la mission quittée. */
+export function missionsMapHref(missionId: string): string {
+  const zoneId = getZoneIdForMission(missionId);
+  return zoneId ? `/missions?zone=${zoneId}` : '/missions';
+}
+
+/**
+ * Zone affichée au retour : celle demandée si elle existe et n’est pas verrouillée.
+ * Tant qu’aucune mission n’est lue (premier rendu), on garde la zone demandée.
+ * Sinon, première zone encore en cours.
+ */
+export function resolveMapZoneId(
+  requested: string | null | undefined,
+  input: ZoneStatusInput,
+): UniverseZoneId {
+  const zone = UNIVERSE_ZONES.find((item) => item.id === requested);
+  if (!zone) return pickInitialZoneId(input);
+  if (getZoneStatus(zone, input) !== 'locked') return zone.id;
+  const anyUnlocked = UNIVERSE_ZONES.some((item) =>
+    item.missionIds.some((id) => input.isMissionUnlocked(id)),
+  );
+  return anyUnlocked ? pickInitialZoneId(input) : zone.id;
 }
 
 /** Première zone utile à centrer (mission dispo non terminée, sinon première dispo). */

@@ -17,7 +17,7 @@ describe('achievement feedback across all missions', () => {
     for (const id of [
       'm01-challenge-equator',
       'm01-challenge-orbit',
-      'm02-challenge-night',
+      'm02-observe',
       'm03-challenge-full',
       'm04-challenge-solar',
       'm05-challenge-order',

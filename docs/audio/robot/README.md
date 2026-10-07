@@ -38,7 +38,7 @@ Le script ne modifie ni les textes du jeu ni les MP3 déposés. Si le texte oral
 
 Les 47 voix essentielles sont branchées : catalogue `src/content/audio/robotVoiceCatalog.ts`, lecteur `robotVoicePlayer`, réglage **Voix du robot** dans les paramètres, réécoute **Écouter** en mission.
 
-Règles en jeu : consigne à la première étape pertinente (pas de répétition auto ensuite), sécurité éclipses prioritaire sur `m04-observe`, phrases communes quiz / erreur / réussite, maquette à l’ouverture de « La maquette », silence pendant les films, ducking musique, jeu jouable sans voix. Les quiz facultatifs restent optionnels et non branchés.
+Règles en jeu : consigne à la première étape pertinente (pas de répétition auto ensuite), sécurité éclipses prioritaire sur `m04-challenge-solar`, phrases communes quiz / erreur / réussite, maquette à l’ouverture de « La maquette », silence pendant les films, ducking musique, jeu jouable sans voix. Les quiz facultatifs restent optionnels et non branchés.
 
 Régénérer le catalogue runtime après édition de `dialogues-essentiels.fr.json` :
 

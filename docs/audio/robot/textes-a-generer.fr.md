@@ -124,9 +124,9 @@ La Terre tourne sur elle-même en environ vingt-quatre heures : un jour et une n
 
 ### mission-02.jour-nuit
 
-**Contexte :** Observation puis défis jour et nuit ; même fichier
+**Contexte :** Défi nuit puis jour ; même fichier
 
-**Étapes :** `m02-intro`, `m02-observe`, `m02-challenge-day`, `m02-challenge-night`, `m02-explain`.
+**Étapes :** `m02-intro`, `m02-observe`, `m02-challenge-day`, `m02-explain`.
 
 **Fichier :** `mission-02/mission-02.jour-nuit.mp3`
 
@@ -142,9 +142,9 @@ Le Soleil éclaire un côté de la Terre : c’est le jour. L’autre côté est
 
 ### mission-03.observer
 
-**Contexte :** Observation et recherche de la pleine Lune ou du croissant
+**Contexte :** Pleine Lune puis croissant
 
-**Étapes :** `m03-intro`, `m03-observe`, `m03-challenge-full`, `m03-challenge-crescent`.
+**Étapes :** `m03-intro`, `m03-challenge-full`, `m03-challenge-crescent`.
 
 **Fichier :** `mission-03/mission-03.observer.mp3`
 
@@ -178,7 +178,7 @@ La Lune reste une boule. Selon sa position, nous voyons une plus ou moins grande
 
 **Contexte :** Avant l’observation des éclipses ; message indépendant
 
-**Étapes :** `m04-observe`.
+**Étapes :** `m04-challenge-solar`.
 
 **Fichier :** `mission-04/mission-04.securite.mp3`
 
@@ -192,9 +192,9 @@ Attention : ne regarde le vrai Soleil qu’avec une protection spéciale vérifi
 
 ### mission-04.aligner
 
-**Contexte :** Observation et deux défis d’éclipse ; réécoute possible
+**Contexte :** Deux défis d’éclipse ; réécoute possible
 
-**Étapes :** `m04-intro`, `m04-observe`, `m04-challenge-solar`, `m04-challenge-lunar`.
+**Étapes :** `m04-intro`, `m04-challenge-lunar`.
 
 **Fichier :** `mission-04/mission-04.aligner.mp3`
 

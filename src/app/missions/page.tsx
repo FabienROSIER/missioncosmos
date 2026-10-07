@@ -1,6 +1,7 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { AppShell } from '@/components/layout/AppShell';
 import { MISSION_CATALOG } from '@/content/missions/catalog';
 import { useLocalSave } from '@/features/progression/useLocalSave';
@@ -9,7 +10,16 @@ import { AVATAR_LABELS } from '@/types/profile';
 import styles from './missions.module.css';
 
 export default function MissionsPage() {
+  return (
+    <Suspense fallback={null}>
+      <MissionsScreen />
+    </Suspense>
+  );
+}
+
+function MissionsScreen() {
   const router = useRouter();
+  const returnZoneId = useSearchParams().get('zone');
   const {
     profile,
     hasProfile,
@@ -58,6 +68,7 @@ export default function MissionsPage() {
           isMissionUnlocked={isMissionUnlocked}
           isMissionCompleted={isMissionCompleted}
           progressKey={progressKey}
+          returnZoneId={returnZoneId}
           onStartMission={(missionId) => router.push(`/mission/${missionId}`)}
         />
       </div>

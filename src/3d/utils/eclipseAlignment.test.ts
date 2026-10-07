@@ -31,4 +31,26 @@ describe('eclipseAlignment', () => {
     const sunFar = { x: 6.4, y: 0, z: 0 };
     expect(classifyEclipse(earth, sunFar, moon)).toBe('solar');
   });
+
+  it('refuse une éclipse solaire seulement partielle', () => {
+    const sunFar = { x: 6.4, y: 0, z: 0 };
+    const moon = {
+      x: 2.55 * Math.cos(0.12),
+      y: 0,
+      z: 2.55 * Math.sin(0.12),
+    };
+    expect(classifyEclipse(earth, sunFar, moon)).toBe('none');
+    expect(isEclipseMatch(earth, sunFar, moon, 'solar')).toBe(false);
+  });
+
+  it('accepte une éclipse solaire quasi totale', () => {
+    const sunFar = { x: 6.4, y: 0, z: 0 };
+    const moon = {
+      x: 2.55 * Math.cos(0.03),
+      y: 0,
+      z: 2.55 * Math.sin(0.03),
+    };
+    expect(classifyEclipse(earth, sunFar, moon)).toBe('solar');
+    expect(isEclipseMatch(earth, sunFar, moon, 'solar')).toBe(true);
+  });
 });

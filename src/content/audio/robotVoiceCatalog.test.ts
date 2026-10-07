@@ -17,7 +17,7 @@ describe('catalogue voix robot', () => {
 
   it('associe les étapes aux consignes et priorise la sécurité éclipses', () => {
     expect(resolveRobotVoiceForStep('m01-challenge-equator')?.id).toBe('mission-01.reperes');
-    expect(resolveRobotVoiceForStep('m04-observe')?.id).toBe('mission-04.securite');
+    expect(resolveRobotVoiceForStep('m04-challenge-solar')?.id).toBe('mission-04.securite');
     expect(resolveRobotVoiceForStep('m04-intro')?.id).toBe('mission-04.aligner');
     expect(resolveRobotVoiceForStep('etape-inconnue')).toBeUndefined();
   });

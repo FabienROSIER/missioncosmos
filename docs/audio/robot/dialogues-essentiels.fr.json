@@ -51,12 +51,11 @@
   {
     "group": "mission-02",
     "key": "jour-nuit",
-    "context": "Observation puis défis jour et nuit ; même fichier",
+    "context": "Défi nuit puis jour ; même fichier",
     "steps": [
       "m02-intro",
       "m02-observe",
       "m02-challenge-day",
-      "m02-challenge-night",
       "m02-explain"
     ],
     "speech": "Le Soleil éclaire un côté de la Terre : c’est le jour. L’autre côté est dans l’ombre : c’est la nuit. Tourne la Terre pour faire passer le Guide de la lumière à l’ombre. Le Soleil brille toujours, même pendant notre nuit."
@@ -64,8 +63,8 @@
   {
     "group": "mission-03",
     "key": "observer",
-    "context": "Observation et recherche de la pleine Lune ou du croissant",
-    "steps": ["m03-intro", "m03-observe", "m03-challenge-full", "m03-challenge-crescent"],
+    "context": "Pleine Lune puis croissant",
+    "steps": ["m03-intro", "m03-challenge-full", "m03-challenge-crescent"],
     "speech": "Fais glisser la Lune autour de la Terre. Regarde sa forme dans la petite vue avec le Guide. Cherche une Lune toute ronde, puis un fin croissant. Le Soleil éclaire toujours une moitié de la Lune."
   },
   {
@@ -79,14 +78,14 @@
     "group": "mission-04",
     "key": "securite",
     "context": "Avant l’observation des éclipses ; message indépendant",
-    "steps": ["m04-observe"],
+    "steps": ["m04-challenge-solar"],
     "speech": "Attention : ne regarde le vrai Soleil qu’avec une protection spéciale vérifiée par un adulte. Des lunettes de soleil ne suffisent pas."
   },
   {
     "group": "mission-04",
     "key": "aligner",
-    "context": "Observation et deux défis d’éclipse ; réécoute possible",
-    "steps": ["m04-intro", "m04-observe", "m04-challenge-solar", "m04-challenge-lunar"],
+    "context": "Deux défis d’éclipse ; réécoute possible",
+    "steps": ["m04-intro", "m04-challenge-lunar"],
     "speech": "Place la Lune entre la Terre et le Soleil : elle cache le Soleil, c’est une éclipse solaire. Puis place-la de l’autre côté de la Terre, dans son ombre : c’est une éclipse lunaire. Regarde la petite vue, puis relâche la Lune."
   },
   {

@@ -55,12 +55,12 @@ export const ROBOT_VOICE_MESSAGES: readonly RobotVoiceMessage[] = [
   {
     id: "mission-02.jour-nuit",
     relativePath: "mission-02/mission-02.jour-nuit.mp3",
-    stepIds: ["m02-intro","m02-observe","m02-challenge-day","m02-challenge-night","m02-explain"],
+    stepIds: ["m02-intro","m02-observe","m02-challenge-day","m02-explain"],
   },
   {
     id: "mission-03.observer",
     relativePath: "mission-03/mission-03.observer.mp3",
-    stepIds: ["m03-intro","m03-observe","m03-challenge-full","m03-challenge-crescent"],
+    stepIds: ["m03-intro","m03-challenge-full","m03-challenge-crescent"],
   },
   {
     id: "mission-03.phases",
@@ -70,12 +70,12 @@ export const ROBOT_VOICE_MESSAGES: readonly RobotVoiceMessage[] = [
   {
     id: "mission-04.securite",
     relativePath: "mission-04/mission-04.securite.mp3",
-    stepIds: ["m04-observe"],
+    stepIds: ["m04-challenge-solar"],
   },
   {
     id: "mission-04.aligner",
     relativePath: "mission-04/mission-04.aligner.mp3",
-    stepIds: ["m04-intro","m04-observe","m04-challenge-solar","m04-challenge-lunar"],
+    stepIds: ["m04-intro","m04-challenge-lunar"],
   },
   {
     id: "mission-04.orbite-penchee",

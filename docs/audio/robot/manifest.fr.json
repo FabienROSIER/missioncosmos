@@ -249,13 +249,12 @@
       "id": "mission-02.jour-nuit",
       "group": "mission-02",
       "mission": "Jour et nuit",
-      "context": "Observation puis défis jour et nuit ; même fichier",
+      "context": "Défi nuit puis jour ; même fichier",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
         "m02-intro",
         "m02-observe",
         "m02-challenge-day",
-        "m02-challenge-night",
         "m02-explain"
       ],
       "sourceRefs": [
@@ -268,20 +267,14 @@
         {
           "source": "src/content/missions/mission-02.ts",
           "stepId": "m02-observe",
-          "screenText": "Le Soleil éclaire un côté de la Terre : c’est le jour. L’autre côté est dans l’ombre : c’est la nuit. Tourne la Terre pour faire passer le Guide d’un côté à l’autre.",
-          "sourceHash": "782ab684574e4f05aba0ea7476e5f53987a080960bbcc587e92a0688e5ce5f4c"
+          "screenText": "Le Soleil éclaire un côté de la Terre : c’est le jour. L’autre côté est dans l’ombre : c’est la nuit. Tourne la Terre pour mettre le Guide dans la nuit.",
+          "sourceHash": "cfe622afa783bcd77489e574b9ccfdc7886ecea3672462ace33a55491de22746"
         },
         {
           "source": "src/content/missions/mission-02.ts",
           "stepId": "m02-challenge-day",
-          "screenText": "Tourne la Terre pour mettre le Guide dans la lumière du Soleil (le jour).",
-          "sourceHash": "2782b47bb1a16d5514f9ce7c17ebb1bce0d7e9d9bde671ceb2d97119271a4556"
-        },
-        {
-          "source": "src/content/missions/mission-02.ts",
-          "stepId": "m02-challenge-night",
-          "screenText": "Maintenant mets le Guide dans l’ombre (la nuit). Le Soleil ne s’éteint pas : il éclaire l’autre face.",
-          "sourceHash": "b3ad023055adbb4359a970e4301ee344d0d7eb15d06bfeb502f9becef7fb70e9"
+          "screenText": "Maintenant tourne la Terre pour ramener le Guide dans la lumière du Soleil (le jour).",
+          "sourceHash": "8abe8d576d823e4b38061b951a9e1c0d2b6f9d555e1d4df66cefe7af9a3c5c61"
         },
         {
           "source": "src/content/missions/mission-02.ts",
@@ -309,11 +302,10 @@
       "id": "mission-03.observer",
       "group": "mission-03",
       "mission": "Phases de la Lune",
-      "context": "Observation et recherche de la pleine Lune ou du croissant",
+      "context": "Pleine Lune puis croissant",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
         "m03-intro",
-        "m03-observe",
         "m03-challenge-full",
         "m03-challenge-crescent"
       ],
@@ -326,15 +318,9 @@
         },
         {
           "source": "src/content/missions/mission-03.ts",
-          "stepId": "m03-observe",
-          "screenText": "Le Soleil éclaire toujours une face de la Lune. L’autre reste dans l’ombre. Fais glisser la Lune autour de la Terre : la forme change dans la petite vue « Avec le Guide ».",
-          "sourceHash": "9205fa66149697b8c805ba9e0ceec7aa0591d5580c6049787bbda86e5273abde"
-        },
-        {
-          "source": "src/content/missions/mission-03.ts",
           "stepId": "m03-challenge-full",
-          "screenText": "Déplace la Lune pour la voir toute ronde et éclairée dans la petite vue.",
-          "sourceHash": "1b29c2452180f6415d11f986b8e9f108e67d01037bc6f9ad0acd1f3f1c7f7e73"
+          "screenText": "Le Soleil éclaire toujours une face de la Lune. Déplace-la pour la voir toute ronde dans la petite vue.",
+          "sourceHash": "54a4578a57f361f1faacc79d5f913f79b8131e449b3a0af975efaf85cd95a7b3"
         },
         {
           "source": "src/content/missions/mission-03.ts",
@@ -397,14 +383,14 @@
       "context": "Avant l’observation des éclipses ; message indépendant",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
-        "m04-observe"
+        "m04-challenge-solar"
       ],
       "sourceRefs": [
         {
           "source": "src/content/missions/mission-04.ts",
-          "stepId": "m04-observe",
-          "screenText": "Fais glisser la Lune et regarde la petite vue avec le Guide. La Lune cache le Soleil : éclipse solaire. Elle traverse l’ombre de la Terre : éclipse lunaire. Ne regarde le vrai Soleil qu’avec une protection spéciale vérifiée par un adulte. Des lunettes de soleil ne suffisent pas.",
-          "sourceHash": "e0729304166dff04ae108c89759a0159234c139d9f178433329fd6a182a09da9"
+          "stepId": "m04-challenge-solar",
+          "screenText": "Place la Lune entre la Terre et le Soleil pour une éclipse solaire, puis relâche. Ne regarde le vrai Soleil qu’avec une protection spéciale vérifiée par un adulte. Des lunettes de soleil ne suffisent pas.",
+          "sourceHash": "c9330b63a60db202ef9aa207104ee57db1ee3f6f0dbe9f2357d6f2a852c18033"
         }
       ],
       "speech": "Attention : ne regarde le vrai Soleil qu’avec une protection spéciale vérifiée par un adulte. Des lunettes de soleil ne suffisent pas.",
@@ -426,12 +412,10 @@
       "id": "mission-04.aligner",
       "group": "mission-04",
       "mission": "Les éclipses",
-      "context": "Observation et deux défis d’éclipse ; réécoute possible",
+      "context": "Deux défis d’éclipse ; réécoute possible",
       "triggerPolicy": "first-entry-or-request-no-repeat-on-every-step",
       "stepIds": [
         "m04-intro",
-        "m04-observe",
-        "m04-challenge-solar",
         "m04-challenge-lunar"
       ],
       "sourceRefs": [
@@ -440,18 +424,6 @@
           "stepId": "m04-intro",
           "screenText": "Parfois le Soleil ou la Lune semble s’éteindre un moment. C’est une éclipse. Comment ça marche ?",
           "sourceHash": "85e91a5337bc19a49bed72fdb55b0fd543fa5a4f57c47f9ab34e1385e45caadb"
-        },
-        {
-          "source": "src/content/missions/mission-04.ts",
-          "stepId": "m04-observe",
-          "screenText": "Fais glisser la Lune et regarde la petite vue avec le Guide. La Lune cache le Soleil : éclipse solaire. Elle traverse l’ombre de la Terre : éclipse lunaire. Ne regarde le vrai Soleil qu’avec une protection spéciale vérifiée par un adulte. Des lunettes de soleil ne suffisent pas.",
-          "sourceHash": "e0729304166dff04ae108c89759a0159234c139d9f178433329fd6a182a09da9"
-        },
-        {
-          "source": "src/content/missions/mission-04.ts",
-          "stepId": "m04-challenge-solar",
-          "screenText": "Place la Lune entre la Terre et le Soleil pour une éclipse solaire, puis relâche.",
-          "sourceHash": "a94635910241c762cdfecf1fc80b7bb2d44c780a4c714dbc5f05a52365259939"
         },
         {
           "source": "src/content/missions/mission-04.ts",

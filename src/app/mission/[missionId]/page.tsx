@@ -4,6 +4,7 @@ import { SafeBackButton } from '@/components/layout/SafeBackButton';
 import { DialogueBubble } from '@/components/ui/DialogueBubble';
 import { MISSION_CATALOG } from '@/content/missions/catalog';
 import { getMissionById } from '@/content/missions';
+import { missionsMapHref } from '@/features/universe/zoneStatus';
 import styles from './mission.module.css';
 
 type MissionPageProps = {
@@ -47,7 +48,11 @@ export default async function MissionPage({ params }: MissionPageProps) {
   return (
     <AppShell title="Mission" showNav={false}>
       <div className={styles.root}>
-        <SafeBackButton fallbackHref="/missions" label="Quitter la mission" preferFallback />
+        <SafeBackButton
+          fallbackHref={missionsMapHref(missionId)}
+          label="Quitter la mission"
+          preferFallback
+        />
         <h1 className={styles.title}>Mission en préparation</h1>
         <p className={styles.id}>Identifiant : {missionId}</p>
         <DialogueBubble>

@@ -80,6 +80,11 @@ export function getZoneById(id: UniverseZoneId): UniverseZone | undefined {
   return UNIVERSE_ZONES.find((z) => z.id === id);
 }
 
+/** Zone de la carte qui contient cette mission. */
+export function getZoneIdForMission(missionId: string): UniverseZoneId | undefined {
+  return UNIVERSE_ZONES.find((zone) => zone.missionIds.includes(missionId))?.id;
+}
+
 export function getMissionsForZone(zone: UniverseZone) {
   return zone.missionIds
     .map((id) => MISSION_CATALOG.find((m) => m.id === id))

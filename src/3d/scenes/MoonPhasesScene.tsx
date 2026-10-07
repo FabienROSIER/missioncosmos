@@ -59,8 +59,6 @@ export type MoonPhasesSceneApi = {
   setMoonDragEnabled: (enabled: boolean) => void;
   /** null = pas de défi ; sinon détecte la phase cible. */
   setPhaseChallenge: (target: MoonPhaseId | null) => void;
-  /** Découverte : réussie dès que la forme vue depuis la Terre change. */
-  setPhaseChangeDiscovery: (enabled: boolean) => void;
   /**
    * Mode ciné (quiz+) : Lune orbite seule, gestes → caméra.
    */
@@ -196,8 +194,6 @@ export function MoonPhasesScene({
     const camera = scene.activeCamera;
     let drag: ReturnType<typeof attachMoonOrbitDrag> | null = null;
     let challengeTarget: MoonPhaseId | null = null;
-    let phaseChangeDiscovery = false;
-    let phaseChangeStart: MoonPhaseId | null = null;
     let holdAccum = 0;
     let successSent = false;
     let moonPip: ReturnType<typeof attachMoonEarthPip> | null = null;
@@ -338,24 +334,17 @@ export function MoonPhasesScene({
         companion.syncLookAt(moon.pivot.getAbsolutePosition());
         companion.updateOcclusion(camera.position);
         if (successSent) return;
+        if (!challengeTarget) return;
         const elong = readElongation();
-        const phase = phaseFromElongation(elong);
-        if (challengeTarget) {
-          const dt = scene.getEngine().getDeltaTime();
-          if (isPhaseMatch(elong, challengeTarget)) {
-            holdAccum += dt;
-            if (holdAccum >= HOLD_MS) {
-              successSent = true;
-              onPhaseSuccessRef.current?.(challengeTarget);
-            }
-          } else {
-            holdAccum = 0;
+        const dt = scene.getEngine().getDeltaTime();
+        if (isPhaseMatch(elong, challengeTarget)) {
+          holdAccum += dt;
+          if (holdAccum >= HOLD_MS) {
+            successSent = true;
+            onPhaseSuccessRef.current?.(challengeTarget);
           }
-          return;
-        }
-        if (phaseChangeDiscovery && phaseChangeStart && phase !== phaseChangeStart) {
-          successSent = true;
-          onPhaseSuccessRef.current?.(phase);
+        } else {
+          holdAccum = 0;
         }
       });
 
@@ -367,22 +356,7 @@ export function MoonPhasesScene({
         setPhaseChallenge: (target) => {
           challengeTarget = target;
           holdAccum = 0;
-          if (target) {
-            phaseChangeDiscovery = false;
-            successSent = false;
-          }
-        },
-        setPhaseChangeDiscovery: (enabled) => {
-          if (enabled === phaseChangeDiscovery) return;
-          phaseChangeDiscovery = enabled;
-          holdAccum = 0;
-          if (enabled) {
-            challengeTarget = null;
-            successSent = false;
-            phaseChangeStart = phaseFromElongation(readElongation());
-          } else {
-            phaseChangeStart = null;
-          }
+          if (target) successSent = false;
         },
         setCinematicMode,
       });

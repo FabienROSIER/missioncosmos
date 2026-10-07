@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Companion } from '@/components/game/Companion';
 import { SafeBackButton } from '@/components/layout/SafeBackButton';
 import { SceneControlsTarget } from '@/components/layout/SceneControls';
+import { missionsMapHref } from '@/features/universe/zoneStatus';
 import { RewardPanel } from '@/components/ui/RewardPanel';
 import { SuccessCelebration } from '@/components/ui/SuccessCelebration';
 import type { EarthMarkerId, EarthSceneApi } from '@/3d/scenes/EarthPreviewScene';
@@ -448,7 +449,6 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     dayNightApi.setLightingChallenge(
       playing && challengeActive && targetLighting ? targetLighting : null,
     );
-    dayNightApi.setSideChangeDiscovery(playing && challengeActive && step.id === 'm02-observe');
   }, [
     dayNightApi,
     isDayNight,
@@ -457,7 +457,6 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     targetLighting,
     sceneInteractionAllowed,
     step.kind,
-    step.id,
   ]);
 
   useEffect(() => {
@@ -470,7 +469,6 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     moonPhasesApi.setPhaseChallenge(
       playing && challengeActive && targetPhase ? targetPhase : null,
     );
-    moonPhasesApi.setPhaseChangeDiscovery(playing && challengeActive && step.id === 'm03-observe');
   }, [
     moonPhasesApi,
     isMoonPhases,
@@ -478,7 +476,6 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     targetPhase,
     sceneInteractionAllowed,
     step.kind,
-    step.id,
   ]);
 
   useEffect(() => {
@@ -491,7 +488,6 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     eclipsesApi.setEclipseChallenge(
       playing && challengeActive && targetEclipse ? targetEclipse : null,
     );
-    eclipsesApi.setMoonMoveDiscovery(playing && challengeActive && step.id === 'm04-observe');
     // Orbite penchée à l’explication « pas chaque mois »
     eclipsesApi.setOrbitTilted(step.kind === 'explain' || step.id.includes('explain'));
   }, [
@@ -1188,7 +1184,12 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
         </div>
 
         <header ref={topBarRef} className={styles.topBar}>
-          <SafeBackButton fallbackHref="/missions" label="Quitter" compact preferFallback />
+          <SafeBackButton
+            fallbackHref={missionsMapHref(mission.id)}
+            label="Quitter"
+            compact
+            preferFallback
+          />
           <div className={styles.titleBlock}>
             <p className={styles.missionIndex}>
               Mission · {mission.id.match(/(\d+)$/)?.[1]?.padStart(2, '0')}
@@ -1515,7 +1516,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                         Mission suivante : {nextMission.title}
                       </Link>
                     ) : (
-                      <Link href="/missions" className={styles.cta}>
+                      <Link href={missionsMapHref(mission.id)} className={styles.cta}>
                         Retour à la carte
                       </Link>
                     )}
