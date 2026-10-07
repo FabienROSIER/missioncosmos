@@ -34,10 +34,15 @@ node scripts/generate-robot-voice-inventory.mjs
 
 Le script ne modifie ni les textes du jeu ni les MP3 déposés. Si le texte oral change, refaire seulement le MP3 concerné. Si une étape change, relire le dialogue lié : la reformulation orale ne se met pas à jour automatiquement. Conserver les IDs existants. Les anciens fichiers `speech-overrides.fr.json` et `scene-dialogues.fr.json` ne sont plus utilisés et ont été retirés.
 
-## Intégration à réaliser
+## Intégration runtime
 
-Les voix ne sont pas encore reliées au jeu. Le lecteur et les préférences restent à créer selon [la feuille de route](<D:/Programmation/Mission Cosmos/Mission_Cosmos_Feuille_de_route_voix_robot.md>).
+Les 47 voix essentielles sont branchées : catalogue `src/content/audio/robotVoiceCatalog.ts`, lecteur `robotVoicePlayer`, réglage **Voix du robot** dans les paramètres, réécoute **Écouter** en mission.
 
-Associer les étapes aux fichiers du manifeste. Jouer une consigne commune à la première étape pertinente, puis permettre la réécoute ; ne pas répéter tout le fichier à chaque étape ni après chaque clic. Jouer la sécurité des éclipses avant l'observation. Garder les consignes visibles et les activités jouables sans voix.
+Règles en jeu : consigne à la première étape pertinente (pas de répétition auto ensuite), sécurité éclipses prioritaire sur `m04-observe`, phrases communes quiz / erreur / réussite, maquette à l’ouverture de « La maquette », silence pendant les films, ducking musique, jeu jouable sans voix. Les quiz facultatifs restent optionnels et non branchés.
 
-Utiliser un lecteur distinct de la musique, `withBasePath` pour les URLs, un réglage indépendant, l'arrêt au changement d'étape ou de profil et la baisse temporaire de la musique. Charger uniquement les voix de la mission utile. Les MP3 doivent être présents dans `public` avant l'export statique. Ne pas faire parler le robot pendant les films ; proposer le bilan ensuite. Ne pas remplacer une voix absente par une lecture automatique de tout l'écran.
+Régénérer le catalogue runtime après édition de `dialogues-essentiels.fr.json` :
+
+```powershell
+node scripts/generate-robot-voice-inventory.mjs
+node scripts/gen-robot-voice-catalog.mjs
+```

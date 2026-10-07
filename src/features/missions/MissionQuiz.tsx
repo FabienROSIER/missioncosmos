@@ -19,6 +19,8 @@ type MissionQuizProps = {
   immersive?: boolean;
   onContinue?: () => void;
   companionVariant?: CompanionVariant;
+  /** Réécoute de la consigne orale d’entrée de quiz. */
+  onReplayVoice?: () => void;
 };
 
 /**
@@ -33,6 +35,7 @@ export function MissionQuiz({
   immersive = false,
   onContinue,
   companionVariant,
+  onReplayVoice,
 }: MissionQuizProps) {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -96,13 +99,25 @@ export function MissionQuiz({
     >
       <div className={styles.questionHeader}>
         {immersive ? (
-          <Companion
-            size="lg"
-            variant={companionVariant}
-            pose={questionOk ? 'happy' : selectedId ? 'hint' : 'thinking'}
-            className={styles.quizCompanion}
-            alt="Ton robot compagnon te pose la question"
-          />
+          <div className={styles.quizCompanionCol}>
+            <Companion
+              size="lg"
+              variant={companionVariant}
+              pose={questionOk ? 'happy' : selectedId ? 'hint' : 'thinking'}
+              className={styles.quizCompanion}
+              alt="Ton robot compagnon te pose la question"
+            />
+            {onReplayVoice ? (
+              <button
+                type="button"
+                className={styles.voiceReplay}
+                onClick={onReplayVoice}
+                aria-label="Écouter la voix du Guide"
+              >
+                Écouter
+              </button>
+            ) : null}
+          </div>
         ) : null}
         <div className={styles.questionText}>
           <p className={styles.progress}>

@@ -47,6 +47,7 @@ import { getRewardById } from '@/content/rewards/catalog';
 import { GlossaryPanel } from '@/features/glossary/GlossaryPanel';
 import { RichMissionText } from '@/features/glossary/RichMissionText';
 import { resolveCompanionCue, type CompanionFeedbackMood } from '@/features/companion';
+import { useMissionRobotVoice } from '@/features/audio/useMissionRobotVoice';
 import { MissionQuiz } from '@/features/missions/MissionQuiz';
 import { useKeepScreenAwake } from '@/lib/keepScreenAwake';
 import { useMissionSequence } from '@/features/missions/useMissionSequence';
@@ -974,6 +975,16 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     funFact: step.kind === 'explain' && mission.funFacts?.[0] ? mission.funFacts[0] : undefined,
   });
 
+  const { replayCurrent, playMaquetteHint, canReplay } = useMissionRobotVoice({
+    missionId: mission.id,
+    stepId: step.id,
+    stepKind: step.kind,
+    feedbackWrong: visibleFeedback ? visibleFeedback.wrong : null,
+    feedbackSuccess: visibleFeedback ? !visibleFeedback.wrong : null,
+    quizMood,
+    filmPlaying: starFilmPlaying,
+  });
+
   const challengeHint = challengeOrbit
     ? 'Glisse à gauche ou à droite pour faire avancer la Terre sur l’anneau autour du Soleil.'
     : challengePrism
@@ -1230,7 +1241,14 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
               Vue de départ
             </button>
             {mission.notToScaleNotice ? (
-              <details className={styles.sceneNotice}>
+              <details
+                className={styles.sceneNotice}
+                onToggle={(event) => {
+                  if ((event.currentTarget as HTMLDetailsElement).open) {
+                    playMaquetteHint();
+                  }
+                }}
+              >
                 <summary>La maquette</summary>
                 <p role="note">{mission.notToScaleNotice}</p>
               </details>
@@ -1254,6 +1272,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
               immersive
               companionVariant={companionVariant}
               onContinue={onContinue}
+              onReplayVoice={canReplay ? replayCurrent : undefined}
             />
           </section>
         ) : null}
@@ -1279,32 +1298,45 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
             }
             inert={guideLeaving || starFilmPlaying}
           >
-            <button
-              ref={companionButtonRef}
-              type="button"
-              className={styles.companionButton}
-              data-motion="stationary"
-              disabled={!guideCanFold}
-              aria-label={
-                !guideCanFold
-                  ? 'Compagnon guide'
-                  : guideExpanded
-                    ? 'Réduire la consigne'
-                    : 'Relire la consigne'
-              }
-              aria-expanded={guideExpanded}
-              aria-controls={guideCanFold ? 'mission-guide-details' : undefined}
-              onClick={toggleGuide}
-            >
-              <Companion
-                pose={companionCue.pose}
-                size="md"
-                priority
-                variant={companionVariant}
-                className={styles.tipCompanion}
-              />
-              <span>{guideCanFold ? (guideExpanded ? 'Réduire' : 'Relire') : 'Guide'}</span>
-            </button>
+            <div className={styles.companionCol}>
+              <button
+                ref={companionButtonRef}
+                type="button"
+                className={styles.companionButton}
+                data-motion="stationary"
+                disabled={!guideCanFold}
+                aria-label={
+                  !guideCanFold
+                    ? 'Compagnon guide'
+                    : guideExpanded
+                      ? 'Réduire la consigne'
+                      : 'Relire la consigne'
+                }
+                aria-expanded={guideExpanded}
+                aria-controls={guideCanFold ? 'mission-guide-details' : undefined}
+                onClick={toggleGuide}
+              >
+                <Companion
+                  pose={companionCue.pose}
+                  size="md"
+                  priority
+                  variant={companionVariant}
+                  className={styles.tipCompanion}
+                />
+                <span>{guideCanFold ? (guideExpanded ? 'Réduire' : 'Relire') : 'Guide'}</span>
+              </button>
+              {canReplay ? (
+                <button
+                  type="button"
+                  className={styles.voiceReplay}
+                  data-motion="stationary"
+                  onClick={replayCurrent}
+                  aria-label="Écouter la voix du Guide"
+                >
+                  Écouter
+                </button>
+              ) : null}
+            </div>
             {step.kind === 'reward' && reward ? (
               <div
                 key={step.id}

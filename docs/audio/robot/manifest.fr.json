@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "locale": "fr",
-  "status": "production-plan-not-connected",
+  "status": "connected-essential-runtime",
   "productionMode": "essential-only",
   "audioRoot": "public/assets/audio/robot/fr",
   "maxCharactersPerFile": 300,

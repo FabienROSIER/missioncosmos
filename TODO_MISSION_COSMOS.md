@@ -712,10 +712,10 @@ _Avancement du 5 octobre 2026 : mission branchée sur le moteur commun jusqu’�
 
 ## 11.3 Narration
 
-- [ ] Étudier narration audio pour enfants lecteurs débutants.
-- [ ] Architecture permettant d'associer un fichier voix à un texte.
-- [ ] Bouton écouter/réécouter.
-- [ ] Ne pas lancer systématiquement la voix sans contrôle.
+- [x] Étudier narration audio pour enfants lecteurs débutants. _(lot 47 MP3 essentiels + phrases communes)_
+- [x] Architecture permettant d'associer un fichier voix à un texte. _(`robotVoiceCatalog` + `robotVoicePlayer`)_
+- [x] Bouton écouter/réécouter. _(bouton « Écouter » mission + quiz)_
+- [x] Ne pas lancer systématiquement la voix sans contrôle. _(réglage Paramètres + une fois par message / pas de spam erreur)_
 
 ### ASSET GATE — audio
 
@@ -746,7 +746,7 @@ _Avancement du 5 octobre 2026 : mission branchée sur le moteur commun jusqu’�
 
 - [ ] Volume musique.
 - [ ] Volume effets.
-- [ ] Narration on/off si disponible.
+- [x] Narration on/off si disponible. _(Voix du robot — `RobotVoiceSetting`)_
 - [ ] Qualité graphique Auto/Basse/Élevée.
 - [ ] Réduction animations.
 - [ ] Réinitialisation progression.

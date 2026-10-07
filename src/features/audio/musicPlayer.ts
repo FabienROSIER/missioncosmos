@@ -21,6 +21,8 @@ class MusicController {
   private unlocked = false;
   private muted = false;
   private volume = 0.45;
+  /** Facteur temporaire pendant la voix du robot (1 = normal). */
+  private duckFactor = 1;
   private gameQueue: MusicTrack[] = [];
   private gameIndex = 0;
   private current: MusicTrack | null = null;
@@ -84,22 +86,35 @@ class MusicController {
     } catch {
       /* ignore */
     }
-    if (this.audio) this.audio.volume = this.volume;
+    this.applyOutputVolume();
   }
 
   getVolume(): number {
     return this.volume;
   }
 
+  /**
+   * Baisse temporaire du volume pendant la voix du robot.
+   * Respecte le mute ; ne change pas le volume enregistré.
+   */
+  setSpeechDuck(active: boolean): void {
+    this.duckFactor = active ? 0.22 : 1;
+    this.applyOutputVolume();
+  }
+
   getMode(): MusicMode {
     return this.mode;
+  }
+
+  private applyOutputVolume(): void {
+    if (this.audio) this.audio.volume = this.volume * this.duckFactor;
   }
 
   private ensureAudio(): HTMLAudioElement {
     if (this.audio) return this.audio;
     const el = new Audio();
     el.preload = 'auto';
-    el.volume = this.volume;
+    el.volume = this.volume * this.duckFactor;
     el.muted = this.muted;
     el.addEventListener('ended', () => this.onEnded());
     this.audio = el;
@@ -143,7 +158,7 @@ class MusicController {
     // Important : assigner loop APRÈS src — certains navigateurs réinitialisent loop au changement de source.
     el.src = url;
     el.loop = loop;
-    el.volume = this.volume;
+    el.volume = this.volume * this.duckFactor;
     el.muted = this.muted;
     void el.play().catch(() => undefined);
   }

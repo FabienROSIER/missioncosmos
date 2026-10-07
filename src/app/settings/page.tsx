@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { AppShell } from '@/components/layout/AppShell';
 import { GraphicsQualitySetting } from '@/features/settings/GraphicsQualitySetting';
 import { MusicSetting } from '@/features/settings/MusicSetting';
+import { RobotVoiceSetting } from '@/features/settings/RobotVoiceSetting';
 import {
   ParentalResetGate,
   createParentMathChallenge,
@@ -23,6 +24,7 @@ export default function SettingsPage() {
       <div className={styles.screen}>
         <div className={styles.fill}>
           <MusicSetting />
+          <RobotVoiceSetting />
           <GraphicsQualitySetting />
 
           <div className={styles.block}>
