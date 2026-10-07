@@ -47,18 +47,7 @@ export const MISSION_10: Mission = assertValidMission({
       body: 'Notre vaisseau recule très, très loin. Les planètes deviennent invisibles à cette échelle. Découvre l’immense ensemble auquel appartient le Soleil !',
       guideReminder: 'Observe notre voyage jusqu’à la Voie lactée.',
       successFeedback:
-        'Voici la Voie lactée, notre galaxie ! Le Soleil et ses planètes en font partie.',
-      ctaLabel: 'Explorer notre galaxie',
-    },
-    {
-      id: 'm10-explore',
-      kind: 'challenge',
-      completionMode: 'discovery',
-      requiresSuccess: true,
-      title: 'Un disque d’étoiles',
-      body: 'Essaie « De face » et « De profil ». De face, tu vois un disque et des bras. De profil, le centre est plus épais. Chaque point représente beaucoup d’étoiles.',
-      guideReminder: 'Regarde la galaxie de face, puis de profil.',
-      successFeedback: 'Tu as vu le disque de face et le centre plus épais de profil.',
+        'Voici la Voie lactée, notre galaxie ! Tu peux tourner et zoomer pour l’observer. De face on voit un disque et des bras ; de profil, le centre est plus épais.',
       ctaLabel: 'Chercher notre quartier',
     },
     {
@@ -66,7 +55,7 @@ export const MISSION_10: Mission = assertValidMission({
       kind: 'challenge',
       requiresSuccess: true,
       title: 'Où habite le Soleil ?',
-      body: 'Le Soleil ne se trouve ni au centre, ni à l’extérieur. Notre quartier est dans le disque, dans un petit bras appelé bras d’Orion. Touche le repère qui correspond à ce quartier.',
+      body: 'Le Soleil ne se trouve ni au centre, ni à l’extérieur. Notre quartier est dans le disque, dans un petit bras appelé bras d’Orion. Tourne la galaxie si tu veux, puis touche le repère qui correspond à ce quartier. Tu peux aussi utiliser « De face » ou « De profil ».',
       guideReminder: 'Cherche un repère dans le disque, loin du centre.',
       successFeedback:
         'Oui ! Notre Système solaire est dans le disque, loin du centre de la Voie lactée.',

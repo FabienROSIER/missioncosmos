@@ -7,14 +7,26 @@ import {
   type TransformNode,
 } from '@babylonjs/core';
 
+export type MilkyWayGlowOptions = {
+  barred?: boolean;
+  intensity?: number;
+  softEdge?: boolean;
+  /**
+   * Poids du disque gaussien circulaire (0…1 typique).
+   * Trop haut → halo rond qui n’épouse plus les bras ; bas → lumière surtout spiralée.
+   */
+  diskStrength?: number;
+};
+
 /** Diffuse 3D disk, analytic bulge/bar and bounded integration of the spiral arms. */
 export function createMilkyWayGlow(
   scene: Scene,
   armSamples: 12 | 20 = 20,
   parent?: TransformNode,
-  options: { barred?: boolean; intensity?: number; softEdge?: boolean } = {},
+  options: MilkyWayGlowOptions = {},
 ) {
   const barred = options.barred === true;
+  const diskStrength = options.diskStrength ?? 0.13;
   const mesh = MeshBuilder.CreateBox(
     'galactic-diffuse-light',
     { width: 40, height: 8, depth: 40 },
@@ -50,7 +62,7 @@ export function createMilkyWayGlow(
         float filaments = 0.82+0.18*sin(radius*1.9+sin(4.0*phase)*1.7);
         float dust = 1.0-0.35*exp(9.0*(cos(4.0*phase+0.8)-1.0));
         float height = 0.2+0.08*radius/16.0;
-        return 0.68*arms*filaments*dust*exp(-radius/9.0-p.y*p.y/(height*height)) *
+        return 0.95*arms*filaments*dust*exp(-radius/9.0-p.y*p.y/(height*height)) *
           smoothstep(${barred ? '4.8,5.6' : '1.3,2.5'},radius)*(1.0-smoothstep(12.5,16.0,radius));
       }
       void main() {
@@ -64,20 +76,21 @@ export function createMilkyWayGlow(
         float nearT = max(0.0,max(max(low.x,low.y),low.z));
         float farT = min(min(high.x,high.y),high.z);
         if (farT <= nearT) discard;
-        // A continuous luminous disk connects the arms instead of leaving black gaps.
-        // Its oblate Gaussian volume also stays thin when viewed edge-on.
-        float disk = 0.13 * integratedGlow(eye,ray,vec3(10.5,0.42,10.5),nearT,farT);
+        // Disque faible : relie les bras sans former un halo circulaire dominant.
+        float disk = ${diskStrength.toFixed(3)} * integratedGlow(eye,ray,vec3(10.5,0.42,10.5),nearT,farT);
         float slabA = (-0.85-eye.y)/safeRay.y, slabB = (0.85-eye.y)/safeRay.y;
         float armNear = max(nearT,min(slabA,slabB)), armFar = min(farT,max(slabA,slabB));
         float stride = max(0.0,armFar-armNear)/${armSamples.toFixed(1)};
+        float arms = 0.0;
         for (int i=0;i<${armSamples};i++) {
           vec3 p = eye+ray*(armNear+(float(i)+0.5)*stride);
-          disk += spiralLight(p)*stride;
+          arms += spiralLight(p)*stride;
         }
+        float spiral = disk + arms;
         float bulge = ${barred ? '0.14' : '0.18'} * integratedGlow(eye,ray,vec3(${barred ? '1.5,0.8,1.3' : '2.6,1.05,1.9'}),nearT,farT);
         float bar = ${options.barred === false ? '0.0' : barred ? '0.34' : '0.12'} * integratedGlow(eye,ray,vec3(${barred ? '5.0,0.42,0.7' : '4.8,0.6,1.6'}),nearT,farT);
-        float density = disk+bulge+bar;
-        vec3 light = (disk*vec3(0.48,0.63,0.85)+(bulge+bar)*vec3(1.0,0.83,0.65))/max(density,0.00001);
+        float density = spiral+bulge+bar;
+        vec3 light = (spiral*vec3(0.48,0.63,0.85)+(bulge+bar)*vec3(1.0,0.83,0.65))/max(density,0.00001);
         ${options.softEdge ? 'float planeT = abs(ray.y)>0.0001 ? -eye.y/ray.y : 0.0; vec3 intercept = eye+ray*planeT; density *= 1.0-smoothstep(12.0,19.0,length(intercept.xz));' : ''}
         gl_FragColor = vec4(light, opacity*(1.0-exp(-density)));
       }`,

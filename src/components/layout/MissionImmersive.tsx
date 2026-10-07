@@ -1063,6 +1063,8 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                 stepId={step.id}
                 onSuccess={onObservatorySuccess}
                 onMiss={onObservatoryMiss}
+                interactive={sceneInteractionAllowed}
+                challengeSolved={challengeSolved}
               />
             ) : isConstellations ? (
               <ConstellationsScene

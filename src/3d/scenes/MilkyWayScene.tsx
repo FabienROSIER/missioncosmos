@@ -61,8 +61,18 @@ type Props = {
   stepId: string;
   onSuccess: () => void;
   onMiss: (message: string) => void;
+  /** Gate « À toi de jouer » — le voyage ne démarre / ne valide qu’après. */
+  interactive?: boolean;
+  challengeSolved?: boolean;
 };
-export function MilkyWayScene({ className, stepId, onSuccess, onMiss }: Props) {
+export function MilkyWayScene({
+  className,
+  stepId,
+  onSuccess,
+  onMiss,
+  interactive = true,
+  challengeSolved = false,
+}: Props) {
   const [ready, setReady] = useState(false);
   const [journey, setJourney] = useState(0);
   const [located, setLocated] = useState(false);
@@ -96,7 +106,8 @@ export function MilkyWayScene({ className, stepId, onSuccess, onMiss }: Props) {
     endAlpha: number;
   } | null>(null);
   const labelRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  const seenViews = useRef({ face: false, profile: false, stepId: '' });
+  const routeLabelRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const routeOrderRef = useRef(routeOrder);
   useEffect(() => {
     events.current = { onSuccess, onMiss };
   }, [onSuccess, onMiss]);
@@ -106,6 +117,9 @@ export function MilkyWayScene({ className, stepId, onSuccess, onMiss }: Props) {
   useEffect(() => {
     orbitSample.current = { route, progress: orbitProgress, done: orbitDone, failed: orbitFailed };
   }, [route, orbitProgress, orbitDone, orbitFailed]);
+  useEffect(() => {
+    routeOrderRef.current = routeOrder;
+  }, [routeOrder]);
   useEffect(() => {
     if (!ready) return;
     const timer = setTimeout(() => {
@@ -120,18 +134,15 @@ export function MilkyWayScene({ className, stepId, onSuccess, onMiss }: Props) {
   }, [stepId, ready]);
   const succeed = useCallback(() => {
     if (completedStep.current === step.current) return;
-    completedStep.current = step.current;
     events.current.onSuccess();
   }, []);
   useEffect(() => {
+    if (challengeSolved) completedStep.current = stepId;
+  }, [challengeSolved, stepId]);
+  // Reset d’étape (sans démarrer le voyage — attendre `interactive`).
+  useEffect(() => {
     step.current = stepId;
     viewTransition.current = null;
-    let frame = 0;
-    let previous: number | null = null;
-    const resetJourneyClock = () => {
-      previous = null;
-    };
-    document.addEventListener('visibilitychange', resetJourneyClock);
     const timer = setTimeout(() => {
       setRotating(false);
       setOrbitRunning(false);
@@ -149,28 +160,50 @@ export function MilkyWayScene({ className, stepId, onSuccess, onMiss }: Props) {
         setJourney(stepId === 'm10-intro' ? 0 : 1);
         return;
       }
-      setJourney(0);
-      if (!ready || reduced) return;
-      let elapsed = 0;
-      const tick = (now: number) => {
-        if (completedStep.current === stepId) {
-          setJourney(1);
-          return;
-        }
-        if (previous !== null && !document.hidden) elapsed += Math.max(0, (now - previous) / 1000);
-        previous = now;
-        setJourney(galaxyJourney(elapsed));
-        if (elapsed >= GALAXY_JOURNEY_DURATION) succeed();
-        else frame = requestAnimationFrame(tick);
-      };
-      frame = requestAnimationFrame(tick);
+      if (!challengeSolved) setJourney(0);
     }, 0);
+    return () => clearTimeout(timer);
+  }, [stepId, challengeSolved]);
+  // Voyage : uniquement après « À toi de jouer » (sinon succeed était ignoré → blocage).
+  useEffect(() => {
+    if (stepId !== 'm10-journey' || !ready || !interactive) return;
+    if (challengeSolved || completedStep.current === stepId) {
+      setJourney(1);
+      return;
+    }
+    if (reduced) return;
+    let frame = 0;
+    let previous: number | null = null;
+    let elapsed = 0;
+    const resetJourneyClock = () => {
+      previous = null;
+    };
+    document.addEventListener('visibilitychange', resetJourneyClock);
+    setJourney(0);
+    const tick = (now: number) => {
+      if (completedStep.current === stepId || challengeSolved) {
+        setJourney(1);
+        return;
+      }
+      if (previous !== null && !document.hidden) elapsed += Math.max(0, (now - previous) / 1000);
+      previous = now;
+      setJourney(galaxyJourney(elapsed));
+      if (elapsed >= GALAXY_JOURNEY_DURATION) {
+        setJourney(1);
+        succeed();
+      } else frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
     return () => {
-      clearTimeout(timer);
       cancelAnimationFrame(frame);
       document.removeEventListener('visibilitychange', resetJourneyClock);
     };
-  }, [stepId, ready, reduced, succeed]);
+  }, [stepId, ready, reduced, interactive, challengeSolved, succeed]);
+  // Si le voyage est terminé (skip / anim) mais la validation a été refusée, réessayer.
+  useEffect(() => {
+    if (stepId !== 'm10-journey' || journey < 1 || !interactive || challengeSolved) return;
+    succeed();
+  }, [stepId, journey, interactive, challengeSolved, succeed]);
   useEffect(() => {
     if (stepId !== 'm10-orbit' || !orbitRunning) return;
     let frame = 0;
@@ -305,7 +338,12 @@ export function MilkyWayScene({ className, stepId, onSuccess, onMiss }: Props) {
       stars.alphaMode = Constants.ALPHA_ADD;
       stars.setFloat('pointSize', galacticPointSize);
       cloud.material = stars;
-      const glow = createMilkyWayGlow(scene, quality === 'low' ? 12 : 20);
+      // Halo qui suit bras + renflement (pas un disque circulaire dominant).
+      const glow = createMilkyWayGlow(scene, quality === 'low' ? 12 : 20, undefined, {
+        softEdge: true,
+        diskStrength: 0.035,
+        intensity: 1.25,
+      });
       const solarRoot = new TransformNode('solar-system-neighbourhood', scene);
       const sun = Vector3.FromArray([
         SUN_NEIGHBOURHOOD.x,
@@ -455,6 +493,12 @@ export function MilkyWayScene({ className, stepId, onSuccess, onMiss }: Props) {
         path.setEnabled(false);
         return path;
       });
+      // Ancre HTML près de chaque trajet (légèrement décalée pour lisibilité).
+      const routeLabelAnchors = GALACTIC_ROUTES.map(({ id }) => {
+        const p = galacticRoutePosition(id, 0.28);
+        const radial = Math.hypot(p.x, p.z) || 1;
+        return new Vector3((p.x / radial) * (radial + 0.85), p.y + 0.55, (p.z / radial) * (radial + 0.85));
+      });
       const travellingSun = MeshBuilder.CreateSphere(
         'travelling-sun',
         { diameter: 0.35, segments: 12 },
@@ -500,14 +544,26 @@ export function MilkyWayScene({ className, stepId, onSuccess, onMiss }: Props) {
         }
         previousStep = step.current;
         const orbital = orbitSample.current;
+        // Les 3 trajets restent visibles pour comparer ; l’actif est en surbrillance.
         orbitPaths.forEach((path, i) => {
-          path.setEnabled(isOrbit && GALACTIC_ROUTES[i]?.id === orbital.route);
-          path.color.set(
-            orbital.failed ? 1 : orbital.done ? 0.4 : 0.3,
-            orbital.failed ? 0.3 : 0.85,
-            orbital.failed ? 0.3 : orbital.done ? 0.55 : 0.92,
-          );
-          path.alpha = orbital.done || orbital.failed ? 1 : 0.65;
+          const id = GALACTIC_ROUTES[i]?.id;
+          const active = id === orbital.route;
+          path.setEnabled(isOrbit);
+          if (!isOrbit) return;
+          if (active && orbital.failed) {
+            path.color.set(1, 0.35, 0.35);
+            path.alpha = 1;
+          } else if (active && orbital.done) {
+            path.color.set(0.35, 1, 0.7);
+            path.alpha = 1;
+          } else if (active) {
+            path.color.set(0.55, 0.95, 1);
+            path.alpha = 1;
+          } else {
+            path.color.set(0.4, 0.55, 0.7);
+            path.alpha = 0.28;
+          }
+          path.renderingGroupId = active ? 1 : 0;
         });
         travellingSun.setEnabled(isOrbit);
         galacticCentre.setEnabled(isOrbit);
@@ -567,7 +623,7 @@ export function MilkyWayScene({ className, stepId, onSuccess, onMiss }: Props) {
         home.setEnabled(
           state.progress > 0.95 &&
             !isOrbit &&
-            (state.located || !['m10-locate', 'm10-explore'].includes(step.current)),
+            (state.located || step.current !== 'm10-locate'),
         );
         candidates.forEach((marker, index) => {
           const visible = step.current === 'm10-locate' && !state.located;
@@ -584,6 +640,26 @@ export function MilkyWayScene({ className, stepId, onSuccess, onMiss }: Props) {
             label.style.left = `${(projected.x / engine.getRenderWidth()) * canvas.clientWidth}px`;
             label.style.top = `${(projected.y / engine.getRenderHeight()) * canvas.clientHeight}px`;
           }
+        });
+        const viewport = camera.viewport.toGlobal(engine.getRenderWidth(), engine.getRenderHeight());
+        const transform = scene.getTransformMatrix();
+        routeLabelAnchors.forEach((anchor, index) => {
+          const label = routeLabelRefs.current[index];
+          if (!label) return;
+          label.hidden = !isOrbit;
+          if (!isOrbit) return;
+          const id = GALACTIC_ROUTES[index]?.id;
+          const letterIndex = routeOrderRef.current.findIndex((choice) => choice.id === id);
+          label.textContent = letterIndex >= 0 ? String.fromCharCode(65 + letterIndex) : '';
+          label.dataset.active = id === orbital.route ? 'true' : 'false';
+          const projected = Vector3.Project(
+            anchor,
+            Matrix.IdentityReadOnly,
+            transform,
+            viewport,
+          );
+          label.style.left = `${(projected.x / engine.getRenderWidth()) * canvas.clientWidth}px`;
+          label.style.top = `${(projected.y / engine.getRenderHeight()) * canvas.clientHeight}px`;
         });
       });
       setReduced(prefersReducedMotion());
@@ -638,16 +714,6 @@ export function MilkyWayScene({ className, stepId, onSuccess, onMiss }: Props) {
       };
     }
     setRotating(false);
-    if (step.current !== 'm10-explore') return;
-    const seen = seenViews.current;
-    if (seen.stepId !== 'm10-explore') {
-      seen.stepId = 'm10-explore';
-      seen.face = false;
-      seen.profile = false;
-    }
-    if (beta < 0.4) seen.face = true;
-    if (beta > 1) seen.profile = true;
-    if (seen.face && seen.profile) succeed();
   };
   const galactic = !['m10-intro', 'm10-journey'].includes(stepId) || journey >= 0.18;
   const neighbourhood = stepId === 'm10-journey' && journey >= 0.025 && !galactic;
@@ -687,6 +753,17 @@ export function MilkyWayScene({ className, stepId, onSuccess, onMiss }: Props) {
         >
           {String.fromCharCode(65 + locationOrder.findIndex((choice) => choice.id === location.id))}
         </span>
+      ))}
+      {GALACTIC_ROUTES.map((routeItem, index) => (
+        <span
+          hidden
+          ref={(element) => {
+            routeLabelRefs.current[index] = element;
+          }}
+          key={`route-label-${routeItem.id}`}
+          className={styles.routeMarker}
+          aria-hidden="true"
+        />
       ))}
       {stepId === 'm10-orbit' && orbitFailed ? (
         <div className={`${styles.success} ${styles.failure}`} role="status">
