@@ -193,6 +193,41 @@ export function configureMissionCamera(
   syncResponsiveCameraZoom(camera);
 }
 
+/**
+ * Le rayon vient d’être calculé pour l’orientation courante.
+ * Empêche le boost paysage de le rapprocher encore (ça rognerait le cadre).
+ */
+export function acceptResponsiveCameraRadius(camera: ArcRotateCamera): void {
+  const lower = camera.lowerRadiusLimit ?? camera.radius;
+  let state = responsiveZoomStates.get(camera);
+  if (!state) {
+    state = {
+      baseLowerLimit: lower,
+      appliedLowerLimit: lower,
+      landscapeBoostApplied: false,
+    };
+    responsiveZoomStates.set(camera, state);
+  }
+  state.appliedLowerLimit = camera.lowerRadiusLimit ?? state.appliedLowerLimit;
+  state.landscapeBoostApplied = isMobileGameLayout() && isLandscapeLayout();
+}
+
+/** Le rayon posé est celui du desktop : le prochain sync peut appliquer le boost paysage. */
+export function markDesktopCameraRadius(camera: ArcRotateCamera): void {
+  const state = responsiveZoomStates.get(camera);
+  if (state) state.landscapeBoostApplied = false;
+}
+
+/** Vrai si le rayon n’a bougé que du boost paysage (changement d’orientation). */
+export function radiusMatchesResponsiveHome(radius: number, homeRadius: number): boolean {
+  const factor = MOBILE_LANDSCAPE_AUTO_ZOOM_FACTOR;
+  return (
+    Math.abs(radius - homeRadius) < 0.45 ||
+    Math.abs(radius - homeRadius * factor) < 0.45 ||
+    Math.abs(radius - homeRadius / factor) < 0.45
+  );
+}
+
 export function captureCameraHome(camera: ArcRotateCamera): MissionCameraHome {
   return {
     alpha: camera.alpha,

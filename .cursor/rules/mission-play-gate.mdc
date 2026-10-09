@@ -1,5 +1,5 @@
 ---
-description: Verrouillage Guide → À toi de jouer → commandes (pas de pré-manipulation)
+description: Guide → À toi de jouer ou geste direct → commandes
 globs: "**/MissionImmersive.*,**/features/missions/**/*,**/content/missions/**/*.ts,**/3d/scenes/**/*.{ts,tsx}"
 alwaysApply: false
 ---
@@ -9,8 +9,8 @@ alwaysApply: false
 Schéma obligatoire pour toute étape `observe` / `manipulate` / `challenge` :
 
 1. Guide ouvert → expliquer (pagination « Suivant » si besoin)
-2. Dernier message → bouton **À toi de jouer**
-3. Après clic → guide replié, commandes visibles, scène interactive
+2. Dernier message → bouton **À toi de jouer** (la scène accepte déjà le geste)
+3. Clic sur le bouton **ou** premier geste sur la scène → guide replié, commandes visibles, jeu démarré
 4. **Relire** → reverrouille scène + masque le dock ; bouton devient **Reprendre**
 
 Source de vérité : `src/features/missions/manipulationGate.ts` (`isPlayGatedStep`, `canInteractWithScene`). Orchestration : `MissionImmersive`.
@@ -20,6 +20,8 @@ Source de vérité : `src/features/missions/manipulationGate.ts` (`isPlayGatedSt
 - Ne jamais rendre le dock / HUD scène utilisable tant que `canInteractWithScene` est faux.
 - Brancher pick, drag, défis et callbacks succès sur `sceneInteractionAllowed` (pas seulement sur `challengeActive`).
 - « À toi de jouer » = acquitter le jeu (`playStarted`) + replier le guide — pas seulement un décor.
+- Tant que ce bouton est affiché et que le jeu n’a pas démarré, un geste sur la scène (pointer, molette) fait la même chose que le clic. Le geste compte déjà comme action de jeu (`isSceneInputEnabled`). Le dock de commandes reste masqué jusqu’à ce départ.
+- Les séquences qui se lancent seules (film des constellations, voyage galactique) attendent ce départ : le geste ou le bouton les déclenche, pas l’affichage du bouton.
 - Ne pas inventer un second système de gate par scène.
 
 ## Exceptions documentées uniquement
@@ -42,6 +44,6 @@ orbitsApi.setRaceChallenge(sceneInteractionAllowed && challengeActive);
 showSceneControls = hasSceneControls && sceneInteractionAllowed;
 ```
 
-- HUD scène visible / cliquable pendant le Guide ouvert
-- Réussite de défi possible avant « À toi de jouer »
+- Dock de commandes visible tant que le jeu n’a pas démarré
+- Réussite de défi pendant les messages du Guide, avant le bouton « À toi de jouer »
 - Relire sans re-verrouiller

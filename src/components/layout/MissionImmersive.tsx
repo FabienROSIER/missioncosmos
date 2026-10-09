@@ -54,7 +54,11 @@ import { useKeepScreenAwake } from '@/lib/keepScreenAwake';
 import { useMissionSequence } from '@/features/missions/useMissionSequence';
 import { splitGuideText } from '@/features/missions/guideText';
 import { isCelebratedChallenge } from '@/features/missions/challengeCelebration';
-import { canInteractWithScene, isPlayGatedStep } from '@/features/missions/manipulationGate';
+import {
+  canInteractWithScene,
+  isPlayGatedStep,
+  isSceneInputEnabled,
+} from '@/features/missions/manipulationGate';
 import { completeMission } from '@/features/progression/saveStore';
 import { useLocalSave } from '@/features/progression/useLocalSave';
 import type { Mission, MissionStep } from '@/types/mission';
@@ -285,6 +289,9 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   });
   const showPlayButton =
     guideExpanded && !hasMoreGuideText && guideCanFold && !challengeSolved && playGatedStep;
+  // Bouton affiché, jeu pas encore lancé : le geste sur la scène démarre le défi.
+  const playOffered = showPlayButton && !playStarted;
+  const sceneInputEnabled = isSceneInputEnabled(sceneInteractionAllowed, playOffered);
   // Exploration libre (ex. m05-observe) : garder le CTA visible même en « Relire »,
   // sinon seul « Reprendre » apparaît et on ne peut plus avancer (surtout mobile).
   const showContinueCta =
@@ -346,7 +353,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     stepKind: step.kind,
     stepId: step.id,
     challengeSolved,
-    sceneInteractionAllowed,
+    sceneInteractionAllowed: sceneInputEnabled,
     targetMarkerId,
     challengeOrbit,
     successFeedback,
@@ -358,7 +365,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
       stepKind: step.kind,
       stepId: step.id,
       challengeSolved,
-      sceneInteractionAllowed,
+      sceneInteractionAllowed: sceneInputEnabled,
       targetMarkerId,
       challengeOrbit,
       successFeedback,
@@ -368,7 +375,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     step.kind,
     step.id,
     challengeSolved,
-    sceneInteractionAllowed,
+    sceneInputEnabled,
     targetMarkerId,
     challengeOrbit,
     successFeedback,
@@ -393,14 +400,14 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     const earthOrbitView = orbitStepIndex >= 0 && stepIndex >= orbitStepIndex;
 
     earthApi.setOrbitViewEnabled(earthOrbitView);
-    earthApi.setOrbitChallengeEnabled(sceneInteractionAllowed && challengeActive && challengeOrbit);
+    earthApi.setOrbitChallengeEnabled(sceneInputEnabled && challengeActive && challengeOrbit);
     earthApi.setMarkersVisible(showMarkers && !earthOrbitView);
     earthApi.setChallengePickEnabled(
-      sceneInteractionAllowed && challengeActive && Boolean(targetMarkerId) && !earthOrbitView,
+      sceneInputEnabled && challengeActive && Boolean(targetMarkerId) && !earthOrbitView,
     );
     // Intro / manip : avance dès qu’on tourne assez le globe
     earthApi.setOrbitDetectEnabled(
-      sceneInteractionAllowed &&
+      sceneInputEnabled &&
         !earthOrbitView &&
         (step.kind === 'intro' || step.kind === 'manipulate'),
     );
@@ -433,7 +440,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     challengeSolved,
     challengeOrbit,
     targetMarkerId,
-    sceneInteractionAllowed,
+    sceneInputEnabled,
     step.kind,
     step.id,
   ]);
@@ -442,7 +449,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     if (!dayNightApi || !isDayNight) return;
     const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
 
-    const playing = !cinematic && sceneInteractionAllowed;
+    const playing = !cinematic && sceneInputEnabled;
     dayNightApi.setHouseVisible(showMarkers);
     dayNightApi.setCinematicMode(cinematic);
     dayNightApi.setEarthDragEnabled(playing);
@@ -455,7 +462,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     showMarkers,
     challengeActive,
     targetLighting,
-    sceneInteractionAllowed,
+    sceneInputEnabled,
     step.kind,
   ]);
 
@@ -463,7 +470,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     if (!moonPhasesApi || !isMoonPhases) return;
     const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
 
-    const playing = !cinematic && sceneInteractionAllowed;
+    const playing = !cinematic && sceneInputEnabled;
     moonPhasesApi.setCinematicMode(cinematic);
     moonPhasesApi.setMoonDragEnabled(playing && step.kind !== 'intro');
     moonPhasesApi.setPhaseChallenge(
@@ -474,7 +481,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     isMoonPhases,
     challengeActive,
     targetPhase,
-    sceneInteractionAllowed,
+    sceneInputEnabled,
     step.kind,
   ]);
 
@@ -482,7 +489,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     if (!eclipsesApi || !isEclipses) return;
     const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
 
-    const playing = !cinematic && sceneInteractionAllowed;
+    const playing = !cinematic && sceneInputEnabled;
     eclipsesApi.setCinematicMode(cinematic);
     eclipsesApi.setMoonDragEnabled(playing && step.kind !== 'intro');
     eclipsesApi.setEclipseChallenge(
@@ -495,7 +502,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     isEclipses,
     challengeActive,
     targetEclipse,
-    sceneInteractionAllowed,
+    sceneInputEnabled,
     step.kind,
     step.id,
   ]);
@@ -507,9 +514,9 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
 
     solarApi.setCinematicMode(cinematic);
-    solarApi.setPickEnabled(!cinematic && sceneInteractionAllowed && step.kind !== 'intro');
+    solarApi.setPickEnabled(!cinematic && sceneInputEnabled && step.kind !== 'intro');
     solarApi.setOrderChallenge(
-      !cinematic && sceneInteractionAllowed && challengeActive && challengePlanetOrder,
+      !cinematic && sceneInputEnabled && challengeActive && challengePlanetOrder,
     );
     if (step.id === 'm05-scale') {
       solarApi.setScaleMode('sizes');
@@ -524,7 +531,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     isSolarSystem,
     challengeActive,
     challengePlanetOrder,
-    sceneInteractionAllowed,
+    sceneInputEnabled,
     step.kind,
     step.id,
   ]);
@@ -532,13 +539,13 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   useLayoutEffect(() => {
     if (!orbitsApi || !isOrbits || showOrbitFall) return;
     const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
-    orbitsApi.setPickEnabled(!cinematic && sceneInteractionAllowed && step.kind !== 'intro');
+    orbitsApi.setPickEnabled(!cinematic && sceneInputEnabled && step.kind !== 'intro');
     orbitsApi.setInfoEnabled(step.id === 'm06-observe' || step.id === 'm06-challenge');
     orbitsApi.setRaceChallenge(
-      !cinematic && sceneInteractionAllowed && challengeActive && challengeOrbitRace,
+      !cinematic && sceneInputEnabled && challengeActive && challengeOrbitRace,
     );
     if (
-      (sceneInteractionAllowed && challengeActive && challengeOrbitRace) ||
+      (sceneInputEnabled && challengeActive && challengeOrbitRace) ||
       step.kind === 'intro'
     ) {
       orbitsApi.setSpeed(1);
@@ -549,7 +556,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     showOrbitFall,
     challengeActive,
     challengeOrbitRace,
-    sceneInteractionAllowed,
+    sceneInputEnabled,
     step.kind,
     step.id,
   ]);
@@ -557,11 +564,11 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   useEffect(() => {
     if (!seasonsApi || !isSeasons) return;
     const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
-    seasonsApi.setOrbitDragEnabled(!cinematic && sceneInteractionAllowed && step.kind !== 'intro');
+    seasonsApi.setOrbitDragEnabled(!cinematic && sceneInputEnabled && step.kind !== 'intro');
     // Conserver le cadrage global après la réussite, jusqu’au clic sur « Continuer ».
     // Sinon la caméra revenait immédiatement à son ancienne vue et recoupait l’orbite.
     const northernSummerStep =
-      !cinematic && sceneInteractionAllowed && step.kind === 'challenge' && challengeNorthernSummer;
+      !cinematic && sceneInputEnabled && step.kind === 'challenge' && challengeNorthernSummer;
     seasonsApi.setChallengeEnabled(northernSummerStep);
     if (step.id === 'm07-observe' || step.id === 'm07-challenge') {
       seasonsApi.setTiltDeg(23.5);
@@ -571,7 +578,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     isSeasons,
     challengeActive,
     challengeNorthernSummer,
-    sceneInteractionAllowed,
+    sceneInputEnabled,
     step.kind,
     step.id,
   ]);
@@ -579,13 +586,13 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   useEffect(() => {
     if (!starsApi || !isStars) return;
     const cinematic = step.kind === 'quiz' || step.kind === 'reward' || step.kind === 'complete';
-    starsApi.setPickEnabled(!cinematic && sceneInteractionAllowed && step.kind !== 'intro');
+    starsApi.setPickEnabled(!cinematic && sceneInputEnabled && step.kind !== 'intro');
     const observatoryStep =
-      !cinematic && sceneInteractionAllowed && step.kind === 'challenge' && challengeObservatory;
+      !cinematic && sceneInputEnabled && step.kind === 'challenge' && challengeObservatory;
     starsApi.setChallengeEnabled(observatoryStep);
 
     if (step.id === 'm08-observe') {
-      starsApi.setDiscovery(!cinematic && sceneInteractionAllowed && challengeActive);
+      starsApi.setDiscovery(!cinematic && sceneInputEnabled && challengeActive);
       return;
     }
     starsApi.setDiscovery(false);
@@ -598,7 +605,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     isStars,
     challengeActive,
     challengeObservatory,
-    sceneInteractionAllowed,
+    sceneInputEnabled,
     step.kind,
     step.id,
   ]);
@@ -606,7 +613,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   useEffect(() => {
     if (!starLightApi || !isStellarLight) return;
     if (step.id === 'm09-spectrum') {
-      if (sceneInteractionAllowed && challengeActive) {
+      if (sceneInputEnabled && challengeActive) {
         starLightApi.setDiscovery(true);
       } else {
         starLightApi.setDiscovery(false);
@@ -621,7 +628,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     else if (step.id === 'm09-challenge') mode = 'challenge';
     else if (step.id === 'm09-explain' || step.id === 'm09-reward') mode = 'review';
     starLightApi.setMode(mode);
-  }, [starLightApi, isStellarLight, step.id, sceneInteractionAllowed, challengeActive]);
+  }, [starLightApi, isStellarLight, step.id, sceneInputEnabled, challengeActive]);
 
   const onEarthApi = useCallback((api: EarthSceneApi) => {
     setEarthApi(api);
@@ -684,10 +691,10 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   );
 
   const onSignificantOrbit = useCallback(() => {
-    if (!sceneInteractionAllowed || (step.kind !== 'intro' && step.kind !== 'manipulate')) return;
+    if (!sceneInputEnabled || (step.kind !== 'intro' && step.kind !== 'manipulate')) return;
     setFeedback(null);
     goNext();
-  }, [sceneInteractionAllowed, step.kind, goNext]);
+  }, [sceneInputEnabled, step.kind, goNext]);
 
   const onOrbitChallengeSuccess = useCallback(() => {
     const ctx = pickCtxRef.current;
@@ -916,6 +923,15 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     setGuideOverride({ stepId: step.id, expanded: !guideExpanded, challengeSolved });
   };
 
+  const beginPlay = () => {
+    setPlayStartedStepId(step.id);
+    setGuideOverride({
+      stepId: step.id,
+      expanded: false,
+      challengeSolved,
+    });
+  };
+
   const onContinue = () => {
     if (!canAdvance || continueTimerRef.current !== null) return;
     const advance = () => {
@@ -1035,8 +1051,14 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
         <div className={styles.sceneArea}>
           <div
             className={styles.sceneInteractionLayer}
-            inert={!sceneInteractionAllowed}
-            data-scene-interaction={sceneInteractionAllowed ? 'enabled' : 'locked'}
+            inert={!sceneInputEnabled}
+            data-scene-interaction={sceneInputEnabled ? 'enabled' : 'locked'}
+            onPointerDownCapture={() => {
+              if (playOffered) beginPlay();
+            }}
+            onWheelCapture={() => {
+              if (playOffered) beginPlay();
+            }}
           >
             {isBlackHoles ? (
               <BlackHoleScene
@@ -1485,12 +1507,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                     type="button"
                     className={showContinueCta ? styles.ghostBtnWide : styles.cta}
                     onClick={() => {
-                      setPlayStartedStepId(step.id);
-                      setGuideOverride({
-                        stepId: step.id,
-                        expanded: false,
-                        challengeSolved,
-                      });
+                      beginPlay();
                       companionButtonRef.current?.focus({ preventScroll: true });
                     }}
                   >

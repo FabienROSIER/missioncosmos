@@ -69,6 +69,15 @@ export function cameraRadiusForSphere(
   return boundRadius / Math.sin(half);
 }
 
+/** Même calcul, avec le fov et le format réels du canvas. */
+export function cameraRadiusFittingSphere(
+  camera: ArcRotateCamera,
+  boundRadius: number,
+  padding = BODY_FRAME_PADDING,
+): number {
+  return cameraRadiusForSphere(boundRadius, camera.fov, canvasAspect(camera), padding);
+}
+
 function canvasAspect(camera: ArcRotateCamera): number {
   const canvas = camera.getScene().getEngine().getRenderingCanvas();
   const width = canvas?.clientWidth ?? 0;

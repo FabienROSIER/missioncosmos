@@ -32,3 +32,12 @@ export function canInteractWithScene({
   if (!isPlayGatedStep(step) || challengeSolved) return false;
   return playStarted && !guideExpanded;
 }
+
+/**
+ * Entrées 3D actives : session de jeu ouverte, ou bouton « À toi de jouer » affiché.
+ * Un geste sur la scène démarre alors le jeu (guide replié, commandes visibles).
+ * `playOffered` doit être faux pendant Relire (le jeu a déjà démarré).
+ */
+export function isSceneInputEnabled(sessionOpen: boolean, playOffered: boolean): boolean {
+  return sessionOpen || playOffered;
+}

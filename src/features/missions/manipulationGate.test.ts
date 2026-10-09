@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { listMissions } from '@/content/missions';
 import type { MissionStep } from '@/types/mission';
-import { canInteractWithScene, isPlayGatedStep } from './manipulationGate';
+import { canInteractWithScene, isPlayGatedStep, isSceneInputEnabled } from './manipulationGate';
 
 const steps = listMissions().flatMap((mission) => mission.steps);
 const stepById = (id: string) => steps.find((step) => step.id === id)!;
@@ -66,6 +66,12 @@ describe('verrouillage des manipulations de mission', () => {
       expect(isPlayGatedStep(step), id).toBe(false);
       expect(canInteract(step, true, false), id).toBe(false);
     }
+  });
+
+  it('accepte déjà le geste quand À toi de jouer est affiché', () => {
+    expect(isSceneInputEnabled(false, true)).toBe(true);
+    expect(isSceneInputEnabled(true, false)).toBe(true);
+    expect(isSceneInputEnabled(false, false)).toBe(false);
   });
 
   it('désactive la scène dès que le défi est réussi', () => {

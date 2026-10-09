@@ -24,6 +24,7 @@ import {
   captureCameraHome,
   configureMissionCamera,
   createMissionCameraApi,
+  radiusMatchesResponsiveHome,
 } from '@/3d/controls/missionCamera';
 import { CelestialBodyEntity } from '@/3d/entities/CelestialBodyEntity';
 import { playPlanetSuccessHalo } from '@/3d/fx/planetSuccessHalo';
@@ -259,6 +260,31 @@ export function SolarSystemScene({
     }
 
     const maxOrbit = () => Math.max(...PLANET_ORDER.map((id) => resolveOrbit(id)));
+    let missionCamera: MissionCameraApi | null = null;
+    let autoAlpha = 0;
+    let autoBeta = 0;
+    let autoRadius = 0;
+    let autoTarget = Vector3.Zero();
+
+    const rememberOverview = () => {
+      if (!(camera instanceof ArcRotateCamera)) return;
+      const shot = captureCameraHome(camera);
+      autoAlpha = shot.alpha;
+      autoBeta = shot.beta;
+      autoRadius = shot.radius;
+      autoTarget = shot.target.clone();
+      missionCamera?.setHome?.(shot);
+    };
+
+    const stillOnOverview = () => {
+      if (!(camera instanceof ArcRotateCamera)) return false;
+      return (
+        radiusMatchesResponsiveHome(camera.radius, autoRadius) &&
+        Vector3.Distance(camera.target, autoTarget) < 0.3 &&
+        Math.abs(camera.alpha - autoAlpha) < 0.08 &&
+        Math.abs(camera.beta - autoBeta) < 0.08
+      );
+    };
 
     const frameSizes = () => {
       if (!(camera instanceof ArcRotateCamera)) return;
@@ -362,6 +388,7 @@ export function SolarSystemScene({
       if (scaleMode !== 'readable') return;
       if (focusIndex === -1 && camera instanceof ArcRotateCamera) {
         frameSolarSystemOverview(camera, maxOrbit());
+        rememberOverview();
       } else if (focusIndex === 0) {
         focusBody('sun');
       } else if (focusIndex > 0) {
@@ -419,6 +446,7 @@ export function SolarSystemScene({
         clearSelection();
         setFact(null);
         frameSolarSystemOverview(camera, maxOrbit());
+        rememberOverview();
       } else if (id === 'sun') {
         focusIndex = 0;
         presentBody('sun');
@@ -610,9 +638,21 @@ export function SolarSystemScene({
     };
     apiRef.current = api;
     onSceneApiRef.current?.(api);
+    if (camera instanceof ArcRotateCamera) {
+      missionCamera = api.camera;
+      rememberOverview();
+    }
     const resize = new ResizeObserver(() => {
       engine.resize();
-      if (scaleMode === 'sizes') frameSizes();
+      if (!(camera instanceof ArcRotateCamera)) return;
+      if (scaleMode === 'sizes') {
+        frameSizes();
+        return;
+      }
+      // Le fov est déjà mis à jour par BabylonCanvas (observateur enregistré avant).
+      if (scaleMode !== 'readable' || focusIndex !== -1 || !stillOnOverview()) return;
+      frameSolarSystemOverview(camera, maxOrbit());
+      rememberOverview();
     });
     const canvas = engine.getRenderingCanvas();
     if (canvas) resize.observe(canvas);
