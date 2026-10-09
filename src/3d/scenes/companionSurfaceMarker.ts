@@ -27,6 +27,8 @@ export type CompanionSurfaceMarkerHandle = HouseMarkerHandle & {
    * Si null, garde la position lat/lon fixe (France).
    */
   syncLookAt: (worldTarget: Vector3 | null) => void;
+  /** Oriente le compagnon vers une cible monde sans le déplacer (France fixe). */
+  lookToward: (worldTarget: Vector3) => void;
   /**
    * Masque le compagnon s’il est derrière le globe par rapport à la caméra
    * (évite see-through + disparitions par z-fight).
@@ -428,6 +430,19 @@ export async function createCompanionSurfaceMarker(
         inv,
       );
       orientOnSurface(pivot, localDir, lookLocal);
+      syncBeaconTransform();
+    },
+    lookToward: (worldTarget) => {
+      const center = earthPivot.getAbsolutePosition();
+      const outwardWorld = companionWorldPos().subtract(center);
+      const toTarget = worldTarget.subtract(companionWorldPos());
+      if (outwardWorld.lengthSquared() < 1e-8 || toTarget.lengthSquared() < 1e-8) return;
+      const inv = Matrix.Invert(earthPivot.getWorldMatrix());
+      orientOnSurface(
+        pivot,
+        Vector3.TransformNormal(outwardWorld, inv),
+        Vector3.TransformNormal(toTarget, inv),
+      );
       syncBeaconTransform();
     },
     updateOcclusion: (cameraWorldPos) => {

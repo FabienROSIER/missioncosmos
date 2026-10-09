@@ -10,6 +10,162 @@
   height: 100%;
 }
 
+.earthPip {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+  left: max(0.5rem, env(safe-area-inset-left, 0px));
+  top: calc(3.4rem + env(safe-area-inset-top, 0px));
+  width: min(83vw, 21.5rem);
+  aspect-ratio: 4 / 3;
+  border-radius: 0.85rem;
+  border: 2px solid rgba(126, 214, 223, 0.55);
+  box-shadow:
+    0 0 0 1px rgba(7, 11, 22, 0.55),
+    0 8px 24px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  background: transparent;
+}
+
+.earthPipChrome {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 0.35rem 0.45rem;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(7, 11, 22, 0.55) 0%,
+    rgba(7, 11, 22, 0.2) 22%,
+    transparent 42%
+  );
+}
+
+.pipChromeTop {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+  max-width: 100%;
+}
+
+.earthPipLabel {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--color-star);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.75);
+  line-height: 1.2;
+}
+
+.earthPipBadge {
+  align-self: flex-start;
+  margin: 0;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #1a1208;
+  background: rgba(220, 230, 245, 0.92);
+  border: 1px solid rgba(126, 214, 223, 0.4);
+}
+
+.pipExpandButton {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .earthPip {
+    width: min(52vw, 24.7rem);
+    top: calc(3.75rem + env(safe-area-inset-top, 0px));
+  }
+}
+
+@media (orientation: landscape) {
+  .earthPip {
+    top: auto;
+    bottom: max(0.6rem, env(safe-area-inset-bottom, 0px));
+    width: min(52vw, 22rem);
+  }
+}
+
+@media (max-width: 899px), (pointer: coarse) and (max-width: 1180px) and (max-height: 600px) {
+  .earthPip {
+    top: 0.5rem;
+    bottom: auto;
+    right: 0.5rem;
+    left: auto;
+    width: min(36vw, 9rem);
+    aspect-ratio: 16 / 10;
+  }
+
+  .earthPipChrome {
+    padding: 0.2rem 0.28rem 0.22rem;
+  }
+
+  .pipChromeTop {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.15rem 0.25rem;
+  }
+
+  .earthPipLabel,
+  .earthPipBadge {
+    font-size: 0.5rem;
+  }
+
+  .pipExpandButton {
+    position: absolute;
+    right: 0.25rem;
+    bottom: 0.25rem;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid rgba(245, 247, 251, 0.5);
+    border-radius: var(--radius-pill);
+    background: rgba(7, 11, 22, 0.78);
+    color: var(--color-star);
+    font: inherit;
+    font-size: 1.1rem;
+    font-weight: 800;
+    pointer-events: auto;
+    cursor: pointer;
+  }
+}
+
+@media (orientation: landscape) and (max-width: 899px) {
+  .earthPip {
+    top: 0.5rem;
+    right: 0.5rem;
+    bottom: auto;
+    left: auto;
+    width: min(22vw, 10rem);
+    aspect-ratio: 16 / 10;
+  }
+
+  .earthPip.earthPipExpanded {
+    width: min(42vw, 18rem);
+  }
+}
+
+@media (orientation: portrait) and (max-width: 899px) {
+  .earthPip.earthPipExpanded {
+    width: min(76vw, 18rem);
+  }
+}
+
 .hud {
   position: absolute;
   z-index: 4;

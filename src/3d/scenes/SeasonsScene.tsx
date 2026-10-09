@@ -8,7 +8,6 @@ import {
   Color3,
   MeshBuilder,
   PointerEventTypes,
-  Quaternion,
   StandardMaterial,
   TransformNode,
   Vector3,
@@ -25,6 +24,17 @@ import {
   createMissionCameraApi,
 } from '@/3d/controls/missionCamera';
 import { CelestialBodyEntity } from '@/3d/entities/CelestialBodyEntity';
+import { createCompanionSurfaceMarker } from '@/3d/scenes/companionSurfaceMarker';
+import { EARTH_MAIN_LAYER, MAIN_CAMERA_LAYER } from '@/3d/scenes/houseViewPip';
+import { attachSeasonNoonPip } from '@/3d/scenes/seasonNoonPip';
+import {
+  FRANCE_LAT_DEG,
+  FRANCE_LON_DEG,
+  earthNoonQuaternion,
+  franceSunElevationRad,
+  noonSunBand,
+} from '@/3d/scenes/seasonNoon';
+import { COMPANION_TEMP_NAME } from '@/content/companion';
 import {
   applyDayNightEarthMaterials,
   applyEmissiveSunMaterial,
@@ -58,6 +68,7 @@ import {
   southSeasonAt,
 } from '@/content/bodies/seasonsLearning';
 import { MISSION_STARFIELD_SRC } from '@/lib/assets/paths';
+import { prefersReducedMotion } from '@/lib/motion';
 import { logger } from '@/lib/logger';
 import styles from './SeasonsScene.module.css';
 
@@ -190,6 +201,7 @@ function createRays(scene: Scene): {
       line = MeshBuilder.CreateLines('season-rays', { points }, scene);
       line.color = matColor;
       line.isPickable = false;
+      line.layerMask = EARTH_MAIN_LAYER;
     },
     dispose: () => {
       line?.dispose();
@@ -210,9 +222,12 @@ export function SeasonsScene({
   const [tiltDeg, setTiltUi] = useState(EARTH_AXIAL_TILT_DEG);
   const [northLabel, setNorthLabel] = useState('Été');
   const [southLabel, setSouthLabel] = useState('Hiver');
+  const [sunBand, setSunBand] = useState<'haut' | 'moyen' | 'bas'>('haut');
+  const [pipExpanded, setPipExpanded] = useState(false);
   const [hint, setHint] = useState<string | null>(null);
   const runtimeRef = useRef<SeasonsSceneApi | null>(null);
   const hudRef = useRef<HTMLDivElement | null>(null);
+  const pipFrameRef = useRef<HTMLDivElement | null>(null);
   const onSceneApiRef = useRef(onSceneApi);
   const onSummerSuccessRef = useRef(onSummerSuccess);
   const onSummerExitRef = useRef(onSummerExit);
@@ -280,7 +295,7 @@ export function SeasonsScene({
         visual: { ...EARTH_BODY.visual, visualRadius: EARTH_R },
       },
       position: new Vector3(ORBIT_R, 0, 0),
-      spin: true,
+      spin: false,
     });
     applyDayNightEarthMaterials(scene, earth.meshes);
     optimizeCelestialMeshes(earth.meshes, quality, 'planet');
@@ -299,6 +314,11 @@ export function SeasonsScene({
     const axis = createAxis(scene, EARTH_R * 3.1);
     axis.root.parent = earth.pivot;
     const rays = createRays(scene);
+    const companion = await createCompanionSurfaceMarker(scene, earth.pivot, EARTH_R, {
+      latDeg: FRANCE_LAT_DEG,
+      lonDeg: FRANCE_LON_DEG,
+      height: 0.32,
+    });
 
     const refreshLabels = () => {
       const n = northSeasonAt(orbitAngle, tilt);
@@ -312,14 +332,17 @@ export function SeasonsScene({
       const x = Math.cos(orbitAngle) * ORBIT_R;
       const z = Math.sin(orbitAngle) * ORBIT_R;
       earth.pivot.position.set(x, 0, z);
-      // Axe fixe dans l’espace : penché vers +Z (nord céleste pédagogique)
+      // Axe fixe dans l’espace, puis rotation pour garder la France à midi.
       const tiltRad = (tilt * Math.PI) / 180;
-      earth.pivot.rotationQuaternion = Quaternion.RotationAxis(Vector3.Right(), tiltRad);
+      const toSun = new Vector3(-x, 0, -z);
+      earth.pivot.rotationQuaternion = earthNoonQuaternion(toSun, tiltRad);
       earth.pivot.rotation.setAll(0);
       sun.pivot.computeWorldMatrix(true);
       earth.pivot.computeWorldMatrix(true);
       const sunPosition = sun.pivot.getAbsolutePosition();
       const earthPosition = earth.pivot.getAbsolutePosition();
+      companion.lookToward(sunPosition);
+      setSunBand(noonSunBand(franceSunElevationRad(toSun, tiltRad)));
       // DirectionalLight.direction = sens de propagation des rayons : Soleil → Terre.
       lighting.sunLight.direction = earthPosition.subtract(sunPosition).normalize();
       rays.update(sunPosition, earthPosition);
@@ -346,8 +369,13 @@ export function SeasonsScene({
     const camera = scene.activeCamera;
     if (!(camera instanceof ArcRotateCamera)) {
       logger.warn('SeasonsScene: caméra ArcRotate attendue');
+      companion.dispose();
       return;
     }
+    camera.layerMask = MAIN_CAMERA_LAYER;
+    background.dome.layerMask = EARTH_MAIN_LAYER;
+    orbit.mesh.layerMask = EARTH_MAIN_LAYER;
+    for (const mesh of axis.root.getChildMeshes()) mesh.layerMask = EARTH_MAIN_LAYER;
     camera.lowerRadiusLimit = 7;
     camera.upperRadiusLimit = 16;
     camera.lowerBetaLimit = 0.35;
@@ -359,7 +387,7 @@ export function SeasonsScene({
       upperBetaLimit: Math.PI / 2 - 0.08,
     });
     const clearSeasonOverlay = () => {
-      keepFramingClearOfElement(camera, seasonFramingSpheres(), hudRef.current);
+      keepFramingClearOfElement(camera, seasonFramingSpheres(), pipFrameRef.current);
     };
     clearSeasonOverlay();
 
@@ -387,6 +415,25 @@ export function SeasonsScene({
     );
 
     const canvas = engine.getRenderingCanvas();
+    const frameEl = pipFrameRef.current;
+    const noonPip =
+      canvas && frameEl
+        ? attachSeasonNoonPip({
+            scene,
+            mainCamera: camera,
+            companion,
+            earthPivot: earth.pivot,
+            earthRadius: EARTH_R,
+            earthMeshes: earth.meshes,
+            mainOnlyMeshes: [orbit.mesh, background.dome, ...axis.root.getChildMeshes()],
+            sunMeshes: sun.meshes,
+            sunRadius: SUN_R,
+            referenceDistance: ORBIT_R,
+            frameEl,
+            canvasEl: canvas,
+            sunPosition: () => sun.pivot.getAbsolutePosition(),
+          })
+        : null;
     let cameraControlsAttached = true;
     let challengeCameraHome: ReturnType<typeof captureCameraHome> | null = null;
     let challengeCameraLocked = false;
@@ -445,7 +492,41 @@ export function SeasonsScene({
       },
     };
 
+    let cancelSeasonJump: (() => void) | null = null;
+
+    /** Glisse la Terre sur l’anneau jusqu’à l’angle, par le plus court chemin. */
+    const animateOrbitTo = (targetRad: number) => {
+      cancelSeasonJump?.();
+      const startAngle = orbitAngle;
+      const delta = normalizeAngle(targetRad - startAngle);
+      if (Math.abs(delta) < 0.02 || prefersReducedMotion()) {
+        orbitAngle = normalizeAngle(targetRad);
+        placeEarth();
+        return;
+      }
+      const durationMs = Math.min(1300, Math.max(520, Math.abs(delta) * 420));
+      let elapsedMs = 0;
+      const observer = scene.onBeforeRenderObservable.add(() => {
+        elapsedMs = Math.min(durationMs, elapsedMs + engine.getDeltaTime());
+        const progress = elapsedMs / durationMs;
+        const eased = progress * progress * (3 - 2 * progress);
+        orbitAngle = normalizeAngle(startAngle + delta * eased);
+        placeEarth();
+        if (progress >= 1) {
+          scene.onBeforeRenderObservable.remove(observer);
+          cancelSeasonJump = null;
+          orbitAngle = normalizeAngle(targetRad);
+          placeEarth();
+        }
+      });
+      cancelSeasonJump = () => {
+        scene.onBeforeRenderObservable.remove(observer);
+        cancelSeasonJump = null;
+      };
+    };
+
     const startChallengeTransition = () => {
+      cancelSeasonJump?.();
       cancelChallengeTransition?.();
       challengePreparing = true;
 
@@ -488,6 +569,7 @@ export function SeasonsScene({
         const mesh = info.pickInfo?.pickedMesh;
         const hitEarth =
           mesh && earth.meshes.some((m) => m === mesh || mesh.isDescendantOf(earth.pivot));
+        if (hitEarth) cancelSeasonJump?.();
         dragging = Boolean(hitEarth);
         if (dragging) setCameraControlsAttached(false);
       } else if (
@@ -517,8 +599,7 @@ export function SeasonsScene({
       camera: cameraApi,
       setOrbitAngle: (rad) => {
         cancelChallengeTransition?.();
-        orbitAngle = rad;
-        placeEarth();
+        animateOrbitTo(rad);
       },
       setTiltDeg: (deg) => {
         tilt = Math.min(35, Math.max(0, deg));
@@ -552,9 +633,12 @@ export function SeasonsScene({
     return () => {
       stopFramingWatch();
       perf.dispose();
+      cancelSeasonJump?.();
       cancelChallengeTransition?.();
       setCameraControlsAttached(false);
       scene.onPointerObservable.remove(pointerObs);
+      noonPip?.dispose();
+      companion.dispose();
       rays.dispose();
       axis.dispose();
       orbit.dispose();
@@ -586,6 +670,30 @@ export function SeasonsScene({
         mobileFovScale={1.65}
         onSceneReady={onSceneReady}
       />
+      <div
+        ref={pipFrameRef}
+        className={`${styles.earthPip} ${pipExpanded ? styles.earthPipExpanded : ''}`}
+        aria-label={`Midi en France avec ${COMPANION_TEMP_NAME}`}
+      >
+        <div className={styles.earthPipChrome}>
+          <div className={styles.pipChromeTop}>
+            <p className={styles.earthPipLabel}>Midi en France</p>
+            <p className={styles.earthPipBadge}>
+              {{ haut: 'Soleil haut', moyen: 'Soleil moyen', bas: 'Soleil bas' }[sunBand]}
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          className={styles.pipExpandButton}
+          aria-label={pipExpanded ? 'Réduire la vue de midi' : 'Agrandir la vue de midi'}
+          aria-pressed={pipExpanded}
+          onPointerDown={(event) => event.stopPropagation()}
+          onClick={() => setPipExpanded((expanded) => !expanded)}
+        >
+          {pipExpanded ? '↙' : '↗'}
+        </button>
+      </div>
       <SceneControls ref={hudRef} className={styles.hud}>
         <div className={styles.seasonRow} aria-live="polite">
           <p className={styles.seasonChip}>
