@@ -291,7 +291,12 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     guideExpanded && !hasMoreGuideText && guideCanFold && !challengeSolved && playGatedStep;
   // Bouton affiché, jeu pas encore lancé : le geste sur la scène démarre le défi.
   const playOffered = showPlayButton && !playStarted;
-  const sceneInputEnabled = isSceneInputEnabled(sceneInteractionAllowed, playOffered);
+  const starsDistanceCue =
+    step.id === 'm08-observe' &&
+    !challengeSolved &&
+    (guideMessageIndex > 0 || !guideExpanded);
+  const sceneInputEnabled =
+    isSceneInputEnabled(sceneInteractionAllowed, playOffered) || starsDistanceCue;
   // Exploration libre (ex. m05-observe) : garder le CTA visible même en « Relire »,
   // sinon seul « Reprendre » apparaît et on ne peut plus avancer (surtout mobile).
   const showContinueCta =
@@ -304,7 +309,9 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     (!showPlayButton || (playStarted && step.requiresSuccess !== true));
   const showSceneControls =
     hasSceneControls &&
-    (sceneInteractionAllowed || (isConstellations && step.id === 'm10-film' && challengeSolved));
+    (sceneInteractionAllowed ||
+      starsDistanceCue ||
+      (isConstellations && step.id === 'm10-film' && challengeSolved));
   const quiz = step.quizId ? getQuizById(step.quizId) : undefined;
   const glossaryEntries = getGlossaryEntries(mission.glossaryIds ?? []);
   const nextMissionId = getCatalogEntry(mission.id)?.unlocksNextId;
@@ -592,7 +599,17 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     starsApi.setChallengeEnabled(observatoryStep);
 
     if (step.id === 'm08-observe') {
-      starsApi.setDiscovery(!cinematic && sceneInputEnabled && challengeActive);
+      const discover = !cinematic && sceneInputEnabled && challengeActive;
+      // « Bouge la distance » : le curseur doit être là, pas seulement après d'autres clics.
+      if (starsDistanceCue) {
+        starsApi.showDistance(true);
+        return;
+      }
+      starsApi.showDistance(false);
+      starsApi.setDiscovery(discover);
+      // La consigne « touche une étoile » s'affiche avant le jeu :
+      // les trois tailles doivent déjà être visibles, pas seulement le Soleil.
+      if (!discover && challengeActive) starsApi.setMode('sizes');
       return;
     }
     starsApi.setDiscovery(false);
@@ -606,6 +623,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     challengeActive,
     challengeObservatory,
     sceneInputEnabled,
+    starsDistanceCue,
     step.kind,
     step.id,
   ]);

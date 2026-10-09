@@ -58,6 +58,8 @@ export type StarsSceneApi = {
   setPickEnabled: (enabled: boolean) => void;
   /** Découverte guidée : tailles, puis couleurs, puis distance. */
   setDiscovery: (enabled: boolean) => void;
+  /** Affiche Bételgeuse et le curseur de distance. */
+  showDistance: (enabled: boolean) => void;
 };
 
 type StarsSceneProps = {
@@ -152,6 +154,8 @@ export function StarsScene({
     });
     let modeLocal: StarsSceneMode = 'sun';
     let discoveryPhase: 'off' | 'sizes' | 'colors' | 'apparent' | 'done' = 'off';
+    let sizesPickId: StarId | null = null;
+    let phaseChangedAt = 0;
     let apparentStart = 55;
     let challenge = false;
     let challengeDone = false;
@@ -465,6 +469,7 @@ export function StarsScene({
         if (enabled) {
           if (discoveryPhase === 'off') {
             discoveryPhase = 'sizes';
+            sizesPickId = null;
             modeLocal = 'sizes';
             setModeUi('sizes');
             setShowReticle(false);
@@ -473,7 +478,31 @@ export function StarsScene({
           }
           return;
         }
-        if (discoveryPhase !== 'done') discoveryPhase = 'off';
+        if (discoveryPhase !== 'done') {
+          discoveryPhase = 'off';
+          sizesPickId = null;
+        }
+      },
+      showDistance: (enabled) => {
+        if (discoveryPhase === 'done') return;
+        if (!enabled) {
+          if (modeLocal !== 'apparent') return;
+          discoveryPhase = 'off';
+          sizesPickId = null;
+          modeLocal = 'sizes';
+          setModeUi('sizes');
+          setShowReticle(false);
+          applyLayout();
+          return;
+        }
+        if (modeLocal === 'apparent' && discoveryPhase === 'apparent') return;
+        discoveryPhase = 'apparent';
+        apparentStart = distance;
+        modeLocal = 'apparent';
+        setModeUi('apparent');
+        setShowReticle(true);
+        applyLayout();
+        setFact('Bouge le curseur : plus c’est loin, plus l’étoile paraît petite.');
       },
     };
     runtimeRef.current = api;
@@ -489,13 +518,21 @@ export function StarsScene({
       );
       if (!hit) return;
 
+      // Un double événement (double tap) ne doit pas sauter une phase.
+      const advancePhase = () => {
+        const now = performance.now();
+        if (now - phaseChangedAt < 450) return false;
+        phaseChangedAt = now;
+        return true;
+      };
+
       if (modeLocal === 'colors') {
         setFact(
           `${STARS[hit.id].nameFr} · ${STARS[hit.id].colorLabelFr} · ${temperatureBandFr(
             STARS[hit.id].temperatureK,
           )} (≈ ${STARS[hit.id].temperatureK} K)`,
         );
-        if (discoveryPhase === 'colors') {
+        if (discoveryPhase === 'colors' && advancePhase()) {
           discoveryPhase = 'apparent';
           apparentStart = distance;
           modeLocal = 'apparent';
@@ -514,7 +551,15 @@ export function StarsScene({
           }`,
         );
         if (discoveryPhase === 'sizes') {
+          // Le premier toucher reste sur la comparaison des tailles.
+          // « Touche-en encore une » (une autre étoile) ouvre les couleurs.
+          if (sizesPickId == null || sizesPickId === hit.id) {
+            sizesPickId = hit.id;
+            return;
+          }
+          if (!advancePhase()) return;
           discoveryPhase = 'colors';
+          sizesPickId = null;
           modeLocal = 'colors';
           setModeUi('colors');
           applyLayout();
