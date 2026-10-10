@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { GAME_MUSIC, MENU_MUSIC, musicPublicUrl, shuffleTracks } from './musicCatalog';
 import { shuffleArray, shuffledIndices } from '@/lib/shuffle';
+import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 
 describe('catalogue musique', () => {
   it('sépare menu et jeu sans doublon de fichier', () => {
@@ -9,15 +11,28 @@ describe('catalogue musique', () => {
   });
 
   it('encode correctement les espaces dans l’URL', () => {
-    expect(musicPublicUrl(MENU_MUSIC.file)).toBe(
-      '/assets/audio/music/23%20Space%20Ambience%201.mp3',
-    );
+    expect(musicPublicUrl(MENU_MUSIC.file)).toBe('/assets/audio/music/Floating%20Cities.mp3');
   });
 
   it('shuffle conserve les pistes', () => {
     const shuffled = shuffleTracks(GAME_MUSIC);
     expect(shuffled).toHaveLength(GAME_MUSIC.length);
     expect(new Set(shuffled.map((t) => t.id))).toEqual(new Set(GAME_MUSIC.map((t) => t.id)));
+  });
+
+  it('publie uniquement les originaux dont la licence et la provenance sont documentées', () => {
+    const evidence = JSON.parse(
+      readFileSync(new URL('../../../docs/licenses/music/tracks.json', import.meta.url), 'utf8'),
+    ) as { filename: string; sourceUrl: string; license: string; sha256: string }[];
+    for (const track of [MENU_MUSIC, ...GAME_MUSIC]) {
+      const record = evidence.find((item) => item.filename === track.file);
+      expect(record?.license, track.title).toBe('CC BY 4.0');
+      expect(record?.sourceUrl, track.title).toBe(track.sourceUrl);
+      const audio = readFileSync(
+        new URL(`../../../public/assets/audio/music/${track.file}`, import.meta.url),
+      );
+      expect(createHash('sha256').update(audio).digest('hex'), track.title).toBe(record?.sha256);
+    }
   });
 });
 

@@ -3,8 +3,8 @@ import { withBasePath } from '@/lib/basePath';
 import { shuffleArray } from '@/lib/shuffle';
 
 /**
- * Musiques runtime — provenance : Kerbal Space Program 1 (Squad / Take-Two).
- * Usage perso uniquement ; voir docs/ASSETS.md (AST-040 / AST-041). Non libre pour release publique.
+ * Fichiers originaux téléchargés auprès de Kevin MacLeod (Incompetech).
+ * CC BY 4.0, crédits visibles dans les réglages ; voir docs/licenses/music/README.md.
  */
 
 export type MusicTrack = {
@@ -12,25 +12,31 @@ export type MusicTrack = {
   /** Nom de fichier sous public/assets/audio/music/ */
   file: string;
   title: string;
+  sourceUrl: string;
 };
 
-export const MUSIC_CREDIT =
-  'Musique : Kerbal Space Program (Squad / Take-Two Interactive)' as const;
+export const MUSIC_CREDIT = 'Musique : Kevin MacLeod (incompetech.com)' as const;
+export const MUSIC_LICENSE_URL = 'https://creativecommons.org/licenses/by/4.0/' as const;
+
+function track(id: string, title: string, isrc: string): MusicTrack {
+  return {
+    id,
+    file: `${title}.mp3`,
+    title,
+    sourceUrl: `https://incompetech.com/music/royalty-free/index.html?isrc=${isrc}`,
+  };
+}
 
 /** Musique d’ambiance des menus (accueil, carte, collection…). */
-export const MENU_MUSIC: MusicTrack = {
-  id: 'space-ambience-1',
-  file: '23 Space Ambience 1.mp3',
-  title: 'Space Ambience 1',
-};
+export const MENU_MUSIC = track('floating-cities', 'Floating Cities', 'USUAN1600018');
 
 /** Pistes de jeu (missions) — lecture aléatoire + shuffle. */
 export const GAME_MUSIC: readonly MusicTrack[] = [
-  { id: 'arcadia', file: '17 Arcadia.mp3', title: 'Arcadia' },
-  { id: 'dreamy-flashback', file: '18 Dreamy Flashback.mp3', title: 'Dreamy Flashback' },
-  { id: 'bathed-in-the-light', file: '19 Bathed in the Light.mp3', title: 'Bathed in the Light' },
-  { id: 'frozen-star', file: '22 Frozen Star.mp3', title: 'Frozen Star' },
-  { id: 'impact-lento', file: '28 Impact Lento.mp3', title: 'Impact Lento' },
+  track('arcadia', 'Arcadia', 'USUAN1100326'),
+  track('dreamy-flashback', 'Dreamy Flashback', 'USUAN1100532'),
+  track('bathed-in-the-light', 'Bathed in the Light', 'USUAN1100308'),
+  track('frozen-star', 'Frozen Star', 'USUAN1100356'),
+  track('impact-lento', 'Impact Lento', 'USUAN1100619'),
 ] as const;
 
 export function musicPublicUrl(file: string): string {

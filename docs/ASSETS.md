@@ -62,7 +62,7 @@ URL publique type : `/assets/models/solarsystem/celestial-bodies/{body}/{body}.g
 - Source déclarée : pack CGTrader « Solar System Free Download »
 - **Usage actuel : personnel / privé** — validation licence commerciale non bloquante pour l’instant.
 - Avant distribution publique/commerciale : vérifier et documenter la licence.
-- **Publication GitHub Pages :** même frein que la musique — l’URL Pages diffuse les GLB/WebP. Confirmer la licence CGTrader (usage perso / redistribution web) avant activation Pages, ou retirer/remplacer le pack.
+- **Publication GitHub Pages :** l’URL Pages diffuse les GLB/WebP. Confirmer la licence CGTrader (usage perso / redistribution web) avant activation Pages, ou retirer/remplacer le pack.
 - Anneaux Saturne procéduraux + matériau astéroïdes : générés pour Mission Cosmos.
 - Archives FBX/JPEG sources : **supprimées** de `src/3d/assets/` (2026-09-26).
 
@@ -134,24 +134,26 @@ En **mission 3D**, préférence produit : **fond image** via `createSpaceBackgro
 
 **Emplacement :** `public/assets/audio/music/`
 
-| Rôle | Fichier | Notes |
-|---|---|---|
-| Menu | `23 Space Ambience 1.mp3` | Boucle sur écrans hors mission |
-| Jeu (shuffle) | `17 Arcadia.mp3`, `18 Dreamy Flashback.mp3`, `19 Bathed in the Light.mp3`, `22 Frozen Star.mp3`, `28 Impact Lento.mp3` | Random au début de mission + enchaînement mélangé |
+| Rôle | Fichiers | Licence |
+| --- | --- | --- |
+| Menu | `Floating Cities.mp3` | Kevin MacLeod — CC BY 4.0 |
+| Jeu (shuffle) | `Arcadia.mp3`, `Dreamy Flashback.mp3`, `Bathed in the Light.mp3`, `Frozen Star.mp3`, `Impact Lento.mp3` | Kevin MacLeod — CC BY 4.0 |
+
+Fichiers téléchargés directement sur Incompetech le 10 octobre 2026, sans modification.
+La licence autorise un usage public et commercial avec attribution. Les crédits complets
+(titres, auteur, sources et lien vers la licence) sont accessibles dans les réglages Musique
+et livrés dans `public/assets/audio/music/README.md`.
+
+« Space Ambience 1 », issu de KSP sans preuve de licence réutilisable, a été retiré du dossier
+public et remplacé par « Floating Cities ». Les cinq musiques des missions sont conservées
+à partir des originaux de l’auteur. La qualification précédente de toute la bande-son comme
+propriétaire était incorrecte pour ces cinq titres.
+
+**État :** licence documentée pour les musiques actuellement publiées, attribution en place.
+Voir [audit et preuves](licenses/music/README.md) et `tracks.json` pour les sources, ISRC et SHA-256.
+Les anciens fichiers peuvent rester dans l’historique Git ; aucun historique n’a été réécrit.
 
 Catalogue code : `src/content/audio/musicCatalog.ts`. Lecteur : `src/features/audio/musicPlayer.ts`.
-
-### Provenance / licence
-
-- **Source :** musiques extraites / provenant de **Kerbal Space Program 1 (KSP1)** (jeu Squad / Take-Two Interactive — Private Division).
-- **Droits :** contenu propriétaire du jeu ; **pas** une licence libre (pas CC, pas usage commercial implicite).
-- **Usage actuel : personnel / privé** (développement Mission Cosmos) — **non validé** pour distribution publique, PWA publiée, store ou usage commercial.
-- **Blocage publication GitHub Pages (2026-09-28) :** une URL Pages est publiquement accessible. Publier ces MP3 sans autorisation Take-Two / sans remplacement sous licence compatible reste interdit par la politique assets du projet.
-- Avant toute publication : remplacer par des pistes sous licence compatible **ou** obtenir une autorisation explicite ; retirer ces fichiers du dépôt public le cas échéant.
-- Crédit provisoire (écran crédits à prévoir) : *Musique : Kerbal Space Program (Squad / Take-Two)*.
-
-État registre : **Temporaire** (bloquant pour release publique / Pages).
-
 
 ## Icônes PWA et partage
 
