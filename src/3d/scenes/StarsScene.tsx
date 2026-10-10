@@ -50,16 +50,13 @@ import {
   STAR_FILM_DURATION,
 } from '@/3d/utils/starCinematic';
 import styles from './StarsScene.module.css';
+import cinemaStyles from '@/components/layout/CinematicOverlay.module.css';
 
 export type StarsSceneApi = {
   camera: MissionCameraApi;
   setMode: (mode: StarsSceneMode) => void;
   setChallengeEnabled: (enabled: boolean) => void;
   setPickEnabled: (enabled: boolean) => void;
-  /** Découverte guidée : tailles, puis couleurs, puis distance. */
-  setDiscovery: (enabled: boolean) => void;
-  /** Affiche Bételgeuse et le curseur de distance. */
-  showDistance: (enabled: boolean) => void;
 };
 
 type StarsSceneProps = {
@@ -69,7 +66,6 @@ type StarsSceneProps = {
   onObservatorySuccess?: () => void;
   onObservatoryMiss?: (hint: string) => void;
   onCinematicPlaying?: (playing: boolean) => void;
-  onDiscoveryDone?: () => void;
 };
 
 /** Scène Mission 08 — Soleil comme étoile, tailles, couleurs, taille apparente, défi observatoire. */
@@ -80,7 +76,6 @@ export function StarsScene({
   onObservatorySuccess,
   onObservatoryMiss,
   onCinematicPlaying,
-  onDiscoveryDone,
 }: StarsSceneProps) {
   const [mode, setModeUi] = useState<StarsSceneMode>('sun');
   const [fact, setFact] = useState<string | null>(STARS.sun.shortFact);
@@ -114,7 +109,6 @@ export function StarsScene({
   const onSceneApiRef = useRef(onSceneApi);
   const onSuccessRef = useRef(onObservatorySuccess);
   const onMissRef = useRef(onObservatoryMiss);
-  const onDiscoveryDoneRef = useRef(onDiscoveryDone);
 
   useEffect(() => {
     onSceneApiRef.current = onSceneApi;
@@ -125,9 +119,6 @@ export function StarsScene({
   useEffect(() => {
     onMissRef.current = onObservatoryMiss;
   }, [onObservatoryMiss]);
-  useEffect(() => {
-    onDiscoveryDoneRef.current = onDiscoveryDone;
-  }, [onDiscoveryDone]);
 
   useEffect(() => {
     onCinematicPlaying?.(film === 'playing' || film === 'paused');
@@ -153,10 +144,7 @@ export function StarsScene({
       segments: quality === 'low' ? 24 : 48,
     });
     let modeLocal: StarsSceneMode = 'sun';
-    let discoveryPhase: 'off' | 'sizes' | 'colors' | 'apparent' | 'done' = 'off';
-    let sizesPickId: StarId | null = null;
-    let phaseChangedAt = 0;
-    let apparentStart = 55;
+    let factPinned = false;
     let challenge = false;
     let challengeDone = false;
     let pickEnabled = true;
@@ -214,7 +202,11 @@ export function StarsScene({
           showStar(id, new Vector3(x, 0, 0), radius);
           cursor += radius * 2 + surfaceGap;
         });
-        setFact('Proxima est plus petite que le Soleil, Bételgeuse bien plus grande. Tailles simplifiées ici.');
+        if (!factPinned) {
+          setFact(
+            'Proxima est plus petite que le Soleil, Bételgeuse bien plus grande. Tailles simplifiées ici.',
+          );
+        }
         return;
       }
 
@@ -224,7 +216,11 @@ export function StarsScene({
           const x = (index - 1) * spacing;
           showStar(id, new Vector3(x, 0, 0), 0.85);
         });
-        setFact('Rouge = plus froide · Bleutée = plus chaude. K : kelvins, pour mesurer la température.');
+        if (!factPinned) {
+          setFact(
+            'Rouge = plus froide · Bleutée = plus chaude. K : kelvins, pour mesurer la température.',
+          );
+        }
         return;
       }
 
@@ -419,7 +415,9 @@ export function StarsScene({
           filmVisible ? Promise.resolve() : cameraApi.focusOn(node, meshes),
       },
       setMode: (next) => {
+        if (next === modeLocal) return;
         cancelFilm();
+        factPinned = false;
         modeLocal = next;
         setModeUi(next);
         if (next !== 'challenge') {
@@ -454,7 +452,7 @@ export function StarsScene({
         } else if (!enabled) {
           cancelFilm();
           setChallengeActive(false);
-          setShowReticle(false);
+          setShowReticle(modeLocal === 'apparent');
           if (modeLocal === 'challenge') {
             modeLocal = 'explore';
             setModeUi('explore');
@@ -465,52 +463,13 @@ export function StarsScene({
       setPickEnabled: (enabled) => {
         pickEnabled = enabled;
       },
-      setDiscovery: (enabled) => {
-        if (enabled) {
-          if (discoveryPhase === 'off') {
-            discoveryPhase = 'sizes';
-            sizesPickId = null;
-            modeLocal = 'sizes';
-            setModeUi('sizes');
-            setShowReticle(false);
-            setFact('Touche une étoile pour comparer sa taille.');
-            applyLayout();
-          }
-          return;
-        }
-        if (discoveryPhase !== 'done') {
-          discoveryPhase = 'off';
-          sizesPickId = null;
-        }
-      },
-      showDistance: (enabled) => {
-        if (discoveryPhase === 'done') return;
-        if (!enabled) {
-          if (modeLocal !== 'apparent') return;
-          discoveryPhase = 'off';
-          sizesPickId = null;
-          modeLocal = 'sizes';
-          setModeUi('sizes');
-          setShowReticle(false);
-          applyLayout();
-          return;
-        }
-        if (modeLocal === 'apparent' && discoveryPhase === 'apparent') return;
-        discoveryPhase = 'apparent';
-        apparentStart = distance;
-        modeLocal = 'apparent';
-        setModeUi('apparent');
-        setShowReticle(true);
-        applyLayout();
-        setFact('Bouge le curseur : plus c’est loin, plus l’étoile paraît petite.');
-      },
     };
     runtimeRef.current = api;
     onSceneApiRef.current?.(api);
 
     const pointerObs = scene.onPointerObservable.add((info) => {
       if (!pickEnabled || filmVisible) return;
-      if (info.type !== PointerEventTypes.POINTERDOWN) return;
+      if (info.type !== PointerEventTypes.POINTERPICK) return;
       const mesh = info.pickInfo?.pickedMesh;
       if (!mesh) return;
       const hit = Array.from(stars.values()).find(
@@ -518,53 +477,23 @@ export function StarsScene({
       );
       if (!hit) return;
 
-      // Un double événement (double tap) ne doit pas sauter une phase.
-      const advancePhase = () => {
-        const now = performance.now();
-        if (now - phaseChangedAt < 450) return false;
-        phaseChangedAt = now;
-        return true;
-      };
-
       if (modeLocal === 'colors') {
+        factPinned = true;
         setFact(
           `${STARS[hit.id].nameFr} · ${STARS[hit.id].colorLabelFr} · ${temperatureBandFr(
             STARS[hit.id].temperatureK,
           )} (≈ ${STARS[hit.id].temperatureK} K)`,
         );
-        if (discoveryPhase === 'colors' && advancePhase()) {
-          discoveryPhase = 'apparent';
-          apparentStart = distance;
-          modeLocal = 'apparent';
-          setModeUi('apparent');
-          setShowReticle(true);
-          applyLayout();
-          setFact('Bouge le curseur : plus c’est loin, plus l’étoile paraît petite.');
-        }
         return;
       }
 
       if (modeLocal === 'sizes' || modeLocal === 'explore' || modeLocal === 'sun') {
+        factPinned = true;
         setFact(
           `${STARS[hit.id].nameFr} · ${radiusLabelFr(STARS[hit.id].radiusSolar)}${
             STARS[hit.id].estimateNote ? ` · ${STARS[hit.id].estimateNote}` : ''
           }`,
         );
-        if (discoveryPhase === 'sizes') {
-          // Le premier toucher reste sur la comparaison des tailles.
-          // « Touche-en encore une » (une autre étoile) ouvre les couleurs.
-          if (sizesPickId == null || sizesPickId === hit.id) {
-            sizesPickId = hit.id;
-            return;
-          }
-          if (!advancePhase()) return;
-          discoveryPhase = 'colors';
-          sizesPickId = null;
-          modeLocal = 'colors';
-          setModeUi('colors');
-          applyLayout();
-          setFact('Maintenant, touche une étoile pour voir si elle est chaude ou froide.');
-        }
       }
     });
 
@@ -581,10 +510,6 @@ export function StarsScene({
           setRoundOk(null);
         }
         applyLayout();
-        if (discoveryPhase === 'apparent' && Math.abs(distance - apparentStart) >= 2) {
-          discoveryPhase = 'done';
-          onDiscoveryDoneRef.current?.();
-        }
       },
       shiftDistance: (delta: number) => {
         if (filmVisible) return;
@@ -720,8 +645,8 @@ export function StarsScene({
       ) : null}
       {celebrating ? <p className={styles.celebrate}>Observatoire activé</p> : null}
       {film ? (
-        <section className={styles.cinema} aria-label="Le ballet des distances">
-          <div className={styles.cinemaCaption} aria-live="polite" aria-atomic="true">
+        <section className={cinemaStyles.cinema} aria-label="Le ballet des distances">
+          <div className={cinemaStyles.cinemaCaption} aria-live="polite" aria-atomic="true">
             <span>
               {film === 'finished'
                 ? 'Album complet'
@@ -730,7 +655,7 @@ export function StarsScene({
             <h2>{STAR_FILM_CHAPTERS[filmChapter]!.title}</h2>
             <p>{STAR_FILM_CHAPTERS[filmChapter]!.text}</p>
           </div>
-          <div className={styles.cinemaFooter}>
+          <div className={cinemaStyles.cinemaFooter}>
             <p>Tailles fixes pendant le film. Maquette simplifiée.</p>
             <div>
               {film === 'finished' ? (
@@ -842,7 +767,11 @@ export function StarsScene({
               {roundHint}
             </p>
           ) : null}
-          <p className={styles.note}>Maquette simplifiée · Bételgeuse : taille estimée</p>
+          <p className={styles.note}>
+            {mode === 'colors'
+              ? 'Disques de même taille pour comparer les couleurs · Températures en kelvins (K)'
+              : 'Maquette simplifiée · Bételgeuse : taille estimée'}
+          </p>
         </SceneControls>
       ) : null}
     </div>

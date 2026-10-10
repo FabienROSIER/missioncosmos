@@ -175,7 +175,6 @@ describe('constellations and perspective', () => {
       'm10-orion',
       'm10-perspective',
       'm10-film',
-      'm10-understand',
       'm10-quiz',
     ]) {
       expect(MISSION_10.steps.find((s) => s.id === id)?.requiresSuccess).toBe(true);

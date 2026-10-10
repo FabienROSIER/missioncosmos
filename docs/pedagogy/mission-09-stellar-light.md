@@ -6,7 +6,7 @@ Un seul parcours pour les enfants de 6 à 12 ans, sans variante d’âge ni chif
 
 1. Découvrir la lumière blanche du Soleil dans le laboratoire spatial existant.
 2. Placer le prisme d’un appui sur le triangle ou sur un grand bouton. L’action est requise.
-3. Explorer six repères de couleur de l’arc-en-ciel. Les faisceaux partent tous du prisme ; choisir un repère le met en évidence.
+3. Explorer six repères de couleur de l’arc-en-ciel. Les faisceaux partent tous du prisme ; choisir un repère le met en évidence. Les sélections sont illimitées et ne changent pas d’expérience. Le bouton « Passer aux mélanges » ouvre les projecteurs quand l’enfant est prêt.
 4. Allumer et éteindre trois projecteurs avec des boutons libellés ou en touchant leurs lentilles.
 5. Observer rouge + vert = jaune.
 6. Un seul défi de l’observatoire : trouver jaune, rose (magenta), cyan, puis blanc. Chaque couleur apparaît une seule fois. Chaque mélange est validé séparément ; les projecteurs repartent éteints entre les commandes.

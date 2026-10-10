@@ -1,13 +1,12 @@
 import type { MissionStep } from '@/types/mission';
+import { isFreeStarComparison } from '@/3d/utils/starDiscovery';
 
 const PLAY_STEP_KINDS = new Set<MissionStep['kind']>(['observe', 'manipulate', 'challenge']);
 const GUIDE_EMBEDDED_STEP_IDS = new Set(['m05-scale', 'm05-distances']);
-/** Question affichée tout de suite : pas d’étape « À toi de jouer ». */
-const IMMEDIATE_QUESTION_STEP_IDS = new Set(['m10-understand']);
 
 /** Étapes dont les manipulations commencent explicitement après la consigne du Guide. */
 export function isPlayGatedStep(step: MissionStep): boolean {
-  if (IMMEDIATE_QUESTION_STEP_IDS.has(step.id)) return false;
+  if (isFreeStarComparison(step.id)) return false;
   return PLAY_STEP_KINDS.has(step.kind) && !GUIDE_EMBEDDED_STEP_IDS.has(step.id);
 }
 
@@ -25,10 +24,10 @@ export function canInteractWithScene({
   playStarted,
   challengeSolved,
 }: SceneInteractionState): boolean {
+  // Les comparaisons d’étoiles restent libres jusqu’au bouton de continuation.
+  if (isFreeStarComparison(step.id)) return true;
   // Cette introduction demande immédiatement de tourner le globe pour progresser.
   if (step.id === 'm01-intro') return true;
-  // La question s’affiche avec ses réponses : pas de bouton « À toi de jouer ».
-  if (IMMEDIATE_QUESTION_STEP_IDS.has(step.id)) return !challengeSolved;
   if (!isPlayGatedStep(step) || challengeSolved) return false;
   return playStarted && !guideExpanded;
 }

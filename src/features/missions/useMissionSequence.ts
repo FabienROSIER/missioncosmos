@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import {
   clearMissionSession,
   loadMissionSession,
+  resolveSessionStepIndex,
   saveMissionSession,
 } from '@/features/missions/missionSession';
 import type { Mission, MissionStep } from '@/types/mission';
@@ -27,17 +28,19 @@ function emitSessionChange(): void {
   }
 }
 
-function getSavedStepIndex(missionId: string, stepCount: number): number {
-  const session = loadMissionSession(missionId);
+function getSavedStepIndex(mission: Mission): number {
+  const session = loadMissionSession(mission.id);
   if (!session) return 0;
-  if (session.stepIndex <= 0 || session.stepIndex >= stepCount) return 0;
-  return session.stepIndex;
+  return resolveSessionStepIndex(
+    session,
+    mission.steps.map((step) => step.id),
+  );
 }
 
 export function useMissionSequence(mission: Mission) {
   const savedIndex = useSyncExternalStore(
     subscribeSession,
-    () => getSavedStepIndex(mission.id, mission.steps.length),
+    () => getSavedStepIndex(mission),
     () => 0,
   );
 
@@ -56,16 +59,15 @@ export function useMissionSequence(mission: Mission) {
   useEffect(() => {
     // Hydration first renders the server's step 0. Wait for the saved client snapshot
     // before persisting, otherwise a reload overwrites the step the player reached.
-    if (liveIndex === null && getSavedStepIndex(mission.id, mission.steps.length) !== stepIndex)
-      return;
+    if (liveIndex === null && getSavedStepIndex(mission) !== stepIndex) return;
     if (step.kind === 'complete') {
       clearMissionSession(mission.id);
       emitSessionChange();
       return;
     }
-    saveMissionSession(mission.id, stepIndex);
+    saveMissionSession(mission.id, stepIndex, step.id);
     emitSessionChange();
-  }, [mission.id, mission.steps.length, liveIndex, step.kind, stepIndex]);
+  }, [mission, liveIndex, step.id, step.kind, stepIndex]);
 
   const markChallengeSolved = useCallback(() => {
     setChallengeSolved(true);
@@ -87,12 +89,12 @@ export function useMissionSequence(mission: Mission) {
 
   const restart = useCallback(() => {
     clearMissionSession(mission.id);
-    saveMissionSession(mission.id, 0);
+    saveMissionSession(mission.id, 0, mission.steps[0]!.id);
     emitSessionChange();
     setLiveIndex(0);
     setChallengeSolved(false);
     setBannerDismissed(true);
-  }, [mission.id]);
+  }, [mission.id, mission.steps]);
 
   const dismissResumeBanner = useCallback(() => {
     setBannerDismissed(true);

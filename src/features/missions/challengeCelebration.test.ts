@@ -29,7 +29,6 @@ describe('achievement feedback across all missions', () => {
       'm08-challenge',
       'm09-challenge',
       'm10-perspective',
-      'm10-understand',
       'm11-locate',
       'm11-orbit',
     ]) {

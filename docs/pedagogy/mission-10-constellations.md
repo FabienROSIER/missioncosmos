@@ -91,7 +91,7 @@ automatique. Les quatre boutons permettant de choisir directement un chapitre so
 - Défi de point de vue sur un rail passant de part et d’autre de l’observateur terrestre. Le bon point de vue se situe à l’intérieur du curseur (43/100, tolérance ±3), sans repère de réponse affiché ; ni les extrémités ni le milieu exact ne valident le défi. La comparaison à la carte guide la recherche.
 - Vue 3D : les marqueurs stellaires conservent un cœur lisible selon leur magnitude pendant le déplacement (minimum de trois pixels de diamètre), avec un halo radial doux partagé. Leur taille représente un repère lumineux pédagogique, pas le rayon physique de l’étoile. Les traits fictifs et la grille de profondeur sont atténués pour laisser les étoiles dominer.
 - Film : lecture automatique, pause/reprise, possibilité de passer et de revoir. Variante sans mouvements automatiques avec « Tableau suivant ».
-- Question de compréhension sans punition, puis une question de quiz sur l’origine des constellations (peuples anciens : se repérer, suivre les saisons, raconter des histoires ; pas un seul inventeur récent). Badge Cartographe du ciel ensuite.
+- Quiz de deux questions sans punition : le changement de point de vue pendant le voyage, puis l’origine des constellations (peuples anciens : se repérer, suivre les saisons, raconter des histoires ; pas un seul inventeur récent). Badge Cartographe du ciel ensuite.
 - Atlas libre des cinq constellations après la mission.
 - Reprise à l'étape sauvegardée ; un dessin en cours reprend au début de ce dessin.
 

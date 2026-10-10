@@ -7,6 +7,7 @@ export type MissionSession = {
   version: number;
   missionId: string;
   stepIndex: number;
+  stepId?: string;
   updatedAt: string;
 };
 
@@ -39,7 +40,7 @@ export function loadMissionSession(missionId: string): MissionSession | null {
 }
 
 /** Sauvegarde la progression dans la mission (reprise après quitter). */
-export function saveMissionSession(missionId: string, stepIndex: number): void {
+export function saveMissionSession(missionId: string, stepIndex: number, stepId?: string): void {
   const storage = getStorage();
   if (!storage) return;
   try {
@@ -47,12 +48,33 @@ export function saveMissionSession(missionId: string, stepIndex: number): void {
       version: SAVE_SCHEMA_VERSION,
       missionId,
       stepIndex,
+      stepId,
       updatedAt: new Date().toISOString(),
     };
     storage.setItem(STORAGE_KEY, JSON.stringify(payload));
   } catch {
     /* private mode */
   }
+}
+
+/** Stable IDs preserve the current activity when a mission gains new steps. */
+export function resolveSessionStepIndex(session: MissionSession, stepIds: string[]): number {
+  if (session.stepId) {
+    let stepId =
+      session.missionId === 'mission-08' && session.stepId === 'm08-apparent'
+        ? 'm08-challenge'
+        : session.stepId;
+    if (session.missionId === 'mission-10' && stepId === 'm10-understand') stepId = 'm10-quiz';
+    return Math.max(0, stepIds.indexOf(stepId));
+  }
+  // Mission 08 previously grouped sizes, colors and distance at index 1.
+  let index =
+    session.missionId === 'mission-08' && session.stepIndex >= 2
+      ? session.stepIndex + 1
+      : session.stepIndex;
+  // The separate understanding question now belongs to the Mission 10 quiz.
+  if (session.missionId === 'mission-10' && session.stepIndex >= 9) index -= 1;
+  return index > 0 && index < stepIds.length ? index : 0;
 }
 
 /** Efface la session (mission terminée ou recommencer). */

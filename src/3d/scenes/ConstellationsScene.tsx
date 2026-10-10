@@ -28,6 +28,7 @@ type Props = {
   stepId: string;
   onSuccess: () => void;
   onSkipBonus?: () => void;
+  onCinematicPlaying?: (playing: boolean) => void;
   /** Faux tant que « À toi de jouer » n’a pas ouvert la scène. */
   interactive?: boolean;
 };
@@ -74,6 +75,7 @@ export function ConstellationsScene({
   stepId,
   onSuccess,
   onSkipBonus,
+  onCinematicPlaying,
   interactive = true,
 }: Props) {
   const artworkId = useId().replace(/:/g, '');
@@ -84,7 +86,6 @@ export function ConstellationsScene({
   const [showArt, setShowArt] = useState(true);
   const [hintIndex, setHintIndex] = useState<number | null>(null);
   const [message, setMessage] = useState('');
-  const [understood, setUnderstood] = useState(false);
   const selected = free ? exploring : stepId.replace('m10-', '');
   const item = getConstellation(selected);
   const points = skyPoints(item);
@@ -158,39 +159,8 @@ export function ConstellationsScene({
           mode={stepId === 'm10-film' ? 'film' : 'perspective'}
           onSuccess={onSuccess}
           interactive={interactive}
+          onCinematicPlaying={onCinematicPlaying}
         />
-      </div>
-    );
-  if (stepId === 'm10-understand')
-    return (
-      <div className={`${styles.wrap} ${className ?? ''}`}>
-        <div className={styles.question}>
-          <span className={styles.eyebrow}>LE SECRET DES CONSTELLATIONS</span>
-          <h2>Pourquoi le cygne a-t-il changé de forme ?</h2>
-          <button
-            disabled={understood}
-            onClick={() =>
-              setMessage(
-                'Souviens-toi du film : les étoiles sont restées immobiles. C’est le vaisseau qui a voyagé.',
-              )
-            }
-          >
-            Les étoiles se sont déplacées pour faire un autre dessin.
-          </button>
-          <button
-            disabled={understood}
-            onClick={() => {
-              setUnderstood(true);
-              setMessage(
-                'Oui ! Notre point de vue a changé. Les étoiles ne sont pas toutes à la même distance.',
-              );
-              onSuccess();
-            }}
-          >
-            Nous avons regardé les mêmes étoiles depuis un autre endroit.
-          </button>
-          <p role="status">{message}</p>
-        </div>
       </div>
     );
 

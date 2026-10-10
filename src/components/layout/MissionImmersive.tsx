@@ -37,6 +37,7 @@ import { SolarDistancePanel } from '@/3d/scenes/SolarDistancePanel';
 import { SolarSizeChallenge } from '@/3d/scenes/SolarSizeChallenge';
 import type { SurfaceLighting } from '@/3d/scenes/dayNightMarkers';
 import type { MoonPhaseId } from '@/3d/utils/moonPhase';
+import { isFreeStarComparison, starDiscoveryPhase } from '@/3d/utils/starDiscovery';
 import type { StarsSceneMode } from '@/content/bodies/stars';
 import type { StarLightSceneMode } from '@/content/bodies/stellarLight';
 import type { PlanetId } from '@/content/bodies/solarSystem';
@@ -260,7 +261,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     isBlackHoles ||
     isGalaxies ||
     isMilkyWay ||
-    (isConstellations && !['m10-intro', 'm10-reward', 'm10-understand'].includes(step.id)) ||
+    (isConstellations && !['m10-intro', 'm10-reward'].includes(step.id)) ||
     isOrbits ||
     isSeasons ||
     isStars ||
@@ -276,7 +277,8 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     (guideOverride?.stepId === step.id && guideOverride.challengeSolved === challengeSolved
       ? guideOverride.expanded
       : true);
-  const guideMessages = splitGuideText(step.body);
+  const freeStarComparison = isFreeStarComparison(step.id);
+  const guideMessages = freeStarComparison ? [step.body] : splitGuideText(step.body);
   const guideMessageIndex = guidePage?.stepId === step.id ? guidePage.index : 0;
   const hasMoreGuideText = !challengeSolved && guideMessageIndex < guideMessages.length - 1;
   const playGatedStep = isPlayGatedStep(step);
@@ -291,27 +293,23 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     guideExpanded && !hasMoreGuideText && guideCanFold && !challengeSolved && playGatedStep;
   // Bouton affiché, jeu pas encore lancé : le geste sur la scène démarre le défi.
   const playOffered = showPlayButton && !playStarted;
-  const starsDistanceCue =
-    step.id === 'm08-observe' &&
-    !challengeSolved &&
-    (guideMessageIndex > 0 || !guideExpanded);
   const sceneInputEnabled =
-    isSceneInputEnabled(sceneInteractionAllowed, playOffered) || starsDistanceCue;
+    isSceneInputEnabled(sceneInteractionAllowed, playOffered) ||
+    (isConstellations && step.id === 'm10-film' && challengeSolved);
   // Exploration libre (ex. m05-observe) : garder le CTA visible même en « Relire »,
   // sinon seul « Reprendre » apparaît et on ne peut plus avancer (surtout mobile).
   const showContinueCta =
-    !hasMoreGuideText &&
+    freeStarComparison ||
+    (!hasMoreGuideText &&
     canAdvance &&
     !isComplete &&
     step.kind !== 'quiz' &&
     step.id !== 'm05-scale' &&
     step.id !== 'm05-distances' &&
-    (!showPlayButton || (playStarted && step.requiresSuccess !== true));
+    (!showPlayButton || (playStarted && step.requiresSuccess !== true)));
   const showSceneControls =
     hasSceneControls &&
-    (sceneInteractionAllowed ||
-      starsDistanceCue ||
-      (isConstellations && step.id === 'm10-film' && challengeSolved));
+    (sceneInteractionAllowed || (isConstellations && step.id === 'm10-film' && challengeSolved));
   const quiz = step.quizId ? getQuizById(step.quizId) : undefined;
   const glossaryEntries = getGlossaryEntries(mission.glossaryIds ?? []);
   const nextMissionId = getCatalogEntry(mission.id)?.unlocksNextId;
@@ -598,21 +596,11 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
       !cinematic && sceneInputEnabled && step.kind === 'challenge' && challengeObservatory;
     starsApi.setChallengeEnabled(observatoryStep);
 
-    if (step.id === 'm08-observe') {
-      const discover = !cinematic && sceneInputEnabled && challengeActive;
-      // « Bouge la distance » : le curseur doit être là, pas seulement après d'autres clics.
-      if (starsDistanceCue) {
-        starsApi.showDistance(true);
-        return;
-      }
-      starsApi.showDistance(false);
-      starsApi.setDiscovery(discover);
-      // La consigne « touche une étoile » s'affiche avant le jeu :
-      // les trois tailles doivent déjà être visibles, pas seulement le Soleil.
-      if (!discover && challengeActive) starsApi.setMode('sizes');
+    const discoveryPhase = starDiscoveryPhase(step.id);
+    if (discoveryPhase) {
+      starsApi.setMode(discoveryPhase);
       return;
     }
-    starsApi.setDiscovery(false);
     let mode: StarsSceneMode = 'explore';
     if (step.id === 'm08-intro') mode = 'sun';
     else if (step.id === 'm08-challenge') mode = 'challenge';
@@ -623,7 +611,6 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     challengeActive,
     challengeObservatory,
     sceneInputEnabled,
-    starsDistanceCue,
     step.kind,
     step.id,
   ]);
@@ -631,11 +618,10 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
   useEffect(() => {
     if (!starLightApi || !isStellarLight) return;
     if (step.id === 'm09-spectrum') {
-      if (sceneInputEnabled && challengeActive) {
+      if (challengeActive) {
         starLightApi.setDiscovery(true);
       } else {
         starLightApi.setDiscovery(false);
-        starLightApi.setMode('rainbow');
       }
       return;
     }
@@ -835,13 +821,6 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
     },
     [markChallengeSolved],
   );
-
-  const onStarsDiscoveryDone = useCallback(() => {
-    const ctx = pickCtxRef.current;
-    if (ctx.stepId !== 'm08-observe' || !ctx.sceneInteractionAllowed || ctx.challengeSolved) return;
-    setFeedback({ stepId: ctx.stepId, text: ctx.successFeedback, wrong: false });
-    markChallengeSolved();
-  }, [markChallengeSolved]);
 
   const onObservatorySuccess = useCallback(() => {
     const ctx = pickCtxRef.current;
@@ -1120,6 +1099,7 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                 stepId={step.id}
                 onSuccess={onObservatorySuccess}
                 onSkipBonus={onContinue}
+                onCinematicPlaying={setStarFilmPlaying}
                 interactive={sceneInteractionAllowed}
               />
             ) : isStellarLight ? (
@@ -1139,7 +1119,6 @@ export function MissionImmersive({ mission }: MissionImmersiveProps) {
                 onCinematicPlaying={setStarFilmPlaying}
                 onObservatorySuccess={onObservatorySuccess}
                 onObservatoryMiss={onObservatoryMiss}
-                onDiscoveryDone={onStarsDiscoveryDone}
               />
             ) : isSeasons ? (
               <SeasonsScene

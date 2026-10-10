@@ -60,8 +60,9 @@ export const MISSION_09: Mission = assertValidMission({
       completionMode: 'discovery',
       requiresSuccess: true,
       title: 'Couleurs et mélanges',
-      guideReminder: 'Touche une couleur, puis allume le rouge et le vert.',
-      body: 'Touche une couleur de l’arc-en-ciel : elle était déjà dans la lumière blanche. Ensuite, allume le rouge et le vert ensemble. Sur l’écran, ils font du jaune. Ici, on mélange des lumières, pas de la peinture.',
+      guideReminder:
+        'Explore les couleurs, puis clique sur « Passer aux mélanges ». Allume le rouge et le vert.',
+      body: 'Touche autant de couleurs que tu veux : elles sont dans la lumière blanche. Clique sur « Passer aux mélanges », puis allume rouge et vert pour faire du jaune. On mélange des lumières, pas de la peinture.',
       successFeedback: 'Le prisme sépare les couleurs. Rouge et vert ensemble font du jaune.',
       ctaLabel: 'Rallumer l’observatoire',
     },

@@ -46,19 +46,26 @@ describe('verrouillage des manipulations de mission', () => {
     expect(canInteract(stepById('m01-intro'), false, true)).toBe(true);
   });
 
-  it('affiche la question des constellations sans À toi de jouer', () => {
-    const step = stepById('m10-understand');
-    expect(isPlayGatedStep(step)).toBe(false);
-    expect(canInteract(step, false, true)).toBe(true);
-    expect(
-      canInteractWithScene({
-        step,
-        playStarted: false,
-        guideExpanded: true,
-        challengeSolved: true,
-      }),
-    ).toBe(false);
-  });
+  it.each(['m08-observe', 'm08-colors'])(
+    'laisse %s disponible immédiatement et sans limite jusqu’à Continuer',
+    (id) => {
+      const step = stepById(id);
+      expect(step.requiresSuccess).not.toBe(true);
+      expect(isPlayGatedStep(step)).toBe(false);
+      for (const guideExpanded of [true, false]) {
+        for (const challengeSolved of [true, false]) {
+          expect(
+            canInteractWithScene({
+              step,
+              guideExpanded,
+              challengeSolved,
+              playStarted: false,
+            }),
+          ).toBe(true);
+        }
+      }
+    },
+  );
 
   it('garde les activités intégrées au panneau du Guide hors de la scène', () => {
     for (const id of ['m05-scale', 'm05-distances']) {

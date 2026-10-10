@@ -180,7 +180,7 @@ export const ROBOT_VOICE_MESSAGES: readonly RobotVoiceMessage[] = [
   {
     id: "mission-10.point-de-vue",
     relativePath: "mission-10/mission-10.point-de-vue.mp3",
-    stepIds: ["m10-perspective","m10-understand"],
+    stepIds: ["m10-perspective"],
   },
   {
     id: "mission-11.galaxie",

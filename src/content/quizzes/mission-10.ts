@@ -6,6 +6,25 @@ export const QUIZ_MISSION_10: Quiz = {
   title: 'Les dessins du ciel',
   questions: [
     {
+      id: 'q-viewpoint',
+      prompt: 'Pourquoi le cygne a-t-il changé de forme pendant le voyage ?',
+      choices: [
+        {
+          id: 'stars-moved',
+          label: 'Les étoiles se sont déplacées pour faire un autre dessin.',
+        },
+        {
+          id: 'viewpoint-changed',
+          label: 'Nous avons regardé les mêmes étoiles depuis un autre endroit.',
+        },
+      ],
+      correctChoiceId: 'viewpoint-changed',
+      explainCorrect:
+        'Oui ! Les étoiles sont restées à leur place. Notre point de vue a changé : nous les avons regardées depuis un autre endroit.',
+      explainWrong:
+        'Souviens-toi du film : les étoiles sont restées immobiles. C’est le vaisseau qui a voyagé et changé notre point de vue.',
+    },
+    {
       id: 'q1-origin',
       prompt: 'Qui a inventé les constellations, et pourquoi ?',
       choices: [

@@ -6,7 +6,8 @@ export const REWARD_CONSTELLATIONS: Reward = {
   id: 'reward-constellations',
   title: 'Cartographe du ciel',
   kind: 'badge',
-  description: 'Tu as retrouvé les dessins du ciel et découvert les différentes distances de leurs étoiles.',
+  description:
+    'Tu as retrouvé les dessins du ciel et découvert les différentes distances de leurs étoiles.',
 };
 
 export const MISSION_10 = assertValidMission({
@@ -80,23 +81,13 @@ export const MISSION_10 = assertValidMission({
         'Observe comment le dessin change pendant le voyage. Tu peux mettre le film en pause.',
       requiresSuccess: true,
       successFeedback: 'Le cygne revient quand nous retrouvons notre point de vue !',
-      ctaLabel: 'Ce que j’ai découvert',
-    },
-    {
-      id: 'm10-understand',
-      kind: 'challenge',
-      title: 'Qu’est-ce qui a changé ?',
-      body: 'Pendant notre voyage, le dessin du cygne s’est déformé. Pourquoi ? Choisis l’explication qui correspond à ce que tu as observé.',
-      requiresSuccess: true,
-      successFeedback:
-        'Exactement ! Les étoiles sont restées à leur place. Nous les avons regardées depuis un autre endroit.',
       ctaLabel: 'Petit quiz',
     },
     {
       id: 'm10-quiz',
       kind: 'quiz',
-      title: 'D’où viennent les constellations ?',
-      body: 'Une question sur ceux qui ont imaginé ces dessins, et pourquoi.',
+      title: 'Quiz : les dessins du ciel',
+      body: 'Deux questions sur le point de vue et l’origine des constellations.',
       requiresSuccess: true,
       quizId: 'quiz-mission-10',
     },

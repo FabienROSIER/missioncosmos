@@ -26,6 +26,13 @@ Bételgeuse est une **géante rouge variable** : le rayon exact change selon les
 
 ## Défi « Photographe d’étoiles »
 
+Avant les photographies, deux étapes libres se succèdent : tailles, puis couleurs.
+Elles permettent de toucher autant d’étoiles que souhaité, sans nombre minimum de clics.
+Les étoiles restent cliquables et le bouton de continuation est toujours visible,
+même quand la consigne est repliée. Après les couleurs, le bouton ouvre directement
+le défi photo : le réglage de distance et la taille apparente y sont découverts.
+Les clics et les mouvements de caméra ne changent pas d’étape.
+
 Une seule mécanique répétée trois fois :
 
 1. cadrer Proxima ;

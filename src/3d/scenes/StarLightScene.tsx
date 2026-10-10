@@ -50,12 +50,13 @@ import {
 import { MISSION_STARFIELD_SRC } from '@/lib/assets/paths';
 import { withBasePath } from '@/lib/basePath';
 import { getUiMotionSnapshot } from '@/lib/uiMotion';
+import { nextLightDiscoveryPhase, type LightDiscoveryPhase } from '@/3d/utils/lightDiscovery';
 import styles from './StarLightScene.module.css';
 
 export type StarLightSceneApi = {
   camera: MissionCameraApi;
   setMode: (mode: StarLightSceneMode) => void;
-  /** Découverte : une couleur du prisme, puis rouge + vert. */
+  /** Découverte : exploration des couleurs, puis mélanges sur demande. */
   setDiscovery: (enabled: boolean) => void;
 };
 type Props = {
@@ -70,6 +71,7 @@ type Controls = {
   place: () => void;
   toggle: (channel: LightChannel) => void;
   selectBand: (index: number | null) => void;
+  startMixing: () => void;
   validate: () => void;
   experiment: (prism: boolean) => void;
 };
@@ -460,7 +462,7 @@ export function StarLightScene({
     let showPrism = false;
     let attempts = 0;
     let localRound: Round = { targets: MIX_TARGETS, index: 0, completed: [], done: false };
-    let discovery: 'off' | 'rainbow' | 'lights' | 'done' = 'off';
+    let discovery: LightDiscoveryPhase = 'off';
     const applyLights = () => {
       projectorBeams.forEach((beam, index) => {
         const on = localLights[LIGHT_CHANNELS[index]!];
@@ -540,8 +542,17 @@ export function StarLightScene({
     const selectBand = (index: number | null) => {
       localBand = index;
       applyOptics();
-      if (discovery !== 'rainbow' || index === null) return;
-      discovery = 'lights';
+      discovery = nextLightDiscoveryPhase(discovery, 'select-color');
+      setMessage(
+        index === null
+          ? 'Toutes ces couleurs étaient déjà dans la lumière blanche.'
+          : `${RAINBOW_BANDS[index]!.name} : cette couleur était déjà dans la lumière blanche.`,
+      );
+    };
+    const startMixing = () => {
+      const next = nextLightDiscoveryPhase(discovery, 'start-mixing');
+      if (next === discovery) return;
+      discovery = next;
       localMode = 'mix';
       setMode('mix');
       showPrism = false;
@@ -557,7 +568,7 @@ export function StarLightScene({
       callbacks.current.onPrismMiss?.(null);
       if (discovery !== 'lights') return;
       if (localLights.red && localLights.green && !localLights.blue) {
-        discovery = 'done';
+        discovery = nextLightDiscoveryPhase(discovery, 'make-yellow');
         setMessage('Rouge et vert ensemble font du jaune.');
         callbacks.current.onDiscoveryDone?.();
       }
@@ -615,7 +626,7 @@ export function StarLightScene({
       },
       setMode: (next) => {
         if (next === localMode) return;
-        if (discovery !== 'done') discovery = 'off';
+        discovery = 'off';
         scene.stopAnimation(prismRoot);
         localMode = next;
         setMode(next);
@@ -638,6 +649,10 @@ export function StarLightScene({
     const pointer = scene.onPointerObservable.add((info) => {
       if (info.type !== PointerEventTypes.POINTERTAP || !info.pickInfo?.hit) return;
       if (info.pickInfo.pickedMesh === prism) place();
+      if (showPrism && (localMode === 'rainbow' || localMode === 'explore')) {
+        const index = bands.findIndex((stripe) => stripe === info.pickInfo?.pickedMesh);
+        if (index >= 0) selectBand(index);
+      }
       const picked = projectorPicks.find(
         (entry) =>
           entry.lens === info.pickInfo?.pickedMesh || entry.housing === info.pickInfo?.pickedMesh,
@@ -648,6 +663,7 @@ export function StarLightScene({
       place,
       toggle,
       selectBand,
+      startMixing,
       validate,
       experiment: (prismMode) => {
         if (localMode !== 'explore') return;
@@ -747,6 +763,15 @@ export function StarLightScene({
               >
                 Tout l’arc-en-ciel
               </button>
+              {mode === 'rainbow' ? (
+                <button
+                  className={styles.action}
+                  disabled={!ready}
+                  onClick={() => controls.current?.startMixing()}
+                >
+                  Passer aux mélanges
+                </button>
+              ) : null}
             </>
           ) : null}
           {showLights ? (

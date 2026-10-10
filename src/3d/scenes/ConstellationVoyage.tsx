@@ -28,21 +28,29 @@ import {
 import { withBasePath } from '@/lib/basePath';
 import { prefersReducedMotion } from '@/lib/motion';
 import styles from './ConstellationsScene.module.css';
+import cinemaStyles from '@/components/layout/CinematicOverlay.module.css';
 
 type Props = {
   mode: 'perspective' | 'film';
   onSuccess: () => void;
+  onCinematicPlaying?: (playing: boolean) => void;
   /** Faux tant que le Guide n’a pas lancé « À toi de jouer ». */
   interactive?: boolean;
 };
 
 /** Real Babylon scene: fixed model positions, camera movement only. */
-export function ConstellationVoyage({ mode, onSuccess, interactive = true }: Props) {
+export function ConstellationVoyage({
+  mode,
+  onSuccess,
+  interactive = true,
+  onCinematicPlaying,
+}: Props) {
   const [ready, setReady] = useState(false);
   const [offset, setOffset] = useState(82);
   const [time, setTime] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [reducedFilm, setReducedFilm] = useState(false);
+  const [filmStarted, setFilmStarted] = useState(false);
   const [done, setDone] = useState(false);
   const [message, setMessage] = useState('');
   const sample = useRef({ offset: mode === 'film' ? 0 : perspectiveOffset(82), lines: true });
@@ -78,11 +86,15 @@ export function ConstellationVoyage({ mode, onSuccess, interactive = true }: Pro
 
   useEffect(() => {
     if (mode !== 'film' || !ready || done) return;
-    if (!interactive) {
-      setPlaying(false);
-      return;
-    }
-    if (!reducedFilm) setPlaying(true);
+    const timer = setTimeout(() => {
+      if (!interactive) {
+        setPlaying(false);
+        return;
+      }
+      setFilmStarted(true);
+      if (!reducedFilm) setPlaying(true);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [interactive, mode, ready, done, reducedFilm]);
 
   useEffect(() => {
@@ -110,6 +122,12 @@ export function ConstellationVoyage({ mode, onSuccess, interactive = true }: Pro
     }, 0);
     return () => clearTimeout(timer);
   }, [time, playing, done, finish]);
+
+  const cinematicActive = mode === 'film' && filmStarted && time < CONSTELLATION_FILM_DURATION;
+  useEffect(() => {
+    onCinematicPlaying?.(cinematicActive);
+  }, [cinematicActive, onCinematicPlaying]);
+  useEffect(() => () => onCinematicPlaying?.(false), [onCinematicPlaying]);
 
   const onSceneReady = useCallback(
     ({ scene, engine, canvas }: BabylonSceneContext) => {
@@ -227,7 +245,7 @@ export function ConstellationVoyage({ mode, onSuccess, interactive = true }: Pro
         scene.onBeforeRenderObservable.remove(observer);
       };
     },
-    [mode],
+    [],
   );
 
   const finishFilm = () => {
@@ -292,57 +310,70 @@ export function ConstellationVoyage({ mode, onSuccess, interactive = true }: Pro
           />
         </div>
       )}
-      <div
-        className={`${styles.filmCaption} ${done && mode === 'perspective' ? styles.filmCaptionFound : ''}`}
-        aria-live="polite"
-      >
-        <strong>
-          {mode === 'film'
-            ? chapter.title
-            : done
-              ? 'Point de vue retrouvé'
-              : 'Le vaisseau change de place'}
-        </strong>
-        <p>
-          {mode === 'film'
-            ? chapter.text
-            : done
+      {mode === 'perspective' ? (
+        <div
+          className={`${styles.filmCaption} ${done ? styles.filmCaptionFound : ''}`}
+          aria-live="polite"
+        >
+          <strong>{done ? 'Point de vue retrouvé' : 'Le vaisseau change de place'}</strong>
+          <p>
+            {done
               ? 'La croix est revenue. Les étoiles n’ont pas bougé.'
               : 'Les sept étoiles sont fixes. Retrouve leur dessin depuis notre point de départ.'}
-        </p>
-      </div>
-      <SceneControls className={styles.controls}>
-        {mode === 'perspective' ? (
-          <>
-            <label htmlFor="constellation-position">Position du vaisseau</label>
-            <div className={styles.railLabels}>
-              <span>Un côté du trajet</span>
-              <span>L’autre côté</span>
-            </div>
-            <input
-              id="constellation-position"
-              type="range"
-              min="0"
-              max="100"
-              step="1"
-              value={offset}
-              disabled={!ready || done}
-              onChange={(event) => setOffset(Number(event.target.value))}
-            />
-            <button
-              className={done ? styles.found : undefined}
-              onClick={verify}
-              disabled={!ready || done}
-            >
-              {done ? '✓ Point de vue retrouvé' : 'Vérifier mon point de vue'}
-            </button>
-            <p role="status">
-              {message || 'Fais glisser le curseur ou utilise les flèches du clavier.'}
+          </p>
+        </div>
+      ) : null}
+      {mode === 'perspective' ? (
+        <SceneControls className={styles.controls}>
+          <label htmlFor="constellation-position">Position du vaisseau</label>
+          <div className={styles.railLabels}>
+            <span>Un côté du trajet</span>
+            <span>L’autre côté</span>
+          </div>
+          <input
+            id="constellation-position"
+            type="range"
+            min="0"
+            max="100"
+            step="1"
+            value={offset}
+            disabled={!ready || done}
+            onChange={(event) => setOffset(Number(event.target.value))}
+          />
+          <button
+            className={done ? styles.found : undefined}
+            onClick={verify}
+            disabled={!ready || done}
+          >
+            {done ? '✓ Point de vue retrouvé' : 'Vérifier mon point de vue'}
+          </button>
+          <p role="status">
+            {message || 'Fais glisser le curseur ou utilise les flèches du clavier.'}
+          </p>
+          <small>
+            Distances choisies pour l’expérience, différentes des vraies distances. Le voyage
+            représente un immense déplacement.
+          </small>
+        </SceneControls>
+      ) : null}
+      {mode === 'film' && filmStarted ? (
+        <section className={cinemaStyles.cinema} aria-label="Le voyage">
+          <div className={cinemaStyles.cinemaCaption} aria-live="polite" aria-atomic="true">
+            <span>
+              {time >= CONSTELLATION_FILM_DURATION
+                ? 'Voyage terminé'
+                : `Le voyage · ${view.chapter + 1} / ${CONSTELLATION_FILM_CHAPTERS.length}`}
+            </span>
+            <h2>{chapter.title}</h2>
+            <p>{chapter.text}</p>
+          </div>
+          <div className={cinemaStyles.cinemaFooter}>
+            <p>
+              Étoiles fixes pendant le film. Distances simplifiées pour représenter un immense
+              déplacement.
             </p>
-          </>
-        ) : (
-          <>
-            <div className={styles.buttons}>
+
+            <div>
               {time >= CONSTELLATION_FILM_DURATION ? (
                 <button
                   disabled={!ready}
@@ -367,25 +398,9 @@ export function ConstellationVoyage({ mode, onSuccess, interactive = true }: Pro
                 </>
               )}
             </div>
-            <progress
-              value={time}
-              max={CONSTELLATION_FILM_DURATION}
-              aria-label="Avancement du film"
-            />
-            <p role="status">
-              {time >= CONSTELLATION_FILM_DURATION
-                ? 'Voyage terminé ! Tu peux continuer ou le revoir.'
-                : reducedFilm
-                  ? 'Avance avec « Étape suivante », sans mouvement automatique.'
-                  : 'Observe comment le dessin change quand le vaisseau se déplace.'}
-            </p>
-          </>
-        )}
-        <small>
-          Distances choisies pour l’expérience, différentes des vraies distances. Le voyage représente un
-          immense déplacement.
-        </small>
-      </SceneControls>
+          </div>
+        </section>
+      ) : null}
     </>
   );
 }
