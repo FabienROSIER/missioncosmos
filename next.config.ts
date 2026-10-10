@@ -19,6 +19,26 @@ function resolveBasePath(): string {
 
 const basePath = resolveBasePath();
 
+/**
+ * Identifiant embarqué dans le client (sw.js?v=…).
+ * build-production.ps1 en fournit un. Sans valeur, un horodatage local
+ * évite de retomber sur 0.1.0 et de figer le Service Worker.
+ */
+function resolveBuildId(): string {
+  const fromEnv = process.env.NEXT_PUBLIC_BUILD_ID?.trim();
+  if (fromEnv) {
+    return fromEnv;
+  }
+  if (process.env.NODE_ENV !== 'production') {
+    return 'dev';
+  }
+  const now = new Date();
+  const pad = (value: number) => String(value).padStart(2, '0');
+  return `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+}
+
+const buildId = resolveBuildId();
+
 const nextConfig: NextConfig = {
   output: 'export',
   // GitHub Pages sert mieux des dossiers …/index.html
@@ -38,6 +58,7 @@ const nextConfig: NextConfig = {
   // Expose le même préfixe au client (Babylon, audio, Image, SW)
   env: {
     NEXT_PUBLIC_BASE_PATH: basePath,
+    NEXT_PUBLIC_BUILD_ID: buildId,
   },
   // Babylon.js est consommé côté client uniquement (Phase 3).
   transpilePackages: ['@babylonjs/core', '@babylonjs/loaders'],

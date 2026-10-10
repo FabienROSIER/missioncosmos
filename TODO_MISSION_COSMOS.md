@@ -817,7 +817,7 @@ Possibilités futures :
 - [ ] Aucun lien externe facilement accessible depuis l'espace enfant sans réflexion UX.
 - [ ] Protéger les éventuels écrans parentaux sensibles par une interaction adaptée.
 - [ ] Vérifier obligations légales avant collecte de données d'enfants.
-- [ ] Politique de confidentialité claire si publication.
+- [x] Politique de confidentialité claire si publication. — `/confidentialite`, `/a-propos`, `/contact` (2026-10-10). Aucune donnée joueur envoyée. Sauvegarde locale `mc:save`.
 - [ ] Auditer dépendances.
 - [ ] Aucun secret côté client.
 - [ ] CSP et en-têtes de sécurité adaptés lors du déploiement.
@@ -910,10 +910,11 @@ Possibilités futures :
 
 # PHASE 21 — Déploiement
 
-- [ ] Choisir hébergement.
+- [x] Choisir hébergement. — Nginx sert l’export statique `out/` à la racine de https://missioncosmos.fr. Pas de Node, Django, base ni déploiement automatique (ADR-007). Mise en ligne VPS encore manuelle.
 - [ ] Configurer domaine/sous-domaine.
 - [ ] HTTPS.
-- [ ] Build production.
+- [x] Build production. — `build-production.ps1` (identifiant horodaté, contrôle de `out/`). `auto-build.ps1` recompile en local seulement.
+- [x] Script de copie manuelle vers le VPS. — `deploy-production.ps1` (OpenSSH Windows, rsync côté VPS). Destination unique : `/home/ubuntu/missioncosmos/build/`. Le premier envoi reste à lancer par le propriétaire.
 - [ ] Variables d'environnement.
 - [ ] Headers cache adaptés aux assets versionnés.
 - [ ] Headers sécurité.
@@ -972,7 +973,8 @@ Cursor doit maintenir ce tableau au fil du projet.
 | ID       | Asset                          | Type              | Format cible           | État       | Source/licence                                  | Utilisation                                                              |
 | -------- | ------------------------------ | ----------------- | ---------------------- | ---------- | ----------------------------------------------- | ------------------------------------------------------------------------ |
 | AST-001  | Logo Mission Cosmos            | 2D                | PNG transparent        | Reçu       | ImageGen                                        | Branding — intégré accueil                                               |
-| AST-002  | Icône application              | 2D                | PNG/SVG                | À définir  | —                                               | PWA/store                                                                |
+| AST-002  | Icône application              | 2D                | PNG/SVG                | Reçu       | ImageGen (dérivé AST-001)                       | PWA — `public/assets/icons/icon-192.png`, `icon-512.png`, `apple-touch-icon.png` |
+| AST-004  | Image Open Graph               | 2D                | PNG 1200×630           | À remplacer | —                                              | Partage — déposer `public/assets/branding/og-image.png` puis mettre à jour `src/lib/site.ts`. En attendant : `icon-512.png`. |
 | AST-003  | Compagnon                      | 2D sprites        | WebP 512/256           | Reçu       | ImageGen                                        | Guide UI — `public/assets/sprites/companion/`                            |
 | AST-003b | Compagnon 3D                   | modèle GLB        | GLB skinned            | Reçu       | À confirmer                                     | Scènes M02–M04 — `public/assets/models/compagon/compagon.glb` (~6,5 Mo)  |
 | AST-010  | Terre                          | modèle GLB + WebP | GLB/WebP               | Reçu       | CGTrader pack (licence à vérifier)              | Missions 1+ — `public/assets/models/solarsystem/celestial-bodies/earth/` |
@@ -997,6 +999,7 @@ Les décisions importantes doivent avoir une ADR dans `/docs/decisions/` et êtr
 
 | Date       | Décision                                                                                                                  | ADR                                              |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| 2026-10-10 | Publication web : export statique à la racine, Nginx, build local horodaté, pas de déploiement auto | `docs/decisions/007-static-production-nginx.md` |
 | 2026-10-02 | Mission 11 : maquette pédagogique en points 3D, fond AST-021 réutilisé, aucun nouvel asset externe requis | `docs/decisions/004-milky-way-learning-model.md` |
 | 2026-09-28 | Carte 8 zones alignée sur 14 missions (mix C) ; suppression zone Voisinage ; M12 Galaxies ; Distances→13 ; Trous noirs→14 | —                                                |
 | 2026-09-26 | Next.js + React + TypeScript comme socle web                                                                              | `docs/decisions/001-stack-initiale.md`           |
@@ -1034,6 +1037,7 @@ Prochaine action : **Mission 14 — valider récompense, achèvement, persistanc
 - Mission 08 (2026-09-29) : scène procédurale `stars` ; Proxima / Soleil / Sirius / Bételgeuse ; modes tailles (log), couleurs, taille apparente ; défi photo à mécanique unique (3 cadrages, rail de distance, album) ; max 3 astres détaillés ; notes `docs/pedagogy/mission-08-stars.md`.
 - Mission 09 (2026-09-30) : laboratoire du prisme `stellar-light` ; température → couleur + spectre corps noir simplifié (Wien / Planck relatif) ; défi 3 commandes Proxima / Soleil / Sirius ; glossaire spectre / spectroscope / kelvin ; notes `docs/pedagogy/mission-09-stellar-light.md`.
 - Musique (2026-09-28) : AST-040/041 issus de **KSP1** — documentés dans `docs/ASSETS.md`, état **Temporaire** (propriétaire Squad/Take-Two). Remplacer avant toute publication.
+- Publication (2026-10-10) : pages `/a-propos`, `/confidentialite`, `/contact`. Build de référence `build-production.ps1`. Image Open Graph 1200×630 encore à fournir (AST-004). Musique KSP toujours bloquante pour une publication publique.
 
 
 ## Révision ciblée — Notre Terre (3 octobre 2026)

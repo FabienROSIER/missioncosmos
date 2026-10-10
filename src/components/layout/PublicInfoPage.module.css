@@ -1,0 +1,48 @@
+.page {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  max-width: 40rem;
+  margin-inline: auto;
+  min-height: 0;
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-bottom: var(--space-6);
+}
+
+.inner h1 {
+  font-size: var(--text-xl);
+  color: var(--color-star);
+}
+
+.inner h2 {
+  margin-top: var(--space-2);
+  font-size: var(--text-md);
+  color: var(--color-star);
+}
+
+.inner p,
+.inner li {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.inner ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.mail {
+  color: var(--color-nebula-soft);
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}

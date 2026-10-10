@@ -14,7 +14,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'Mission Cosmos',
     short_name: 'Cosmos',
-    description: "Aventure éducative d'astronomie pour les 6–12 ans",
+    description: 'Jeu éducatif gratuit d’astronomie pour les 6–12 ans',
     start_url: root,
     scope: root,
     display: 'standalone',

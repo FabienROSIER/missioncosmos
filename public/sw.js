@@ -7,10 +7,11 @@
  * - Version via ?v= à l’enregistrement (évite mélange de shells).
  */
 /* eslint-disable no-restricted-globals */
+/* mc-build:source */
 
 const VERSION = new URL(self.location.href).searchParams.get('v') || 'dev';
 const SHELL_CACHE = `mc-shell-${VERSION}`;
-const RUNTIME_CACHE = 'mc-runtime-v1';
+const RUNTIME_CACHE = `mc-runtime-${VERSION}`;
 
 /** App shell / JS / CSS — pas les assets 3D/audio volumineux. */
 const PRECACHE_URLS = [
@@ -46,7 +47,11 @@ self.addEventListener('activate', (event) => {
       const keys = await caches.keys();
       await Promise.all(
         keys
-          .filter((key) => key.startsWith('mc-shell-') && key !== SHELL_CACHE)
+          .filter(
+            (key) =>
+              (key.startsWith('mc-shell-') && key !== SHELL_CACHE) ||
+              (key.startsWith('mc-runtime-') && key !== RUNTIME_CACHE),
+          )
           .map((key) => caches.delete(key)),
       );
       await self.clients.claim();
@@ -63,7 +68,7 @@ self.addEventListener('message', (event) => {
 /**
  * Navigation HTML : network-first (màj), fallback cache.
  * /_next/static : cache-first (hashés).
- * /assets/ modèles/audio/textures : cache-first runtime, sans précache massif.
+ * /assets/ modèles/audio/textures : cache-first dans mc-runtime-<version>, sans précache.
  * Autre : network, puis cache si dispo.
  */
 self.addEventListener('fetch', (event) => {

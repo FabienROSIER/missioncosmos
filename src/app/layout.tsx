@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Nunito, Space_Grotesk } from 'next/font/google';
 import { AppProviders } from '@/components/layout/AppProviders';
 import { withBasePath } from '@/lib/basePath';
+import { OG_IMAGE, SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL } from '@/lib/site';
 import './globals.css';
 
 const spaceGrotesk = Space_Grotesk({
@@ -17,13 +18,42 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: 'Mission Cosmos',
-  description: "Aventure éducative d'astronomie pour les 6–12 ans",
-  applicationName: 'Mission Cosmos',
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: SITE_TITLE,
+    template: '%s · Mission Cosmos',
+  },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  alternates: {
+    canonical: './',
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'fr_FR',
+    url: './',
+    siteName: SITE_NAME,
+    images: [
+      {
+        url: withBasePath(OG_IMAGE.path),
+        width: OG_IMAGE.width,
+        height: OG_IMAGE.height,
+        alt: OG_IMAGE.alt,
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary',
+    images: [withBasePath(OG_IMAGE.path)],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Mission Cosmos',
+    title: SITE_NAME,
   },
   icons: {
     icon: [

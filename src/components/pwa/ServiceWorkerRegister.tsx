@@ -3,10 +3,8 @@
 import { useEffect, useRef } from 'react';
 import { BASE_PATH } from '@/lib/basePath';
 
-const BUILD_ID =
-  process.env.NEXT_PUBLIC_BUILD_ID ||
-  process.env.NEXT_PUBLIC_APP_ENV ||
-  '0.1.0';
+/** Injecté par next.config.ts. Le script de prod pose un horodatage unique. */
+const BUILD_ID = process.env.NEXT_PUBLIC_BUILD_ID || 'dev';
 
 function isLocalDevHost(hostname: string): boolean {
   return (

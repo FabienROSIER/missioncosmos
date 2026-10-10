@@ -153,6 +153,13 @@ Catalogue code : `src/content/audio/musicCatalog.ts`. Lecteur : `src/features/au
 État registre : **Temporaire** (bloquant pour release publique / Pages).
 
 
+## Icônes PWA et partage
+
+| ID | Fichier | État |
+|---|---|---|
+| AST-002 | `public/assets/icons/icon-192.png`, `icon-512.png`, `apple-touch-icon.png` | Reçu — icônes PWA dérivées du logo |
+| AST-004 | `public/assets/branding/og-image.png` | À remplacer — PNG 1200×630 pour Open Graph. En attendant, les métadonnées pointent vers `icon-512.png` (`src/lib/site.ts`, constante `OG_IMAGE`). |
+
 ## Règles
 
 - Licence inconnue = interdit en distribution.
